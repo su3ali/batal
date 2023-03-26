@@ -11,14 +11,45 @@ class AdminsDatatable extends BaseDatatable
 {
     public function query(): Builder
     {
-        return Admin::whereKeyNot(1)->role('admin')->latest()->withoutGlobalScopes();
+        return Admin::whereKeyNot(1)->latest()->withoutGlobalScopes();
     }
 
     protected function getColumns(): array
     {
         return [
-            Column::make('name')->title(__('dash.name')),
-            Column::make('email')->title(t_('dash.email')),
+            Column::make('name')->title(__('dash.first name')),
+            Column::make('roles')->title(__('dash.roles')),
+            Column::make('email')->title(__('dash.email')),
+            Column::make('active')->title(__('dash.active')),
+
+        ];
+    }
+
+    protected function getCustomColumns(): array
+    {
+        return [
+            'name' =>function ($model) {
+                $name = $model->first_name . ' ' .$model->last_name;
+                return $name;
+            },
+            'role' =>function ($model) {
+
+                $name = $model->roles?->name;
+                return $name;
+            },
+            'active' => function ($model) {
+                if ($model->active == 1) {
+                    $check = 'checked';
+                } else {
+                    $check = '';
+                }
+
+                $html = '<label class="switch s-outline s-outline-info  mb-4 mr-2">
+    <input type="checkbox" id="customSwitch4" data-id="'.$model->id.'" '.$check.'>
+    <span class="slider round"></span>
+</label>';
+return $html;
+            },
         ];
     }
 }

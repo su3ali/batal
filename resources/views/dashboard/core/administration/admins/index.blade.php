@@ -33,4 +33,29 @@
 
         @push('script')
     {{$dataTable->scripts()}}
-    @endpush
+
+    <script type="text/javascript">
+
+        $("body").on('change','#customSwitch4', function() {
+            var active=$(this).is(':checked');
+            var id=$(this).attr('data-id');
+
+            $.ajax({
+                url:'{{route('dashboard.core.administration.admins.change_status')}}',
+                type:'get',
+                data:{id:id,active:active},
+                success:function (data){
+                    swal({
+                        title: "{{__('dash.successful_operation')}}",
+                        text: "{{__('dash.request_executed_successfully')}}",
+                        type: 'success',
+                        padding: '2em'
+                    })
+                }
+            });
+        })
+
+    </script>
+
+
+        @endpush

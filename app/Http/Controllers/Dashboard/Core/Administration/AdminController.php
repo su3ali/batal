@@ -14,6 +14,7 @@ use App\Support\Crud\WithForm;
 use App\Support\Crud\WithStore;
 use App\Support\Crud\WithUpdate;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Spatie\Permission\Models\Role;
 
@@ -30,18 +31,19 @@ class AdminController extends Controller
     protected function storeAction(array $validated)
     {
 
-        $roles = array_keys($validated['roles']);
-        $roles[] = 2;
-        Arr::pull($validated, 'roles', []);
+        $roles = Arr::pull($validated, 'roles');
         $model = Admin::create($validated);
         $model->syncRoles($roles);
     }
 
     protected function updateAction(array $validated, Model $model)
     {
+        $avatar = Arr::pull($validated, 'avatar');
 
+        $avatar && uploadImage('avatar', $avatar, $model);
         $roles = array_keys($validated['roles']);
         $roles[] = 2;
+
         $model->syncRoles($roles);
         Arr::pull($validated, 'roles', []);
         $model->update($validated);
@@ -63,4 +65,19 @@ class AdminController extends Controller
         ];
     }
 
+
+    protected function change_status(Request $request)
+    {
+        $admin = Admin::where('id',$request->id)->first();
+
+        if ($request->active == 'true'){
+            $active = 1;
+        }else{
+            $active = 0;
+        }
+
+        $admin->active = $active;
+        $admin->save();
+        return response()->json(['sucess'=>true]);
+    }
 }

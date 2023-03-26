@@ -15,13 +15,12 @@ class Admin extends Authenticatable
     use HasApiTokens,WithBoot,HasPassword, HasFactory,HasRoles, Notifiable;
 
     protected $fillable = [
-        'name',
-        'gender',
+        'first_name',
+        'last_name',
         'email',
         'phone',
         'password',
         'active',
-        'social_id',
 
     ];
 

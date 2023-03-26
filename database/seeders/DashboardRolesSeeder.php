@@ -30,7 +30,8 @@ class DashboardRolesSeeder extends Seeder
     {
         Auth::shouldUse('dashboard');
         tap(Admin::updateOrCreate(['email' => 'admin@admin.com'], [
-            'name'     => 'Super Admin',
+            'first_name'     => 'Super Admin',
+            'last_name'     => 'Super Admin',
             'email'    => 'admin@admin.com',
             'phone'    => '96651010101010',
             'active'   => true,

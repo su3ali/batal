@@ -500,4 +500,7 @@ return [
     'total_commission' => 'Total Amount of Products',
     'help' => 'Help Center',
 
+
+    'first name' =>'First name',
+    'last name' =>'Last name',
 ];

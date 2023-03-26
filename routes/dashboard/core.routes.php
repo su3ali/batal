@@ -20,6 +20,7 @@ route_group('core', function () {
             Route::get('/{id}/edit', 'AdminController@edit')->name('admins.edit')->middleware('permission:update_admins');
             Route::post('/{id}', 'AdminController@update')->name('admins.update')->middleware('permission:update_admins');
             Route::get('/{id}/delete', 'AdminController@destroy')->name('admins.destroy')->middleware('permission:delete_admins');
+            Route::get('/change_status', 'AdminController@change_status')->name('admins.change_status')->middleware('permission:delete_admins');
         });
     });
 

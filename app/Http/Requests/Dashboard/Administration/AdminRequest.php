@@ -13,16 +13,17 @@ class AdminRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:100',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             'email' => 'required|email|max:255|unique:admins,email',
             'phone' => 'required|numeric|unique:admins,phone',
-            'gender' => 'required|in:male,female',
             'password' => ['required', 'confirmed', Password::min(4)],
             'roles' => 'required|array',
             'active' => 'nullable',
         ];
         if (str_contains(url()->current(), request()->route('id'))) {
-            $rules['name'] = 'required|string|max:100';
+            $rules['first_name'] = 'required|string|max:100';
+            $rules['last_name'] = 'required|string|max:100';
             $rules['password'] = ['nullable', 'confirmed', Password::min(4)];
             $rules['email'] = 'required|email|max:255|unique:admins,email,' . request()->route('id');
             $rules['phone'] = 'required|numeric|unique:admins,phone,' . request()->route('id');
