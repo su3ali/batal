@@ -17,7 +17,10 @@
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/regular.css')}}">
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/fontawesome.css')}}">
     <link href="{{asset(app()->getLocale().'/assets/css/scrollspyNav.css')}}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/select2/select2.min.css')}}">
+{{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
+    <link href="{{asset('/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('/select2/select2.css')}}" rel="stylesheet" type="text/css" />
+
     <link href="{{asset(app()->getLocale().'/plugins/file-upload/file-upload-with-preview.min.css')}}" rel="stylesheet"
           type="text/css"/>
 
@@ -196,8 +199,11 @@
 <script src="{{asset(app()->getLocale().'/plugins/sweetalerts/promise-polyfill.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert2.min.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/plugins/sweetalerts/custom-sweetalert.js')}}"></script>
-<script src="{{asset(app()->getLocale().'/plugins/select2/select2.min.js')}}"></script>
-<script src="{{asset(app()->getLocale().'/plugins/select2/custom-select2.js')}}"></script>
+{{--<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>--}}
+<script src="{{asset('/select2/select2.min.js')}}"></script>
+<script src="{{asset('/select2/select2.js')}}"></script>
+
+
 <script src="{{asset(app()->getLocale().'/plugins/file-upload/file-upload-with-preview.min.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/plugins/table/datatable/datatables.js')}}"></script>
 <script
@@ -287,9 +293,6 @@
     });
 </script>
 <script>
-    $(".tagging").select2({
-        tags: true
-    });
 </script>
 @stack('script')
 </body>

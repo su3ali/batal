@@ -12,12 +12,16 @@
                                 <div class="d-flex justify-content-between">
                                     <nav class="breadcrumb-one" aria-label="breadcrumb">
                                         <ol class="breadcrumb mb-3 py-2">
-                                            <li class="breadcrumb-item"><a href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                            <li class="breadcrumb-item" ><a href="{{route('dashboard.core.administration.admins.index')}}">{{__('dash.admins')}}</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">{{isset($model)? __('dash.edit'):__('dash.create')}}</li>
+                                            <li class="breadcrumb-item"><a
+                                                    href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
+                                            <li class="breadcrumb-item"><a
+                                                    href="{{route('dashboard.core.administration.admins.index')}}">{{__('dash.admins')}}</a>
+                                            </li>
+                                            <li class="breadcrumb-item active"
+                                                aria-current="page">{{isset($model)? __('dash.edit'):__('dash.create')}}</li>
                                         </ol>
                                     </nav>
-{{--                                    <h3 class="">{{__('dash.admins')}}</h3>--}}
+                                    {{--                                    <h3 class="">{{__('dash.admins')}}</h3>--}}
                                 </div>
                                 <form method="post"
                                       action="{{isset($model)?route('dashboard.core.administration.admins.update', $model) : route('dashboard.core.administration.admins.store')}}"
@@ -47,17 +51,17 @@
                                         </div>
 
                                         {{--<div class="form-group col-md-6">--}}
-                                            {{--<label for="inputEmail4">{{__('dash.gender')}}</label>--}}
-                                            {{--<select id="inputState" class="form-control py-0" name="gender">--}}
-                                                {{--<option disabled selected>{{__('dash.choose_type')}}</option>--}}
-                                                {{--<option--}}
-                                                    {{--{{isset($model)?$model->gender == 'male'? 'selected' : '':''}} value="male">{{__('dash.male')}}</option>--}}
-                                                {{--<option--}}
-                                                    {{--{{isset($model)?$model->gender == 'female'? 'selected' : '':''}} value="female">{{__('dash.female')}}</option>--}}
-                                            {{--</select>--}}
-                                            {{--@error('gender')--}}
-                                            {{--<div class="alert alert-danger">{{ $message }}</div>--}}
-                                            {{--@enderror--}}
+                                        {{--<label for="inputEmail4">{{__('dash.gender')}}</label>--}}
+                                        {{--<select id="inputState" class="form-control py-0" name="gender">--}}
+                                        {{--<option disabled selected>{{__('dash.choose_type')}}</option>--}}
+                                        {{--<option--}}
+                                        {{--{{isset($model)?$model->gender == 'male'? 'selected' : '':''}} value="male">{{__('dash.male')}}</option>--}}
+                                        {{--<option--}}
+                                        {{--{{isset($model)?$model->gender == 'female'? 'selected' : '':''}} value="female">{{__('dash.female')}}</option>--}}
+                                        {{--</select>--}}
+                                        {{--@error('gender')--}}
+                                        {{--<div class="alert alert-danger">{{ $message }}</div>--}}
+                                        {{--@enderror--}}
                                         {{--</div>--}}
                                     </div>
 
@@ -112,71 +116,71 @@
                                     </div>
                                     <div class="form-row">
                                         {{--<div class="col-md-6 custom-file-container form-group"--}}
-                                             {{--data-upload-id="mySecondImage">--}}
-                                            {{--<label>{{__('dash.upload')}}<a href="javascript:void(0)"--}}
-                                                                           {{--class="custom-file-container__image-clear"--}}
-                                                                           {{--title="Clear Image">x</a></label>--}}
-                                            {{--<div style="display: flex">--}}
-                                                {{--<label class="custom-file-container__custom-file">--}}
-                                                    {{--<input type="file"--}}
-                                                           {{--class="custom-file-container__custom-file__custom-file-input"--}}
-                                                           {{--name="avatar"--}}
-                                                    {{-->--}}
-                                                    {{--<input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>--}}
-                                                    {{--<span--}}
-                                                        {{--class="custom-file-container__custom-file__custom-file-control"></span>--}}
-                                                {{--</label>--}}
+                                        {{--data-upload-id="mySecondImage">--}}
+                                        {{--<label>{{__('dash.upload')}}<a href="javascript:void(0)"--}}
+                                        {{--class="custom-file-container__image-clear"--}}
+                                        {{--title="Clear Image">x</a></label>--}}
+                                        {{--<div style="display: flex">--}}
+                                        {{--<label class="custom-file-container__custom-file">--}}
+                                        {{--<input type="file"--}}
+                                        {{--class="custom-file-container__custom-file__custom-file-input"--}}
+                                        {{--name="avatar"--}}
+                                        {{-->--}}
+                                        {{--<input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>--}}
+                                        {{--<span--}}
+                                        {{--class="custom-file-container__custom-file__custom-file-control"></span>--}}
+                                        {{--</label>--}}
 
-                                                {{--<div class=" col-md-2 custom-file-container__image-preview"></div>--}}
-                                            {{--</div>--}}
+                                        {{--<div class=" col-md-2 custom-file-container__image-preview"></div>--}}
+                                        {{--</div>--}}
                                         {{--</div>--}}
 
                                         <div class="form-group col-md-6">
 
-                                            <div class="form-group col-md-6">
-                                                <label for="inputEmail4">{{__('dash.roles')}}</label>
-                                                <select id="inputState" class="form-control tagging" multiple="multiple" name="roles[]">
-                                                    <option disabled selected>{{__('dash.roles')}}</option>
-                                                    @foreach($roles as $id => $name)
+                                            <label for="inputEmail4">{{__('dash.roles')}}</label>
+                                            <select id="inputState" class="select2 form-control"
+                                                    multiple="multiple"
+                                                    name="roles[]">
+                                                <option disabled>{{__('dash.choose')}}</option>
+                                                @foreach($roles as $id => $name)
                                                     <option
                                                         {{isset($model)?in_array($id, $model->roles->pluck('id')->toArray())? 'selected' : '':''}} value="{{$id}}">{{$name}}</option>
-                                                    @endforeach
-                                                </select>
-                                                @error('roles')
-                                                <div class="alert alert-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
+                                                @endforeach
+                                            </select>
+                                            @error('roles')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
 
 
                                             {{--<label for="inputState">{{__('dash.roles')}}</label>--}}
                                             {{--<div class="widget-content widget-content-area">--}}
-                                                {{--<div class="row">--}}
-                                                    {{--<div class="col-md-12 col-12 row">--}}
-                                                        {{--@if($roles)--}}
-                                                            {{--@foreach($roles as $id => $name)--}}
-                                                                {{--<div class="n-chk col-md-6 col-6">--}}
-                                                                    {{--<label--}}
-                                                                        {{--class="new-control new-checkbox new-checkbox-text checkbox-success">--}}
-                                                                        {{--<input--}}
-                                                                            {{--type="checkbox"--}}
-                                                                            {{--name="roles[{{$id}}]"--}}
-                                                                            {{--class="new-control-input"--}}
-                                                                            {{--{{isset($model)? in_array($id, $model->roles->pluck('id')->toArray())? 'checked' : '': ''}}--}}
-                                                                        {{-->--}}
-                                                                        {{--<span--}}
-                                                                            {{--class="new-control-indicator"></span><span--}}
-                                                                            {{--class="new-chk-content">{{$name}}</span>--}}
-                                                                    {{--</label>--}}
-                                                                    {{--@error('roles')--}}
-                                                                    {{--<div class="alert alert-danger">{{ $message }}</div>--}}
-                                                                    {{--@enderror--}}
-                                                                {{--</div>--}}
-                                                            {{--@endforeach--}}
-                                                        {{--@else--}}
-                                                            {{--<span class="text-danger"><b>عذرا لا توجد أدوار، برجاء إضافة أدوار حتى تتمكن من إنشاء مدير!</b></span>--}}
-                                                        {{--@endif--}}
-                                                    {{--</div>--}}
-                                                {{--</div>--}}
+                                            {{--<div class="row">--}}
+                                            {{--<div class="col-md-12 col-12 row">--}}
+                                            {{--@if($roles)--}}
+                                            {{--@foreach($roles as $id => $name)--}}
+                                            {{--<div class="n-chk col-md-6 col-6">--}}
+                                            {{--<label--}}
+                                            {{--class="new-control new-checkbox new-checkbox-text checkbox-success">--}}
+                                            {{--<input--}}
+                                            {{--type="checkbox"--}}
+                                            {{--name="roles[{{$id}}]"--}}
+                                            {{--class="new-control-input"--}}
+                                            {{--{{isset($model)? in_array($id, $model->roles->pluck('id')->toArray())? 'checked' : '': ''}}--}}
+                                            {{-->--}}
+                                            {{--<span--}}
+                                            {{--class="new-control-indicator"></span><span--}}
+                                            {{--class="new-chk-content">{{$name}}</span>--}}
+                                            {{--</label>--}}
+                                            {{--@error('roles')--}}
+                                            {{--<div class="alert alert-danger">{{ $message }}</div>--}}
+                                            {{--@enderror--}}
+                                            {{--</div>--}}
+                                            {{--@endforeach--}}
+                                            {{--@else--}}
+                                            {{--<span class="text-danger"><b>عذرا لا توجد أدوار، برجاء إضافة أدوار حتى تتمكن من إنشاء مدير!</b></span>--}}
+                                            {{--@endif--}}
+                                            {{--</div>--}}
+                                            {{--</div>--}}
                                             {{--</div>--}}
                                         </div>
                                     </div>
@@ -198,6 +202,10 @@
 
 @push('script')
     <script>
-        let secondUpload = new FileUploadWithPreview('mySecondImage')
+
+        $('.select2').select2({
+            tags: true,
+            dir: '{{app()->getLocale() == "ar"? "rtl" : "ltr"}}'
+        })
     </script>
-    @endpush
+@endpush
