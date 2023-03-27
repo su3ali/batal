@@ -55,33 +55,32 @@ abstract class BaseDatatable extends DataTable
             str_replace('http:', 'https:', secure_url(url()->full())) : url()->full();
 
         return $this->builder()
-            ->setTableId('base-table')
+            ->setTableId('zero-config')
             ->columns($this->prepareColumns())
-            ->orderBy(1)
             ->minifiedAjax($url)
-            ->responsive()
-            ->language($this->translation())
-            ->dom('trip')
-            ->pageLength();
+            ->language($this->translation());
+//            ->dom('lfrtip');
     }
 
     private function translation(): array
     {
+
         return [
-            'sEmptyTable' => __('dash.no_data_available'),
-            'sInfo' => t_('Showing') . ' _START_ ' . t_('to') . ' _END_ ' . t_('of') . ' _TOTAL_ ' . t_('records'),
-            'sInfoEmpty' => t_('Showing') . ' 0 ' . t_('to') . ' 0 ' . t_('of') . ' 0 ' . t_('records'),
-            'sInfoFiltered' => '(' . t_('filtered') . ' ' . t_('from') . ' _MAX_ ' . t_('total') . ' ' . t_('records') . ')',
-            'sInfoPostFix' => '',
-            'sInfoThousands' => ',',
-            'sLengthMenu' => t_('show') . ' _MENU_ ' . t_('records'),
+            'sEmptyTable'     => __('dash.no data available in table'),
+            'sInfo'           => __('dash.Showing').' _START_ '.__('dash.to').' _END_ '.__('dash.of').' _TOTAL_ '.__('dash.entries'),
+            'sInfoEmpty'      => __('dash.Showing').' 0 '.__('dash.to').' 0 '.__('dash.of').' 0 '.__('dash.entries'),
+            'sInfoFiltered'   => '('.__('dash.filtered').' '.__('dash.from').' _MAX_ '.__('dash.total').' '.__('dash.entries').')',
+            'sInfoPostFix'    => '',
+            'sInfoThousands'  => ',',
+            'sLengthMenu'     => __('dash.show').' _MENU_ ',
             'sLoadingRecords' => t_('loading...'),
-            'sProcessing' => t_('processing...'),
-            'sZeroRecords' => t_('no matching records found'),
-            'oPaginate' => [
-                'sFirst' => __('dash.first'),
-                'sLast' => __('dash.last'),
-                'sNext' => __('dash.next'),
+            'sProcessing'     => t_('processing...'),
+            'sSearch'         => __('dash.search').' : ',
+            'sZeroRecords'    => t_('no matching records found'),
+            'oPaginate'       => [
+                'sFirst'    => __('dash.first'),
+                'sLast'     => __('dash.last'),
+                'sNext'     => __('dash.next'),
                 'sPrevious' => __('dash.previous'),
             ],
         ];

@@ -38,15 +38,10 @@ class AdminController extends Controller
 
     protected function updateAction(array $validated, Model $model)
     {
-        $avatar = Arr::pull($validated, 'avatar');
 
-        $avatar && uploadImage('avatar', $avatar, $model);
-        $roles = array_keys($validated['roles']);
-        $roles[] = 2;
-
-        $model->syncRoles($roles);
-        Arr::pull($validated, 'roles', []);
+        $roles = Arr::pull($validated, 'roles');
         $model->update($validated);
+        $model->syncRoles($roles);
     }
 
     protected function validationAction(): array

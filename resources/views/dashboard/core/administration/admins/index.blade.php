@@ -16,10 +16,10 @@
 {{--                            <span style="letter-spacing: 1px;" class="badge px-5 badge-info d-flex justify-content-center align-items-center text-center">{{__('dash.admins')}}</span>--}}
                             <a href="{{route('dashboard.core.administration.admins.create')}}" class="btn btn-primary">{{__('dash.add_new')}}</a>
                         </div>
-                        {{$dataTable->table(['class'=>'table table-hover non-hover text-center'])}}
-                        {{--                        <table id="html5-extension" class="table table-hover non-hover" style="width:100%">--}}
 
-                        {{--                        </table>--}}
+
+                        {{$dataTable->table(['class'=>'table dt-table-hover'])}}
+
                     </div>
                 </div>
 

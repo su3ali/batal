@@ -23,9 +23,6 @@ class RolesDatatable extends BaseDatatable
     {
         return array_merge([
             Column::make('name')->title(__('dash.name')),
-            Column::make('permissions_count')->title(__('dash.Permissions_Count'))
-                ->searchable(false)
-                ->orderable(false),
         ], parent::getColumns());
     }
 }

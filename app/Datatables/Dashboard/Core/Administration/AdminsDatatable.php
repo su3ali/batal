@@ -20,6 +20,7 @@ class AdminsDatatable extends BaseDatatable
             Column::make('name')->title(__('dash.first name')),
             Column::make('roles')->title(__('dash.roles')),
             Column::make('email')->title(__('dash.email')),
+            Column::make('phone')->title(__('dash.phone')),
             Column::make('active')->title(__('dash.active')),
 
         ];
@@ -28,14 +29,16 @@ class AdminsDatatable extends BaseDatatable
     protected function getCustomColumns(): array
     {
         return [
-            'name' =>function ($model) {
-                $name = $model->first_name . ' ' .$model->last_name;
+            'name' => function ($model) {
+                $name = $model->first_name . ' ' . $model->last_name;
                 return $name;
             },
-            'role' =>function ($model) {
-
-                $name = $model->roles?->name;
-                return $name;
+            'roles' => function ($model) {
+                $html = ' ';
+                foreach ($model->roles as $role) {
+                    $html .= '<button class="btn-success">'.$role->name.'</button> ';
+                }
+                return $html;
             },
             'active' => function ($model) {
                 if ($model->active == 1) {
@@ -45,10 +48,10 @@ class AdminsDatatable extends BaseDatatable
                 }
 
                 $html = '<label class="switch s-outline s-outline-info  mb-4 mr-2">
-    <input type="checkbox" id="customSwitch4" data-id="'.$model->id.'" '.$check.'>
-    <span class="slider round"></span>
-</label>';
-return $html;
+                        <input type="checkbox" id="customSwitch4" data-id="' . $model->id . '" ' . $check . '>
+                        <span class="slider round"></span>
+                        </label>';
+                return $html;
             },
         ];
     }

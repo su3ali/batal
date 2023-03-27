@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/regular.css')}}">
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/fontawesome.css')}}">
     <link href="{{asset(app()->getLocale().'/assets/css/scrollspyNav.css')}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/table/datatable/datatables.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/table/datatable/dt-global_style.css')}}">
 {{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
     <link href="{{asset('/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('/select2/select2.css')}}" rel="stylesheet" type="text/css" />
@@ -24,88 +26,7 @@
     <link href="{{asset(app()->getLocale().'/plugins/file-upload/file-upload-with-preview.min.css')}}" rel="stylesheet"
           type="text/css"/>
 
-    <style>
-        .feather-icon .icon-section {
-            padding: 30px;
-        }
-        .feather-icon .icon-section h4 {
-            color: #3b3f5c;
-            font-size: 17px;
-            font-weight: 600;
-            margin: 0;
-            margin-bottom: 16px;
-        }
-        .feather-icon .icon-content-container {
-            padding: 0 16px;
-            width: 86%;
-            margin: 0 auto;
-            border: 1px solid #bfc9d4;
-            border-radius: 6px;
-        }
-        .feather-icon .icon-section p.fs-text {
-            padding-bottom: 30px;
-            margin-bottom: 30px;
-        }
-        .feather-icon .icon-container { cursor: pointer; }
-        .feather-icon .icon-container svg {
-            color: #3b3f5c;
-            margin-right: 6px;
-            vertical-align: middle;
-            width: 20px;
-            height: 20px;
-            fill: rgba(0, 23, 55, 0.08);
-        }
-        .feather-icon .icon-container:hover svg {
-            color: #4361ee;
-            fill: rgba(27, 85, 226, 0.23921568627450981);
-        }
-        .feather-icon .icon-container span { display: none; }
-        .feather-icon .icon-container:hover span { color: #4361ee; }
-        .feather-icon .icon-link {
-            color: #4361ee;
-            font-weight: 600;
-            font-size: 14px;
-        }
 
-
-        /*FAB*/
-        .fontawesome .icon-section {
-            padding: 30px;
-        }
-        .fontawesome .icon-section h4 {
-            color: #3b3f5c;
-            font-size: 17px;
-            font-weight: 600;
-            margin: 0;
-            margin-bottom: 16px;
-        }
-        .fontawesome .icon-content-container {
-            padding: 0 16px;
-            width: 86%;
-            margin: 0 auto;
-            border: 1px solid #bfc9d4;
-            border-radius: 6px;
-        }
-        .fontawesome .icon-section p.fs-text {
-            padding-bottom: 30px;
-            margin-bottom: 30px;
-        }
-        .fontawesome .icon-container { cursor: pointer; }
-        .fontawesome .icon-container i {
-            font-size: 20px;
-            color: #3b3f5c;
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-        .fontawesome .icon-container:hover i { color: #4361ee; }
-        .fontawesome .icon-container span { color: #888ea8; display: none; }
-        .fontawesome .icon-container:hover span { color: #4361ee; }
-        .fontawesome .icon-link {
-            color: #4361ee;
-            font-weight: 600;
-            font-size: 14px;
-        }
-    </style>
     <link href="{{asset(app()->getLocale().'/plugins/animate/animate.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert.css')}}" rel="stylesheet" type="text/css" />
@@ -155,19 +76,12 @@
     <!--  BEGIN CONTENT AREA  -->
     <div class="main-container w-100" id="container">
         @yield('content')
-        <div class="text-center">
+        <div class="footer-wrapper">
             <div class="footer-section f-section-1">
-                <p class="">Copyright © 2021 <a target="_blank" href="https://designreset.com">DesignReset</a>, All
-                    rights
-                    reserved.</p>
-                <p class="">Coded with
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                         class="feather feather-heart">
-                        <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                    </svg>
-                </p>
+                <p class="">Copyright © 2021 <a target="_blank" href="https://designreset.com">DesignReset</a>, All rights reserved.</p>
+            </div>
+            <div class="footer-section f-section-2">
+                <p class="">Coded with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
             </div>
         </div>
     </div>
@@ -262,34 +176,7 @@
     });
 
 </script>
-<script>
-    $('#html5-extension').DataTable({
-        "dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
-            "<'table-responsive'tr>" +
-            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-        buttons: {
-            buttons: [
-                {extend: 'copy', className: 'btn btn-sm'},
-                {extend: 'csv', className: 'btn btn-sm'},
-                {extend: 'excel', className: 'btn btn-sm'},
-                {extend: 'print', className: 'btn btn-sm'}
-            ]
-        },
-        "oLanguage": {
-            "oPaginate": {
-                "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-            },
-            "sInfo": "Showing page _PAGE_ of _PAGES_",
-            "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-            "sSearchPlaceholder": "Search...",
-            "sLengthMenu": "Results :  _MENU_",
-        },
-        "stripeClasses": [],
-        "lengthMenu": [7, 10, 20, 50],
-        "pageLength": 7
-    });
-</script>
+
 <script>
 </script>
 @stack('script')

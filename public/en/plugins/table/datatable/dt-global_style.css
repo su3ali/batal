@@ -11,7 +11,8 @@
 .widget-content-area {
   border: 1px solid #e0e6ed;
   box-shadow: 0 0 40px 0 rgba(94, 92, 154, 0.06);
-  padding: 0; }
+  /*padding: 0;*/
+}
 
 .no-content:before, .no-content:after {
   display: none !important; }
@@ -209,7 +210,8 @@ div.dataTables_wrapper div.dataTables_paginate {
   margin: 0;
   white-space: nowrap;
   text-align: right;
-  display: inline-block; }
+  /*display: inline-block;*/
+}
 
 .page-link {
   margin-right: 5px;
