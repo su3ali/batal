@@ -503,4 +503,11 @@ return [
 
     'first name' =>'First name',
     'last name' =>'Last name',
+    'Showing' =>'Showing',
+    'to' =>'To',
+    'of' =>'Of',
+    'entries' =>'Entries',
+    'search' =>'Search',
+    'category name' =>'Category Name',
+
 ];

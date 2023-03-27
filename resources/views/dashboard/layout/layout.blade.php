@@ -13,10 +13,11 @@
     <script src="{{asset(app()->getLocale().'/assets/js/loader.js')}}"></script>
     <link href="{{asset(app()->getLocale().'/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{asset(app()->getLocale().'/assets/css/plugins.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset(app()->getLocale().'/assets/css/scrollspyNav.css')}}" rel="stylesheet" type="text/css" />
+
     <link href="{{asset(app()->getLocale().'/plugins/apex/apexcharts.css')}}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/regular.css')}}">
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/fontawesome.css')}}">
-    <link href="{{asset(app()->getLocale().'/assets/css/scrollspyNav.css')}}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/table/datatable/datatables.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/table/datatable/dt-global_style.css')}}">
 {{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
@@ -31,6 +32,7 @@
     <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/assets/css/components/custom-sweetalert.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset(app()->getLocale().'/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css')}}" />
     <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/theme-checkbox-radio.css')}}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap">
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
@@ -45,24 +47,16 @@
     @stack('style')
     <script type="text/javascript" src="{{ asset('admin_dashboard/bower_components/ckeditor/ckeditor.js') }}"></script>
 </head>
-<body>
-<!-- BEGIN LOADER -->
-<div id="load_screen">
-    <div class="loader">
-        <div class="loader-content">
-            <div class="spinner-grow align-self-center"></div>
-        </div>
-    </div>
-</div>
-<!--  END LOADER -->
+
+
+<body data-spy="scroll" data-target="#navSection" data-offset="100">
 
 <!--  BEGIN NAVBAR  -->
-
 @include('dashboard.layout.navbar')
-
 <!--  END NAVBAR  -->
 
 <!--  BEGIN NAVBAR  -->
+@yield('sub-header')
 <!--  END NAVBAR  -->
 
 <!--  BEGIN MAIN CONTAINER  -->
@@ -71,11 +65,21 @@
     <div class="overlay"></div>
     <div class="search-overlay"></div>
 
-    @include('dashboard.layout.sidebar')
+    <!--  BEGIN SIDEBAR  -->
+        @include('dashboard.layout.sidebar')
+    <!--  END SIDEBAR  -->
 
     <!--  BEGIN CONTENT AREA  -->
-    <div class="main-container w-100" id="container">
-        @yield('content')
+    <div id="content" class="main-content">
+        {{--<div class="container">--}}
+            {{--<div class="container">--}}
+
+
+
+                @yield('content')
+
+            {{--</div>--}}
+        {{--</div>--}}
         <div class="footer-wrapper">
             <div class="footer-section f-section-1">
                 <p class="">Copyright © 2021 <a target="_blank" href="https://designreset.com">DesignReset</a>, All rights reserved.</p>
@@ -86,9 +90,6 @@
         </div>
     </div>
     <!--  END CONTENT AREA  -->
-</div>
-<!--  END CONTENT AREA  -->
-
 </div>
 <!-- END MAIN CONTAINER -->
 
@@ -160,8 +161,8 @@
                     if (response.status) {
                         $('.table').DataTable().ajax.reload();
                         swal(
-                           "{{__('dash.Deleted!')}}",
-                           "{{__('dash.Your_file_has_been_deleted.')}}",
+                            "{{__('dash.Deleted!')}}",
+                            "{{__('dash.Your_file_has_been_deleted.')}}",
                             'success'
                         )
                     } else {
@@ -181,4 +182,6 @@
 </script>
 @stack('script')
 </body>
+
+
 </html>

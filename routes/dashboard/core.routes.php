@@ -1,6 +1,7 @@
 <?php
 
 
+
 route_group('core', function () {
 
     route_group('administration', function () {
@@ -22,7 +23,8 @@ route_group('core', function () {
             Route::get('/{id}/delete', 'AdminController@destroy')->name('admins.destroy')->middleware('permission:delete_admins');
             Route::get('/change_status', 'AdminController@change_status')->name('admins.change_status')->middleware('permission:delete_admins');
         });
-    });
 
+    });
+    Route::resource('category', 'CategoryController');
 });
 

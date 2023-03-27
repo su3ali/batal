@@ -69,7 +69,7 @@ abstract class BaseDatatable extends DataTable
             'sEmptyTable'     => __('dash.no data available in table'),
             'sInfo'           => __('dash.Showing').' _START_ '.__('dash.to').' _END_ '.__('dash.of').' _TOTAL_ '.__('dash.entries'),
             'sInfoEmpty'      => __('dash.Showing').' 0 '.__('dash.to').' 0 '.__('dash.of').' 0 '.__('dash.entries'),
-            'sInfoFiltered'   => '('.__('dash.filtered').' '.__('dash.from').' _MAX_ '.__('dash.total').' '.__('dash.entries').')',
+//            'sInfoFiltered'   => '('.__('dash.filtered').' '.__('dash.from').' _MAX_ '.__('dash.total').' '.__('dash.entries').')',
             'sInfoPostFix'    => '',
             'sInfoThousands'  => ',',
             'sLengthMenu'     => __('dash.show').' _MENU_ ',

@@ -691,6 +691,13 @@ rejected_bills
     'add_products' => 'اضافة منتجات',
     'add_exclusive_services' => 'اضافة خدمات حصرية',
     'add_exclusive_products' => 'اضافة منتجات حصرية',
+
+
     'first name' =>'الإسم الأول',
     'last name' =>'الإسم الأخير',
+    'Showing' =>'عرض',
+    'to' =>'ل',
+    'of' =>'من',
+    'entries' =>'ادخالات',
+    'category name' =>'اسم القسم',
 ];
