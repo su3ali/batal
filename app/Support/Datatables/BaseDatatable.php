@@ -55,11 +55,13 @@ abstract class BaseDatatable extends DataTable
             str_replace('http:', 'https:', secure_url(url()->full())) : url()->full();
 
         return $this->builder()
-            ->setTableId('zero-config')
+            ->setTableId('html5-extension')
             ->columns($this->prepareColumns())
             ->minifiedAjax($url)
-            ->language($this->translation());
-//            ->dom('lfrtip');
+            ->language($this->translation())
+            ->dom("<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>
+                <'table-responsive'tr>
+                <'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>");
     }
 
     private function translation(): array
@@ -73,10 +75,10 @@ abstract class BaseDatatable extends DataTable
             'sInfoPostFix'    => '',
             'sInfoThousands'  => ',',
             'sLengthMenu'     => __('dash.show').' _MENU_ ',
-            'sLoadingRecords' => t_('loading...'),
-            'sProcessing'     => t_('processing...'),
+            'sLoadingRecords' => __('dash.loading...'),
+            'sProcessing'     => __('dash.processing...'),
             'sSearch'         => __('dash.search').' : ',
-            'sZeroRecords'    => t_('no matching records found'),
+            'sZeroRecords'    => __('dash.no matching records found'),
             'oPaginate'       => [
                 'sFirst'    => __('dash.first'),
                 'sLast'     => __('dash.last'),

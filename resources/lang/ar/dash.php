@@ -700,4 +700,12 @@ rejected_bills
     'of' =>'من',
     'entries' =>'ادخالات',
     'category name' =>'اسم القسم',
+    'Create Category' =>'اضافة قسم',
+    'Edit Category' =>'تعديل قسم',
+    'title_ar' =>'العنوان بالعربي',
+    'title_en' =>'العنوان بالانجليزي',
+    'description_ar' =>'الوصف بالعربي',
+    'description_en' =>'الوصف بالانجليزي',
+    'parent' =>'القسم الرئيسي',
+
 ];

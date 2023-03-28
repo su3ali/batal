@@ -509,5 +509,12 @@ return [
     'entries' =>'Entries',
     'search' =>'Search',
     'category name' =>'Category Name',
+    'Create Category' =>'Create Category',
+    'Edit Category' =>'Edit Category',
+    'title_ar' =>'Title Arabic',
+    'title_en' =>'Title English',
+    'description_ar' =>'Description Arabic',
+    'description_en' =>'Description English',
+    'parent' =>'Main Category',
 
 ];

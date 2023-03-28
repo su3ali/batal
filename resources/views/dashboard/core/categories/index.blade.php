@@ -21,16 +21,6 @@
                 </li>
             </ul>
 
-            <div class="flex-row ml-auto">
-
-                <button type="button" class="btn btn-primary card-tools" data-toggle="modal" data-target="#exampleModal">
-                    {{__('dash.add_new')}}
-                </button>
-
-
-            </div>
-
-
 
         </header>
     </div>
@@ -48,8 +38,14 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
+                    <div class="col-md-12 text-right mb-3">
 
-                    <table id="zero-config" class="table dt-table-hover " style="width:100%">
+                        <button type="button" id="add-work-exp" class="btn btn-primary card-tools" data-toggle="modal" data-target="#exampleModal">
+                            {{__('dash.add_new')}}
+                        </button>
+
+                    </div>
+                    <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -67,6 +63,7 @@
         </div>
 
     </div>
+    @include('dashboard.core.categories.edit')
 
 @endsection
 
@@ -74,7 +71,52 @@
 @push('script')
 
     <script type="text/javascript">
-$('#zero-config').DataTable();
+
+        $(document).ready(function () {
+            $('#html5-extension').DataTable({
+                dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                    "<'table-responsive'tr>" +
+                    "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                order:[[0,'desc']],
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('dashboard.core.category.index') }}',
+                columns: [
+                    {data: 'id', name: 'id'},
+                    {data: 'title', name: 'title'},
+                    {data: 'status', name: 'status'},
+                    {data: 'controll', name: 'controll', orderable: false, searchable: false},
+
+                ]
+            });
+        });
+
+        $("body").on('click', '.edit', function () {
+
+            var id = $(this).attr('data-id');
+            var title_ar = $(this).attr('data-title_ar');
+            var title_en = $(this).attr('data-title_en');
+            var des_ar = $(this).attr('data-des_ar');
+            var des_en = $(this).attr('data-des_en');
+            var parent_id = $(this).attr('data-parent_id');
+            var img = $(this).attr('data-image');
+            $('#id').val(id)
+            $('#title_ar').val(title_ar)
+            $('#title_en').val(title_en)
+            CKEDITOR.instances['description_ar'].setData(des_ar);
+            CKEDITOR.instances['description_en'].setData(des_en);
+            $('.editImage .custom-file-container__image-preview').css('background-image', 'url(' + 'data:image/png;base64,' + img+ ')');
+
+            $('#parent_id').val(parent_id)
+
+            var action = window.location.origin+'/dashboard/core/category/'+id;
+            console.log(action)
+            $('#demo-form1').attr('action', action);
+
+
+        })
+
+
         $("body").on('change','#customSwitch4', function() {
             var active=$(this).is(':checked');
             var id=$(this).attr('data-id');
@@ -93,6 +135,7 @@ $('#zero-config').DataTable();
                 }
             });
         })
+
 
     </script>
 

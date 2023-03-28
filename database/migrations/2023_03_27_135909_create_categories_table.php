@@ -17,9 +17,11 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string('title_ar');
             $table->string('title_en');
+            $table->text('description_ar');
+            $table->text('description_en');
             $table->boolean('active')->default(1);
             $table->foreignId('parent_id')->nullable()->constrained('categories')->cascadeOnDelete();
-            $table->string('slug')->nullable()->unique();
+            $table->string('slug')->nullable();
             $table->timestamps();
         });
     }
