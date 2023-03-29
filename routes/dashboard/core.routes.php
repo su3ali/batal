@@ -28,5 +28,9 @@ route_group('core', function () {
     Route::resource('category', 'CategoryController');
     Route::get('/change_status', 'CategoryController@change_status')->name('category.change_status');
 
+
+    Route::resource('wallet', 'WalletController');
+    Route::get('/change_status', 'WalletController@change_status')->name('wallet.change_status');
+
 });
 
