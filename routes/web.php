@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\FrontEnd\Landind\LandingPageController;
 
-Route::get('/', [LandingPageController::class, 'index']);
+Route::get('/', function (){
+    return redirect()->route('dashboard.home');
+});
 

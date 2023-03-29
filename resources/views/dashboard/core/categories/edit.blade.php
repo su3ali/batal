@@ -9,9 +9,10 @@
             </div>
             <div class="modal-body">
                 <form action="" method="post" class="form-horizontal"
-                      enctype="multipart/form-data" id="demo-form" data-parsley-validate="">
+                      enctype="multipart/form-data" id="demo-form-edit" data-parsley-validate="">
+                    {{ method_field('patch') }}
                     @csrf
-                    <input type="hidden" name="id" id="id">
+
                     <div class="box-body">
                         <div class="form-row mb-3">
                             <div class="form-group col-md-6">
@@ -62,22 +63,7 @@
                                 </div>
                             </div>
 
-
-                            <div class="form-group col-md-6">
-
-                                <label for="inputEmail4">{{__('dash.parent')}}</label>
-                                <select id="parent_id" class="select2 form-control"
-                                        name="parent_id">
-                                    <option disabled>{{__('dash.choose')}}</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{$category->id}}">{{$category->title}}</option>
-                                    @endforeach
-                                </select>
-                                @error('roles')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-
-                            </div>
+                            <input type="hidden" name="parent_id" id="parent_id" value="">
 
 
                         </div>

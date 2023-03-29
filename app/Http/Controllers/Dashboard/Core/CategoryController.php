@@ -12,10 +12,17 @@ use Yajra\DataTables\DataTables;
 class CategoryController extends Controller
 {
     use imageTrait;
-    public function index()
+    public function index(Request $request)
     {
+
         if (request()->ajax()) {
-                $category = Category::all();
+
+            if (request('id') == null){
+                $category = Category::whereNull('parent_id')->get();
+
+            }else{
+                $category = Category::where('parent_id',request('id'))->get();
+            }
             return DataTables::of($category)
                 ->addColumn('title', function ($category) {
                     return $category->title;
@@ -33,9 +40,14 @@ class CategoryController extends Controller
                 ->addColumn('controll', function ($category) {
 
                     $html = '
+                    <a href="'.route('dashboard.core.category.index','id='.$category->id). '" class="mr-2 btn btn-outline-success btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                    </a>
+                    
+                    
                                 <button type="button" id="add-work-exp" class="btn btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'" 
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
-                                  data-parent_id="'.$category->parent_id.'" data-image="'.storage_path('app/public/images/category/'.$category->slug).'" data-toggle="modal" data-target="#editModel">
+                                  data-parent_id="'.$category->parent_id.'" data-image="'.base64_encode(asset('/storage/app/public/images/category/'.$category->slug)).'" data-toggle="modal" data-target="#editModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
                                 
@@ -69,7 +81,7 @@ class CategoryController extends Controller
         $request->validate([
             'title_ar' => 'required',
             'title_en' => 'required',
-            'avatar' => 'required|image',
+            'avatar' => 'nullable|image',
             'description_ar' => 'required',
             'description_en' => 'required',
             'parent_id' => 'nullable|exists:categories,id',
@@ -98,14 +110,23 @@ class CategoryController extends Controller
     {
 
         $request->validate([
-            'title' => 'required',
+            'title_ar' => 'required',
+            'title_en' => 'required',
+            'avatar' => 'nullable|image',
+            'description_ar' => 'required',
+            'description_en' => 'required',
+            'parent_id' => 'nullable|exists:categories,id',
         ]);
-        $category = Category::find($id);
-        $data['title']=$request->title;
+        $data=$request->except('_token','avatar');
 
+        if ($request->has('avatar')){
+            $image=$this->storeImages($request->avatar);
+            $data['slug']=$image;
+        }
+        $category = Category::find($id);
         $category->update($data);
-        session()->flash('edit');
-        return redirect()->route('admin.category.index');
+        session()->flash('success');
+        return redirect()->back();
     }
 
     public function destroy($id)
@@ -116,7 +137,7 @@ class CategoryController extends Controller
         return redirect()->route('admin.category.index');
     }
 
-    public function changStatus(Request $request){
+    public function change_status(Request $request){
         $admin = Category::where('id',$request->id)->first();
         if ($request->active == 'true'){
             $active = 1;
@@ -124,7 +145,7 @@ class CategoryController extends Controller
             $active = 0;
         }
 
-        $admin->status = $active;
+        $admin->active = $active;
         $admin->save();
         return response()->json(['sucess'=>true]);
     }
