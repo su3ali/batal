@@ -91,7 +91,7 @@ class TechnicianController extends Controller
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
-            return redirect()->back()->with('errors', $validated->errors());
+            return redirect()->back()->withErrors($validated->errors());
         }
         $validated = $validated->validated();
         if ($validated['active'] && $validated['active'] == 'on'){
