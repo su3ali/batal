@@ -68,6 +68,16 @@
                     </li>
                 </ul>
             </li>
+            <li class="menu">
+                <a href="{{route('dashboard.core.technician.index')}}" class="dropdown-toggle">
+                    <div class="">
+                        <div class="icon-container">
+                            <i data-feather="users"></i>
+                            <span class="icon-name">{{__('dash.technicians')}}</span>
+                        </div>
+                    </div>
+                </a>
+            </li>
             {{--@can('view_setting')--}}
                 {{--<li class="menu">--}}
                     {{--<a href="{{route('dashboard.settings')}}" aria-expanded="false"--}}
