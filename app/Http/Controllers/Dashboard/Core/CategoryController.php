@@ -7,12 +7,13 @@ use App\Models\Category;
 use App\Traits\imageTrait;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\File;
 
 
 class CategoryController extends Controller
 {
     use imageTrait;
-    public function index(Request $request)
+    public function index()
     {
 
         if (request()->ajax()) {
@@ -47,11 +48,11 @@ class CategoryController extends Controller
 
                                 <button type="button" id="add-work-exp" class="btn btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'"
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
-                                  data-parent_id="'.$category->parent_id.'" data-image="'.base64_encode(asset('/storage/app/public/images/category/'.$category->slug)).'" data-toggle="modal" data-target="#editModel">
+                                  data-parent_id="'.$category->parent_id.'" data-image="'.base64_encode(asset($category->slug)).'" data-toggle="modal" data-target="#editModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
 
-                                <a data-id="'.$category->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
+                                <a data-href="'.route('dashboard.core.category.destroy', $category->id).'" data-id="'.$category->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
                                 ';
@@ -79,9 +80,9 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title_ar' => 'required',
-            'title_en' => 'required',
-            'avatar' => 'nullable|image',
+            'title_ar' => 'required|String|min:3',
+            'title_en' => 'required|String|min:3',
+            'avatar' => 'nullable|image|mimes:jpeg,jpg,png,gif',
             'description_ar' => 'required',
             'description_en' => 'required',
             'parent_id' => 'nullable|exists:categories,id',
@@ -91,7 +92,7 @@ class CategoryController extends Controller
 
         if ($request->has('avatar')){
             $image=$this->storeImages($request->avatar);
-            $data['slug']=$image;
+            $data['slug']= 'storage/app/public/images/category'.'/'.$image;
         }
 
         Category::updateOrCreate($data);
@@ -112,18 +113,22 @@ class CategoryController extends Controller
         $request->validate([
             'title_ar' => 'required',
             'title_en' => 'required',
-            'avatar' => 'nullable|image',
+            'avatar' => 'nullable|image|mimes:jpeg,jpg,png,gif',
             'description_ar' => 'required',
             'description_en' => 'required',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
         $data=$request->except('_token','avatar');
 
-        if ($request->has('avatar')){
-            $image=$this->storeImages($request->avatar);
-            $data['slug']=$image;
-        }
+
         $category = Category::find($id);
+        if ($request->has('avatar')){
+            if (File::exists(base_path($category->slug))) {
+                File::delete(base_path($category->slug));
+            }
+            $image=$this->storeImages($request->avatar);
+            $data['slug']= 'storage/app/public/images/category'.'/'.$image;
+        }
         $category->update($data);
         session()->flash('success');
         return redirect()->back();
@@ -132,9 +137,16 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::find($id);
+
+        if (File::exists(base_path($category->image))) {
+            File::delete(base_path($category->image));
+        }
+
         $category->delete();
-        session()->flash('edit');
-        return redirect()->route('admin.category.index');
+        return [
+            'success' => true,
+            'msg' => __("dash.deleted_success")
+        ];
     }
 
     public function change_status(Request $request){

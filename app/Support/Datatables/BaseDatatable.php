@@ -75,21 +75,22 @@ abstract class BaseDatatable extends DataTable
     {
 
         return [
-            'sEmptyTable'     => __('dash.no data available in table'),
-            'sInfo'           => __('dash.Showing').' _START_ '.__('dash.to').' _END_ '.__('dash.of').' _TOTAL_ '.__('dash.entries'),
-            'sInfoEmpty'      => __('dash.Showing').' 0 '.__('dash.to').' 0 '.__('dash.of').' 0 '.__('dash.entries'),
-            'sInfoFiltered'   => '('.__('dash.filtered').' '.__('dash.from').' _MAX_ '.__('dash.total').' '.__('dash.entries').')',
-            'sInfoPostFix'    => '',
-            'sInfoThousands'  => ',',
-            'sLengthMenu'     => __('dash.show').' _MENU_ ',
-            'sLoadingRecords' => __('dash.loading...'),
-            'sProcessing'     => __('dash.processing').'...',
-            'sSearch'         => __('dash.search').' : ',
-            'sZeroRecords'    => __('dash.no matching records found'),
-            'oPaginate'       => [
-                "sPrevious" => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                "sNext" => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-            ],
+            "url" => app()->getLocale() == 'ar'? "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json" : "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json'}}",
+//            'sEmptyTable'     => __('dash.no data available in table'),
+//            'sInfo'           => __('dash.Showing').' _START_ '.__('dash.to').' _END_ '.__('dash.of').' _TOTAL_ '.__('dash.entries'),
+//            'sInfoEmpty'      => __('dash.Showing').' 0 '.__('dash.to').' 0 '.__('dash.of').' 0 '.__('dash.entries'),
+//            'sInfoFiltered'   => '('.__('dash.filtered').' '.__('dash.from').' _MAX_ '.__('dash.total').' '.__('dash.entries').')',
+//            'sInfoPostFix'    => '',
+//            'sInfoThousands'  => ',',
+//            'sLengthMenu'     => __('dash.show').' _MENU_ ',
+//            'sLoadingRecords' => __('dash.loading...'),
+//            'sProcessing'     => __('dash.processing').'...',
+//            'sSearch'         => __('dash.search').' : ',
+//            'sZeroRecords'    => __('dash.no matching records found'),
+//            'oPaginate'       => [
+//                "sPrevious" => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
+//                "sNext" => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
+//            ],
         ];
     }
 
