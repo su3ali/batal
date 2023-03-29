@@ -35,9 +35,12 @@
     <link href="{{asset(app()->getLocale().'/plugins/animate/animate.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset(app()->getLocale().'/plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/assets/css/components/custom-sweetalert.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css')}}" />
     <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/theme-checkbox-radio.css')}}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap">
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <style>
@@ -119,6 +122,7 @@
 <script src="{{asset(app()->getLocale().'/plugins/sweetalerts/promise-polyfill.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert2.min.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/plugins/sweetalerts/custom-sweetalert.js')}}"></script>
+<script src="{{asset(app()->getLocale().'/plugins/toastr/toastr.min.js')}}"></script>
 {{--<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>--}}
 <script src="{{asset('/select2/select2.min.js')}}"></script>
 <script src="{{asset('/select2/select2.js')}}"></script>
@@ -152,7 +156,7 @@
     })
     $(document).on('click', '.btn-delete', function () {
         let id = $(this).data('id');
-        let url = window.location+'/'+id+'/delete'
+        let url = $(this).data('href')
         let that = $(this);
         swal.fire({
             title: "{{__('dash.Are_you_sure?')}}",
@@ -162,14 +166,14 @@
             cancelButtonText: "{{__('dash.No,cancel')}}"
         }).then((isConfirm) => {
             if (isConfirm.value) {
-                $.post(url, {_method: 'GET'}).done(function (response) {
-                    if (response.status) {
-                        $('.table').DataTable().ajax.reload();
+                $.post(url, {_method: 'DELETE', _token: '{{csrf_token()}}'}).done(function (response) {
+                    if (response.success === true) {
                         swal(
                             "{{__('dash.Deleted!')}}",
                             "{{__('dash.Your_file_has_been_deleted.')}}",
                             'success'
                         )
+                        $('.table').DataTable().ajax.reload();
                     } else {
                         console.log('no')
                         console.log(response.status)
@@ -210,6 +214,8 @@
 {{--</script>--}}
 
 @stack('script')
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 </body>
 
 

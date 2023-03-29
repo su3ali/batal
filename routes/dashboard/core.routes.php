@@ -29,8 +29,12 @@ route_group('core', function () {
     Route::get('/change_status', 'CategoryController@change_status')->name('category.change_status');
 
 
+
     Route::resource('wallet', 'WalletController');
     Route::get('/change_status', 'WalletController@change_status')->name('wallet.change_status');
+
+    Route::resource('technician', 'TechnicianController');
+    Route::get('technician/change_status/change', 'TechnicianController@changeStatus')->name('technician.change_status');
 
 });
 

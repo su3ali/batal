@@ -505,7 +505,7 @@ return [
     'other_admins' => 'المدراء الاخرون',
     'add_new_admin' => ' اضافة مدير جديد ',
     'edit_admin' => ' تعديل بيانات المدير ',
-    'group' => 'المجموعات',
+    'group' => 'المجموعة',
     'admins' => 'المدراء',
     'sender' => 'الراسل',
     'sms_config' => 'اعدات اس ام اس',
@@ -542,7 +542,7 @@ return [
     'deliver_name' => 'طريقة الشحن',
     'deliver_price' => 'سعر التوصيل',
     'no_delivery_method_was_found' => 'تعذر إيجاد وسيلة شحن',
-    'status' => 'حالة الطلب',
+    'status' => 'الحالة',
     'order_client_pending' => 'قيد الانتظار',
 
     'order_preparation_notify_body' => 'قيد التحضير',
@@ -712,5 +712,29 @@ rejected_bills
     'description_ar' =>'الوصف بالعربي',
     'description_en' =>'الوصف بالانجليزي',
     'parent' =>'القسم الرئيسي',
+    'first name' => 'الإسم الأول',
+    'last name' => 'الإسم الأخير',
+    'Showing' => 'عرض',
+    'to' => 'ل',
+    'of' => 'من',
+    'entries' => 'ادخالات',
+    'category name' => 'اسم القسم',
+    'Create Category' => 'اضافة قسم',
+    'Edit Category' => 'تعديل قسم',
+    'title_ar' => 'العنوان بالعربي',
+    'title_en' => 'العنوان بالانجليزي',
+    'description_ar' => 'الوصف بالعربي',
+    'description_en' => 'الوصف بالانجليزي',
+    'parent' => 'القسم الرئيسي',
+
+
+    'technicians' => 'الفنيين',
+    'technician' => 'الفني',
+    'create_technician' => 'إنشاء فني',
+    'edit_technician' => 'تعديل بيانات الفني',
+    'specialization' => 'التخصص',
+    'identity_number' => 'رقم الهوية',
+    'wallet' => 'المحفظة',
+
 
 ];

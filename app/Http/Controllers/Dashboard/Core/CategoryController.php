@@ -43,14 +43,14 @@ class CategoryController extends Controller
                     <a href="'.route('dashboard.core.category.index','id='.$category->id). '" class="mr-2 btn btn-outline-success btn-sm">
                             <i class="far fa-eye fa-2x"></i>
                     </a>
-                    
-                    
-                                <button type="button" id="add-work-exp" class="btn btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'" 
+
+
+                                <button type="button" id="add-work-exp" class="btn btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'"
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
                                   data-parent_id="'.$category->parent_id.'" data-image="'.base64_encode(asset('/storage/app/public/images/category/'.$category->slug)).'" data-toggle="modal" data-target="#editModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
-                                
+
                                 <a data-id="'.$category->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
