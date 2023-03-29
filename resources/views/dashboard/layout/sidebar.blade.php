@@ -69,14 +69,29 @@
                 </ul>
             </li>
             <li class="menu">
-                <a href="{{route('dashboard.core.technician.index')}}" class="dropdown-toggle">
+                <a href="#tech" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <div class="icon-container">
                             <i data-feather="users"></i>
                             <span class="icon-name">{{__('dash.technicians')}}</span>
                         </div>
                     </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
                 </a>
+                <ul class="collapse submenu list-unstyled" id="tech" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.core.technician.index')}}"> {{__('dash.technicians')}} </a>
+                    </li>
+                    <li>
+                        <a href="{{route('dashboard.core.group.index')}}"> {{__('dash.technicians_groups')}} </a>
+                    </li>
+                </ul>
             </li>
             {{--@can('view_setting')--}}
                 {{--<li class="menu">--}}

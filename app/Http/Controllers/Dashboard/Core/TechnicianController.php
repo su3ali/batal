@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard\Core;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Group;
 use App\Models\Technician;
 use App\Traits\imageTrait;
 use Illuminate\Http\RedirectResponse;
@@ -20,11 +21,12 @@ class TechnicianController extends Controller
 
     public function index()
     {
+        $groups = Group::all();
         if (request()->ajax()) {
             $technician = Technician::all();
             return DataTables::of($technician)
                 ->addColumn('group', function ($row) {
-                    return 1;
+                    return Group::query()->find($row->group_id)?->name;
                 })
                 ->addColumn('t_image', function ($row) {
                     return '<img class="img-fluid" src="'.asset($row->image).'"/>';
@@ -67,7 +69,7 @@ class TechnicianController extends Controller
                 ->make(true);
         }
 
-        return view('dashboard.core.technicians.index');
+        return view('dashboard.core.technicians.index', compact('groups'));
     }
 
     /**
