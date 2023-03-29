@@ -107,7 +107,7 @@
             CKEDITOR.instances['description_en'].setData(des_en);
             $('.editImage .custom-file-container__image-preview').css('background-image', 'url(' + 'data:image/png;base64,' + img+ ')');
 
-            $('#parent_id').val(parent_id)
+            $('#parent_id').val(parent_id).trigger('change')
 
             var action = window.location.origin+'/dashboard/core/category/'+id;
             console.log(action)

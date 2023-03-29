@@ -26,5 +26,7 @@ route_group('core', function () {
 
     });
     Route::resource('category', 'CategoryController');
+    Route::resource('technician', 'TechnicianController');
+    Route::get('technician/change_status/change', 'TechnicianController@changeStatus')->name('technician.change_status');
 });
 

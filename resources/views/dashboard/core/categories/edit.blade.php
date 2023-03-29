@@ -66,7 +66,7 @@
                             <div class="form-group col-md-6">
 
                                 <label for="inputEmail4">{{__('dash.parent')}}</label>
-                                <select id="parent_id" class="select2 form-control"
+                                <select id="parent_id" class="select2 form-control pt-1"
                                         name="parent_id">
                                     <option disabled>{{__('dash.choose')}}</option>
                                     @foreach($categories as $category)
