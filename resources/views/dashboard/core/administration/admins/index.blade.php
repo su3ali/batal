@@ -21,10 +21,10 @@
                             </li>
                         </ul>
 
-                <div class="flex-row ml-auto">
-                    <a href="{{route('dashboard.core.administration.admins.create')}}" class="btn btn-primary">{{__('dash.add_new')}}</a>
+                {{--<div class="flex-row ml-auto">--}}
+                    {{--<a href="{{route('dashboard.core.administration.admins.create')}}" class="btn btn-primary">{{__('dash.add_new')}}</a>--}}
 
-                </div>
+                {{--</div>--}}
 
 
 
@@ -43,7 +43,11 @@
         <div class="row layout-top-spacing">
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+
                 <div class="widget-content widget-content-area br-6">
+                    <div class="col-md-12 text-right mb-3">
+                        <a href="{{route('dashboard.core.administration.admins.create')}}" class="btn btn-primary">{{__('dash.add_new')}}</a>
+                    </div>
                     {{$dataTable->table(['class'=>'table dt-table-hover'])}}
                 </div>
             </div>

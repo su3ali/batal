@@ -8,6 +8,7 @@ class Category extends Model
 {
     protected $guarded = [];
 
+
     public function getTitleAttribute(){
         if (app()->getLocale()=='ar'){
             return $this->title_ar;
@@ -22,6 +23,11 @@ class Category extends Model
         }else{
             return $this->description_en;
         }
+    }
+
+
+    public function getImageAttribute(){
+        return base64_decode($this->slug);
     }
 
 }

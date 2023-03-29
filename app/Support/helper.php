@@ -290,3 +290,13 @@ if (! function_exists('week_days')) {
         return ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     }
 }
+
+if (! function_exists('convert_img')) {
+    function convert_img($img)
+    {
+        if ($img){
+            return base64_decode($img) ;
+        }
+
+    }
+}

@@ -61,24 +61,7 @@
                                 </div>
                             </div>
 
-
-                            <div class="form-group col-md-6">
-
-                                <label for="inputEmail4">{{__('dash.parent')}}</label>
-                                <select id="inputState" class="select2 form-control pt-1"
-                                        name="parent_id">
-                                    <option disabled>{{__('dash.choose')}}</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{$category->id}}">{{$category->title}}</option>
-                                    @endforeach
-                                </select>
-                                @error('roles')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-
-                            </div>
-
-
+                            <input type="hidden" name="parent_id" value="{{request('id')??''}}">
                         </div>
                         <div class="form-row mb-3">
 
@@ -122,6 +105,5 @@
 @push('script')
     <script>
         let secondUpload = new FileUploadWithPreview('mySecondImage')
-
     </script>
     @endpush
