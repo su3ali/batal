@@ -735,6 +735,16 @@ rejected_bills
     'specialization' => 'التخصص',
     'identity_number' => 'رقم الهوية',
     'wallet' => 'المحفظة',
+    'Service Management' => 'إدارة الخدمات',
+    'Services' => 'الخدمات',
+    'service name' => 'اسم الخدمه',
+    'start_from' => 'يبدأ من ',
+    'Create Service' => 'اضافة خدمه',
+    'Edit Service' => 'تعديل خدمه',
+    'term_cond_en' => 'الشروط والاحكام بالانجليزي',
+    'term_cond_ar' => 'الشروط والاحكام بالعربي',
+    'Service images' => 'صور الخدمه',
+    'Remove file' => 'حذف الصوره',
 
 
 ];

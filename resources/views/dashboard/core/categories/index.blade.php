@@ -1,11 +1,11 @@
 @extends('dashboard.layout.layout')
-@php
-    if(request('id') !=null){
-        $url = route('dashboard.core.category.index','id='.request('id'));
-    }else{
-        $url = route('dashboard.core.category.index');
-    }
-@endphp
+{{--@php--}}
+    {{--if(request('id') !=null){--}}
+        {{--$url = route('dashboard.core.category.index','id='.request('id'));--}}
+    {{--}else{--}}
+        {{--$url = route('dashboard.core.category.index');--}}
+    {{--}--}}
+{{--@endphp--}}
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -108,7 +108,7 @@
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
-                ajax: '{{ $url }}',
+                ajax: '{{ route('dashboard.core.category.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'title', name: 'title'},

@@ -1,11 +1,5 @@
 @extends('dashboard.layout.layout')
-@php
-    if(request('id') !=null){
-        $url = route('dashboard.core.category.index','id='.request('id'));
-    }else{
-        $url = route('dashboard.core.category.index');
-    }
-@endphp
+
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -28,7 +22,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">{{__('dash.categories')}}</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{__('dash.services')}}</li>
                             </ol>
                         </nav>
 
@@ -40,7 +34,7 @@
         </header>
     </div>
 
-    @include('dashboard.core.categories.create')
+    @include('dashboard.core.services.create')
 @endsection
 
 
@@ -65,7 +59,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>{{__('dash.category name')}}</th>
+                            <th>{{__('dash.service name')}}</th>
                             <th>{{__('dash.status')}}</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
@@ -79,7 +73,8 @@
         </div>
 
     </div>
-    @include('dashboard.core.categories.edit')
+    @include('dashboard.core.services.edit')
+    @include('dashboard.core.services.images')
 
 @endsection
 
@@ -121,7 +116,7 @@
                 order: [[0, 'desc']],
                 processing: true,
                 serverSide: true,
-                ajax: '{{ $url }}',
+                ajax: '{{ route('dashboard.core.service.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'title', name: 'title'},
@@ -139,18 +134,48 @@
             var title_en = $(this).attr('data-title_en');
             var des_ar = $(this).attr('data-des_ar');
             var des_en = $(this).attr('data-des_en');
-            var parent_id = $(this).attr('data-parent_id');
-            var img = $(this).attr('data-image');
+            var ter_ar = $(this).attr('data-ter_ar');
+            var ter_en = $(this).attr('data-ter_en');
+            var category_id = $(this).attr('data-category_id');
+            var price = $(this).attr('data-price');
+            var type = $(this).attr('data-type');
+            var start = $(this).attr('data-start');
 
 
             $('#title_ar').val(title_ar)
             $('#title_en').val(title_en)
-            $('#parent_id').val(parent_id)
+            $('.price').val(price)
+            $('.start_from').val(start)
+
+            $('.type  option[value="'+type+'"]').prop("selected", true);
+            $('.category_id  option[value="'+category_id+'"]').prop("selected", true);
+
+
+            if (type == 'evaluative'){
+
+                $('.type-col').removeClass('col-md-6');
+                $('.type-col').addClass('col-md-4');
+                $('.price-col').removeClass('col-md-6');
+                $('.price-col').addClass('col-md-4');
+                $('.start_from').show();
+
+
+            }else{
+                $('.type-col').removeClass('col-md-4');
+                $('.type-col').addClass('col-md-6');
+                $('.price-col').removeClass('col-md-4');
+                $('.price-col').addClass('col-md-6');
+                $('.start_from').hide();
+
+            }
+
+
             CKEDITOR.instances['description_ar'].setData(des_ar);
             CKEDITOR.instances['description_en'].setData(des_en);
-            $('.editImage .custom-file-container__image-preview').css('background-image', 'url("data:image/png;base64,'+img+'")');
+            CKEDITOR.instances['ter_cond_ar'].setData(ter_ar);
+            CKEDITOR.instances['ter_cond_en'].setData(ter_en);
 
-            var action = window.location.origin + '/admin/core/category/' + id;
+            var action = window.location.origin + '/admin/core/service/' + id;
             console.log(action)
             $('#demo-form-edit').attr('action', action);
 
@@ -162,7 +187,7 @@
             var id = $(this).attr('data-id');
 
             $.ajax({
-                url: '{{route('dashboard.core.category.change_status')}}',
+                url: '{{route('dashboard.core.service.change_status')}}',
                 type: 'get',
                 data: {id: id, active: active},
                 success: function (data) {
@@ -176,6 +201,59 @@
             });
         })
 
+
+        $(document).on('click', '.image', function () {
+
+            $('.image_preview').empty();
+            let id = $(this).attr('data-id');
+            let url = '{{route('dashboard.core.service.getImage')}}';
+            let token = '{{ csrf_token() }}';
+            let temp = "{{url('/')}}";
+            $('#service_id').val(id)
+            $.ajax({
+                url: url,
+                method: "post",
+                data: {'_token': token, 'id': id},
+                dataType: 'json',
+                success: function (response) {
+                    if (response.length > 0) {
+
+                        $.each(response, function (key, val) {
+
+                            $('.image_preview').append(`<div class="div-preview col-sm-2" style="width: 18rem;">
+                            <a data-fancybox="gallery" href="${temp}/` + val['image'] + `"><img class="card-img-top" style="width: 111px;"  src="${temp}/` + val['image'] + `"  alt="Card image cap"></a>
+                        <div class="card-body">
+                            <a href="javascript:;" class="btn btn-danger deleteImage" data-id="` + val['id'] + `">{{__('dash.delete')}}</a>
+                        </div>
+                        </div>`);
+                        });
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    var errors = $.parseJSON(xhr.responseText);
+                }
+            });
+
+        });
+        $(document).on('click', '.deleteImage', function () {
+            let id = $(this).data('id');
+            let url = '{{route('dashboard.core.service.deleteImage')}}';
+            let token = ' {{ csrf_token() }}';
+            let button = $(this);
+            $.ajax({
+                url: url,
+                method: "post",
+                data: {'_token': token, 'id': id},
+                dataType: 'json',
+                success: function (response) {
+
+                    button.closest('.div-preview').remove();
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    var errors = $.parseJSON(xhr.responseText);
+                }
+            });
+        });
 
     </script>
 

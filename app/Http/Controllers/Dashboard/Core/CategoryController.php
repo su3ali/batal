@@ -18,12 +18,14 @@ class CategoryController extends Controller
 
         if (request()->ajax()) {
 
-            if (request('id') == null){
-                $category = Category::whereNull('parent_id')->get();
+//            if (request('id') == null){
+//                $category = Category::whereNull('parent_id')->get();
+//
+//            }else{
+//                $category = Category::where('parent_id',request('id'))->get();
+//            }
 
-            }else{
-                $category = Category::where('parent_id',request('id'))->get();
-            }
+            $category = Category::whereNull('parent_id')->get();
             return DataTables::of($category)
                 ->addColumn('title', function ($category) {
                     return $category->title;
@@ -41,11 +43,7 @@ class CategoryController extends Controller
                 ->addColumn('controll', function ($category) {
 
                     $html = '
-                    <a href="'.route('dashboard.core.category.index','id='.$category->id). '" class="mr-2 btn btn-outline-success btn-sm">
-                            <i class="far fa-eye fa-2x"></i>
-                    </a>
-
-
+                    
                                 <button type="button" id="add-work-exp" class="btn btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'"
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
                                   data-parent_id="'.$category->parent_id.'" data-image="'.base64_encode(asset($category->slug)).'" data-toggle="modal" data-target="#editModel">
@@ -91,8 +89,8 @@ class CategoryController extends Controller
         $data=$request->except('_token','avatar');
 
         if ($request->has('avatar')){
-            $image=$this->storeImages($request->avatar);
-            $data['slug']= 'storage/app/public/images/category'.'/'.$image;
+            $image=$this->storeImages($request->avatar,'category');
+            $data['slug']= 'storage/images/category'.'/'.$image;
         }
 
         Category::updateOrCreate($data);
@@ -123,11 +121,11 @@ class CategoryController extends Controller
 
         $category = Category::find($id);
         if ($request->has('avatar')){
-            if (File::exists(base_path($category->slug))) {
-                File::delete(base_path($category->slug));
+            if (File::exists(public_path($category->slug))) {
+                File::delete(public_path($category->slug));
             }
-            $image=$this->storeImages($request->avatar);
-            $data['slug']= 'storage/app/public/images/category'.'/'.$image;
+            $image=$this->storeImages($request->avatar,'category');
+            $data['slug']= 'storage/images/category'.'/'.$image;
         }
         $category->update($data);
         session()->flash('success');
@@ -138,8 +136,8 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
 
-        if (File::exists(base_path($category->image))) {
-            File::delete(base_path($category->image));
+        if (File::exists(public_path($category->slug))) {
+            File::delete(public_path($category->slug));
         }
 
         $category->delete();

@@ -61,7 +61,7 @@
                                 </div>
                             </div>
 
-                            <input type="hidden" name="parent_id" value="{{request('id')??''}}">
+                            <input type="hidden" name="parent_id" value="">
                         </div>
                         <div class="form-row mb-3">
 

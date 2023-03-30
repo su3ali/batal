@@ -9,11 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>{{\App\Models\Setting::first()?\App\Models\Setting::first()->$name : 'site name'}}</title>
     <link rel="icon" type="image/x-icon" href="{{asset(app()->getLocale().'/assets/img/favicon.ico')}}"/>
-    <link href="{{asset(app()->getLocale().'/assets/css/loader.css')}}" rel="stylesheet" type="text/css"/>
-    <script src="{{asset(app()->getLocale().'/assets/js/loader.js')}}"></script>
+    {{--<link href="{{asset(app()->getLocale().'/assets/css/loader.css')}}" rel="stylesheet" type="text/css"/>--}}
+    {{--<script src="{{asset(app()->getLocale().'/assets/js/loader.js')}}"></script>--}}
     <link href="{{asset(app()->getLocale().'/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{asset(app()->getLocale().'/assets/css/plugins.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{asset(app()->getLocale().'/assets/css/scrollspyNav.css')}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css">
 
     <link href="{{asset(app()->getLocale().'/plugins/apex/apexcharts.css')}}" rel="stylesheet" type="text/css">
     <link href="{{asset(app()->getLocale().'/assets/css/dashboard/dash_2.css')}}" rel="stylesheet" type="text/css" />
@@ -38,6 +39,7 @@
     <link href="{{asset(app()->getLocale().'/plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/assets/css/components/custom-sweetalert.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset(app()->getLocale().'/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/switches.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/theme-checkbox-radio.css')}}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
@@ -112,6 +114,8 @@
     });
 </script>
 <script src="{{asset(app()->getLocale().'/assets/js/custom.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/dropzone.js"></script>
+
 <!-- END GLOBAL MANDATORY SCRIPTS -->
 <script src="{{asset(app()->getLocale().'/plugins/apex/apexcharts.min.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/assets/js/dashboard/dash_2.js')}}"></script>
@@ -137,9 +141,10 @@
     src="{{asset(app()->getLocale().'/plugins/table/datatable/button-ext/buttons.html5.min.js')}}"></script>
 <script
     src="{{asset(app()->getLocale().'/plugins/table/datatable/button-ext/buttons.print.min.js')}}"></script>
-<link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/switches.css')}}">
+
 <script type="text/javascript">
     feather.replace();
+    Dropzone.autoDiscover=false;
 </script>
 <script>
     $(document).ready(function (){

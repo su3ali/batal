@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Service extends Model
 {
     protected $guarded = [];
 
@@ -23,6 +23,12 @@ class Category extends Model
         }else{
             return $this->description_en;
         }
+    }
+
+
+    public function serviceImages()
+    {
+        return $this->hasMany(ServiceImages::class,'service_id','id');
     }
 
 }

@@ -521,5 +521,8 @@ return [
     'description_ar' =>'Description Arabic',
     'description_en' =>'Description English',
     'parent' =>'Main Category',
+    'Service Management' =>'Service Management',
+    'Services' =>'Services',
+    'service name' => 'Service Name',
 
 ];
