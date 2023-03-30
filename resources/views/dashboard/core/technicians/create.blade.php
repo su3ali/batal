@@ -161,9 +161,9 @@
                                 <select id="group" class="select2 form-control pt-1"
                                         name="group_id">
                                     <option disabled>{{__('dash.choose')}}</option>
-                                    {{--                                    @foreach($categories as $category)--}}
-                                    <option value="1">group</option>
-                                    {{--                                    @endforeach--}}
+                                    @foreach($groups as $group)
+                                        <option value="{{$group->id}}">{{$group->name}}</option>
+                                    @endforeach
                                 </select>
                                 @error('group_id')
                                 <div class="alert alert-danger">{{ $message }}</div>

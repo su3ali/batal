@@ -735,6 +735,8 @@ rejected_bills
     'specialization' => 'التخصص',
     'identity_number' => 'رقم الهوية',
     'wallet' => 'المحفظة',
+    'technicians_groups' => 'مجموعات الفنيين',
+    'choose' => 'اختر',
     'Service Management' => 'إدارة الخدمات',
     'Services' => 'الخدمات',
     'service name' => 'اسم الخدمه',

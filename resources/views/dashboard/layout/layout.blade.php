@@ -1,5 +1,13 @@
 @php
     $name = 'site_name_'.app()->getLocale();
+    $msgs = [];
+    if (session('errors')){
+        foreach(session('errors')->default->getmessages() as $message){
+            foreach ($message as $m){
+              $msgs[] = $m;
+            }
+        }
+    }
 @endphp
     <!DOCTYPE html>
 <html lang="{{app()->getLocale()}}">
@@ -17,38 +25,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css">
 
     <link href="{{asset(app()->getLocale().'/plugins/apex/apexcharts.css')}}" rel="stylesheet" type="text/css">
-    <link href="{{asset(app()->getLocale().'/assets/css/dashboard/dash_2.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset(app()->getLocale().'/assets/css/dashboard/dash_2.css')}}" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/regular.css')}}">
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/fontawesome.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/table/datatable/datatables.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/table/datatable/custom_dt_html5.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{asset(app()->getLocale().'/plugins/table/datatable/datatables.css')}}">
+    <link rel="stylesheet" type="text/css"
+          href="{{asset(app()->getLocale().'/plugins/table/datatable/custom_dt_html5.css')}}">
 
-    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/plugins/table/datatable/dt-global_style.css')}}">
-{{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
-    <link href="{{asset('/select2/select2.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset('/select2/select2.css')}}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css"
+          href="{{asset(app()->getLocale().'/plugins/table/datatable/dt-global_style.css')}}">
+    {{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
+    <link href="{{asset('/select2/select2.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset('/select2/select2.css')}}" rel="stylesheet" type="text/css"/>
 
     <link href="{{asset(app()->getLocale().'/plugins/file-upload/file-upload-with-preview.min.css')}}" rel="stylesheet"
           type="text/css"/>
 
 
-    <link href="{{asset(app()->getLocale().'/plugins/animate/animate.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset(app()->getLocale().'/plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset(app()->getLocale().'/assets/css/components/custom-sweetalert.css')}}" rel="stylesheet" type="text/css" />
-    <link href="{{asset(app()->getLocale().'/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/switches.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/theme-checkbox-radio.css')}}">
+    <link href="{{asset(app()->getLocale().'/plugins/animate/animate.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert2.min.css')}}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{asset(app()->getLocale().'/plugins/sweetalerts/sweetalert.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset(app()->getLocale().'/plugins/toastr/toastr.min.css')}}" rel="stylesheet" type="text/css"/>
+    <link href="{{asset(app()->getLocale().'/assets/css/components/custom-sweetalert.css')}}" rel="stylesheet"
+          type="text/css"/>
+    <link
+        href="{{asset(app()->getLocale().'/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css')}}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{{asset(app()->getLocale().'/assets/css/forms/theme-checkbox-radio.css')}}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap">
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <style>
-        body{
+        body {
             font-family: Cairo, Serif !important;
         }
+
         .ck-editor__editable {
             height: 200px;
         }
@@ -75,26 +91,34 @@
     <div class="search-overlay"></div>
 
     <!--  BEGIN SIDEBAR  -->
-        @include('dashboard.layout.sidebar')
+    @include('dashboard.layout.sidebar')
     <!--  END SIDEBAR  -->
 
     <!--  BEGIN CONTENT AREA  -->
     <div id="content" class="main-content">
         {{--<div class="container">--}}
-            {{--<div class="container">--}}
+        {{--<div class="container">--}}
 
 
 
-                @yield('content')
+        @yield('content')
 
-            {{--</div>--}}
+        {{--</div>--}}
         {{--</div>--}}
         <div class="footer-wrapper">
             <div class="footer-section f-section-1">
-                <p class="">Copyright © 2021 <a target="_blank" href="https://designreset.com">DesignReset</a>, All rights reserved.</p>
+                <p class="">Copyright © 2021 <a target="_blank" href="https://designreset.com">DesignReset</a>, All
+                    rights reserved.</p>
             </div>
             <div class="footer-section f-section-2">
-                <p class="">Coded with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
+                <p class="">Coded with
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="feather feather-heart">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </p>
             </div>
         </div>
     </div>
@@ -141,20 +165,36 @@
     src="{{asset(app()->getLocale().'/plugins/table/datatable/button-ext/buttons.html5.min.js')}}"></script>
 <script
     src="{{asset(app()->getLocale().'/plugins/table/datatable/button-ext/buttons.print.min.js')}}"></script>
-
+<link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/switches.css')}}">
 <script type="text/javascript">
     feather.replace();
     Dropzone.autoDiscover=false;
 </script>
 <script>
-    $(document).ready(function (){
+    $(document).ready(function () {
 
         let session = "{{session('success')}}"
-        if (session){
+        if (session) {
             swal({
                 title: "{{__('dash.successful_operation')}}",
                 text: "{{__('dash.request_executed_successfully')}}",
                 type: 'success',
+                padding: '2em'
+            })
+        }
+        let arr = [];
+        <?php foreach ($msgs as $key => $val){ ?>
+        arr.push('<?php echo $val; ?>');
+        <?php } ?>
+        if (arr[0]) {
+            let text = '';
+            for (let i = 0; i < arr.length; i++) {
+                text +=  arr[i] + "<br/>"
+            }
+            swal({
+                title: "{{__('dash.error')}}",
+                text: text,
+                type: 'error',
                 padding: '2em'
             })
         }
@@ -193,29 +233,29 @@
 </script>
 
 {{--<script>--}}
-   {{--var table =  $('.html5-extension').DataTable( {--}}
-        {{--"dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +--}}
-            {{--"<'table-responsive'tr>" +--}}
-            {{--"<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",--}}
-        {{--buttons: {--}}
-            {{--buttons: [--}}
-                {{--{ extend: 'copy', className: 'btn btn-sm' },--}}
-                {{--{ extend: 'csv', className: 'btn btn-sm' },--}}
-                {{--{ extend: 'excel', className: 'btn btn-sm' },--}}
-                {{--{ extend: 'print', className: 'btn btn-sm' }--}}
-            {{--]--}}
-        {{--},--}}
-        {{--"oLanguage": {--}}
-            {{--"oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },--}}
-            {{--"sInfo": "Showing page _PAGE_ of _PAGES_",--}}
-            {{--"sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',--}}
-            {{--"sSearchPlaceholder": "Search...",--}}
-            {{--"sLengthMenu": "Results :  _MENU_",--}}
-        {{--},--}}
-        {{--"stripeClasses": [],--}}
-        {{--"lengthMenu": [7, 10, 20, 50],--}}
-        {{--"pageLength": 7--}}
-    {{--} );--}}
+{{--var table =  $('.html5-extension').DataTable( {--}}
+{{--"dom": "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +--}}
+{{--"<'table-responsive'tr>" +--}}
+{{--"<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",--}}
+{{--buttons: {--}}
+{{--buttons: [--}}
+{{--{ extend: 'copy', className: 'btn btn-sm' },--}}
+{{--{ extend: 'csv', className: 'btn btn-sm' },--}}
+{{--{ extend: 'excel', className: 'btn btn-sm' },--}}
+{{--{ extend: 'print', className: 'btn btn-sm' }--}}
+{{--]--}}
+{{--},--}}
+{{--"oLanguage": {--}}
+{{--"oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },--}}
+{{--"sInfo": "Showing page _PAGE_ of _PAGES_",--}}
+{{--"sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',--}}
+{{--"sSearchPlaceholder": "Search...",--}}
+{{--"sLengthMenu": "Results :  _MENU_",--}}
+{{--},--}}
+{{--"stripeClasses": [],--}}
+{{--"lengthMenu": [7, 10, 20, 50],--}}
+{{--"pageLength": 7--}}
+{{--} );--}}
 {{--</script>--}}
 
 @stack('script')

@@ -28,16 +28,18 @@ route_group('core', function () {
 
 
     Route::get('category/change_status', 'CategoryController@change_status')->name('category.change_status');
+    Route::get('service/change_status', 'ServiceController@change_status')->name('service.change_status');
+
     Route::resource('category', 'CategoryController');
 
     Route::resource('technician', 'TechnicianController');
     Route::get('technician/change_status/change', 'TechnicianController@changeStatus')->name('technician.change_status');
 
     Route::resource('service', 'ServiceController');
-    Route::get('service/change_status', 'ServiceController@changeStatus')->name('service.change_status');
     Route::post('service/get/image', 'ServiceController@getImage')->name('service.getImage');
     Route::post('service/image', 'ServiceController@uploadImage')->name('service.uploadImage');
     Route::post('service/delete/image', 'ServiceController@deleteImage')->name('service.deleteImage');
 
+    Route::resource('group', 'GroupsController');
 });
 
