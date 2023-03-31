@@ -26,6 +26,7 @@ class CategoryController extends Controller
 //            }
 
             $category = Category::whereNull('parent_id')->get();
+
             return DataTables::of($category)
                 ->addColumn('title', function ($category) {
                     return $category->title;
@@ -46,7 +47,7 @@ class CategoryController extends Controller
                     
                                 <button type="button" id="add-work-exp" class="btn btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'"
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
-                                  data-parent_id="'.$category->parent_id.'" data-image="'.base64_encode(asset($category->slug)).'" data-toggle="modal" data-target="#editModel">
+                                  data-parent_id="'.$category->parent_id.'" data-image="'.$category->image.'" data-toggle="modal" data-target="#editModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
 

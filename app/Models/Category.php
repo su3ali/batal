@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -25,4 +26,18 @@ class Category extends Model
         }
     }
 
+
+    public function getimageAttribute(){
+
+        if ($this->slug == null || \File::exists(public_path($this->slug)) == false){
+            return '';
+        }
+
+        $image = explode('/',$this->slug);
+        $name = end($image);
+
+        $image = "data:image/png;base64,".base64_encode(file_get_contents(public_path("storage\\images\\category\\".$name)));
+
+        return $image;
+    }
 }

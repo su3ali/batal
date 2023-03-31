@@ -129,13 +129,15 @@
             var parent_id = $(this).attr('data-parent_id');
             var img = $(this).attr('data-image');
 
-
             $('#title_ar').val(title_ar)
             $('#title_en').val(title_en)
             $('#parent_id').val(parent_id)
             CKEDITOR.instances['description_ar'].setData(des_ar);
             CKEDITOR.instances['description_en'].setData(des_en);
-            $('.editImage .custom-file-container__image-preview').css('background-image', 'url("data:image/png;base64,'+img+'")');
+
+            if (img != ''){
+                $('.editImage .custom-file-container__image-preview').css('background-image', 'url("'+img+'")');
+            }
 
             var action = window.location.origin + '/admin/core/category/' + id;
             console.log(action)
