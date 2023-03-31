@@ -747,6 +747,10 @@ rejected_bills
     'term_cond_ar' => 'الشروط والاحكام بالعربي',
     'Service images' => 'صور الخدمه',
     'Remove file' => 'حذف الصوره',
+    'customer_name' => 'اسم العميل',
+    'service' => 'الخدمة',
+    'price_value' => 'المبلغ',
+    'order_status' => 'حالة الطلب',
 
 
 ];

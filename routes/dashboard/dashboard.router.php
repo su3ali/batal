@@ -26,6 +26,7 @@ include __DIR__ . '/auth.routes.php';
 Route::group(['middleware' => ['auth:dashboard']], static function () {
     Route::view('/', 'dashboard.home')->name('home');
     require __DIR__ . '/core.routes.php';
+    require __DIR__ . '/order.routes.php';
     require __DIR__ . '/setting.routes.php';
 });
 

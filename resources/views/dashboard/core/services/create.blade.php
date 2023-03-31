@@ -45,7 +45,7 @@
                             <div class="form-group col-md-6">
 
                                 <label for="inputEmail4">{{__('dash.category')}}</label>
-                                <select id="inputState" class="select2 form-control"
+                                <select id="inputState" class="select2 form-control pt-1"
                                         name="category_id">
                                     <option disabled>{{__('dash.choose')}}</option>
                                     @foreach($categories as $key => $category)
