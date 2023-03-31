@@ -751,6 +751,10 @@ rejected_bills
     'service' => 'الخدمة',
     'price_value' => 'المبلغ',
     'order_status' => 'حالة الطلب',
+    'Wallet Management' => 'إدارة المحافظ',
+    'customers wallet' => 'محفظة العملاء',
+    'replacing' => 'إستبدال',
+    'order' => 'طلب',
 
 
 ];

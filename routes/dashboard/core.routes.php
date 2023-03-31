@@ -41,5 +41,12 @@ route_group('core', function () {
     Route::post('service/delete/image', 'ServiceController@deleteImage')->name('service.deleteImage');
 
     Route::resource('group', 'GroupsController');
+
+    Route::resource('customer_wallet/index', 'CustomerWalletController');
+
+    Route::get('customer_wallet',  'CustomerWalletController@index')->name('customer_wallet.index');
+    Route::post('customer_wallet',  'CustomerWalletController@store')->name('customer_wallet.store');
+    Route::post('customer_wallet/{id}', 'CustomerWalletController@update')->name('customer_wallet.update');
+
 });
 
