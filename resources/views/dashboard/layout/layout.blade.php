@@ -220,10 +220,11 @@
                         )
                         $('.table').DataTable().ajax.reload();
                     } else {
-                        console.log('no')
-                        console.log(response.status)
-                        swalInit.fire("Failed!", 'Unexpected error occurred', "error");
-                        console.log(response);
+                        swal(
+                            "فشل الحذف",
+                            ""+response.msg+"",
+                            'error'
+                        )
                     }
                 })
             }

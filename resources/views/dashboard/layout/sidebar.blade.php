@@ -138,7 +138,7 @@
                         <a href="{{route('dashboard.orders.index')}}"> الطلبات </a>
                     </li>
                     <li>
-                        <a href="#"> حالات الطلب </a>
+                        <a href="{{route('dashboard.order_statuses.index')}}"> حالات الطلب </a>
                     </li>
                 </ul>
             </li>
