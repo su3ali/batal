@@ -48,5 +48,10 @@ route_group('core', function () {
     Route::post('customer_wallet',  'CustomerWalletController@store')->name('customer_wallet.store');
     Route::post('customer_wallet/{id}', 'CustomerWalletController@update')->name('customer_wallet.update');
 
+
+    Route::get('technician_wallet',  'TechnicianWalletController@index')->name('technician_wallet.index');
+    Route::post('technician_wallet',  'TechnicianWalletController@store')->name('technician_wallet.store');
+    Route::post('technician_wallet/{id}', 'TechnicianWalletController@update')->name('technician_wallet.update');
+
 });
 

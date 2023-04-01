@@ -1,15 +1,5 @@
 @extends('dashboard.layout.layout')
-@push('style')
-    <style>
-        .card-wallet{
-            background-color: #0e1726;text-align: center;margin-right: 25%;margin-bottom: 21px;
-        }
 
-        .card-wallet p{
-            text-align: center;font-size: x-large;color: white;
-        }
-    </style>
-    @endpush
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -32,7 +22,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">{{__('dash.customers wallet')}}</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{__('dash.technicians wallet')}}</li>
                             </ol>
                         </nav>
 
@@ -57,11 +47,11 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     @if($wallet)
-                    <form action="{{route('dashboard.core.customer_wallet.update',$wallet->id)}}" method="post" class="form-horizontal"
+                    <form action="{{route('dashboard.core.technician_wallet.update',$wallet->id)}}" method="post" class="form-horizontal"
                           enctype="multipart/form-data" id="demo-form" data-parsley-validate="">
 
                         @else
-                            <form action="{{route('dashboard.core.customer_wallet.store')}}" method="post" class="form-horizontal"
+                            <form action="{{route('dashboard.core.technician_wallet.store')}}" method="post" class="form-horizontal"
                                   enctype="multipart/form-data" id="demo-form" data-parsley-validate="">
 
                             @endif
@@ -94,79 +84,56 @@
                             </div>
 
 
-                                <div class="card col-md-6 card-wallet">
-                                    <p >{{__('dash.order')}}</p>
-                                </div>
-
-
                             <div class="form-row mb-3">
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">{{__('dash.deserved percentage')}}</label>
-                                    <input type="text" name="order_percentage" value="{{$wallet->order_percentage ?? 0}}" class="form-control"
-                                           id="inputEmail4"
-                                           placeholder="{{__('dash.deserved percentage')}}"
-                                    >
-                                    @error('order_percentage')
+                                    <label for="inputEmail4">{{__('dash.point type')}}</label>
+                                    <select id="inputState" class="select2 form-control pt-1"
+                                    name="point_type">
+                                    <option disabled>{{__('dash.choose')}}</option>
+                                        @if($wallet && $wallet->point_type)
+                                        <option value="rate" @if($wallet->point_type == 'perc') selected @endif>{{__('dash.percentage')}}</option>
+                                        <option value="fixed" @if($wallet->point_type == 'fixed') selected @endif>{{__('dash.percentage')}}</option>
+                                            @else
+                                            <option value="rate">{{__('dash.percentage')}}</option>
+                                            <option value="fixed" )>{{__('dash.percentage')}}</option>
+                                        @endif
+                                        </select>
+                                    @error('point_type')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">{{__('dash.Maximum refund amount')}}</label>
-                                    <input type="text" name="refund_amount" value="{{$wallet->refund_amount ?? 0}}" class="form-control"
+                                    <label for="inputEmail4">{{__('dash.amount or percentage')}}</label>
+                                    <input type="text" name="price" value="{{$wallet->price ?? 0}}" class="form-control"
                                            id="inputEmail4"
-                                           placeholder="{{__('dash.Maximum refund amount')}}"
+                                           placeholder="{{__('dash.amount or percentage')}}"
                                     >
-                                    @error('refund_amount')
+                                    @error('price')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
 
 
                             </div>
-
-                            <div class="card col-md-6 card-wallet" >
-                                <p>{{__('dash.replacing')}}</p>
-                            </div>
-
-                            <div class="form-row mb-3">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">{{__('dash.Minimum order amount')}}</label>
-                                    <input type="text" name="order_amount" value="{{$wallet->order_amount ?? 0}}" class="form-control"
-                                           id="inputEmail4"
-                                           placeholder="{{__('dash.Minimum order amount')}}"
-                                    >
-                                    @error('order_amount')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label  for="inputEmail4">{{__('dash.Minimum wallet amount')}}</label>
-                                    <input type="text" name="wallet_amount" value="{{$wallet->wallet_amount ?? 0}}" class="form-control"
-                                           id="inputEmail4"
-                                           placeholder="{{__('dash.Minimum wallet amount')}}"
-                                    >
-                                    @error('wallet_amount')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-
-                            </div>
-
 
 
                             <div class="form-group col-md-6">
-                                <label class="mx-5" for="status">{{__('dash.status')}}</label>
-                                <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
-                                    <input type="checkbox" name="active" id="status" @if($wallet->active == 1) checked @endif>
-                                    <span class="slider round"></span>
-                                </label>
-                                @error('status')
+                                <label for="inputEmail4">{{__('dash.Calculation method')}}</label>
+                                <select id="inputState" class="select2 form-control pt-1"
+                                        name="calculation_method">
+                                    <option disabled>{{__('dash.choose')}}</option>
+                                    @if($wallet && $wallet->calculation_method)
+                                    <option value="bill" @if($wallet->calculation_method == 'bill') selected @endif>{{__('dash.bill')}}</option>
+                                    <option value="service" @if($wallet->calculation_method == 'service') selected @endif>{{__('dash.service')}}</option>
+                                        @else
+                                        <option value="bill">{{__('dash.bill')}}</option>
+                                        <option value="service">{{__('dash.service')}}</option>
+                                    @endif
+                                </select>
+                                @error('calculation_method')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
-
                             </div>
 
 

@@ -759,6 +759,12 @@ rejected_bills
     'Maximum refund amount' => 'الحد الأقصى للمبلغ المسترد',
     'Minimum order amount' => 'الحد الأدنى لمبلغ الطلب',
     'Minimum wallet amount' => 'الحد الأدنى لمبلغ المحفظة',
+    'technicians wallet' => 'محفظة الفنيين',
+    'point type' => 'نوع النقاط',
+    'amount or percentage' => 'المبلغ او النسبة',
+    'percentage' => 'نسبة مئوية',
+    'fixed' => 'ثابت',
+    'Calculation method' => 'طريقة الاحتساب',
 
 
 ];
