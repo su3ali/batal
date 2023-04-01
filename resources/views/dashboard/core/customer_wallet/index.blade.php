@@ -1,5 +1,15 @@
 @extends('dashboard.layout.layout')
+@push('style')
+    <style>
+        .card-wallet{
+            background-color: #0e1726;text-align: center;margin-right: 25%;margin-bottom: 21px;
+        }
 
+        .card-wallet p{
+            text-align: center;font-size: x-large;color: white;
+        }
+    </style>
+    @endpush
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -52,13 +62,14 @@
                         @else
                             <form action="{{route('dashboard.core.customer_wallet.store')}}" method="post" class="form-horizontal"
                                   enctype="multipart/form-data" id="demo-form" data-parsley-validate="">
+                                {!! method_field('PUT') !!}
                             @endif
                         @csrf
                         <div class="box-body">
                             <div class="form-row mb-3">
                                 <div class="form-group col-md-6">
                                     <label for="inputEmail4">{{__('dash.name_ar')}}</label>
-                                    <input type="text" name="name_ar" class="form-control"
+                                    <input type="text" name="name_ar" value="{{$wallet->name_ar ?? ''}}" class="form-control"
                                            id="inputEmail4"
                                            placeholder="{{__('dash.name_ar')}}"
                                     >
@@ -69,33 +80,7 @@
 
                                 <div class="form-group col-md-6">
                                     <label for="inputEmail4">{{__('dash.name_en')}}</label>
-                                    <input type="text" name="name_en" class="form-control"
-                                           id="inputEmail4"
-                                           placeholder="{{__('dash.name_en')}}"
-                                    >
-                                    @error('name_en')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-
-                            </div>
-
-                            <div class="form-row mb-3">
-                                <div class="form-group col-md-6">
-                                    <label for="inputEmail4">{{__('dash.order')}}</label>
-                                    <input type="text" name="name_ar" class="form-control"
-                                           id="inputEmail4"
-                                           placeholder="{{__('dash.name_ar')}}"
-                                    >
-                                    @error('title_ar')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label style="padding: 8px;" for="inputEmail4"></label>
-                                    <input type="text" name="name_en" class="form-control"
+                                    <input type="text" name="name_en" value="{{$wallet->name_en ?? ''}}" class="form-control"
                                            id="inputEmail4"
                                            placeholder="{{__('dash.name_en')}}"
                                     >
@@ -108,25 +93,60 @@
                             </div>
 
 
+                                <div class="card col-md-6 card-wallet">
+                                    <p >{{__('dash.order')}}</p>
+                                </div>
+
+
                             <div class="form-row mb-3">
                                 <div class="form-group col-md-6">
-                                    <label for="inputEmail4">{{__('dash.replacing')}}</label>
-                                    <input type="text" name="name_ar" class="form-control"
+                                    <label for="inputEmail4">{{__('dash.deserved percentage')}}</label>
+                                    <input type="text" name="order_percentage" value="{{$wallet->order_percentage ?? 0}}" class="form-control"
                                            id="inputEmail4"
-                                           placeholder="{{__('dash.name_ar')}}"
+                                           placeholder="{{__('dash.deserved percentage')}}"
                                     >
-                                    @error('title_ar')
+                                    @error('order_percentage')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="form-group col-md-6">
-                                    <label style="padding: 8px;" for="inputEmail4"></label>
-                                    <input type="text" name="name_en" class="form-control"
+                                    <label for="inputEmail4">{{__('dash.Maximum refund amount')}}</label>
+                                    <input type="text" name="refund_amount" value="{{$wallet->refund_amount ?? 0}}" class="form-control"
                                            id="inputEmail4"
-                                           placeholder="{{__('dash.name_en')}}"
+                                           placeholder="{{__('dash.Maximum refund amount')}}"
                                     >
-                                    @error('name_en')
+                                    @error('refund_amount')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+
+                            </div>
+
+                            <div class="card col-md-6 card-wallet" >
+                                <p>{{__('dash.replacing')}}</p>
+                            </div>
+
+                            <div class="form-row mb-3">
+                                <div class="form-group col-md-6">
+                                    <label for="inputEmail4">{{__('dash.Minimum order amount')}}</label>
+                                    <input type="text" name="order_amount" value="{{$wallet->order_amount ?? 0}}" class="form-control"
+                                           id="inputEmail4"
+                                           placeholder="{{__('dash.Minimum order amount')}}"
+                                    >
+                                    @error('order_amount')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label  for="inputEmail4">{{__('dash.Minimum wallet amount')}}</label>
+                                    <input type="text" name="wallet_amount" value="{{$wallet->wallet_amount ?? 0}}" class="form-control"
+                                           id="inputEmail4"
+                                           placeholder="{{__('dash.Minimum wallet amount')}}"
+                                    >
+                                    @error('wallet_amount')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -139,7 +159,7 @@
                             <div class="form-group col-md-6">
                                 <label class="mx-5" for="status">{{__('dash.status')}}</label>
                                 <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
-                                    <input type="checkbox" name="active" id="status" checked>
+                                    <input type="checkbox" name="active" id="status" @if($wallet->active == 1) checked @endif>
                                     <span class="slider round"></span>
                                 </label>
                                 @error('status')
@@ -152,7 +172,7 @@
 
 
                         </div>
-
+<button type="submit" class="btn btn-primary">{{__('dash.save')}}</button>
                     </form>
 
 

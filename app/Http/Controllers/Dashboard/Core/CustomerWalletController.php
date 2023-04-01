@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Dashboard\Core;
 
 use App\Http\Controllers\Controller;
 use App\Models\CustomerWallet;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 
 class CustomerWalletController extends Controller
@@ -18,16 +18,44 @@ class CustomerWalletController extends Controller
             'name_ar' => 'required|String|min:3',
             'name_en' => 'required|String|min:3',
             'active' => 'nullable|in:on,off',
+            'order_percentage' => 'required|numeric',
+            'refund_amount' => 'required|numeric',
+            'order_amount' => 'required|numeric',
+            'wallet_amount' => 'required|numeric',
         ]);
-        CustomerWallet::query()->first()->update();
+
+        $data=$request->except('_token','active');
+
+        if ($request['active'] && $request['active'] == 'on'){
+            $data['active'] = 1;
+        }else{
+            $data['active'] = 0;
+        }
+
+        CustomerWallet::query()->create($data);
         return redirect()->back()->with('success', __('dash.successful_operation'));
     }
     protected function update(Request $request){
         $request->validate([
-            'file' => 'required',
-            'service_id' => 'required',
+            'name_ar' => 'required|String|min:3',
+            'name_en' => 'required|String|min:3',
+            'active' => 'nullable|in:on,off',
+            'order_percentage' => 'required|numeric',
+            'refund_amount' => 'required|numeric',
+            'order_amount' => 'required|numeric',
+            'wallet_amount' => 'required|numeric',
         ]);
-        CustomerWallet::query()->first()->update();
+
+
+        $data=$request->except('_token','active');
+
+        if ($request['active'] && $request['active'] == 'on'){
+            $data['active'] = 1;
+        }else{
+            $data['active'] = 0;
+        }
+
+        CustomerWallet::query()->first()->update($data);
         return redirect()->back()->with('success', __('dash.successful_operation'));
     }
 }
