@@ -41,11 +41,11 @@ class ServiceController extends Controller
 
                     $html = '
                     
-                    <button type="button" id="add-work-exp" class="btn btn-primary card-tools image" data-id="'.$service->id.'" data-toggle="modal" data-target="#imageModel">
+                    <button type="button" id="add-work-exp" class="btn btn-primary btn-sm card-tools image" data-id="'.$service->id.'" data-toggle="modal" data-target="#imageModel">
                             <i class="far fa-image fa-2x"></i>
                        </button>
                   
-                                <button type="button" id="add-work-exp" class="btn btn-primary card-tools edit" data-id="'.$service->id.'"  data-title_ar="'.$service->title_ar.'"
+                                <button type="button" id="add-work-exp" class="btn btn-primary btn-sm card-tools edit" data-id="'.$service->id.'"  data-title_ar="'.$service->title_ar.'"
                                  data-title_en="'.$service->title_en.'" data-des_ar="'.$service->description_ar.'" data-des_en="'.$service->description_en.'" data-ter_ar="'.$service->ter_cond_ar.'" data-ter_en="'.$service->ter_cond_en.'"
                                   data-category_id="'.$service->category_id.'" data-price="'.$service->price.'" data-type="'.$service->type.'" data-start="'.$service->start_from.'" data-toggle="modal" data-target="#editModel">
                             <i class="far fa-edit fa-2x"></i>
