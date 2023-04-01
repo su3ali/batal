@@ -165,6 +165,11 @@
                     <li>
                         <a href="{{route('dashboard.core.customer_wallet.index')}}"> {{__('dash.customers wallet')}} </a>
                     </li>
+
+                    <li>
+                        <a href="{{route('dashboard.core.technician_wallet.index')}}"> {{__('dash.technicians wallet')}} </a>
+                    </li>
+
                 </ul>
             </li>
 
