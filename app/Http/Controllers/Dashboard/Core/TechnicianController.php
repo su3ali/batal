@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard\Core;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Group;
+use App\Models\Specialization;
 use App\Models\Technician;
 use App\Traits\imageTrait;
 use Illuminate\Http\RedirectResponse;
@@ -22,11 +23,15 @@ class TechnicianController extends Controller
     public function index()
     {
         $groups = Group::all();
+        $specs = Specialization::all();
         if (request()->ajax()) {
             $technician = Technician::all();
             return DataTables::of($technician)
                 ->addColumn('group', function ($row) {
                     return Group::query()->find($row->group_id)?->name;
+                })
+                ->addColumn('spec', function ($row) {
+                    return $row->specialization?->name;
                 })
                 ->addColumn('t_image', function ($row) {
                     return '<img class="img-fluid" src="'.asset($row->image).'"/>';
@@ -42,34 +47,28 @@ class TechnicianController extends Controller
                         </label>';
                 })
                 ->addColumn('control', function ($row) {
-
-                    $html = '
-                                <button type="button" id="edit-tech" class="btn btn-primary btn-sm card-tools edit" data-id="'.$row->id.'"  data-name="'.$row->name.'"
-                                 data-email="'.$row->email.'" data-phone="'.$row->phone.'" data-specialization="'.$row->specialization.'"
+                    $html = '<button type="button" id="edit-tech" class="btn btn-primary btn-sm card-tools edit" data-id="'.$row->id.'"  data-name="'.$row->name.'"
+                                 data-email="'.$row->email.'" data-phone="'.$row->phone.'" data-specialization="'.$row->spec_id.'"
                                  data-active="'.$row->active.'" data-group_id="'.$row->group_id.'"
                                   data-country_id="'.$row->country_id.'" data-address="'.$row->address.'" data-wallet_id="'.$row->wallet_id.'"
                                   data-birth_date="'.$row->birth_date.'" data-identity_number="'.$row->identity_id.'" data-image="'.asset($row->image).'"
                                   data-toggle="modal" data-target="#editTechModel">
                             <i class="far fa-edit fa-2x"></i>
-                       </button>
-
-                                <a data-table_id="html5-extension" data-href="'.route('dashboard.core.technician.destroy', $row->id).'" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
-                            <i class="far fa-trash-alt fa-2x"></i>
-                    </a>
-                                ';
+                       </button><a data-table_id="html5-extension" data-href="'.route('dashboard.core.technician.destroy', $row->id).'" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech"><i class="far fa-trash-alt fa-2x"></i></a>';
 
                     return $html;
                 })
                 ->rawColumns([
                     'group',
+                    'spec',
                     't_image',
                     'status',
-                    'control',
+                    'control'
                 ])
                 ->make(true);
         }
 
-        return view('dashboard.core.technicians.index', compact('groups'));
+        return view('dashboard.core.technicians.index', compact('groups', 'specs'));
     }
 
     /**

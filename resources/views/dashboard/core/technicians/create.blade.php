@@ -1,4 +1,4 @@
-<div class="modal fade animated rotateInDownLeft custo-rotateInDownLeft" id="technicianModal" tabindex="-1"
+<div class="modal fade animated rotateInDownLeft custo-rotateInDownLeft" id="technicianModal"
      role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -55,14 +55,19 @@
                             </div>
 
                             <div class="form-group col-md-6">
-                                <label for="inputEmail4">{{__('dash.specialization')}}</label>
-                                <input required type="text" name="specialization" class="form-control"
-                                       id="inputEmail4"
-                                       placeholder="{{__('dash.specialization')}}"
-                                >
+
+                                <label for="spec">التخصص</label>
+                                <select id="spec" class="select2 form-control pt-1"
+                                        name="specialization">
+                                    <option selected disabled>{{__('dash.choose')}}</option>
+                                    @foreach($specs as $spec)
+                                        <option value="{{$spec->id}}">{{$spec->name}}</option>
+                                    @endforeach
+                                </select>
                                 @error('specialization')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
+
                             </div>
                         </div>
                         <div class="form-row mb-3">
@@ -160,7 +165,7 @@
                                 <label for="group">{{__('dash.group')}}</label>
                                 <select id="group" class="select2 form-control pt-1"
                                         name="group_id">
-                                    <option disabled>{{__('dash.choose')}}</option>
+                                    <option selected disabled>{{__('dash.choose')}}</option>
                                     @foreach($groups as $group)
                                         <option value="{{$group->id}}">{{$group->name}}</option>
                                     @endforeach

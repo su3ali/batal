@@ -9,5 +9,8 @@ class Technician extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    public function specialization(){
+        return $this->hasOne(Specialization::class, 'id', 'spec_id');
+    }
 
 }

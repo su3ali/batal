@@ -22,7 +22,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">{{__('dash.technicians')}}</li>
+                                <li class="breadcrumb-item active" aria-current="page">تخصصات الفنيين</li>
                             </ol>
                         </nav>
 
@@ -34,7 +34,7 @@
         </header>
     </div>
 
-    @include('dashboard.core.technicians.create')
+    @include('dashboard.core.tech_specializations.create')
 @endsection
 
 @section('content')
@@ -47,7 +47,7 @@
                     <div class="col-md-12 text-right mb-3">
 
                         <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal"
-                                data-target="#technicianModal">
+                                data-target="#createSpecModel">
                             {{__('dash.add_new')}}
                         </button>
 
@@ -56,12 +56,8 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>{{__('dash.name')}}</th>
-                            <th>{{__('dash.image')}}</th>
-                            <th>التخصص</th>
-                            <th>{{__('dash.phone')}}</th>
-                            <th>{{__('dash.group')}}</th>
-                            <th>{{__('dash.status')}}</th>
+                            <th>اسم التخصص</th>
+                            <th>حالة النشاط</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
                         </thead>
@@ -74,7 +70,7 @@
         </div>
 
     </div>
-    @include('dashboard.core.technicians.edit')
+    @include('dashboard.core.tech_specializations.edit')
 @endsection
 
 @push('script')
@@ -91,14 +87,10 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('dashboard.core.technician.index') }}',
+                ajax: '{{ route('dashboard.core.tech_specializations.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
-                    {data: 't_image', name: 't_image'},
-                    {data: 'spec', name: 'spec'},
-                    {data: 'phone', name: 'phone'},
-                    {data: 'group', name: 'group'},
                     {data: 'status', name: 'status'},
                     {data: 'control', name: 'control', orderable: false, searchable: false},
 
@@ -106,51 +98,29 @@
             });
         });
 
-        $(document).on('click', '#edit-tech', function () {
+        $(document).on('click', '#edit-spec-status', function () {
             let id = $(this).data('id');
-            let name = $(this).data('name');
-            let email = $(this).data('email');
-            let phone = $(this).data('phone');
-            let specialization = $(this).data('specialization');
-            let active = $(this).data('active');
-            let group_id = $(this).data('group_id');
-            let country_id = $(this).data('country_id');
-            let address = $(this).data('address');
-            let wallet_id = $(this).data('wallet_id');
-            let birth_date = $(this).data('birth_date');
-            let identity_number = $(this).data('identity_number');
-            let image = $(this).data('image');
-            $('#tech_id').val(id)
-            $('#edit_name').val(name)
-            $('#edit_email').val(email)
-            $('#edit_phone').val(phone)
-            $('#edit_spec').val(specialization).trigger('change')
-            $('#edit_group').val(group_id).trigger('change')
-            $('#edit_country_id').val(country_id).trigger('change')
-            $('#edit_address').html(address)
-            $('#edit_wallet').val(wallet_id).trigger('change')
-            $('#edit_birth').val(birth_date)
-            $('#edit_identity_id').val(identity_number)
-            if (active && active === 1) {
-                $('#edit_status').prop('checked', true)
-            } else {
-                $('#edit_status').prop('checked', false)
-            }
-            // $('.editImage .custom-file-container__image-preview').css('background-image', 'url(' + 'data:image/png;base64,' + img + ')');
-            //
-            let action = "{{route('dashboard.core.technician.update', 'id')}}";
-            action = action.replace('id', id)
-            $('#edit_tech_form').attr('action', action);
+            let name_ar = $(this).data('name_ar');
+            let name_en = $(this).data('name_en');
+            let description_ar = $(this).data('description_ar');
+            let description_en = $(this).data('description_en');
+            $('#edit_name_ar').val(name_ar)
+            $('#edit_name_en').val(name_en)
+            CKEDITOR.instances['edit_description_ar'].setData(description_ar);
+            CKEDITOR.instances['edit_description_en'].setData(description_en);
 
+            let action = "{{route('dashboard.core.tech_specializations.update', 'id')}}";
+            action = action.replace('id', id)
+            $('#edit_spec_form').attr('action', action);
 
         })
 
-        $("body").on('change', '#customSwitchtech', function () {
+        $("body").on('change', '#customSwitchStatus', function () {
             let active = $(this).is(':checked');
             let id = $(this).attr('data-id');
 
             $.ajax({
-                url: '{{route('dashboard.core.technician.change_status')}}',
+                url: '{{route('dashboard.core.tech_specializations.change_status')}}',
                 type: 'get',
                 data: {id: id, active: active},
                 success: function (data) {

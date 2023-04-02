@@ -34,6 +34,8 @@ route_group('core', function () {
 
     Route::resource('technician', 'TechnicianController');
     Route::get('technician/change_status/change', 'TechnicianController@changeStatus')->name('technician.change_status');
+    Route::resource('tech_specializations', 'TechSpecializationController');
+    Route::get('tech_specializations/change_status/change', 'TechSpecializationController@change_status')->name('tech_specializations.change_status');
 
     Route::resource('service', 'ServiceController');
     Route::post('service/get/image', 'ServiceController@getImage')->name('service.getImage');

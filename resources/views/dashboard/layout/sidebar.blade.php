@@ -116,6 +116,9 @@
                     <li>
                         <a href="{{route('dashboard.core.group.index')}}"> {{__('dash.technicians_groups')}} </a>
                     </li>
+                    <li>
+                        <a href="{{route('dashboard.core.tech_specializations.index')}}"> تخصصات الفنيين </a>
+                    </li>
                 </ul>
             </li>
             <li class="menu">
