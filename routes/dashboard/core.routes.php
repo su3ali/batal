@@ -63,6 +63,10 @@ route_group('core', function () {
     Route::resource('address', 'AddressController');
 
 
+    Route::resource('measurements', 'MeasurementsController');
+    Route::get('measurements/change_status/change', 'MeasurementsController@change_status')->name('measurements.change_status');
+
+
 
 });
 
