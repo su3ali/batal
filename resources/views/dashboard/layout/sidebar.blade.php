@@ -200,6 +200,66 @@
                 </ul>
             </li>
 
+            <li class="menu">
+                <a href="#customer" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+
+                        <span>{{__('dash.Customer Management')}}</span>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                <ul class="collapse submenu list-unstyled" id="customer" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.core.customer.index')}}"> {{__('dash.Customers')}} </a>
+                    </li>
+
+
+                </ul>
+            </li>
+
+
+            <li class="menu">
+                <a href="#setting" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+
+                        <span>{{__('dash.System settings')}}</span>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                <ul class="collapse submenu list-unstyled" id="setting" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.country.index')}}"> {{__('dash.Countries')}} </a>
+                    </li>
+
+                    <li>
+                        <a href="{{route('dashboard.city.index')}}"> {{__('dash.Cities')}} </a>
+                    </li>
+
+                    <li>
+                        <a href="{{route('dashboard.region.index')}}"> {{__('dash.Regions')}} </a>
+                    </li>
+
+
+
+                </ul>
+            </li>
+
             {{--@can('view_setting')--}}
                 {{--<li class="menu">--}}
                     {{--<a href="{{route('dashboard.settings')}}" aria-expanded="false"--}}

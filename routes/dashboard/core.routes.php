@@ -44,8 +44,6 @@ route_group('core', function () {
 
     Route::resource('group', 'GroupsController');
 
-    Route::resource('customer_wallet/index', 'CustomerWalletController');
-
     Route::get('customer_wallet',  'CustomerWalletController@index')->name('customer_wallet.index');
     Route::post('customer_wallet',  'CustomerWalletController@store')->name('customer_wallet.store');
     Route::post('customer_wallet/{id}', 'CustomerWalletController@update')->name('customer_wallet.update');
@@ -54,6 +52,17 @@ route_group('core', function () {
     Route::get('technician_wallet',  'TechnicianWalletController@index')->name('technician_wallet.index');
     Route::post('technician_wallet',  'TechnicianWalletController@store')->name('technician_wallet.store');
     Route::post('technician_wallet/{id}', 'TechnicianWalletController@update')->name('technician_wallet.update');
+
+
+    Route::get('customer/change_status', 'CustomerController@change_status')->name('customer.change_status');
+    Route::resource('customer', 'CustomerController');
+
+    Route::get('address/change_status', 'AddressController@change_status')->name('address.change_status');
+    Route::get('address/getCity', 'AddressController@getCityBycountry')->name('address.getCity');
+    Route::get('address/getRegion', 'AddressController@getRegionByCity')->name('address.getRegion');
+    Route::resource('address', 'AddressController');
+
+
 
 });
 

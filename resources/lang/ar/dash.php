@@ -765,6 +765,22 @@ rejected_bills
     'percentage' => 'نسبة مئوية',
     'fixed' => 'ثابت',
     'Calculation method' => 'طريقة الاحتساب',
+    'System settings' => 'اعدادات النظام',
+    'Countries' => 'الدول',
+    'country name' => 'اسم الدولة',
+    'Create Country' => 'اضافة الدولة',
+    'Edit Country' => 'تعديل الدولة',
+    'Cities' => 'المدن',
+    'city name' => 'اسم المدينه',
+    'Create City' => 'اضافة مدينه',
+    'Edit City' => 'تعديل مدينه',
+    'Regions' => 'المناطق',
+    'region name' => 'اسم المنطقه',
+    'Create Region' => 'اضافة منطقه',
+    'Edit Region' => 'تعديل منطقه',
+    'Customer Management' => 'ادارة العملاء',
+    'Customers' => 'العملاء',
+    'customer name' => 'اسم العميل',
 
 
 ];

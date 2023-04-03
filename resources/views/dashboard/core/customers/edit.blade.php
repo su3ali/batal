@@ -23,9 +23,9 @@
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.core.administration.admins.index')}}">{{__('dash.Admins')}}</a>
+                                        href="{{route('dashboard.core.customer.index')}}">{{__('dash.Customers')}}</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">{{isset($model)? __('dash.edit'):__('dash.create')}}</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{__('dash.create')}}</li>
                             </ol>
                         </nav>
 
@@ -49,17 +49,17 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <form  method="post"
-                           action="{{isset($model)?route('dashboard.core.administration.admins.update', $model) : route('dashboard.core.administration.admins.store')}}"
+                           action="{{route('dashboard.core.customer.update',$user->id)}}"
                            enctype="multipart/form-data">
+                        {!! method_field('PUT') !!}
                         @csrf
 
                         <div class="form-row mb-3">
                             <div class="form-group col-md-6">
                                 <label for="inputEmail4">{{__('dash.first name')}}</label>
                                 <input type="text" name="first_name" class="form-control"
-                                       id="inputEmail4"
-                                       placeholder="{{__('dash.first name')}}"
-                                       value="{{isset($model)?$model->first_name : ''}}">
+                                       id="inputEmail4" value="{{$user->first_name}}"
+                                       placeholder="{{__('dash.first name')}}">
                                 @error('first_name')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -68,27 +68,13 @@
                             <div class="form-group col-md-6">
                                 <label for="inputEmail4">{{__('dash.last name')}}</label>
                                 <input type="text" name="last_name" class="form-control"
-                                       id="inputEmail4"
-                                       placeholder="{{__('dash.last name')}}"
-                                       value="{{isset($model)?$model->last_name : ''}}">
+                                       id="inputEmail4" value="{{$user->last_name}}"
+                                       placeholder="{{__('dash.last name')}}">
                                 @error('last_name')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            {{--<div class="form-group col-md-6">--}}
-                            {{--<label for="inputEmail4">{{__('dash.gender')}}</label>--}}
-                            {{--<select id="inputState" class="form-control py-0" name="gender">--}}
-                            {{--<option disabled selected>{{__('dash.choose_type')}}</option>--}}
-                            {{--<option--}}
-                            {{--{{isset($model)?$model->gender == 'male'? 'selected' : '':''}} value="male">{{__('dash.male')}}</option>--}}
-                            {{--<option--}}
-                            {{--{{isset($model)?$model->gender == 'female'? 'selected' : '':''}} value="female">{{__('dash.female')}}</option>--}}
-                            {{--</select>--}}
-                            {{--@error('gender')--}}
-                            {{--<div class="alert alert-danger">{{ $message }}</div>--}}
-                            {{--@enderror--}}
-                            {{--</div>--}}
                         </div>
 
 
@@ -96,9 +82,8 @@
                             <div class="form-group col-md-6">
                                 <label for="inputEmail4">{{__('dash.phone')}}</label>
                                 <input type="text" name="phone" class="form-control"
-                                       id="inputEmail4"
-                                       placeholder="{{__('dash.phone')}}"
-                                       value="{{isset($model)?$model->phone : ''}}">
+                                       id="inputEmail4" value="{{$user->phone}}"
+                                       placeholder="{{__('dash.phone')}}">
                                 @error('phone')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -108,7 +93,7 @@
                                 <input type="email" name="email" class="form-control"
                                        id="inputEmail4"
                                        placeholder="{{__('dash.email')}}"
-                                       value="{{isset($model)?$model->email : ''}}">
+                                       value="{{$user->email}}">
                                 @error('email')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -140,25 +125,21 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-row mb-3">
 
-                            <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
 
-                                <label for="inputEmail4">{{__('dash.roles')}}</label>
-                                <select id="inputState" class="select2 form-control"
-                                        multiple="multiple"
-                                        name="roles[]">
-                                    <option disabled>{{__('dash.choose')}}</option>
-                                    @foreach($roles as $id => $name)
-                                        <option
-                                            {{isset($model)?in_array($id, $model->roles->pluck('id')->toArray())? 'selected' : '':''}} value="{{$id}}">{{$name}}</option>
-                                    @endforeach
-                                </select>
-                                @error('roles')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
+                            <label for="inputEmail4">{{__('dash.city')}}</label>
+                            <select id="inputState" class="select2 form-control pt-1"
+                                    name="city_id">
+                                <option disabled>{{__('dash.choose')}}</option>
+                                @foreach($cities as $key => $city)
+                                    <option value="{{$key}}" @if($key == $user->city_id) selected @endif>{{$city}}</option>
+                                @endforeach
+                            </select>
+                            @error('city_id')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
 
-                            </div>
                         </div>
 
                         <div class="form-group col-md-3">

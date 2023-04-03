@@ -13,16 +13,15 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasApiTokens,WithBoot,HasPassword, HasFactory,HasRoles, Notifiable;
-
+    protected $guard = 'user';
     protected $fillable = [
-        'name',
-        'gender',
+        'first_name',
+        'last_name',
         'email',
         'phone',
         'password',
         'active',
-        'social_id',
-
+        'city_id',
     ];
 
     protected $hidden = [
@@ -34,6 +33,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
     ];
+
+    public function city(){
+        return $this->hasOne(City::class, 'id', 'city_id');
+    }
 
 
 
