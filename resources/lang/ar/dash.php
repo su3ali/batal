@@ -781,6 +781,7 @@ rejected_bills
     'Customer Management' => 'ادارة العملاء',
     'Customers' => 'العملاء',
     'customer name' => 'اسم العميل',
+    'user addresses' => 'عناوين العميل',
 
 
 ];
