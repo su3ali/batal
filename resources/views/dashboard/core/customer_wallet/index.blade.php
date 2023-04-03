@@ -160,7 +160,7 @@
                             <div class="form-group col-md-6">
                                 <label class="mx-5" for="status">{{__('dash.status')}}</label>
                                 <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
-                                    <input type="checkbox" name="active" id="status" @if($wallet->active == 1) checked @endif>
+                                    <input type="checkbox" name="active" id="status" @if($wallet && $wallet->active == 1) checked @endif>
                                     <span class="slider round"></span>
                                 </label>
                                 @error('status')
