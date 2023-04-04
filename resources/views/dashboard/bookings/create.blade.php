@@ -172,9 +172,7 @@
                                     <div class="form-group col-md-12">
 
                                         <label for="notes">ملاحظات</label>
-                                        <textarea id="notes" required class="select2 form-control pt-1"
-                                                  name="notes">
-                                        </textarea>
+                                        <textarea name="notes" cols="30" rows="2" class="form-control"></textarea>
                                         @error('notes')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror

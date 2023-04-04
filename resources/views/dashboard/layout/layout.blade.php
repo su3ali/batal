@@ -193,7 +193,7 @@
             }
             swal({
                 title: "{{__('dash.error')}}",
-                text: text,
+                html: text,
                 type: 'error',
                 padding: '2em'
             })
