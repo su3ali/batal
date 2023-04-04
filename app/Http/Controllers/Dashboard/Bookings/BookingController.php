@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
+use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\RedirectResponse;
 
@@ -44,12 +45,12 @@ class BookingController extends Controller
                 })
                 ->addColumn('control', function ($row) {
                     $html = '
-                    <button type="button" id="edit-booking" class="btn btn-primary btn-sm card-tools edit" data-id="' . $row->id . '"
+                    <a href="'.route('dashboard.bookings.edit', $row->id).'"  id="edit-booking" class="btn btn-primary btn-sm card-tools edit" data-id="' . $row->id . '"
                           >
                             <i class="far fa-edit fa-2x"></i>
-                       </button>
+                       </a>
 
-                                <a data-table_id="html5-extension" data-href="' . route('dashboard.booking_statuses.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
+                                <a data-table_id="html5-extension" data-href="' . route('dashboard.bookings.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>';
                     return $html;
@@ -98,41 +99,52 @@ class BookingController extends Controller
             return redirect()->back()->withErrors($validated->errors());
         }
         $validated = $validated->validated();
-        $last = Booking::query()->latest()->first()->id;
-        $validated['booking_no'] = 'dash2023/'.$last+1;
+        $last = Booking::query()->latest()->first()?->id;
+        $validated['booking_no'] = 'dash2023/'.$last?$last+1: 1;
         Booking::query()->create($validated);
         session()->flash('success');
         return redirect()->route('dashboard.bookings.index');
     }
 
+    protected function edit($id){
+        $booking = Booking::query()->where('id', $id)->first();
+        $orders = Order::all();
+        $customers = User::all();
+        $services = Service::all();
+        $groups = Group::all();
+        $statuses = BookingStatus::all();
+        return view('dashboard.bookings.edit', compact('booking','orders', 'customers', 'services', 'groups', 'statuses'));
+
+    }
     protected function update(Request $request, $id)
     {
-        $bookingStatus = BookingStatus::query()->where('id', $id)->first();
+        $inputs = $request->only('order_id', 'user_id', 'service_id', 'group_id', 'date', 'notes', 'booking_status_id');
+        $inputs['time'] = Carbon::parse($request->time)->format('H:i');
+        $booking = Booking::query()->where('id', $id)->first();
         $rules = [
-            'name_ar' => 'required|unique:order_statuses,name_ar,' . $id,
-            'name_en' => 'required|unique:order_statuses,name_en,' . $id,
-            'description_ar' => 'nullable|String',
-            'description_en' => 'nullable|String',
+            'order_id' => 'required|exists:orders,id',
+            'user_id' => 'required|exists:users,id',
+            'service_id' => 'required|exists:services,id',
+            'group_id' => 'required|exists:groups,id',
+            'booking_status_id' => 'required|exists:booking_statuses,id',
+            'notes' => 'nullable|String',
+            'date' => 'required|Date',
+            'time' => 'required|date_format:H:i',
         ];
-        $validated = Validator::make($request->all(), $rules);
+        $validated = Validator::make($inputs, $rules);
         if ($validated->fails()) {
-            return redirect()->back()->with('errors', $validated->errors());
+            return redirect()->back()->withErrors($validated->errors());
         }
         $validated = $validated->validated();
-        $bookingStatus->update($validated);
+        $booking->update($validated);
         session()->flash('success');
-        return redirect()->back();
+        return redirect()->route('dashboard.bookings.index');
     }
 
     protected function destroy($id)
     {
-        $bookingStatus = BookingStatus::find($id);
-        if (in_array($id, Booking::query()->pluck('booking_status_id')->toArray())) {
-            return response()->json(['success' => false,
-                'msg' => 'حذف الحالة غير متاح لارتباطها بطلب'
-            ]);
-        }
-        $bookingStatus->delete();
+        $booking = Booking::query()->find($id);
+        $booking->delete();
         return [
             'success' => true,
             'msg' => __("dash.deleted_success")
