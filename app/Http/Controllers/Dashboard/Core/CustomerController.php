@@ -82,8 +82,13 @@ class CustomerController extends Controller
             'city_id' => 'required|exists:cities,id',
         ]);
 
-        $data=$request->except('_token','password_confirmation');
+        $data=$request->except('_token','password_confirmation','active');
 
+        if ($request['active'] && $request['active'] == 'on'){
+            $data['active'] = 1;
+        }else{
+            $data['active'] = 0;
+        }
 
 
         User::updateOrCreate($data);
@@ -112,8 +117,14 @@ class CustomerController extends Controller
             'city_id' => 'required|exists:cities,id',
 
         ]);
-        $data=$request->except('_token','password_confirmation');
+        $data=$request->except('_token','password_confirmation','active');
 
+
+        if ($request['active'] && $request['active'] == 'on'){
+            $data['active'] = 1;
+        }else{
+            $data['active'] = 0;
+        }
 
         $user = User::find($id);
         $user->update($data);

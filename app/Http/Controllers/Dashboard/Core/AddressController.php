@@ -91,8 +91,13 @@ class AddressController extends Controller
             'active' => 'nullable|in:on,off',
         ]);
 
-        $data=$request->except('_token');
+        $data=$request->except('_token','active');
 
+        if ($request['active'] && $request['active'] == 'on'){
+            $data['active'] = 1;
+        }else{
+            $data['active'] = 0;
+        }
 
 
         UserAddresses::updateOrCreate($data);
@@ -122,7 +127,13 @@ class AddressController extends Controller
             'active' => 'nullable|in:on,off',
 
         ]);
-        $data=$request->except('_token');
+        $data=$request->except('_token','active');
+
+        if ($request['active'] && $request['active'] == 'on'){
+            $data['active'] = 1;
+        }else{
+            $data['active'] = 0;
+        }
 
 
         $user = UserAddresses::find($id);
