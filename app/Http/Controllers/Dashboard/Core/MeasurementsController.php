@@ -68,8 +68,8 @@ class MeasurementsController extends Controller{
     protected function store(Request $request): RedirectResponse
     {
         $rules = [
-            'name_ar' => 'required||String|unique:order_statuses,name_ar',
-            'name_en' => 'required||String|unique:order_statuses,name_en',
+            'name_ar' => 'required|String|unique:measurements,name_ar',
+            'name_en' => 'required|String|unique:measurements,name_en',
             'symbol_ar' => 'nullable|String',
             'symbol_en' => 'nullable|String',
         ];
@@ -85,8 +85,8 @@ class MeasurementsController extends Controller{
     protected function update(Request $request, $id){
         $measurement = Measurement::query()->where('id', $id)->first();
         $rules = [
-            'name_ar' => 'required|unique:order_statuses,name_ar,'.$id,
-            'name_en' => 'required|unique:order_statuses,name_en,'.$id,
+            'name_ar' => 'required|unique:measurements,name_ar,'.$id,
+            'name_en' => 'required|unique:measurements,name_en,'.$id,
             'symbol_ar' => 'nullable|String',
             'symbol_en' => 'nullable|String',
         ];

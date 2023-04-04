@@ -69,8 +69,8 @@ class OrderStatusController extends Controller {
     protected function store(Request $request): RedirectResponse
     {
         $rules = [
-            'name_ar' => 'required||String|unique:order_statuses,name_ar',
-            'name_en' => 'required||String|unique:order_statuses,name_en',
+            'name_ar' => 'required|String|unique:order_statuses,name_ar',
+            'name_en' => 'required|String|unique:order_statuses,name_en',
             'description_ar' => 'nullable|String',
             'description_en' => 'nullable|String',
         ];

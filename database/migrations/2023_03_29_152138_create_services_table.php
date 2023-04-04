@@ -17,8 +17,8 @@ class CreateServicesTable extends Migration
             $table->id();
             $table->string('title_ar');
             $table->string('title_en');
-            $table->text('description_ar');
-            $table->text('description_en');
+            $table->text('description_ar')->nullable();
+            $table->text('description_en')->nullable();
             $table->text('ter_cond_ar');
             $table->text('ter_cond_en');
             $table->unsignedBigInteger('category_id')->nullable();

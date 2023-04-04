@@ -63,8 +63,8 @@ class TechSpecializationController extends Controller{
     protected function store(Request $request): RedirectResponse
     {
         $rules = [
-            'name_ar' => 'required||String|unique:order_statuses,name_ar',
-            'name_en' => 'required||String|unique:order_statuses,name_en',
+            'name_ar' => 'required||String|unique:specializations,name_ar',
+            'name_en' => 'required||String|unique:specializations,name_en',
             'description_ar' => 'nullable|String',
             'description_en' => 'nullable|String',
         ];
@@ -80,8 +80,8 @@ class TechSpecializationController extends Controller{
     protected function update(Request $request, $id){
         $spec = Specialization::query()->where('id', $id)->first();
         $rules = [
-            'name_ar' => 'required|unique:order_statuses,name_ar,'.$id,
-            'name_en' => 'required|unique:order_statuses,name_en,'.$id,
+            'name_ar' => 'required|unique:specializations,name_ar,'.$id,
+            'name_en' => 'required|unique:specializations,name_en,'.$id,
             'description_ar' => 'nullable|String',
             'description_en' => 'nullable|String',
         ];

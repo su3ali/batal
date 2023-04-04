@@ -162,7 +162,7 @@
                 </a>
                 <ul class="collapse submenu list-unstyled" id="booking" data-parent="#accordionExample">
                     <li>
-                        <a href="#"> الحجوزات </a>
+                        <a href="{{route('dashboard.bookings.index')}}"> الحجوزات </a>
                     </li>
                     <li>
                         <a href="{{route('dashboard.booking_statuses.index')}}"> حالات الحجز </a>
