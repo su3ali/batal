@@ -58,7 +58,7 @@
 
                                 <label for="spec">التخصص</label>
                                 <select id="spec" class="select2 form-control pt-1"
-                                        name="specialization">
+                                        name="spec_id">
                                     <option selected disabled>{{__('dash.choose')}}</option>
                                     @foreach($specs as $spec)
                                         <option value="{{$spec->id}}">{{$spec->name}}</option>
