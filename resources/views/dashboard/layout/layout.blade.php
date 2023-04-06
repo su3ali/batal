@@ -68,6 +68,9 @@
         .ck-editor__editable {
             height: 200px;
         }
+        .custom-file-container__image-preview{
+            height: auto!important;
+        }
     </style>
     @stack('style')
     <script type="text/javascript" src="{{ asset('admin_dashboard/bower_components/ckeditor/ckeditor.js') }}"></script>

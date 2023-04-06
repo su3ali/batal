@@ -13,7 +13,7 @@
                     @csrf
                     <div class="box-body">
                         <div class="form-row mb-3">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="inputEmail4">{{__('dash.title_ar')}}</label>
                                 <input type="text" name="title_ar" class="form-control"
                                        id="inputEmail4"
@@ -24,7 +24,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="inputEmail4">{{__('dash.title_en')}}</label>
                                 <input type="text" name="title_en" class="form-control"
                                        id="inputEmail4"
@@ -36,13 +36,7 @@
                             </div>
 
 
-                        </div>
-
-
-                        <div class="form-row mb-3">
-
-
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
 
                                 <label for="inputEmail4">{{__('dash.category')}}</label>
                                 <select id="inputState" class="select2 form-control pt-1"
@@ -57,6 +51,14 @@
                                 @enderror
 
                             </div>
+
+                        </div>
+
+
+                        {{--<div class="form-row mb-3">--}}
+
+
+
 
 
                             {{--<div class="col-md-6 custom-file-container form-group"--}}
@@ -79,8 +81,8 @@
                                 {{--</div>--}}
                             {{--</div>--}}
 
-                        </div>
-                        <div class="form-row mb-3">
+                        {{--</div>--}}
+                        <div class="form-row mb-2">
 
 
                                 <div class="form-group col-md-6">
@@ -108,7 +110,7 @@
                         </div>
 
 
-                        <div class="form-row mb-3">
+                        <div class="form-row mb-2">
 
 
                             <div class="form-group type-col col-md-6">
@@ -155,7 +157,7 @@
 
                         </div>
 
-                        <div class="form-row mb-3">
+                        <div class="form-row mb-2">
 
 
                             <div class="form-group col-md-6">

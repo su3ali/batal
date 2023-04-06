@@ -15,7 +15,7 @@
 
                     <div class="box-body">
                         <div class="form-row mb-3">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="inputEmail4">{{__('dash.title_ar')}}</label>
                                 <input type="text" name="title_ar" class="form-control"
                                        id="title_ar"
@@ -26,7 +26,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="inputEmail4">{{__('dash.title_en')}}</label>
                                 <input type="text" name="title_en" class="form-control"
                                        id="title_en"
@@ -37,13 +37,7 @@
                                 @enderror
                             </div>
 
-
-                        </div>
-
-
-                        <div class="form-row mb-3">
-
-                            <div class="col-md-6 custom-file-container form-group"
+                            <div class="col-md-4 custom-file-container form-group"
                                  data-upload-id="myFirstImage">
                                 <label>{{__('dash.upload')}}<a href="javascript:void(0)"
                                                                class="custom-file-container__image-clear"
@@ -63,10 +57,12 @@
                                 </div>
                             </div>
 
-                            <input type="hidden" name="parent_id" id="parent_id" value="">
-
 
                         </div>
+
+
+                        <input type="hidden" name="parent_id" id="parent_id" value="">
+
                         <div class="form-row mb-3">
 
 

@@ -2,11 +2,19 @@
 @push('style')
     <style>
         .card-wallet{
-            background-color: #0e1726;text-align: center;margin-right: 25%;margin-bottom: 21px;
+            background-color: #0e1726;
+            text-align: center;
+            height: 46px;
+            line-height: 2.7;
+            margin-top: 30px;
         }
 
         .card-wallet p{
-            text-align: center;font-size: x-large;color: white;
+            text-align: center;
+            font-size: 15px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0;
         }
     </style>
     @endpush
@@ -68,7 +76,7 @@
                         @csrf
                         <div class="box-body">
                             <div class="form-row mb-3">
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-5">
                                     <label for="inputEmail4">{{__('dash.name_ar')}}</label>
                                     <input type="text" name="name_ar" value="{{$wallet->name_ar ?? ''}}" class="form-control"
                                            id="inputEmail4"
@@ -79,7 +87,7 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-group col-md-6">
+                                <div class="form-group col-md-5">
                                     <label for="inputEmail4">{{__('dash.name_en')}}</label>
                                     <input type="text" name="name_en" value="{{$wallet->name_en ?? ''}}" class="form-control"
                                            id="inputEmail4"
@@ -90,17 +98,33 @@
                                     @enderror
                                 </div>
 
+                                <div class="form-group col-md-2">
+                                    <div class="row" style="    margin-top: 22px;">
+                                        <label class="mx-3 mt-3 col-md-2" for="status">{{__('dash.status')}}</label>
+                                        <label class="switch s-outline s-outline-info mb-4 mx-4 mt-3 d-block col-md-3">
+                                            <input type="checkbox" name="active" id="status" @if($wallet && $wallet->active == 1) checked @endif>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        @error('status')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+                                </div>
+
 
                             </div>
 
 
-                                <div class="card col-md-6 card-wallet">
-                                    <p >{{__('dash.order')}}</p>
-                                </div>
+
 
 
                             <div class="form-row mb-3">
-                                <div class="form-group col-md-6">
+                                <div class="card col-md-1 card-wallet">
+                                    <p >{{__('dash.order')}} /</p>
+                                </div>
+                                <div class="form-group col-md-5">
                                     <label for="inputEmail4">{{__('dash.deserved percentage')}}</label>
                                     <input type="text" name="order_percentage" value="{{$wallet->order_percentage ?? 0}}" class="form-control"
                                            id="inputEmail4"
@@ -125,12 +149,13 @@
 
                             </div>
 
-                            <div class="card col-md-6 card-wallet" >
-                                <p>{{__('dash.replacing')}}</p>
-                            </div>
+
 
                             <div class="form-row mb-3">
-                                <div class="form-group col-md-6">
+                                <div class="card col-md-1 card-wallet" >
+                                    <p>{{__('dash.replacing')}} /</p>
+                                </div>
+                                <div class="form-group col-md-5">
                                     <label for="inputEmail4">{{__('dash.Minimum order amount')}}</label>
                                     <input type="text" name="order_amount" value="{{$wallet->order_amount ?? 0}}" class="form-control"
                                            id="inputEmail4"
@@ -157,17 +182,7 @@
 
 
 
-                            <div class="form-group col-md-6">
-                                <label class="mx-5" for="status">{{__('dash.status')}}</label>
-                                <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
-                                    <input type="checkbox" name="active" id="status" @if($wallet && $wallet->active == 1) checked @endif>
-                                    <span class="slider round"></span>
-                                </label>
-                                @error('status')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
-                            </div>
 
 
 

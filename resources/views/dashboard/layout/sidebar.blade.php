@@ -167,6 +167,9 @@
                     <li>
                         <a href="{{route('dashboard.booking_statuses.index')}}"> حالات الحجز </a>
                     </li>
+                    <li>
+                        <a href="{{route('dashboard.booking_setting.index')}}"> اعدادات الحجوزات </a>
+                    </li>
                 </ul>
             </li>
 
