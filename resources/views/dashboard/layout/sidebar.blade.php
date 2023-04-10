@@ -260,6 +260,9 @@
                     <li>
                         <a href="{{route('dashboard.core.measurements.index')}}"> وحدات القياس </a>
                     </li>
+                    <li>
+                        <a href="{{route('dashboard.faqs.index')}}">الأسئلة الشائعة</a>
+                    </li>
 
 
 
