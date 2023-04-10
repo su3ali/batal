@@ -56,6 +56,7 @@
     <link rel="stylesheet" type="text/css"
           href="{{asset(app()->getLocale().'/assets/css/forms/theme-checkbox-radio.css')}}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap">
@@ -169,6 +170,7 @@
 <script
     src="{{asset(app()->getLocale().'/plugins/table/datatable/button-ext/buttons.print.min.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/switches.css')}}">
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
 <script type="text/javascript">
     feather.replace();
     Dropzone.autoDiscover=false;
@@ -231,6 +233,16 @@
                     }
                 })
             }
+        });
+    });
+
+
+    $(document).ready(function() {
+        "use strict";
+        $(".timepicker").timepicker({
+            dynamic: false,
+            dropdown: true,
+            scrollbar: true
         });
     });
 

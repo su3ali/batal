@@ -1,162 +1,122 @@
-{{--@extends('dashboard.layout.layout')--}}
-{{--@push('style')--}}
-    {{--<style>--}}
-        {{--.card-wallet{--}}
-            {{--background-color: #0e1726;--}}
-            {{--text-align: center;--}}
-            {{--height: 46px;--}}
-            {{--line-height: 2.7;--}}
-            {{--margin-top: 30px;--}}
-        {{--}--}}
+@extends('dashboard.layout.layout')
 
-        {{--.card-wallet p{--}}
-            {{--text-align: center;--}}
-            {{--font-size: 15px;--}}
-            {{--font-weight: bold;--}}
-            {{--color: #fff;--}}
-            {{--margin-bottom: 0;--}}
-        {{--}--}}
-    {{--</style>--}}
-{{--@endpush--}}
-{{--@section('sub-header')--}}
-    {{--<div class="sub-header-container">--}}
-        {{--<header class="header navbar navbar-expand-sm">--}}
+@section('sub-header')
+    <div class="sub-header-container">
+        <header class="header navbar navbar-expand-sm">
 
-            {{--<a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom">--}}
-                {{--<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"--}}
-                     {{--stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"--}}
-                     {{--class="feather feather-menu">--}}
-                    {{--<line x1="3" y1="12" x2="21" y2="12"></line>--}}
-                    {{--<line x1="3" y1="6" x2="21" y2="6"></line>--}}
-                    {{--<line x1="3" y1="18" x2="21" y2="18"></line>--}}
-                {{--</svg>--}}
-            {{--</a>--}}
+            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="feather feather-menu">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </a>
 
-            {{--<ul class="navbar-nav flex-row">--}}
-                {{--<li>--}}
-                    {{--<div class="page-header">--}}
+            <ul class="navbar-nav flex-row">
+                <li>
+                    <div class="page-header">
 
-                        {{--<nav class="breadcrumb-one" aria-label="breadcrumb">--}}
-                            {{--<ol class="breadcrumb mb-0 py-2">--}}
-                                {{--<li class="breadcrumb-item"><a--}}
-                                        {{--href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>--}}
-                                {{--<li class="breadcrumb-item active" aria-current="page">{{__('dash.customers wallet')}}</li>--}}
-                            {{--</ol>--}}
-                        {{--</nav>--}}
+                        <nav class="breadcrumb-one" aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0 py-2">
+                                <li class="breadcrumb-item"><a
+                                        href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">اعدادات الحجوزات</li>
+                            </ol>
+                        </nav>
 
-                    {{--</div>--}}
-                {{--</li>--}}
-            {{--</ul>--}}
+                    </div>
+                </li>
+            </ul>
 
 
-        {{--</header>--}}
-    {{--</div>--}}
+        </header>
+    </div>
 
-{{--@endsection--}}
+@endsection
 
+@section('content')
+    <div class="layout-px-spacing">
+        <div class="row layout-top-spacing">
 
-{{--@section('content')--}}
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <div class="col-md-12 text-right mb-3">
 
-
-    {{--<div class="layout-px-spacing">--}}
-
-        {{--<div class="row layout-top-spacing">--}}
-
-            {{--<div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">--}}
-                {{--<div class="widget-content widget-content-area br-6">--}}
-                    {{--@if($wallet)--}}
-                        {{--<form action="{{route('dashboard.core.customer_wallet.update',$wallet->id)}}" method="post" class="form-horizontal"--}}
-                              {{--enctype="multipart/form-data" id="demo-form" data-parsley-validate="">--}}
-
-                            {{--@else--}}
-                                {{--<form action="{{route('dashboard.core.customer_wallet.store')}}" method="post" class="form-horizontal"--}}
-                                      {{--enctype="multipart/form-data" id="demo-form" data-parsley-validate="">--}}
-
-                                    {{--@endif--}}
-                                    {{--@csrf--}}
-                                    {{--<div class="box-body">--}}
+                        <a href="{{route('dashboard.booking_setting.create')}}" class="btn btn-primary">{{__('dash.add_new')}}</a>
 
 
-                                        {{--<div class="card col-md-1 card-wallet">--}}
-                                            {{--<p> الايام/</p>--}}
-                                        {{--</div>--}}
+                    </div>
+                    <table id="html5-extension" class="table table-hover non-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>اسم الخدمه</th>
+                            <th>تاريخ بداية الخدمه</th>
+                            <th>تاريخ انتهاء الخدمه</th>
+                            <th>عدد الحجوزات المتوفره</th>
+                            <th>وقت بدايه الخدمه</th>
+                            <th>وقت انتهاء الخدمه</th>
+                            <th>مده الخدمه</th>
+                            <th>الفاصل الزمني</th>
+                            <th class="no-content">{{__('dash.actions')}}</th>
+                        </tr>
+                        </thead>
+                    </table>
 
-                                        {{--<div class="form-row mb-3">--}}
+                </div>
+            </div>
 
-                                            {{--<div class="form-group col-md-5">--}}
-                                                {{--<label for="inputEmail4">{{__('dash.deserved percentage')}}</label>--}}
-                                                {{--<input type="text" name="order_percentage" value="{{$wallet->order_percentage ?? 0}}" class="form-control"--}}
-                                                       {{--id="inputEmail4"--}}
-                                                       {{--placeholder="{{__('dash.deserved percentage')}}"--}}
-                                                {{-->--}}
-                                                {{--@error('order_percentage')--}}
-                                                {{--<div class="alert alert-danger">{{ $message }}</div>--}}
-                                                {{--@enderror--}}
-                                            {{--</div>--}}
-
-                                            {{--<div class="form-group col-md-6">--}}
-                                                {{--<label for="inputEmail4">{{__('dash.Maximum refund amount')}}</label>--}}
-                                                {{--<input type="text" name="refund_amount" value="{{$wallet->refund_amount ?? 0}}" class="form-control"--}}
-                                                       {{--id="inputEmail4"--}}
-                                                       {{--placeholder="{{__('dash.Maximum refund amount')}}"--}}
-                                                {{-->--}}
-                                                {{--@error('refund_amount')--}}
-                                                {{--<div class="alert alert-danger">{{ $message }}</div>--}}
-                                                {{--@enderror--}}
-                                            {{--</div>--}}
+        </div>
 
 
-                                        {{--</div>--}}
+    </div>
+@endsection
 
-                                        {{--<div class="card col-md-1 card-wallet" >--}}
-                                            {{--<p>الاوقات/</p>--}}
-                                        {{--</div>--}}
+@push('script')
 
-                                        {{--<div class="form-row mb-3">--}}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#html5-extension').DataTable({
+                dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                    "<'table-responsive'tr>" +
+                    "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+                order: [[0, 'desc']],
+                "language": {
+                    "url": "{{app()->getLocale() == 'ar'? '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json' : '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json'}}"
+                },
+                buttons: {
+                    buttons: [
+                        {extend: 'copy', className: 'btn btn-sm'},
+                        {extend: 'csv', className: 'btn btn-sm'},
+                        {extend: 'excel', className: 'btn btn-sm'},
+                        {extend: 'print', className: 'btn btn-sm'}
+                    ]
+                },
+                processing: true,
+                responsive: true,
+                serverSide: true,
+                ajax: '{{ route('dashboard.booking_setting.index') }}',
+                columns: [
+                    {data: 'id', name: 'id'},
+                    {data: 'service_name', name: 'service_name'},
+                    {data: 'service_start_date', name: 'service_start_date'},
+                    {data: 'service_end_date', name: 'service_end_date'},
+                    {data: 'available_service', name: 'available_service'},
+                    {data: 'service_start_time', name: 'service_start_time'},
+                    {data: 'service_end_time', name: 'service_end_time'},
+                    {data: 'service_duration', name: 'service_duration'},
+                    {data: 'buffering_time', name: 'buffering_time'},
+                    {data: 'control', name: 'control', orderable: false, searchable: false},
 
-                                            {{--<div class="form-group col-md-5">--}}
-                                                {{--<label for="inputEmail4">{{__('dash.Minimum order amount')}}</label>--}}
-                                                {{--<input type="text" name="order_amount" value="{{$wallet->order_amount ?? 0}}" class="form-control"--}}
-                                                       {{--id="inputEmail4"--}}
-                                                       {{--placeholder="{{__('dash.Minimum order amount')}}"--}}
-                                                {{-->--}}
-                                                {{--@error('order_amount')--}}
-                                                {{--<div class="alert alert-danger">{{ $message }}</div>--}}
-                                                {{--@enderror--}}
-                                            {{--</div>--}}
-
-                                            {{--<div class="form-group col-md-6">--}}
-                                                {{--<label  for="inputEmail4">{{__('dash.Minimum wallet amount')}}</label>--}}
-                                                {{--<input type="text" name="wallet_amount" value="{{$wallet->wallet_amount ?? 0}}" class="form-control"--}}
-                                                       {{--id="inputEmail4"--}}
-                                                       {{--placeholder="{{__('dash.Minimum wallet amount')}}"--}}
-                                                {{-->--}}
-                                                {{--@error('wallet_amount')--}}
-                                                {{--<div class="alert alert-danger">{{ $message }}</div>--}}
-                                                {{--@enderror--}}
-                                            {{--</div>--}}
-
-
-                                        {{--</div>--}}
+                ]
+            });
+        });
 
 
 
 
+    </script>
 
-
-
-
-                                    {{--</div>--}}
-                                    {{--<button type="submit" class="btn btn-primary">{{__('dash.save')}}</button>--}}
-                                {{--</form>--}}
-
-
-                {{--</div>--}}
-            {{--</div>--}}
-
-        {{--</div>--}}
-
-    {{--</div>--}}
-
-
-{{--@endsection--}}
+@endpush
