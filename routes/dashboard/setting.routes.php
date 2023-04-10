@@ -15,4 +15,7 @@ Route::group(['prefix' => 'settings'], function (){
     Route::get('region/change_status', 'Settings\RegionController@change_status')->name('region.change_status');
     Route::resource('region', 'Settings\RegionController');
 
+    Route::get('faqs/change_status', 'Settings\FaqsController@change_status')->name('faqs.change_status');
+    Route::resource('faqs', 'Settings\FaqsController');
+
 });
