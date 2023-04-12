@@ -67,7 +67,7 @@
                                                 <option value="{{$service->id}}">{{$service->title}}</option>
                                             @endforeach
                                         </select>
-                                        @error('service_name')
+                                        @error('service_id')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 

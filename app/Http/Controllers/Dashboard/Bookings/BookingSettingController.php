@@ -121,7 +121,7 @@ class BookingSettingController extends Controller
     protected function create()
     {
 
-        $services = Service::all();
+        $services = Service::where('active',1)->get();
 
         return view('dashboard.booking_settings.create', compact('services'));
     }
@@ -148,7 +148,7 @@ class BookingSettingController extends Controller
 
     protected function edit($id){
         $bookingSetting = BookingSetting::query()->where('id', $id)->first();
-        $services = Service::all();
+        $services = Service::where('active',1)->get();
 
         return view('dashboard.booking_settings.edit', compact('bookingSetting','services'));
 

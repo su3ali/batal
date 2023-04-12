@@ -68,7 +68,7 @@
                                                 <option value="{{$service->id}}" @if($bookingSetting->service_id == $service->id) selected @endif>{{$service->title}}</option>
                                             @endforeach
                                         </select>
-                                        @error('service_name')
+                                        @error('service_id')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
