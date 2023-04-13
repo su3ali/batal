@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Service;
+use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
 class CouponsController extends Controller
@@ -60,5 +61,14 @@ class CouponsController extends Controller
         $categories = Category::all();
         $services = Service::all();
         return view('dashboard.coupons.create', compact('categories', 'services'));
+    }
+    protected function store(Request $request){
+
+    }
+    protected function edit($id){
+        $coupon = Coupon::query()->find($id);
+        $categories = Category::all();
+        $services = Service::all();
+        return view('dashboard.coupons.edit', compact('coupon', 'categories', 'services'));
     }
 }

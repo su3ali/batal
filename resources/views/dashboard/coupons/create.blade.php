@@ -103,8 +103,8 @@
                                     </div>
                                     <div class="form-group col-md-4">
 
-                                        <label for="service">الخدمة</label>
-                                        <select disabled class="select2 form-control pt-1"
+                                        <label for="service_id">الخدمة</label>
+                                        <select id="service_id" disabled class="select2 form-control pt-1"
                                                 name="service_id">
                                             <option selected disabled>{{__('dash.choose')}}</option>
                                             @foreach($services as $service)
@@ -118,8 +118,8 @@
                                     </div>
                                     <div class="form-group col-md-4">
 
-                                        <label>القسم</label>
-                                        <select disabled class="select2 form-control pt-1"
+                                        <label for="category_id">القسم</label>
+                                        <select id="category_id" disabled class="select2 form-control pt-1"
                                                 name="category_id">
                                             <option selected disabled>{{__('dash.choose')}}</option>
                                             @foreach($categories as $category)
@@ -251,4 +251,27 @@
 
     </div>
 @endsection
+@push('script')
+    <script>
+        $('input[name=sale_area]').change(function () {
+            let val = $(this).val()
+            if (val === 'category'){
+                $('#category_id').prop('disabled', false)
+                $('#category_id').prop('required', true)
+                $('#service_id').prop('disabled', true)
+                $('#service_id').prop('required', false)
+            }else if (val === 'service'){
+                $('#category_id').prop('disabled', true)
+                $('#category_id').prop('required', false)
+                $('#service_id').prop('disabled', false)
+                $('#service_id').prop('required', true)
+            }else {
+                $('#category_id').prop('disabled', true)
+                $('#category_id').prop('required', false)
+                $('#service_id').prop('disabled', true)
+                $('#service_id').prop('required', false)
+            }
+        })
+    </script>
+@endpush
 

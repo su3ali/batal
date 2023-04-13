@@ -24,8 +24,8 @@
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
 
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.bookings.index')}}">الحجوزات</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">تعديل الحجز</li>
+                                        href="{{route('dashboard.coupons.index')}}">الكوبونات</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">تعديل كوبون</li>
                             </ol>
                         </nav>
 
@@ -47,59 +47,68 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6" style="min-height: 500px;">
                     <div class="col-md-12 text-left mb-3">
-                        <h3>تعديل الحجز</h3>
+                        <h3>تعديل الكوبون</h3>
                     </div>
-                    <div class="col-md-8">
-                        <form action="{{route('dashboard.bookings.update', $booking->id)}}" method="post" class="form-horizontal"
+                    <div class="col-md-10">
+                        <form action="{{route('dashboard.coupons.update',$coupon->id)}}" method="post" class="form-horizontal"
 
-                              enctype="multipart/form-data" id="" data-parsley-validate="">
-                            {!! method_field('PUT') !!}
+                              enctype="multipart/form-data" id="create_order_status_form" data-parsley-validate="">
                             @csrf
                             <div class="box-body">
 
                                 <div class="form-row mb-3">
                                     <div class="form-group col-md-6">
-
-                                        <label for="customer_name">الطلب</label>
-                                        <select required class="select2 form-control pt-1"
-                                                name="order_id">
-                                            <option selected disabled>{{__('dash.choose')}}</option>
-                                            @foreach($orders as $order)
-                                                <option value="{{$order->id}}"{{$booking->order_id == $order->id? 'selected' : ''}}>{{'الطلب رقم: '.$order->id}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('order_id')
+                                        <label for="title_ar">العنوان باللغة العربية</label>
+                                        <input type="text" name="title_ar" class="form-control"
+                                               id="title_ar" value="{{$coupon->title_ar}}"
+                                               placeholder="أدخل العنوان"
+                                        >
+                                        @error('title_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
-
                                     </div>
-                                    <div class="form-group col-md-6">
 
-                                        <label for="customer_name">{{__('dash.customer_name')}}</label>
-                                        <select required id="customer_name" class="select2 form-control pt-1"
-                                                name="user_id">
-                                            <option selected disabled>{{__('dash.choose')}}</option>
-                                            @foreach($customers as $customer)
-                                                <option value="{{$customer->id}}"{{$booking->user_id == $customer->id? 'selected' : ''}}>{{$customer->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('user_id')
+                                    <div class="form-group col-md-6">
+                                        <label for="title_en">العنوان باللغة الإنجليزية</label>
+                                        <input type="text" name="title_en" class="form-control"
+                                               id="title_en" value="{{$coupon->title_en}}"
+                                               placeholder="أدخل العنوان"
+                                        >
+                                        @error('title_en')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
-
                                     </div>
 
-                                </div>
 
-                                <div class="form-row mb-3">
-                                    <div class="form-group col-md-6">
+                                </div> {{-- title --}}
 
-                                        <label for="service">الخدمة</label>
-                                        <select required class="select2 form-control pt-1"
+                                <div class="form-row mb-0 pb-0">
+                                    <div class="form-group mb-0 col-md-4 pt-1">
+                                        <label for=""
+                                               style="padding-left: 14px; padding-right: 14px">نطاق الخصم : </label>
+                                        <div class="" style="width: 100%; padding-left: 14px; padding-right: 14px">
+                                            <label class="radio-inline px-1">
+                                                <input class="mx-1" value="all" type="radio" name="sale_area" id="all_value">
+                                                <span>الكل</span>
+                                            </label>
+                                            <label class="radio-inline px-1">
+                                                <input class="mx-1" value="category" type="radio" name="sale_area" id="category_value">
+                                                <span>قسم</span>
+                                            </label>
+                                            <label class="radio-inline px-1">
+                                                <input class="mx-1" value="service" type="radio" name="sale_area" id="service_value">
+                                                <span>خدمة</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-4">
+
+                                        <label for="edit_service_id">الخدمة</label>
+                                        <select id="edit_service_id" disabled class="select2 form-control pt-1"
                                                 name="service_id">
                                             <option selected disabled>{{__('dash.choose')}}</option>
                                             @foreach($services as $service)
-                                                <option value="{{$service->id}}"{{$booking->service_id == $service->id? 'selected' : ''}}>{{$service->title}}</option>
+                                                <option value="{{$service->id}}" {{$coupon->service_id == $service->id? 'selected' : ''}}>{{$service->title}}</option>
                                             @endforeach
                                         </select>
                                         @error('service_id')
@@ -107,102 +116,127 @@
                                         @enderror
 
                                     </div>
+                                    <div class="form-group col-md-4">
+
+                                        <label for="edit_category_id">القسم</label>
+                                        <select id="edit_category_id" disabled class="select2 form-control pt-1"
+                                                name="category_id">
+                                            <option selected disabled>{{__('dash.choose')}}</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{$category->id}} {{$coupon->category_id == $category->id? 'selected' : ''}}">{{$category->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('category_id')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="form-group col-md-3">
+                                        <label for="type">النوع</label>
+                                        <select required class="form-control" style="width: 100%; padding: 8px"
+                                                name="type">
+                                            <option value="percentage" {{$coupon->type == 'percentage'? 'selected' : ''}}>نسبة</option>
+                                            <option value="static" {{$coupon->type == 'static'? 'selected' : ''}}>مبلغ ثابت</option>
+                                        </select>
+                                        @error('type')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label for="value">القيمة</label>
+                                        <input type="number" step="0.1" name="value" class="form-control"
+                                               id="value"
+                                               value="{{$coupon->value}}"
+                                               placeholder="أدخل القيمة"
+                                        >
+                                        @error('value')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+
+                                        <label for="birth">تاريخ التفعيل</label>
+                                        <input required name="start" type="date" class="form-control datepicker" value="{{$coupon->start}}"
+                                               data-date-format="dd/mm/yyyy">
+                                        @error('start')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                    <div class="form-group col-md-3">
+
+                                        <label for="birth">تاريخ الانتهاء</label>
+                                        <input required name="end" type="date" class="form-control datepicker" value="{{$coupon->end}}"
+                                               data-date-format="dd/mm/yyyy">
+                                        @error('end')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+
+
                                     <div class="form-group col-md-6">
 
-                                        <label>الفريق الفني</label>
-                                        <select required class="select2 form-control pt-1"
-                                                name="group_id">
-                                            <option selected disabled>{{__('dash.choose')}}</option>
-                                            @foreach($groups as $group)
-                                                <option value="{{$group->id}}"{{$booking->group_id == $group->id? 'selected' : ''}}>{{$group->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('group_id')
+                                        <label for="description_ar">الوصف باللغة العربية</label>
+                                        <textarea name="description_ar" id="description_ar" class="ckeditor" cols="30" rows="10">
+                                            {{$coupon->description_ar}}
+                                        </textarea>
+                                        @error('description_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
                                     </div>
 
-                                </div>
+                                    <div class="form-group col-md-6">
 
-                                <div class="form-row mb-3">
-
-
-                                    <div class="form-group col-md-4">
-
-                                        <label for="birth">التاريخ</label>
-                                        <input required name="date" type="date" value="{{$booking->date}}" class="form-control datepicker"
-                                               data-date-format="dd/mm/yyyy">
-                                        @error('date')
+                                        <label for="description_en">الوصف باللغة الإنجليزية</label>
+                                        <textarea name="description_en" id="description_en" class="ckeditor" cols="30" rows="10">
+                                            {{$coupon->description_en}}
+                                        </textarea>
+                                        @error('description_en')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
                                     </div>
 
-                                    <div class="form-group col-md-4">
 
-                                        <label for="birth">الوقت</label>
-                                        <input required name="time" type="time" value="{{$booking->time}}" class="form-control timepicker"
-                                               data-date-format="h:i">
-                                        @error('time')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
 
-                                    </div>
+                                </div> {{-- description --}}
 
-                                    <div class="form-group col-md-4">
-
-                                        <label for="service">حالة الحجز</label>
-                                        <select required class="select2 form-control pt-1"
-                                                name="booking_status_id">
-                                            <option selected disabled>{{__('dash.choose')}}</option>
-                                            @foreach($statuses as $status)
-                                                <option value="{{$status->id}}" {{$booking->booking_status_id == $status->id? 'selected' : ''}}>{{$status->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('booking_status_id')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
-
-                                </div>
-
-                                <div class="form-row mb-3">
-
-                                    <div class="form-group col-md-12">
-
-                                        <label for="notes">ملاحظات</label>
-                                        <textarea name="notes" cols="30" rows="2" class="form-control">{{$booking->notes}}</textarea>
-                                        @error('notes')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
-
-                                </div>
 
                             </div>
                             <div class="box-body">
                                 <div class="form-row">
-                                    <div class="col-md-6">
-                                        <label
-                                            class="new-control new-checkbox new-checkbox-text checkbox-success">
-                                            <input
-                                                type="checkbox"
-                                                name="notify"
-                                                class="new-control-input perm-check perm-check-admins"
+                                    <div class="col-md-4">
+
+                                        <div class="form-group">
+                                            <label for="times_used">مرات الاستخدام</label>
+                                            <input type="number" name="times_used" class="form-control"
+                                                   id="times_used"
+                                                   value="{{$coupon->times_used}}"
+                                                   placeholder="أدخل العدد"
                                             >
-                                            <span
-                                                class="new-control-indicator"></span><span
-                                                class="new-chk-content"><strong>إرسال إخطار SMS إلى العميل</strong></span>
-                                        </label>
+                                            @error('times_used')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="box-body">
                                 <div class="form-row mb-3">
                                     <div class="col-md-6">
+
                                     </div>
 
                                     <div class="col-md-6 text-right">
@@ -223,4 +257,27 @@
 
     </div>
 @endsection
+@push('script')
+    <script>
+        $('input[name=sale_area]').change(function () {
+            let val = $(this).val()
+            if (val === 'category'){
+                $('#edit_category_id').prop('disabled', false)
+                $('#edit_category_id').prop('required', true)
+                $('#edit_service_id').prop('disabled', true)
+                $('#edit_service_id').prop('required', false)
+            }else if (val === 'service'){
+                $('#edit_category_id').prop('disabled', true)
+                $('#edit_category_id').prop('required', false)
+                $('#edit_service_id').prop('disabled', false)
+                $('#edit_service_id').prop('required', true)
+            }else {
+                $('#edit_category_id').prop('disabled', true)
+                $('#edit_category_id').prop('required', false)
+                $('#edit_service_id').prop('disabled', true)
+                $('#edit_service_id').prop('required', false)
+            }
+        })
+    </script>
+@endpush
 
