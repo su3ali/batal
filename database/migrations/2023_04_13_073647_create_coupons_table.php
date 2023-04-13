@@ -27,9 +27,9 @@ class CreateCouponsTable extends Migration
             $table->integer('user_times')->default(1);
             $table->enum('type', ['percentage', 'static']);
             $table->double('value');
-            $table->unsignedBigInteger('service_id');
+            $table->unsignedBigInteger('service_id')->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
-            $table->unsignedBigInteger('category_id');
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();
         });
