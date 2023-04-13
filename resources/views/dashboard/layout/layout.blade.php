@@ -39,6 +39,7 @@
     {{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
     <link href="{{asset('/select2/select2.min.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{asset('/select2/select2.css')}}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
 
     <link href="{{asset(app()->getLocale().'/plugins/file-upload/file-upload-with-preview.min.css')}}" rel="stylesheet"
           type="text/css"/>
@@ -273,7 +274,15 @@
 {{--"pageLength": 7--}}
 {{--} );--}}
 {{--</script>--}}
+<script>
+    $(document).ready( function(){
+        $("select").select2({
+            width: 'element',
+            theme: 'bootstrap4',
+        });
+    });
 
+</script>
 @stack('script')
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
