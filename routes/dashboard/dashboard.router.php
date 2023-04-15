@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:dashboard']], static function () {
     require __DIR__ . '/order.routes.php';
     require __DIR__ . '/booking.routes.php';
     require __DIR__ . '/contract.routes.php';
+    require __DIR__ . '/coupons.routes.php';
     require __DIR__ . '/setting.routes.php';
 });
 
