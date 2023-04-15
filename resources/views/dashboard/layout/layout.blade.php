@@ -73,6 +73,10 @@
         .custom-file-container__image-preview{
             height: auto!important;
         }
+
+        span.select2.select2-container.select2-container--bootstrap4 {
+            width: auto!important;
+        }
     </style>
     @stack('style')
     <script type="text/javascript" src="{{ asset('admin_dashboard/bower_components/ckeditor/ckeditor.js') }}"></script>
