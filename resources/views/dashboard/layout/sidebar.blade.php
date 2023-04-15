@@ -304,6 +304,9 @@
                     <li>
                         <a href="{{route('dashboard.faqs.index')}}">الأسئلة الشائعة</a>
                     </li>
+                    <li>
+                        <a href="{{route('dashboard.banners.index')}}">البنرات</a>
+                    </li>
 
 
 
