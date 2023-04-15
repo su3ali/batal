@@ -276,7 +276,7 @@
 {{--</script>--}}
 <script>
     $(document).ready( function(){
-        $("select").select2({
+        $("select:not(.swal2-select)").select2({
             width: 'element',
             theme: 'bootstrap4',
         });

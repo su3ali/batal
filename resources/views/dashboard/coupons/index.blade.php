@@ -106,29 +106,13 @@
             });
         });
 
-        $(document).on('click', '#edit-booking-status', function () {
-            let id = $(this).data('id');
-            let name_ar = $(this).data('name_ar');
-            let name_en = $(this).data('name_en');
-            let description_ar = $(this).data('description_ar');
-            let description_en = $(this).data('description_en');
-            $('#edit_name_ar').val(name_ar)
-            $('#edit_name_en').val(name_en)
-            CKEDITOR.instances['edit_description_ar'].setData(description_ar);
-            CKEDITOR.instances['edit_description_en'].setData(description_en);
-
-            let action = "{{route('dashboard.booking_statuses.update', 'id')}}";
-            action = action.replace('id', id)
-            $('#edit_booking_status_form').attr('action', action);
-
-        })
 
         $("body").on('change', '#customSwitchStatus', function () {
             let active = $(this).is(':checked');
             let id = $(this).attr('data-id');
 
             $.ajax({
-                url: '{{route('dashboard.booking_statuses.change_status')}}',
+                url: '{{route('dashboard.coupons.change_status')}}',
                 type: 'get',
                 data: {id: id, active: active},
                 success: function (data) {

@@ -53,6 +53,7 @@
                         <form action="{{route('dashboard.coupons.update',$coupon->id)}}" method="post" class="form-horizontal"
 
                               enctype="multipart/form-data" id="create_order_status_form" data-parsley-validate="">
+                            {!! method_field('PUT') !!}
                             @csrf
                             <div class="box-body">
 
@@ -62,6 +63,7 @@
                                         <input type="text" name="title_ar" class="form-control"
                                                id="title_ar" value="{{$coupon->title_ar}}"
                                                placeholder="أدخل العنوان"
+                                               required
                                         >
                                         @error('title_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -73,6 +75,7 @@
                                         <input type="text" name="title_en" class="form-control"
                                                id="title_en" value="{{$coupon->title_en}}"
                                                placeholder="أدخل العنوان"
+                                               required
                                         >
                                         @error('title_en')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -102,9 +105,23 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-4">
+                                        <label for="edit_category_id">القسم</label>
+                                        <select id="edit_category_id" {{!$coupon->category_id? 'disabled' : ''}} class="select2 form-control pt-1"
+                                                name="category_id">
+                                            <option selected disabled>{{__('dash.choose')}}</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{$category->id}}" {{$coupon->category_id == $category->id? 'selected' : ''}}>{{$category->title}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('category_id')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                    <div class="form-group col-md-4">
 
                                         <label for="edit_service_id">الخدمة</label>
-                                        <select id="edit_service_id" disabled class="select2 form-control pt-1"
+                                        <select id="edit_service_id" {{!$coupon->service_id? 'disabled' : ''}} class="select2 form-control pt-1"
                                                 name="service_id">
                                             <option selected disabled>{{__('dash.choose')}}</option>
                                             @foreach($services as $service)
@@ -112,21 +129,6 @@
                                             @endforeach
                                         </select>
                                         @error('service_id')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
-                                    <div class="form-group col-md-4">
-
-                                        <label for="edit_category_id">القسم</label>
-                                        <select id="edit_category_id" disabled class="select2 form-control pt-1"
-                                                name="category_id">
-                                            <option selected disabled>{{__('dash.choose')}}</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{$category->id}} {{$coupon->category_id == $category->id? 'selected' : ''}}">{{$category->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('category_id')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
@@ -148,7 +150,7 @@
                                     </div>
                                     <div class="form-group col-md-3">
                                         <label for="value">القيمة</label>
-                                        <input type="number" step="0.1" name="value" class="form-control"
+                                        <input type="number" step="0.1" name="value" class="form-control" required
                                                id="value"
                                                value="{{$coupon->value}}"
                                                placeholder="أدخل القيمة"
@@ -178,6 +180,39 @@
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
+                                    </div>
+                                </div>
+
+                                <div class="form-row mb-2">
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label for="times_used">مرات الاستخدام</label>
+                                            <input type="number" name="times_used" class="form-control"
+                                                   id="times_used"
+                                                   placeholder="أدخل العدد"
+                                                   value="{{$coupon->times_used}}"
+                                            >
+                                            @error('times_used')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label for="edit_code">الكود (اتركه فارغ للإنشاء التلقائي)</label>
+                                            <input type="text" name="code" class="form-control"
+                                                   id="edit_code"
+                                                   placeholder="أدخل الكود"
+                                                   value="{{$coupon->code}}"
+                                            >
+                                            @error('code')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+
+                                        </div>
                                     </div>
                                 </div>
 
@@ -215,25 +250,6 @@
 
                             </div>
                             <div class="box-body">
-                                <div class="form-row">
-                                    <div class="col-md-4">
-
-                                        <div class="form-group">
-                                            <label for="times_used">مرات الاستخدام</label>
-                                            <input type="number" name="times_used" class="form-control"
-                                                   id="times_used"
-                                                   value="{{$coupon->times_used}}"
-                                                   placeholder="أدخل العدد"
-                                            >
-                                            @error('times_used')
-                                            <div class="alert alert-danger">{{ $message }}</div>
-                                            @enderror
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box-body">
                                 <div class="form-row mb-3">
                                     <div class="col-md-6">
 
@@ -259,6 +275,23 @@
 @endsection
 @push('script')
     <script>
+        $(document).ready(function (){
+            let cat = "{{$coupon->category_id}}"
+            let serv = "{{$coupon->service_id}}"
+            if(cat){
+                $('#category_value').prop('checked', true)
+                $('#service_value').prop('checked', false)
+                $('#all_value').prop('checked', false)
+            }else if(serv){
+                $('#category_value').prop('checked', false)
+                $('#service_value').prop('checked', true)
+                $('#all_value').prop('checked', false)
+            }else {
+                $('#category_value').prop('checked', false)
+                $('#service_value').prop('checked', false)
+                $('#all_value').prop('checked', true)
+            }
+        })
         $('input[name=sale_area]').change(function () {
             let val = $(this).val()
             if (val === 'category'){
@@ -266,15 +299,19 @@
                 $('#edit_category_id').prop('required', true)
                 $('#edit_service_id').prop('disabled', true)
                 $('#edit_service_id').prop('required', false)
+                $('#edit_service_id').val('').trigger('change')
             }else if (val === 'service'){
                 $('#edit_category_id').prop('disabled', true)
                 $('#edit_category_id').prop('required', false)
+                $('#edit_category_id').val('').trigger('change')
                 $('#edit_service_id').prop('disabled', false)
                 $('#edit_service_id').prop('required', true)
             }else {
                 $('#edit_category_id').prop('disabled', true)
                 $('#edit_category_id').prop('required', false)
+                $('#edit_category_id').val('').trigger('change')
                 $('#edit_service_id').prop('disabled', true)
+                $('#edit_service_id').val('').trigger('change')
                 $('#edit_service_id').prop('required', false)
             }
         })

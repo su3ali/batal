@@ -62,6 +62,7 @@
                                         <input type="text" name="title_ar" class="form-control"
                                                id="title_ar"
                                                placeholder="أدخل العنوان"
+                                               required
                                         >
                                         @error('title_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -73,6 +74,7 @@
                                         <input type="text" name="title_en" class="form-control"
                                                id="title_en"
                                                placeholder="أدخل العنوان"
+                                               required
                                         >
                                         @error('title_en')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -88,7 +90,8 @@
                                                style="padding-left: 14px; padding-right: 14px">نطاق الخصم : </label>
                                         <div class="" style="width: 100%; padding-left: 14px; padding-right: 14px">
                                             <label class="radio-inline px-1">
-                                                <input class="mx-1" value="all" type="radio" name="sale_area" id="all_value"
+                                                <input class="mx-1" value="all" type="radio" name="sale_area"
+                                                       id="all_value"
                                                        checked><span>الكل</span>
                                             </label>
                                             <label class="radio-inline px-1">
@@ -100,6 +103,22 @@
                                                        id="service_value"><span>خدمة</span>
                                             </label>
                                         </div>
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+
+                                        <label for="category_id">القسم</label>
+                                        <select id="category_id" disabled class="select2 form-control pt-1"
+                                                name="category_id">
+                                            <option selected disabled>{{__('dash.choose')}}</option>
+                                            @foreach($categories as $category)
+                                                <option value="{{$category->id}}">{{$category->title}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('category_id')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
                                     </div>
                                     <div class="form-group col-md-4">
 
@@ -116,21 +135,6 @@
                                         @enderror
 
                                     </div>
-                                    <div class="form-group col-md-4">
-
-                                        <label for="category_id">القسم</label>
-                                        <select id="category_id" disabled class="select2 form-control pt-1"
-                                                name="category_id">
-                                            <option selected disabled>{{__('dash.choose')}}</option>
-                                            @foreach($categories as $category)
-                                                <option value="{{$category->id}}">{{$category->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('category_id')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
                                 </div>
 
                                 <div class="form-row mb-2">
@@ -139,7 +143,7 @@
                                         <select required class="form-control" style="width: 100%; padding: 8px"
                                                 name="type">
                                             <option value="percentage" selected>نسبة</option>
-                                            <option value="static" >مبلغ ثابت</option>
+                                            <option value="static">مبلغ ثابت</option>
                                         </select>
                                         @error('type')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -151,6 +155,7 @@
                                         <input type="number" step="0.1" name="value" class="form-control"
                                                id="value"
                                                placeholder="أدخل القيمة"
+                                               required
                                         >
                                         @error('value')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -179,39 +184,8 @@
 
                                     </div>
                                 </div>
-
                                 <div class="form-row mb-2">
-
-
-                                    <div class="form-group col-md-6">
-
-                                        <label for="description_ar">الوصف باللغة العربية</label>
-                                        <textarea name="description_ar" id="description_ar" class="ckeditor" cols="30" rows="10"></textarea>
-                                        @error('description_ar')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
-
-                                    <div class="form-group col-md-6">
-
-                                        <label for="description_en">الوصف باللغة الإنجليزية</label>
-                                        <textarea name="description_en" id="description_en" class="ckeditor" cols="30" rows="10"></textarea>
-                                        @error('description_en')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
-
-
-
-                                </div> {{-- description --}}
-
-
-                            </div>
-                            <div class="box-body">
-                                <div class="form-row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
 
                                         <div class="form-group">
                                             <label for="times_used">مرات الاستخدام</label>
@@ -225,7 +199,51 @@
 
                                         </div>
                                     </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label for="code">الكود (اتركه فارغ للإنشاء التلقائي)</label>
+                                            <input type="text" name="code" class="form-control"
+                                                   id="code"
+                                                   placeholder="أدخل الكود"
+                                            >
+                                            @error('code')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <div class="form-row mb-2">
+
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="description_ar">الوصف باللغة العربية</label>
+                                        <textarea name="description_ar" id="description_ar" class="ckeditor" cols="30"
+                                                  rows="10"></textarea>
+                                        @error('description_ar')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="description_en">الوصف باللغة الإنجليزية</label>
+                                        <textarea name="description_en" id="description_en" class="ckeditor" cols="30"
+                                                  rows="10"></textarea>
+                                        @error('description_en')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+
+                                </div> {{-- description --}}
+
+
                             </div>
                             <div class="box-body">
                                 <div class="form-row mb-3">
@@ -255,21 +273,29 @@
     <script>
         $('input[name=sale_area]').change(function () {
             let val = $(this).val()
-            if (val === 'category'){
+            if (val === 'category') {
                 $('#category_id').prop('disabled', false)
                 $('#category_id').prop('required', true)
                 $('#service_id').prop('disabled', true)
                 $('#service_id').prop('required', false)
-            }else if (val === 'service'){
+                $('#service_id').val('').trigger('change')
+
+            } else if (val === 'service') {
                 $('#category_id').prop('disabled', true)
                 $('#category_id').prop('required', false)
                 $('#service_id').prop('disabled', false)
                 $('#service_id').prop('required', true)
-            }else {
+                $('#category_id').val('').trigger('change')
+
+            } else {
                 $('#category_id').prop('disabled', true)
                 $('#category_id').prop('required', false)
+                $('#category_id').val('').trigger('change')
+
                 $('#service_id').prop('disabled', true)
                 $('#service_id').prop('required', false)
+                $('#service_id').val('').trigger('change')
+
             }
         })
     </script>

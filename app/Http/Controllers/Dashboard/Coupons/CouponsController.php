@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
 class CouponsController extends Controller
@@ -27,7 +28,7 @@ class CouponsController extends Controller
                     if ($row->active == 1) {
                         $checked = 'checked';
                     }
-                    return '<label class="switch s-outline s-outline-info  mb-4 mr-2">
+                    return '<label class="switch s-outline s-outline-info  mb-0">
                         <input type="checkbox" id="customSwitchStatus" data-id="' . $row->id . '" ' . $checked . '>
                         <span class="slider round"></span>
                         </label>';
@@ -37,11 +38,11 @@ class CouponsController extends Controller
                     $html = '
                     <a href="'.route('dashboard.coupons.edit', $row->id).'"  id="edit-coupon" class="btn btn-primary btn-sm card-tools edit" data-id="' . $row->id . '"
                           >
-                            <i class="far fa-edit fa-2x"></i>
+                            <i class="far fa-edit fa-1x"></i>
                        </a>
 
                                 <a data-table_id="html5-extension" data-href="' . route('dashboard.coupons.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
-                            <i class="far fa-trash-alt fa-2x"></i>
+                            <i class="far fa-trash-alt fa-1x"></i>
                     </a>';
                     return $html;
                 })
@@ -63,6 +64,36 @@ class CouponsController extends Controller
         return view('dashboard.coupons.create', compact('categories', 'services'));
     }
     protected function store(Request $request){
+        $rules = [
+            'title_ar' => 'required|string|min:3|max:100',
+            'title_en' => 'required|string|min:3|max:100',
+            'type' => 'required|in:static, percentage',
+            'value' => 'required|numeric',
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'times_used' => 'nullable|numeric',
+            'code' => 'nullable|string',
+            'description_ar' => 'nullable|string|min:3',
+            'description_en' => 'nullable|string|min:3'
+        ];
+        if ($request->sale_area == 'category'){
+            $rules['category_id'] = 'required|exists:categories,id';
+        }
+        if ($request->sale_area == 'service'){
+            $rules['service_id'] = 'required|exists:services,id';
+        }
+        $validated = Validator::make($request->all(), $rules);
+        if ($validated->fails()) {
+            return redirect()->back()->withErrors($validated->errors());
+        }
+        $validated = $validated->validated();
+        if(!$validated['code']){
+            $last = Coupon::query()->latest()->first()?->id;
+            $validated['code'] = 'coupon2023-'.$last?$last+1: 1;
+        }
+        Coupon::query()->create($validated);
+        session()->flash('success');
+        return redirect()->route('dashboard.coupons.index');
 
     }
     protected function edit($id){
@@ -70,5 +101,65 @@ class CouponsController extends Controller
         $categories = Category::all();
         $services = Service::all();
         return view('dashboard.coupons.edit', compact('coupon', 'categories', 'services'));
+    }
+    protected function update(Request $request, $id){
+        $coupon = Coupon::query()->findOrFail($id);
+        $rules = [
+            'title_ar' => 'required|string|min:3|max:100',
+            'title_en' => 'required|string|min:3|max:100',
+            'type' => 'required|in:static, percentage',
+            'value' => 'required|numeric',
+            'start' => 'required|date',
+            'end' => 'required|date',
+            'times_used' => 'nullable|numeric',
+            'code' => 'nullable|string',
+            'description_ar' => 'nullable|string|min:3',
+            'description_en' => 'nullable|string|min:3'
+        ];
+        if ($request->sale_area == 'category'){
+            $rules['category_id'] = 'required|exists:categories,id';
+        }
+        if ($request->sale_area == 'service'){
+            $rules['service_id'] = 'required|exists:services,id';
+        }
+        $validated = Validator::make($request->all(), $rules);
+        if ($validated->fails()) {
+            return redirect()->back()->withErrors($validated->errors());
+        }
+        $validated = $validated->validated();
+        if(!$validated['code']){
+            $last = Coupon::query()->latest()->first()?->id;
+            $validated['code'] = 'coupon2023-'.$last?$last+1: 1;
+        }
+        if (isset($validated['category_id']) && $validated['category_id']){
+            $validated['service_id'] = null;
+        }else if (isset($validated['service_id']) && $validated['service_id']){
+            $validated['category_id'] = null;
+        }else{
+            $validated['service_id'] = null;
+            $validated['category_id'] = null;
+        }
+       $coupon->update($validated);
+        session()->flash('success');
+        return redirect()->route('dashboard.coupons.index');
+    }
+    protected function destroy($id){
+        $coupon = Coupon::query()->findOrFail($id);
+        $coupon->delete();
+        return [
+            'success' => true,
+            'msg' => __("dash.deleted_success")
+        ];
+    }
+    protected function change_status(Request $request)
+    {
+        $coupon = Coupon::query()->where('id', $request->id)->first();
+        if ($request->active == "false") {
+            $coupon->active = 0;
+        } else {
+            $coupon->active = 1;
+        }
+        $coupon->save();
+        return response('success');
     }
 }
