@@ -10,7 +10,7 @@
     }
 @endphp
     <!DOCTYPE html>
-<html lang="{{app()->getLocale()}}">
+{{--<html lang="{{app()->getLocale()}}">--}}
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.4.0/min/dropzone.min.css">
 
     <link href="{{asset(app()->getLocale().'/plugins/apex/apexcharts.css')}}" rel="stylesheet" type="text/css">
+{{--    <link href="{{asset(app()->getLocale().'/assets/css/dashboard/dash_1.css')}}" rel="stylesheet" type="text/css"/>--}}
     <link href="{{asset(app()->getLocale().'/assets/css/dashboard/dash_2.css')}}" rel="stylesheet" type="text/css"/>
 
     <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/font-icons/fontawesome/css/regular.css')}}">

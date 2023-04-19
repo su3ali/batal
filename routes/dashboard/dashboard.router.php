@@ -24,7 +24,7 @@ Route::get('lang/{locale}', [ChangeLocalizationAction::class, '__invoke'])->name
 include __DIR__ . '/auth.routes.php';
 
 Route::group(['middleware' => ['auth:dashboard']], static function () {
-    Route::view('/', 'dashboard.home')->name('home');
+    Route::get('/','IndexController@index' )->name('home');
     require __DIR__ . '/core.routes.php';
     require __DIR__ . '/order.routes.php';
     require __DIR__ . '/booking.routes.php';
