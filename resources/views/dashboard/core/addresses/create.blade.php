@@ -59,7 +59,7 @@
                                 <label for="inputEmail4">{{__('dash.country')}}</label>
                                 <select id="inputState"  class="select2 country_id form-control pt-1"
                                         name="country_id">
-                                    <option disabled>{{__('dash.choose')}}</option>
+                                    <option disabled selected>{{__('dash.choose')}}</option>
                                     @foreach($countries as $key => $country)
                                         <option value="{{$key}}">{{$country}}</option>
                                     @endforeach
