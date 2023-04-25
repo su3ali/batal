@@ -13,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 class Admin extends Authenticatable
 {
     use HasApiTokens,WithBoot,HasPassword, HasFactory,HasRoles, Notifiable;
-
+    protected $guard = 'dashboard';
     protected $fillable = [
         'first_name',
         'last_name',
