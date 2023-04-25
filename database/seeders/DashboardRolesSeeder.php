@@ -23,7 +23,7 @@ class DashboardRolesSeeder extends Seeder
         $this->setupPermissions();
         //
         $this->setupRoles();
-//        $this->setupUsers();
+        $this->setupUsers();
     }
 
     private function setupUsers()
