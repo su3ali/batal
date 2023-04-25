@@ -43,7 +43,7 @@ class CustomerController extends Controller
                     $html = '
                     <a href="'.route('dashboard.core.address.index', 'id='.$user->id).'" class="mr-2 btn btn-outline-primary btn-sm"><i class="far fa-address-book fa-2x"></i> </a>
                     <a href="'.route('dashboard.core.customer.edit', $user->id).'" class="mr-2 btn btn-outline-warning btn-sm"><i class="far fa-edit fa-2x"></i> </a>
-                              
+
                                 <a data-href="'.route('dashboard.core.customer.destroy', $user->id).'" data-id="'.$user->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
@@ -91,7 +91,7 @@ class CustomerController extends Controller
         }
 
 
-        User::updateOrCreate($data);
+        User::create($data);
 
         session()->flash('success');
         return redirect()->route('dashboard.core.customer.index');
