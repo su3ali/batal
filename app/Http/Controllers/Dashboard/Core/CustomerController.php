@@ -91,7 +91,7 @@ class CustomerController extends Controller
         }
 
 
-        User::create($data);
+        User::query()->create($data);
 
         session()->flash('success');
         return redirect()->route('dashboard.core.customer.index');
