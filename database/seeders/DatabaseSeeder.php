@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             //                SqlFileSeeder::class,
-            DashboardRolesSeeder::class,
+//            DashboardRolesSeeder::class,
             SettingSeeder::class,
             LanguageSeeder::class,
 
