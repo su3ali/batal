@@ -82,15 +82,14 @@ class CustomerController extends Controller
             'city_id' => 'required|exists:cities,id',
         ]);
 
-        $data=$request->except('_token','password_confirmation','active','first_name');
+        $data=$request->except('_token','password_confirmation','active');
 
         if ($request['active'] && $request['active'] == 'on'){
             $data['active'] = 1;
         }else{
             $data['active'] = 0;
         }
-
-        $data['first_name'] =$request->first_name;
+dd($data);
         User::query()->create($data);
 
         session()->flash('success');
