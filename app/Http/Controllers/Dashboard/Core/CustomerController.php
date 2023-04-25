@@ -89,7 +89,7 @@ class CustomerController extends Controller
         }else{
             $data['active'] = 0;
         }
-dd($data);
+
         User::query()->create($data);
 
         session()->flash('success');
