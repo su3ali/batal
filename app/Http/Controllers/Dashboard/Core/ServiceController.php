@@ -40,16 +40,16 @@ class ServiceController extends Controller
                 ->addColumn('controll', function ($service) {
 
                     $html = '
-                    
+
                     <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools image" data-id="'.$service->id.'" data-toggle="modal" data-target="#imageModel">
                             <i class="far fa-image fa-2x"></i>
                        </button>
-                  
-                                <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="'.$service->id.'"  data-title_ar="'.$service->title_ar.'"
-                                 data-title_en="'.$service->title_en.'" data-des_ar="'.$service->description_ar.'" data-des_en="'.$service->description_en.'" data-ter_ar="'.$service->ter_cond_ar.'" data-ter_en="'.$service->ter_cond_en.'"
-                                  data-category_id="'.$service->category_id.'" data-price="'.$service->price.'" data-type="'.$service->type.'" data-start="'.$service->start_from.'" data-toggle="modal" data-target="#editModel">
+
+<a href="'.route('dashboard.core.service.edit', $service->id).'"  id="edit-booking" class="btn btn-primary btn-sm card-tools edit" data-id="' . $service->id . '"
+                         data-type="'.$service->type.'" >
                             <i class="far fa-edit fa-2x"></i>
-                       </button>
+                       </a>
+
 
                                 <a data-href="'.route('dashboard.core.service.destroy', $service->id).'" data-id="'.$service->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
@@ -66,14 +66,15 @@ class ServiceController extends Controller
                 ])
                 ->make(true);
         }
-        $categories = category::whereNull('parent_id')->where('active',1)->get()->pluck('title','id');
 
-        return view('dashboard.core.services.index',compact('categories'));
+        return view('dashboard.core.services.index');
     }
 
     public function create()
     {
-        return view('dashboard.services.create');
+        $categories = category::whereNull('parent_id')->where('active',1)->get()->pluck('title','id');
+
+        return view('dashboard.core.services.create',compact('categories'));
     }
 
     public function store(Request $request)
@@ -87,7 +88,7 @@ class ServiceController extends Controller
             'ter_cond_en' => 'required|String|min:3',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|Numeric',
-            'type' => 'required',
+            'type' => 'required|in:evaluative,fixed',
             'start_from' => 'nullable|Numeric',
         ]);
 
@@ -96,13 +97,15 @@ class ServiceController extends Controller
         Service::updateOrCreate($data);
 
         session()->flash('success');
-        return redirect()->back();
+        return redirect()->route('dashboard.core.service.index');
     }
 
     public function edit($id)
     {
         $service = Service::where('id',$id)->first();
-        return view('dashboard.services.edit', compact( 'service'));
+        $categories = category::whereNull('parent_id')->where('active',1)->get()->pluck('title','id');
+
+        return view('dashboard.core.services.edit', compact( 'service','categories'));
     }
 
     public function update(Request $request, $id)
@@ -117,17 +120,19 @@ class ServiceController extends Controller
             'ter_cond_en' => 'required|String|min:3',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|Numeric',
-            'type' => 'required',
+            'type' => 'required|in:evaluative,fixed',
             'start_from' => 'nullable|Numeric',
         ]);
         $data=$request->except('_token');
 
-
+        if ($request->type == 'fixed'){
+            $data['start_from'] = null;
+        }
         $service = Service::find($id);
 
         $service->update($data);
         session()->flash('success');
-        return redirect()->back();
+        return redirect()->route('dashboard.core.service.index');
     }
 
     public function destroy($id)

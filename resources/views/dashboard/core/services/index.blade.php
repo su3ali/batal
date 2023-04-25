@@ -34,7 +34,7 @@
         </header>
     </div>
 
-    @include('dashboard.core.services.create')
+{{--    @include('dashboard.core.services.create')--}}
 @endsection
 
 
@@ -49,10 +49,14 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-md-12 text-right mb-3">
 
-                        <button type="button" id="add-work-exp" class="btn btn-primary card-tools" data-toggle="modal"
-                                data-target="#exampleModal">
+{{--                        <button type="button" id="add-work-exp" class="btn btn-primary card-tools" data-toggle="modal"--}}
+{{--                                data-target="#exampleModal">--}}
+{{--                            {{__('dash.add_new')}}--}}
+{{--                        </button>--}}
+
+                        <a href="{{route('dashboard.core.service.create')}}" id="" class="btn btn-primary card-tools">
                             {{__('dash.add_new')}}
-                        </button>
+                        </a>
 
                     </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -73,7 +77,7 @@
         </div>
 
     </div>
-    @include('dashboard.core.services.edit')
+{{--    @include('dashboard.core.services.edit')--}}
     @include('dashboard.core.services.images')
 
 @endsection
@@ -127,59 +131,59 @@
             });
         });
 
-        $("body").on('click', '.edit', function () {
-
-            var id = $(this).attr('data-id');
-            var title_ar = $(this).attr('data-title_ar');
-            var title_en = $(this).attr('data-title_en');
-            var des_ar = $(this).attr('data-des_ar');
-            var des_en = $(this).attr('data-des_en');
-            var ter_ar = $(this).attr('data-ter_ar');
-            var ter_en = $(this).attr('data-ter_en');
-            var category_id = $(this).attr('data-category_id');
-            var price = $(this).attr('data-price');
-            var type = $(this).attr('data-type');
-            var start = $(this).attr('data-start');
-
-
-            $('#title_ar').val(title_ar)
-            $('#title_en').val(title_en)
-            $('.price').val(price)
-            $('.start_from').val(start)
-
-            $('.type  option[value="'+type+'"]').prop("selected", true);
-            $('.category_id  option[value="'+category_id+'"]').prop("selected", true);
-
-
-            if (type == 'evaluative'){
-
-                $('.type-col').removeClass('col-md-6');
-                $('.type-col').addClass('col-md-4');
-                $('.price-col').removeClass('col-md-6');
-                $('.price-col').addClass('col-md-4');
-                $('.start_from').show();
-
-
-            }else{
-                $('.type-col').removeClass('col-md-4');
-                $('.type-col').addClass('col-md-6');
-                $('.price-col').removeClass('col-md-4');
-                $('.price-col').addClass('col-md-6');
-                $('.start_from').hide();
-
-            }
-
-
-            CKEDITOR.instances['description_ar'].setData(des_ar);
-            CKEDITOR.instances['description_en'].setData(des_en);
-            CKEDITOR.instances['ter_cond_ar'].setData(ter_ar);
-            CKEDITOR.instances['ter_cond_en'].setData(ter_en);
-
-            var action = window.location.origin + '/admin/core/service/' + id;
-            console.log(action)
-            $('#demo-form-edit').attr('action', action);
-
-        })
+        // $("body").on('click', '.edit', function () {
+        //
+        //     // var id = $(this).attr('data-id');
+        //     // var title_ar = $(this).attr('data-title_ar');
+        //     // var title_en = $(this).attr('data-title_en');
+        //     // var des_ar = $(this).attr('data-des_ar');
+        //     // var des_en = $(this).attr('data-des_en');
+        //     // var ter_ar = $(this).attr('data-ter_ar');
+        //     // var ter_en = $(this).attr('data-ter_en');
+        //     // var category_id = $(this).attr('data-category_id');
+        //     // var price = $(this).attr('data-price');
+        //     var type = $(this).attr('data-type');
+        //     // var start = $(this).attr('data-start');
+        //     //
+        //     //
+        //     // $('#title_ar').val(title_ar)
+        //     // $('#title_en').val(title_en)
+        //     // $('.price').val(price)
+        //     // $('.start_from').val(start)
+        //     //
+        //     // $('.type  option[value="'+type+'"]').prop("selected", true);
+        //     // $('.category_id  option[value="'+category_id+'"]').prop("selected", true);
+        //
+        //
+        //     if (type == 'evaluative'){
+        //
+        //         $('.type-col').removeClass('col-md-6');
+        //         $('.type-col').addClass('col-md-4');
+        //         $('.price-col').removeClass('col-md-6');
+        //         $('.price-col').addClass('col-md-4');
+        //         $('.start_from').show();
+        //
+        //
+        //     }else{
+        //         $('.type-col').removeClass('col-md-4');
+        //         $('.type-col').addClass('col-md-6');
+        //         $('.price-col').removeClass('col-md-4');
+        //         $('.price-col').addClass('col-md-6');
+        //         $('.start_from').hide();
+        //
+        //     }
+        //     //
+        //     //
+        //     // CKEDITOR.instances['description_ar'].setData(des_ar);
+        //     // CKEDITOR.instances['description_en'].setData(des_en);
+        //     // CKEDITOR.instances['ter_cond_ar'].setData(ter_ar);
+        //     // CKEDITOR.instances['ter_cond_en'].setData(ter_en);
+        //     //
+        //     // var action = window.location.origin + '/admin/core/service/' + id;
+        //     // console.log(action)
+        //     // $('#demo-form-edit').attr('action', action);
+        //
+        // })
 
 
         $("body").on('change', '#customSwitch4', function () {
