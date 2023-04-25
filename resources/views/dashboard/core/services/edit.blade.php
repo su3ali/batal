@@ -57,7 +57,7 @@
                             {!! method_field('PUT') !!}
                             <div class="box-body">
                                 <div class="form-row mb-3">
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-3">
                                         <label for="inputEmail4">{{__('dash.title_ar')}}</label>
                                         <input type="text" name="title_ar" class="form-control"
                                                id="inputEmail4" value="{{$service->title_ar}}"
@@ -68,7 +68,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-3">
                                         <label for="inputEmail4">{{__('dash.title_en')}}</label>
                                         <input type="text" name="title_en" class="form-control"
                                                id="inputEmail4" value="{{$service->title_en}}"
@@ -80,7 +80,7 @@
                                     </div>
 
 
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-3">
 
                                         <label for="inputEmail4">{{__('dash.category')}}</label>
                                         <select id="inputState" class="select2 form-control pt-1"
@@ -94,6 +94,18 @@
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
+                                    </div>
+
+
+                                    <div class="form-group col-md-3">
+                                        <label for="inputEmail4">المدة</label>
+                                        <input type="text" name="duration" class="form-control"
+                                               id="inputEmail4" value="{{$service->duration}}"
+                                               placeholder="المدة"
+                                        >
+                                        @error('duration')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                 </div>

@@ -49,7 +49,7 @@
                     <div class="col-md-12 text-left mb-3">
                         <h3>إنشاء كوبون جديد</h3>
                     </div>
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         <form action="{{route('dashboard.coupons.store')}}" method="post" class="form-horizontal"
 
                               enctype="multipart/form-data" id="create_order_status_form" data-parsley-validate="">
