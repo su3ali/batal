@@ -67,7 +67,7 @@ class CouponsController extends Controller
         $rules = [
             'title_ar' => 'required|string|min:3|max:100',
             'title_en' => 'required|string|min:3|max:100',
-            'type' => 'required|in:static, percentage',
+            'type' => 'required|in:static,percentage',
             'value' => 'required|numeric',
             'start' => 'required|date',
             'end' => 'required|date',
@@ -107,7 +107,7 @@ class CouponsController extends Controller
         $rules = [
             'title_ar' => 'required|string|min:3|max:100',
             'title_en' => 'required|string|min:3|max:100',
-            'type' => 'required|in:static, percentage',
+            'type' => 'required|in:static,percentage',
             'value' => 'required|numeric',
             'start' => 'required|date',
             'end' => 'required|date',
