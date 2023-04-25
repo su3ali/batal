@@ -20,7 +20,7 @@ class DashboardRolesSeeder extends Seeder
     public function run()
     {
         \Artisan::call('permission:cache-reset');
-        $this->setupPermissions();
+//        $this->setupPermissions();
         //
         $this->setupRoles();
         $this->setupUsers();
