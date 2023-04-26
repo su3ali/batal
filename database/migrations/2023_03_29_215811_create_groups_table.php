@@ -17,7 +17,7 @@ class CreateGroupsTable extends Migration
             $table->id();
             $table->string('name_ar');
             $table->string('name_en');
-            $table->unsignedBigInteger('technician_id');
+            $table->unsignedBigInteger('technician_id')->nullable();
             $table->timestamps();
         });
     }

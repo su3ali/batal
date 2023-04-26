@@ -48,7 +48,7 @@
                             <div class="form-group col-md-12">
 
                                 <label for="edit_technician_id">مشرف المجموعة</label>
-                                <select required id="edit_technician_id" class="select2 form-control pt-1"
+                                <select  id="edit_technician_id" class="select2 form-control pt-1"
                                         name="technician_id">
                                     <option disabled>{{__('dash.choose')}}</option>
                                     @foreach($technicians as $technician)

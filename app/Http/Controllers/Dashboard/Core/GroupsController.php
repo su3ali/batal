@@ -25,7 +25,7 @@ class GroupsController extends Controller
             $groups = Group::all();
             return DataTables::of($groups)
                 ->addColumn('technician', function ($row) {
-                    return Technician::query()->find($row->technician_id)->name;
+                    return $row->technician_id ? Technician::query()->find($row->technician_id)->name : 'لا يوجد' ;
                 })
                 ->addColumn('g_name', function ($row){
                     return $row->name;
@@ -63,7 +63,7 @@ class GroupsController extends Controller
         $rules = [
             'name_en' => 'required|String|min:3|unique:groups,name_en',
             'name_ar' => 'required|String|min:3|unique:groups,name_ar',
-            'technician_id' => 'required|exists:technicians,id',
+            'technician_id' => 'nullable|exists:technicians,id',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
@@ -80,7 +80,7 @@ class GroupsController extends Controller
         $rules = [
             'name_en' => 'required|String|min:3|unique:groups,name_en,'.$id,
             'name_ar' => 'required|String|min:3|unique:groups,name_ar,'.$id,
-            'technician_id' => 'required|exists:technicians,id',
+            'technician_id' => 'nullable|exists:technicians,id',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
