@@ -25,7 +25,7 @@ class GroupsController extends Controller
             $groups = Group::all();
             return DataTables::of($groups)
                 ->addColumn('technician', function ($row) {
-                    return $row->technician_id ? Technician::query()->find($row->technician_id)->name : 'لا يوجد' ;
+                    return $row->technician_id ? Technician::query()->find($row->technician_id)?Technician::query()->find($row->technician_id)->name : 'لا يوجد': 'لا يوجد' ;
                 })
                 ->addColumn('g_name', function ($row){
                     return $row->name;

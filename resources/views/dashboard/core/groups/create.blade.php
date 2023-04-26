@@ -49,7 +49,7 @@
                                 <label for="tech">مشرف المجموعة</label>
                                 <select  id="tech" class="select2 form-control pt-1"
                                         name="technician_id">
-                                    <option disabled>{{__('dash.choose')}}</option>
+                                    <option selected value="">{{__('dash.choose')}}</option>
                                     @foreach($technicians as $technician)
                                         <option value="{{$technician->id}}">{{$technician->name}}</option>
                                     @endforeach
