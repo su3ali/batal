@@ -1,4 +1,12 @@
 @extends('dashboard.layout.layout')
+@push('style')
+<style>
+    .table > thead > tr > th {
+        white-space: pre-wrap!important;
+    }
+</style>
+@endpush
+
 
 @section('sub-header')
     <div class="sub-header-container">

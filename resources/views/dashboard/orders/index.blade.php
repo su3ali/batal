@@ -34,7 +34,7 @@
         </header>
     </div>
 
-    @include('dashboard.orders.create')
+{{--    @include('dashboard.orders.create')--}}
 @endsection
 
 @section('content')
@@ -46,10 +46,14 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-md-12 text-right mb-3">
 
-                        <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal"
-                                data-target="#createOrderModel">
+{{--                        <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal"--}}
+{{--                                data-target="#createOrderModel">--}}
+{{--                            {{__('dash.add_new')}}--}}
+{{--                        </button>--}}
+
+                        <a href="{{route('dashboard.orders.create')}}" id="" class="btn btn-primary card-tools">
                             {{__('dash.add_new')}}
-                        </button>
+                        </a>
 
                     </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -58,6 +62,8 @@
                             <th>#</th>
                             <th>{{__('dash.customer_name')}}</th>
                             <th>{{__('dash.service')}}</th>
+                            <th>يوم بدء الخدمه</th>
+                            <th>وقت بدء الخدمه</th>
                             <th>{{__('dash.price_value')}}</th>
                             <th>{{__('dash.order_status')}}</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
@@ -72,7 +78,7 @@
         </div>
 
     </div>
-    @include('dashboard.orders.edit')
+{{--    @include('dashboard.orders.edit')--}}
 @endsection
 
 @push('script')
@@ -94,6 +100,8 @@
                     {data: 'id', name: 'id'},
                     {data: 'user', name: 'user'},
                     {data: 'service', name: 'service'},
+                    {data: 'day', name: 'day'},
+                    {data: 'start_time', name: 'start_time'},
                     {data: 'price', name: 'price'},
                     {data: 'status', name: 'status'},
                     {data: 'control', name: 'control', orderable: false, searchable: false},
@@ -102,33 +110,33 @@
             });
         });
 
-        $(document).on('click', '#edit-order', function () {
-            let id = $(this).data('id');
-            let user_id = $(this).data('user_id');
-            let category_id = $(this).data('category_id');
-            let service_id = $(this).data('service_id');
-            let price = $(this).data('price');
-            let payment_method = $(this).data('payment_method');
-            let notes = $(this).data('notes');
-            $('#edit_customer_name').val(user_id).trigger('change')
-            $('#edit_category_id').val(category_id).trigger('change')
-            $('#edit_service_id').val(service_id).trigger('change')
-            $('#edit_price').val(price)
-            $('#edit_notes').html(notes)
+        {{--$(document).on('click', '#edit-order', function () {--}}
+        {{--    let id = $(this).data('id');--}}
+        {{--    let user_id = $(this).data('user_id');--}}
+        {{--    let category_id = $(this).data('category_id');--}}
+        {{--    let service_id = $(this).data('service_id');--}}
+        {{--    let price = $(this).data('price');--}}
+        {{--    let payment_method = $(this).data('payment_method');--}}
+        {{--    let notes = $(this).data('notes');--}}
+        {{--    $('#edit_customer_name').val(user_id).trigger('change')--}}
+        {{--    $('#edit_category_id').val(category_id).trigger('change')--}}
+        {{--    $('#edit_service_id').val(service_id).trigger('change')--}}
+        {{--    $('#edit_price').val(price)--}}
+        {{--    $('#edit_notes').html(notes)--}}
 
-            if (payment_method === 'visa'){
-                $('#edit_payment_method_visa').prop('checked', true)
-                $('#edit_payment_method_cache').prop('checked', false)
-            }else {
-                $('#edit_payment_method_visa').prop('checked', false)
-                $('#edit_payment_method_cache').prop('checked', true)
-            }
-            let action = "{{route('dashboard.orders.update', 'id')}}";
-            action = action.replace('id', id)
-            $('#edit_order_form').attr('action', action);
+        {{--    if (payment_method === 'visa'){--}}
+        {{--        $('#edit_payment_method_visa').prop('checked', true)--}}
+        {{--        $('#edit_payment_method_cache').prop('checked', false)--}}
+        {{--    }else {--}}
+        {{--        $('#edit_payment_method_visa').prop('checked', false)--}}
+        {{--        $('#edit_payment_method_cache').prop('checked', true)--}}
+        {{--    }--}}
+        {{--    let action = "{{route('dashboard.orders.update', 'id')}}";--}}
+        {{--    action = action.replace('id', id)--}}
+        {{--    $('#edit_order_form').attr('action', action);--}}
 
 
-        })
+        {{--})--}}
 
         $("body").on('change', '#customSwitchtech', function () {
             let active = $(this).is(':checked');
@@ -148,6 +156,7 @@
                 }
             });
         })
+
 
 
     </script>

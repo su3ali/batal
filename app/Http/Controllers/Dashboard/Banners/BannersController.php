@@ -148,4 +148,6 @@ class BannersController extends Controller
         return response()->json('success');
     }
 
+
+
 }

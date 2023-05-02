@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,5 +33,11 @@ class Service extends Model
     {
         return $this->hasMany(ServiceImages::class,'service_id','id');
     }
+
+    public function BookingSetting()
+    {
+        return $this->hasOne(BookingSetting::class,'service_id','id');
+    }
+
 
 }

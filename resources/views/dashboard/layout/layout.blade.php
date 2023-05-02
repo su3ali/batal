@@ -57,9 +57,10 @@
         href="{{asset(app()->getLocale().'/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css')}}"/>
     <link rel="stylesheet" type="text/css"
           href="{{asset(app()->getLocale().'/assets/css/forms/theme-checkbox-radio.css')}}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
-
+    <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/jquery-ui/jquery-ui.min.css')}}">
+    <link rel="stylesheet" href="{{asset(app()->getLocale().'/plugins/jquery-ui/jquery-ui.theme.css')}}">
+    <link rel="stylesheet" href="{{asset('css/flatpickr.min.css')}}">
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900;1000&display=swap">
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
@@ -78,6 +79,60 @@
         span.select2.select2-container.select2-container--bootstrap4 {
             width: auto!important;
         }
+
+        .ui-autocomplete{
+            right: 342.676px!important;
+            width: 349.021px;
+        }
+
+        .flatpickr-current-month .numInputWrapper{
+            display: none;
+        }
+
+        label.radio span {
+            padding: 3px 23px;
+            border: 2px solid #eee;
+            display: inline-block;
+            background-color: #f1f2f3;
+            color: #039be5;
+            border-radius: 10px;
+            width: 100%;
+            height: 38px;
+            line-height: 29px;
+            margin-bottom: 0px;
+            margin-left: 0;
+        }
+
+        .select-time {
+            margin-left: 5px;
+        }
+
+        label.radio input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        label.radio input:checked+span {
+            border-color: #039BE5;
+            background-color: #0a58ca;
+            color: #fff;
+            border-radius: 9px;
+
+            margin-bottom: 0;
+        }
+
+        label.radio input:disabled+span {
+            border-color: #acb3bd;
+            background-color: #acb3bd;
+            color: #fff;
+            border-radius: 9px;
+
+            margin-bottom: 0;
+        }
+
     </style>
     @stack('style')
     <script type="text/javascript" src="{{ asset('admin_dashboard/bower_components/ckeditor/ckeditor.js') }}"></script>
@@ -142,6 +197,7 @@
 <script src="{{asset(app()->getLocale().'/bootstrap/js/bootstrap.min.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/plugins/perfect-scrollbar/perfect-scrollbar.min.js')}}"></script>
 <script src="{{asset(app()->getLocale().'/assets/js/app.js')}}"></script>
+
 <script>
     $(document).ready(function () {
         App.init();
@@ -177,6 +233,9 @@
     src="{{asset(app()->getLocale().'/plugins/table/datatable/button-ext/buttons.print.min.js')}}"></script>
 <link rel="stylesheet" type="text/css" href="{{asset(app()->getLocale().'/assets/css/forms/switches.css')}}">
 <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="{{asset('js/flatpickr.js')}}"></script>
+<script src="{{asset(app()->getLocale().'/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+
 <script type="text/javascript">
     feather.replace();
     Dropzone.autoDiscover=false;
@@ -200,7 +259,7 @@
         if (arr[0]) {
             let text = '';
             for (let i = 0; i < arr.length; i++) {
-                text +=  arr[i] + "<br/>"
+                text +=  arr[i]
             }
             swal({
                 title: "{{__('dash.error')}}",
@@ -250,6 +309,7 @@
             dropdown: true,
             scrollbar: true
         });
+
     });
 
 </script>
@@ -288,8 +348,9 @@
     });
 
 </script>
+{{--<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>--}}
+
 @stack('script')
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 </body>
 
