@@ -1,4 +1,3 @@
-
 @extends('dashboard.layout.layout')
 
 @section('sub-header')
@@ -51,7 +50,8 @@
                         <h3>إنشاء خدمه جديد</h3>
                     </div>
                     <div class="col-md-12">
-                        <form action="{{route('dashboard.core.service.update', $service->id)}}" method="post" class="form-horizontal"
+                        <form action="{{route('dashboard.core.service.update', $service->id)}}" method="post"
+                              class="form-horizontal"
                               enctype="multipart/form-data" id="demo-form" data-parsley-validate="">
                             @csrf
                             {!! method_field('PUT') !!}
@@ -87,7 +87,8 @@
                                                 name="category_id">
                                             <option disabled>{{__('dash.choose')}}</option>
                                             @foreach($categories as $key => $category)
-                                                <option value="{{$key}}" @if($key == $service->category_id) selected @endif>{{$category}}</option>
+                                                <option value="{{$key}}"
+                                                        @if($key == $service->category_id) selected @endif>{{$category}}</option>
                                             @endforeach
                                         </select>
                                         @error('category_id')
@@ -144,7 +145,8 @@
                                     <div class="form-group col-md-6">
 
                                         <label for="inputEmail4">{{__('dash.description_ar')}}</label>
-                                        <textarea name="description_ar" class="ckeditor" cols="10" rows="5">{{$service->description_ar}}</textarea>
+                                        <textarea name="description_ar" class="ckeditor" cols="10"
+                                                  rows="5">{{$service->description_ar}}</textarea>
                                         @error('description_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
@@ -154,13 +156,13 @@
                                     <div class="form-group col-md-6">
 
                                         <label for="inputEmail4">{{__('dash.description_en')}}</label>
-                                        <textarea name="description_en" class="ckeditor" cols="10" rows="5">{{$service->description_en}}</textarea>
+                                        <textarea name="description_en" class="ckeditor" cols="10"
+                                                  rows="5">{{$service->description_en}}</textarea>
                                         @error('description_en')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
                                     </div>
-
 
 
                                 </div>
@@ -169,13 +171,16 @@
                                 <div class="form-row mb-2">
 
 
-                                    <div class="form-group type-col @if($service->type == 'evaluative') col-md-4 @else col-md-6 @endif">
+                                    <div
+                                        class="form-group type-col @if($service->type == 'evaluative') col-md-4 @else col-md-6 @endif">
 
                                         <label for="inputEmail4">{{__('dash.type')}}</label>
                                         <select id="inputState" class="select2 type form-control"
                                                 name="type">
-                                            <option value="{{\App\Enums\Core\ServiceType::fixed()->value}}" @if(\App\Enums\Core\ServiceType::fixed()->value == $service->type) selected @endif >{{\App\Enums\Core\ServiceType::fixed()->value}}</option>
-                                            <option value="{{\App\Enums\Core\ServiceType::evaluative()->value}}" @if(\App\Enums\Core\ServiceType::evaluative()->value == $service->type) selected @endif>{{\App\Enums\Core\ServiceType::evaluative()->value}}</option>
+                                            <option value="{{\App\Enums\Core\ServiceType::fixed()->value}}"
+                                                    @if(\App\Enums\Core\ServiceType::fixed()->value == $service->type) selected @endif >{{\App\Enums\Core\ServiceType::fixed()->value}}</option>
+                                            <option value="{{\App\Enums\Core\ServiceType::evaluative()->value}}"
+                                                    @if(\App\Enums\Core\ServiceType::evaluative()->value == $service->type) selected @endif>{{\App\Enums\Core\ServiceType::evaluative()->value}}</option>
 
                                         </select>
                                         @error('category_id')
@@ -184,7 +189,8 @@
 
                                     </div>
 
-                                    <div class="form-group price-col @if($service->type == 'evaluative') col-md-4 @else col-md-6 @endif">
+                                    <div
+                                        class="form-group price-col @if($service->type == 'evaluative') col-md-4 @else col-md-6 @endif">
 
 
                                         <label for="inputEmail4">{{__('dash.price')}}</label>
@@ -198,7 +204,10 @@
 
                                     </div>
 
-                                    <div class="form-group start_from @if($service->type == 'evaluative') col-md-4 @else col-md-6 @endif" @if($service->type == 'evaluative') style="display: block;" @else style="display: none;" @endif>
+                                    <div
+                                        class="form-group start_from @if($service->type == 'evaluative') col-md-4 @else col-md-6 @endif"
+                                        @if($service->type == 'evaluative') style="display: block;"
+                                        @else style="display: none;" @endif>
 
                                         <label for="inputEmail4">{{__('dash.start_from')}}</label>
                                         <input type="text" name="start_from" class="form-control"
@@ -214,12 +223,33 @@
                                 </div>
 
                                 <div class="form-row mb-2">
+                                    <div class="form-group col-md-12">
+
+                                        <label for="group_ids">المجموعات</label>
+                                        <select id="group_ids" multiple class="select2 form-control pt-1"
+                                                name="group_ids[]" required>
+                                            <option disabled>{{__('dash.choose')}}</option>
+                                            @foreach($groups as $group)
+                                                <option
+                                                    value="{{$group->id}}" {{in_array($group->id, $service->groups->pluck('id')->toArray())? 'selected' : ''}}>{{$group->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('group_ids')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-row mb-2">
 
 
                                     <div class="form-group col-md-6">
 
                                         <label for="inputEmail4">{{__('dash.term_cond_ar')}}</label>
-                                        <textarea name="ter_cond_ar" class="ckeditor" cols="10" rows="5">{{$service->ter_cond_ar}}</textarea>
+                                        <textarea name="ter_cond_ar" class="ckeditor" cols="10"
+                                                  rows="5">{{$service->ter_cond_ar}}</textarea>
                                         @error('ter_cond_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
@@ -229,13 +259,13 @@
                                     <div class="form-group col-md-6">
 
                                         <label for="inputEmail4">{{__('dash.term_cond_en')}}</label>
-                                        <textarea name="ter_cond_en" class="ckeditor" cols="10" rows="5">{{$service->ter_cond_en}}</textarea>
+                                        <textarea name="ter_cond_en" class="ckeditor" cols="10"
+                                                  rows="5">{{$service->ter_cond_en}}</textarea>
                                         @error('ter_cond_en')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
                                     </div>
-
 
 
                                 </div>
@@ -266,10 +296,10 @@
 
 
 @push('script')
-        <script>
+    <script>
 
         $("body").on('change', '.type', function () {
-            if ($(this).val() == 'evaluative'){
+            if ($(this).val() == 'evaluative') {
 
                 $('.type-col').removeClass('col-md-6');
                 $('.type-col').addClass('col-md-4');
@@ -280,7 +310,7 @@
                 $('.start_from').addClass('col-md-4');
 
 
-            }else{
+            } else {
                 $('.type-col').removeClass('col-md-4');
                 $('.type-col').addClass('col-md-6');
                 $('.price-col').removeClass('col-md-4');
@@ -293,5 +323,12 @@
         })
 
 
+    </script>
+    <script>
+
+        $('.select2').select2({
+            tags: true,
+            dir: '{{app()->getLocale() == "ar"? "rtl" : "ltr"}}'
+        })
     </script>
 @endpush

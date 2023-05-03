@@ -39,5 +39,9 @@ class Service extends Model
         return $this->hasOne(BookingSetting::class,'service_id','id');
     }
 
+    public function groups(){
+        return $this->belongsToMany(Group::class, 'service_groups');
+    }
+
 
 }

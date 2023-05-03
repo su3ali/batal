@@ -16,4 +16,7 @@ class Group extends Model
             return $this->name_en;
         }
     }
+    public function services(){
+        return $this->belongsToMany(Service::class,'service_groups');
+    }
 }

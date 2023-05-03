@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Dashboard\Core;
 use App\Enums\Core\ServiceType;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Group;
 use App\Models\Service;
+use App\Models\ServiceGroup;
 use App\Models\ServiceImages;
 use App\Traits\imageTrait;
 use Illuminate\Http\Request;
@@ -16,6 +18,7 @@ use Illuminate\Support\Facades\File;
 class ServiceController extends Controller
 {
     use imageTrait;
+
     public function index()
     {
 
@@ -29,7 +32,7 @@ class ServiceController extends Controller
                 })
                 ->addColumn('status', function ($service) {
                     $checked = '';
-                    if ($service->active == 1){
+                    if ($service->active == 1) {
                         $checked = 'checked';
                     }
                     return '<label class="switch s-outline s-outline-info  mb-4 mr-2">
@@ -41,24 +44,23 @@ class ServiceController extends Controller
 
                     $html = '
 
-                    <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools image" data-id="'.$service->id.'" data-toggle="modal" data-target="#imageModel">
+                    <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools image" data-id="' . $service->id . '" data-toggle="modal" data-target="#imageModel">
                             <i class="far fa-image fa-2x"></i>
                        </button>
 
-<a href="'.route('dashboard.core.service.edit', $service->id).'"  id="edit-booking" class="btn btn-primary btn-sm card-tools edit" data-id="' . $service->id . '"
-                         data-type="'.$service->type.'" >
+<a href="' . route('dashboard.core.service.edit', $service->id) . '"  id="edit-booking" class="btn btn-primary btn-sm card-tools edit" data-id="' . $service->id . '"
+                         data-type="' . $service->type . '" >
                             <i class="far fa-edit fa-2x"></i>
                        </a>
 
 
-                                <a data-href="'.route('dashboard.core.service.destroy', $service->id).'" data-id="'.$service->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
+                                <a data-href="' . route('dashboard.core.service.destroy', $service->id) . '" data-id="' . $service->id . '" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
                                 ';
 
                     return $html;
                 })
-
                 ->rawColumns([
                     'title',
                     'status',
@@ -72,9 +74,9 @@ class ServiceController extends Controller
 
     public function create()
     {
-        $categories = category::whereNull('parent_id')->where('active',1)->get()->pluck('title','id');
-
-        return view('dashboard.core.services.create',compact('categories'));
+        $categories = category::whereNull('parent_id')->where('active', 1)->get()->pluck('title', 'id');
+        $groups = Group::query()->whereNotIn('id', ServiceGroup::query()->pluck('group_id')->toArray())->get();
+        return view('dashboard.core.services.create', compact('categories', 'groups'));
     }
 
     public function store(Request $request)
@@ -89,12 +91,20 @@ class ServiceController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|Numeric',
             'type' => 'required|in:evaluative,fixed',
+            'group_ids' => 'required|array',
+            'group_ids.*' => 'required|exists:groups,id',
             'start_from' => 'nullable|Numeric',
         ]);
 
-        $data=$request->except('_token');
+        $data = $request->except(['_token', 'group_ids']);
 
-        Service::updateOrCreate($data);
+        $service = Service::query()->create($data);
+        foreach ($request->group_ids as $group_id) {
+            ServiceGroup::query()->create([
+                'service_id' => $service->id,
+                'group_id' => $group_id,
+            ]);
+        }
 
         session()->flash('success');
         return redirect()->route('dashboard.core.service.index');
@@ -102,10 +112,13 @@ class ServiceController extends Controller
 
     public function edit($id)
     {
-        $service = Service::where('id',$id)->first();
-        $categories = category::whereNull('parent_id')->where('active',1)->get()->pluck('title','id');
-
-        return view('dashboard.core.services.edit', compact( 'service','categories'));
+        $service = Service::where('id', $id)->first();
+        $categories = category::whereNull('parent_id')->where('active', 1)->get()->pluck('title', 'id');
+        $groups = Group::query()
+            ->whereNotIn('id', ServiceGroup::query()->pluck('group_id')->toArray())
+            ->orWhereIn('id', ServiceGroup::query()->where('service_id', $service->id)->pluck('group_id')->toArray())
+            ->get();
+        return view('dashboard.core.services.edit', compact('service', 'categories', 'groups'));
     }
 
     public function update(Request $request, $id)
@@ -122,15 +135,25 @@ class ServiceController extends Controller
             'price' => 'required|Numeric',
             'type' => 'required|in:evaluative,fixed',
             'start_from' => 'nullable|Numeric',
+            'group_ids' => 'required|array',
+            'group_ids.*' => 'required|exists:groups,id'
         ]);
-        $data=$request->except('_token');
+        $data = $request->except(['_token', 'group_ids']);
 
-        if ($request->type == 'fixed'){
+        if ($request->type == 'fixed') {
             $data['start_from'] = null;
         }
         $service = Service::find($id);
 
         $service->update($data);
+
+        ServiceGroup::query()->where('service_id', $service->id)->delete();
+        foreach ($request->group_ids as $group_id) {
+            ServiceGroup::query()->create([
+                'service_id' => $service->id,
+                'group_id' => $group_id
+            ]);
+        }
         session()->flash('success');
         return redirect()->route('dashboard.core.service.index');
     }
@@ -145,43 +168,46 @@ class ServiceController extends Controller
         ];
     }
 
-    public function change_status(Request $request){
-        $admin = Service::where('id',$request->id)->first();
-        if ($request->active == 'true'){
+    public function change_status(Request $request)
+    {
+        $admin = Service::where('id', $request->id)->first();
+        if ($request->active == 'true') {
             $active = 1;
-        }else{
+        } else {
             $active = 0;
         }
 
         $admin->active = $active;
         $admin->save();
-        return response()->json(['sucess'=>true]);
+        return response()->json(['sucess' => true]);
     }
 
 
-    public function uploadImage(Request $request){
+    public function uploadImage(Request $request)
+    {
 
         $request->validate([
             'file' => 'required',
             'service_id' => 'required',
         ]);
 
-        if ($request->has('file')){
-            $image=$this->storeImages($request->file,'service');
-            $image= 'storage/images/service'.'/'.$image;
+        if ($request->has('file')) {
+            $image = $this->storeImages($request->file, 'service');
+            $image = 'storage/images/service' . '/' . $image;
         }
 
         ServiceImages::create([
-            'image' =>$image,
-            'service_id' =>$request->service_id,
+            'image' => $image,
+            'service_id' => $request->service_id,
         ]);
-        $serviceImage = ServiceImages::where('service_id',$request->service_id)->latest()->first();
+        $serviceImage = ServiceImages::where('service_id', $request->service_id)->latest()->first();
 
         return response()->json($serviceImage);
 
     }
 
-    public function getImage(Request $request){
+    public function getImage(Request $request)
+    {
         $request->validate([
             'id' => 'required',
         ]);
@@ -194,7 +220,8 @@ class ServiceController extends Controller
 
     }
 
-    public function deleteImage(Request $request){
+    public function deleteImage(Request $request)
+    {
         $request->validate([
             'id' => 'required',
         ]);

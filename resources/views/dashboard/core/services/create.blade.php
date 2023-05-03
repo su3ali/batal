@@ -1,4 +1,3 @@
-
 @extends('dashboard.layout.layout')
 
 @section('sub-header')
@@ -108,34 +107,6 @@
 
                                 </div>
 
-
-                                {{--<div class="form-row mb-3">--}}
-
-
-
-
-
-                                {{--<div class="col-md-6 custom-file-container form-group"--}}
-                                {{--data-upload-id="mySecondImage">--}}
-                                {{--<label>{{__('dash.upload')}}<a href="javascript:void(0)"--}}
-                                {{--class="custom-file-container__image-clear"--}}
-                                {{--title="Clear Image">x</a></label>--}}
-                                {{--<div style="display: flex">--}}
-                                {{--<label class="custom-file-container__custom-file">--}}
-                                {{--<input type="file"--}}
-                                {{--class="custom-file-container__custom-file__custom-file-input"--}}
-                                {{--name="avatar"--}}
-                                {{-->--}}
-                                {{--<input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>--}}
-                                {{--<span--}}
-                                {{--class="custom-file-container__custom-file__custom-file-control"></span>--}}
-                                {{--</label>--}}
-
-                                {{--<div class=" col-md-2 custom-file-container__image-preview"></div>--}}
-                                {{--</div>--}}
-                                {{--</div>--}}
-
-                                {{--</div>--}}
                                 <div class="form-row mb-2">
 
 
@@ -160,7 +131,6 @@
                                     </div>
 
 
-
                                 </div>
 
 
@@ -172,8 +142,10 @@
                                         <label for="inputEmail4">{{__('dash.type')}}</label>
                                         <select id="inputState" class="select2 type form-control"
                                                 name="type">
-                                            <option value="{{\App\Enums\Core\ServiceType::fixed()->value}}">{{\App\Enums\Core\ServiceType::fixed()->value}}</option>
-                                            <option value="{{\App\Enums\Core\ServiceType::evaluative()->value}}">{{\App\Enums\Core\ServiceType::evaluative()->value}}</option>
+                                            <option
+                                                value="{{\App\Enums\Core\ServiceType::fixed()->value}}">{{\App\Enums\Core\ServiceType::fixed()->value}}</option>
+                                            <option
+                                                value="{{\App\Enums\Core\ServiceType::evaluative()->value}}">{{\App\Enums\Core\ServiceType::evaluative()->value}}</option>
 
                                         </select>
                                         @error('category_id')
@@ -212,6 +184,23 @@
                                 </div>
 
                                 <div class="form-row mb-2">
+                                    <div class="form-group col-md-12">
+
+                                        <label for="group_ids">المجموعات</label>
+                                        <select id="group_ids" multiple class="select2 form-control pt-1"
+                                                name="group_ids[]" required>
+                                            <option disabled>{{__('dash.choose')}}</option>
+                                            @foreach($groups as $group)
+                                                <option value="{{$group->id}}">{{$group->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('group_ids')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                </div>
+                                <div class="form-row mb-2">
 
 
                                     <div class="form-group col-md-6">
@@ -233,7 +222,6 @@
                                         @enderror
 
                                     </div>
-
 
 
                                 </div>
@@ -323,9 +311,6 @@
 {{--                        --}}{{--<div class="form-row mb-3">--}}
 
 
-
-
-
 {{--                            --}}{{--<div class="col-md-6 custom-file-container form-group"--}}
 {{--                                 --}}{{--data-upload-id="mySecondImage">--}}
 {{--                                --}}{{--<label>{{__('dash.upload')}}<a href="javascript:void(0)"--}}
@@ -369,7 +354,6 @@
 {{--                                @enderror--}}
 
 {{--                            </div>--}}
-
 
 
 {{--                        </div>--}}
@@ -446,7 +430,6 @@
 {{--                            </div>--}}
 
 
-
 {{--                        </div>--}}
 
 {{--                    </div>--}}
@@ -466,16 +449,16 @@
     <script>
 
         $("body").on('change', '.type', function () {
-            if ($(this).val() == 'evaluative'){
+            if ($(this).val() == 'evaluative') {
 
-            $('.type-col').removeClass('col-md-6');
-            $('.type-col').addClass('col-md-4');
-            $('.price-col').removeClass('col-md-6');
-            $('.price-col').addClass('col-md-4');
-            $('.start_from').show();
+                $('.type-col').removeClass('col-md-6');
+                $('.type-col').addClass('col-md-4');
+                $('.price-col').removeClass('col-md-6');
+                $('.price-col').addClass('col-md-4');
+                $('.start_from').show();
 
 
-        }else{
+            } else {
                 $('.type-col').removeClass('col-md-4');
                 $('.type-col').addClass('col-md-6');
                 $('.price-col').removeClass('col-md-4');
@@ -487,4 +470,11 @@
         })
 
     </script>
-    @endpush
+    <script>
+
+        $('.select2').select2({
+            tags: true,
+            dir: '{{app()->getLocale() == "ar"? "rtl" : "ltr"}}'
+        })
+    </script>
+@endpush
