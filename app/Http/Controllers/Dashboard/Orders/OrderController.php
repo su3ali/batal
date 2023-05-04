@@ -223,8 +223,9 @@ class OrderController extends Controller
         $bookSetting = BookingSetting::where('service_id', $request->id)->first();
 
         $get_time = $this->getTime($day,$bookSetting);
+
         $times = [];
-        if($get_time == true){
+        if($get_time === true){
             $times = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
                 ->toPeriod(
                     \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time),
