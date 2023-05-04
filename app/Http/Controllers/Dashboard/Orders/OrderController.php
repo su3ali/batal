@@ -225,7 +225,7 @@ class OrderController extends Controller
         $get_time = $this->getTime($day,$bookSetting);
 
         $times = [];
-        if($get_time === true){
+        if($get_time == true){
             $times = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
                 ->toPeriod(
                     \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time),
@@ -233,7 +233,7 @@ class OrderController extends Controller
                 );
         }
 
-      $notAvailable = Order::where('service_id',$request->id)->where('day', $day)->where('status_id', 1)->pluck('start_time')->toArray();
+      $notAvailable = Order::where('service_id',$request->id)->where('status_id', 1)->pluck('start_time')->toArray();
 
         return view('dashboard.orders.schedules-times-available', compact('times','notAvailable'));
     }
