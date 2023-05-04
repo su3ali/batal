@@ -315,11 +315,13 @@
 
                             $('.reservition').show();
                             response($.map(data, function (key, el) {
-                                console.log()
+                                console.log(key)
                                 return {
                                     label: key.title_ar,
                                     value: key.id,
                                     price: key.price,
+                                    count_group : key.count_group ?? 1
+
                                 };
                             }));
                         }
@@ -331,6 +333,7 @@
                     $('.name-' + hidden_itr).val(ui.item.label); // display the selected text
                     $('.service_id-' + hidden_itr).val(ui.item.value); // save selected id to input
                     $('#unit_price-' + hidden_itr).val(ui.item.price);
+                    $('.quantity-' + hidden_itr).val(ui.item.count_group);
                     change($(this).attr('data-itr'))
 
                     $(".reservatoinData").flatpickr({

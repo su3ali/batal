@@ -10,6 +10,7 @@ class Service extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $appends = ['count_group'];
 
 
     public function getTitleAttribute(){
@@ -41,6 +42,10 @@ class Service extends Model
 
     public function groups(){
         return $this->belongsToMany(Group::class, 'service_groups');
+    }
+
+    public function getCountGroupAttribute(){
+        return $this->groups->count();
     }
 
 
