@@ -79,13 +79,13 @@
                                         <select required class="select2 form-control pt-1"
                                                 name="service_start_date">
                                             <option selected disabled>{{__('dash.choose')}}</option>
-                                                <option value="saturday">السبت</option>
-                                                <option value="sunday">الأحد</option>
-                                                <option value="monday">الإثنين</option>
-                                                <option value="tuesday">الثلاثاء</option>
-                                                <option value="wednesday">الأربعاء</option>
-                                                <option value="thursday">الخميس</option>
-                                                <option value="friday">الجمعه</option>
+                                                <option value="Saturday">السبت</option>
+                                                <option value="Sunday">الأحد</option>
+                                                <option value="Monday">الإثنين</option>
+                                                <option value="Tuesday">الثلاثاء</option>
+                                                <option value="Wednesday">الأربعاء</option>
+                                                <option value="Thursday">الخميس</option>
+                                                <option value="Friday">الجمعه</option>
                                         </select>
                                         @error('service_start_date')
                                         <div class="alert alert-danger">{{ $message }}</div>

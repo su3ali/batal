@@ -80,13 +80,13 @@
                                         <select required class="select2 form-control pt-1"
                                                 name="service_start_date">
                                             <option @if($bookingSetting->service_start_date == null) selected @endif disabled>{{__('dash.choose')}}</option>
-                                            <option value="Saturday" @if($bookingSetting->service_start_date == 'saturday') selected @endif >السبت</option>
-                                            <option value="Sunday" @if($bookingSetting->service_start_date == 'sunday') selected @endif>الأحد</option>
-                                            <option value="Monday" @if($bookingSetting->service_start_date == 'monday') selected @endif>الإثنين</option>
-                                            <option value="Tuesday" @if($bookingSetting->service_start_date == 'tuesday') selected @endif>الثلاثاء</option>
-                                            <option value="Wednesday" @if($bookingSetting->service_start_date == 'wednesday') selected @endif>الأربعاء</option>
-                                            <option value="Thursday" @if($bookingSetting->service_start_date == 'thursday') selected @endif>الخميس</option>
-                                            <option value="Friday" @if($bookingSetting->service_start_date == 'friday') selected @endif>الجمعه</option>
+                                            <option value="Saturday" @if($bookingSetting->service_start_date == 'Saturday') selected @endif >السبت</option>
+                                            <option value="Sunday" @if($bookingSetting->service_start_date == 'Sunday') selected @endif>الأحد</option>
+                                            <option value="Monday" @if($bookingSetting->service_start_date == 'Monday') selected @endif>الإثنين</option>
+                                            <option value="Tuesday" @if($bookingSetting->service_start_date == 'Tuesday') selected @endif>الثلاثاء</option>
+                                            <option value="Wednesday" @if($bookingSetting->service_start_date == 'Wednesday') selected @endif>الأربعاء</option>
+                                            <option value="Thursday" @if($bookingSetting->service_start_date == 'Thursday') selected @endif>الخميس</option>
+                                            <option value="Friday" @if($bookingSetting->service_start_date == 'Friday') selected @endif>الجمعه</option>
                                         </select>
                                         @error('service_start_date')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -100,13 +100,13 @@
                                         <select required class="select2 form-control pt-1"
                                                 name="service_end_date">
                                             <option @if($bookingSetting->service_end_date == null) selected @endif disabled>{{__('dash.choose')}}</option>
-                                            <option value="saturday" @if($bookingSetting->service_end_date == 'saturday') selected @endif >السبت</option>
-                                            <option value="sunday" @if($bookingSetting->service_end_date == 'sunday') selected @endif>الأحد</option>
-                                            <option value="monday" @if($bookingSetting->service_end_date == 'monday') selected @endif>الإثنين</option>
-                                            <option value="tuesday" @if($bookingSetting->service_end_date == 'tuesday') selected @endif>الثلاثاء</option>
-                                            <option value="wednesday" @if($bookingSetting->service_end_date == 'wednesday') selected @endif>الأربعاء</option>
-                                            <option value="thursday" @if($bookingSetting->service_end_date == 'thursday') selected @endif>الخميس</option>
-                                            <option value="friday" @if($bookingSetting->service_end_date == 'friday') selected @endif>الجمعه</option>
+                                            <option value="Saturday" @if($bookingSetting->service_end_date == 'Saturday') selected @endif >السبت</option>
+                                            <option value="Sunday" @if($bookingSetting->service_end_date == 'Sunday') selected @endif>الأحد</option>
+                                            <option value="Monday" @if($bookingSetting->service_end_date == 'Monday') selected @endif>الإثنين</option>
+                                            <option value="Tuesday" @if($bookingSetting->service_end_date == 'Tuesday') selected @endif>الثلاثاء</option>
+                                            <option value="Wednesday" @if($bookingSetting->service_end_date == 'Wednesday') selected @endif>الأربعاء</option>
+                                            <option value="Thursday" @if($bookingSetting->service_end_date == 'Thursday') selected @endif>الخميس</option>
+                                            <option value="Friday" @if($bookingSetting->service_end_date == 'Friday') selected @endif>الجمعه</option>
                                         </select>
                                         @error('service_end_date')
                                         <div class="alert alert-danger">{{ $message }}</div>

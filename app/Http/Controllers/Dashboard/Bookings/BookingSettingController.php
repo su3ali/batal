@@ -23,24 +23,24 @@ class BookingSettingController extends Controller
                 })
                 ->addColumn('service_start_date', function ($row) {
 
-                    if($row->service_start_date == 'saturday'){
+                    if($row->service_start_date == 'Saturday'){
                         $day = 'السبت';
-                    }elseif ($row->service_start_date == 'sunday'){
+                    }elseif ($row->service_start_date == 'Sunday'){
                         $day = 'الأحد';
 
-                    }elseif ($row->service_start_date == 'monday'){
+                    }elseif ($row->service_start_date == 'Monday'){
                         $day = 'الإثنين';
 
-                    }elseif ($row->service_start_date == 'tuesday'){
+                    }elseif ($row->service_start_date == 'Tuesday'){
                         $day = 'الثلاثاء';
 
-                    }elseif ($row->service_start_date == 'wednesday'){
+                    }elseif ($row->service_start_date == 'Wednesday'){
                         $day = 'الأربعاء';
 
-                    }elseif ($row->service_start_date == 'thursday'){
+                    }elseif ($row->service_start_date == 'Thursday'){
                         $day = 'الخميس';
 
-                    }elseif ($row->service_start_date == 'friday'){
+                    }elseif ($row->service_start_date == 'Friday'){
                         $day = 'الجمعه';
 
                     }
@@ -53,22 +53,22 @@ class BookingSettingController extends Controller
                 ->addColumn('service_end_date', function ($row) {
                     if($row->service_end_date == 'saturday'){
                         $day = 'السبت';
-                    }elseif ($row->service_end_date == 'sunday'){
+                    }elseif ($row->service_end_date == 'Sunday'){
                         $day = 'الأحد';
 
-                    }elseif ($row->service_end_date == 'monday'){
+                    }elseif ($row->service_end_date == 'Monday'){
                         $day = 'الإثنين';
 
-                    }elseif ($row->service_end_date == 'tuesday'){
+                    }elseif ($row->service_end_date == 'Tuesday'){
                         $day = 'الثلاثاء';
 
-                    }elseif ($row->service_end_date == 'wednesday'){
+                    }elseif ($row->service_end_date == 'Wednesday'){
                         $day = 'الأربعاء';
 
-                    }elseif ($row->service_end_date == 'thursday'){
+                    }elseif ($row->service_end_date == 'Thursday'){
                         $day = 'الخميس';
 
-                    }elseif ($row->service_end_date == 'friday'){
+                    }elseif ($row->service_end_date == 'Friday'){
                         $day = 'الجمعه';
 
                     }
