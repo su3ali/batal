@@ -180,7 +180,10 @@ class OrderController extends Controller
         if ($request->has('q')) {
 
             $search = $request->q;
-            $customers = User::where('email', 'LIKE', "%$search%")->get();
+            $customers = User::where('email', 'LIKE', "%$search%")
+                ->orWhere('last_name', 'LIKE', "%$search%")
+                ->orWhere('first_name', 'LIKE', "%$search%")
+                ->get();
 
         }
 
