@@ -1,5 +1,8 @@
 @foreach($times as $time)
 
+
+
+
     <div class="select-time">
 
         <label

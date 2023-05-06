@@ -104,7 +104,7 @@ class OrderController extends Controller
         }
         $validated = $validated->validated();
         $validated['status_id'] = 1;
-        $validated['day'] = Carbon::parse($request->day)->locale('en')->dayName;
+        $validated['day'] = $request->day;
         $validated['start_time'] = Carbon::createFromTimestamp($request->start_time)->toTimeString(); ;
 
         Order::query()->create($validated);
@@ -236,7 +236,7 @@ class OrderController extends Controller
                 );
         }
 
-      $notAvailable = Order::where('service_id',$request->id)->where('status_id', 1)->pluck('start_time')->toArray();
+      $notAvailable = Order::where('service_id',$request->id)->where('day',$request->date)->where('status_id', 1)->pluck('start_time')->toArray();
 
         return view('dashboard.orders.schedules-times-available', compact('times','notAvailable'));
     }
