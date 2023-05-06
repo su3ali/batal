@@ -330,6 +330,7 @@
                 select: function (event, ui) {
                     event.preventDefault();
                     // Set selection
+                    $('.quantity-' + hidden_itr).attr("data-max", ui.item.count_group);
                     $('.name-' + hidden_itr).val(ui.item.label); // display the selected text
                     $('.service_id-' + hidden_itr).val(ui.item.value); // save selected id to input
                     $('#unit_price-' + hidden_itr).val(ui.item.price);

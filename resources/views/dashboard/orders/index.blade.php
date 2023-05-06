@@ -62,10 +62,7 @@
                             <th>#</th>
                             <th>{{__('dash.customer_name')}}</th>
                             <th>{{__('dash.service')}}</th>
-                            <th>يوم بدء الخدمه</th>
-                            <th>وقت بدء الخدمه</th>
                             <th>{{__('dash.price_value')}}</th>
-                            <th>{{__('dash.order_status')}}</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
                         </thead>
@@ -100,10 +97,7 @@
                     {data: 'id', name: 'id'},
                     {data: 'user', name: 'user'},
                     {data: 'service', name: 'service'},
-                    {data: 'day', name: 'day'},
-                    {data: 'start_time', name: 'start_time'},
                     {data: 'price', name: 'price'},
-                    {data: 'status', name: 'status'},
                     {data: 'control', name: 'control', orderable: false, searchable: false},
 
                 ]

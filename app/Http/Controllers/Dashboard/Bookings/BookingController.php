@@ -32,7 +32,7 @@ class BookingController extends Controller
                     return $row->order?->id;
                 })
                 ->addColumn('customer', function ($row) {
-                    return $row->customer?->name;
+                    return $row->customer?->first_name . ' ' . $row->customer?->last_name;
                 })
                 ->addColumn('service', function ($row) {
                     return $row->service?->title;
@@ -45,10 +45,7 @@ class BookingController extends Controller
                 })
                 ->addColumn('control', function ($row) {
                     $html = '
-                    <a href="'.route('dashboard.bookings.edit', $row->id).'"  id="edit-booking" class="btn btn-primary btn-sm card-tools edit" data-id="' . $row->id . '"
-                          >
-                            <i class="far fa-edit fa-2x"></i>
-                       </a>
+
 
                                 <a data-table_id="html5-extension" data-href="' . route('dashboard.bookings.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
                             <i class="far fa-trash-alt fa-2x"></i>

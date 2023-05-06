@@ -19,8 +19,8 @@ class CreateBookingSettingsTable extends Migration
             $table->string('service_start_date')->nullable();
             $table->string('service_end_date')->nullable();
             $table->integer('available_service')->default(0);
-            $table->string('service_start_time')->nullable();
-            $table->string('service_end_time')->nullable();
+            $table->time('service_start_time')->nullable();
+            $table->time('service_end_time')->nullable();
             $table->string('service_duration')->nullable();
             $table->string('buffering_time')->nullable();
             $table->timestamps();

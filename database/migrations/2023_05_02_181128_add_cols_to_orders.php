@@ -16,8 +16,7 @@ class AddColsToOrders extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('category_id');
             $table->bigInteger('quantity')->default(0)->after('price');
-            $table->string('day')->after('quantity');
-            $table->time('start_time')->after('day');
+
 
         });
     }
