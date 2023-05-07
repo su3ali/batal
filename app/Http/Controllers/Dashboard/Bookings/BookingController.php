@@ -37,6 +37,9 @@ class BookingController extends Controller
                 ->addColumn('service', function ($row) {
                     return $row->service?->title;
                 })
+                ->addColumn('time', function ($row) {
+                    return Carbon::createFromTimestamp($row->time)->toTimeString();
+                })
                 ->addColumn('group', function ($row) {
                     return $row->group?->name;
                 })
