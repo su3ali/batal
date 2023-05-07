@@ -117,6 +117,7 @@ class OrderController extends Controller
             'order_id' => $order->id,
             'booking_status_id' => 1,
             'notes' => $request->notes,
+            'quantity' => $request->quantity,
             'date' => $request->day,
             'time' => Carbon::createFromTimestamp($request->start_time)->toTimeString(),
         ];

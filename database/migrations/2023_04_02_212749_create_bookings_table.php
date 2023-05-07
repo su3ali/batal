@@ -23,7 +23,7 @@ class CreateBookingsTable extends Migration
             $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->date('date');
             $table->time('time');
-            $table->bigInteger('quantity');
+            $table->bigInteger('quantity')->default(0);
             $table->foreignId('group_id')->nullable()->constrained('groups')->cascadeOnDelete();
             $table->unsignedBigInteger('booking_status_id');
             $table->foreign('booking_status_id')->references('id')->on('booking_statuses')->onDelete('cascade');
