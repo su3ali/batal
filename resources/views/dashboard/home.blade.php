@@ -110,7 +110,6 @@
                             <th>{{__('dash.customer_name')}}</th>
                             <th>{{__('dash.service')}}</th>
                             <th>{{__('dash.price_value')}}</th>
-                            <th>{{__('dash.order_status')}}</th>
                         </tr>
                         </thead>
                     </table>
@@ -212,7 +211,6 @@
                     {data: 'user', name: 'user'},
                     {data: 'service', name: 'service'},
                     {data: 'price', name: 'price'},
-                    {data: 'status', name: 'status'},
 
                 ]
             });
