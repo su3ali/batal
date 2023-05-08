@@ -1,5 +1,15 @@
 @extends('dashboard.layout.layout')
 
+@push('style')
+    <style>
+        .table > thead > tr > th{
+            white-space:unset!important;
+
+        }
+
+    </style>
+    @endpush
+
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -41,7 +51,7 @@
 
         <div class="layout-top-spacing">
 
-            <div class="col-xl-10 col-lg-12 col-sm-12 layout-spacing">
+            <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-md-12 text-right mb-3">
 
@@ -59,7 +69,8 @@
                                 <th>اسم العميل</th>
                                 <th>الخدمة المطلوبة</th>
                                 <th>التاريخ</th>
-                                <th>الوقت</th>
+                                <th>الساعات</th>
+                                <th>الكميه</th>
                                 <th>الفريق الفني</th>
                                 <th>حالة الحجز</th>
                                 <th>ملاحظات</th>
@@ -101,6 +112,7 @@
                     {data: 'service', name: 'service'},
                     {data: 'date', name: 'date'},
                     {data: 'time', name: 'time'},
+                    {data: 'quantity', name: 'quantity'},
                     {data: 'group', name: 'group'},
                     {data: 'status', name: 'status'},
                     {data: 'notes', name: 'notes'},

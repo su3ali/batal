@@ -9,6 +9,11 @@ class Booking extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    protected $casts = [
+        'time' => 'timestamp',
+    ];
+
     public function order(){
         return $this->belongsTo(Order::class, 'order_id');
     }

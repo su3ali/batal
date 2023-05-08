@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard\Orders;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\BookingSetting;
 use App\Models\Category;
 use App\Models\City;
@@ -34,15 +35,6 @@ class OrderController extends Controller
                 })
                 ->addColumn('service', function ($row) {
                     return $row->service?->title;
-                })
-                ->addColumn('day', function ($row) {
-                    return $row->day;
-                })
-                ->addColumn('start_time', function ($row) {
-                    return Carbon::createFromTimestamp($row->start_time)->toTimeString();
-                })
-                ->addColumn('status', function ($row) {
-                    return $row->status?->name;
                 })
                 ->addColumn('control', function ($row) {
 
@@ -102,12 +94,36 @@ class OrderController extends Controller
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }
-        $validated = $validated->validated();
-        $validated['status_id'] = 1;
-        $validated['day'] = Carbon::parse($request->day)->locale('en')->dayName;
-        $validated['start_time'] = Carbon::createFromTimestamp($request->start_time)->toTimeString(); ;
 
-        Order::query()->create($validated);
+
+        $data = [
+            'user_id' => $request->user_id,
+            'service_id' => $request->service_id,
+            'price' => $request->price,
+            'status_id' => 1,
+            'payment_method' => $request->payment_method,
+            'notes' => $request->notes,
+            'quantity' => $request->quantity,
+        ];
+
+
+        $order = Order::query()->create($data);
+        $last = Booking::query()->latest()->first()?->id;
+        $booking_no = 'dash2023/'.$last?$last+1: 1;
+        $booking = [
+            'booking_no' => $booking_no,
+            'user_id' => $request->user_id,
+            'service_id' => $request->service_id,
+            'order_id' => $order->id,
+            'booking_status_id' => 1,
+            'notes' => $request->notes,
+            'quantity' => $request->quantity,
+            'date' => $request->day,
+            'time' => Carbon::createFromTimestamp($request->start_time)->toTimeString(),
+        ];
+
+        Booking::query()->create($booking);
+
         session()->flash('success');
         return redirect()->back();
     }
@@ -231,14 +247,16 @@ class OrderController extends Controller
         if($get_time == true){
             $times = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
                 ->toPeriod(
-                    \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time),
-                    Carbon::now()->setTimeFrom($bookSetting->service_end_time)
+                    \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
+                    Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
                 );
         }
 
-      $notAvailable = Order::where('service_id',$request->id)->where('status_id', 1)->pluck('start_time')->toArray();
+        $notAvailable = Booking::where('service_id',$request->id)->where('date',$request->date)->where('booking_status_id', 1)->get();
 
-        return view('dashboard.orders.schedules-times-available', compact('times','notAvailable'));
+        $service = Service::where('id',$request->id)->first();
+
+        return view('dashboard.orders.schedules-times-available', compact('times','notAvailable','service'));
     }
 
 }
