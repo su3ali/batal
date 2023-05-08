@@ -14,15 +14,7 @@ class User extends Authenticatable
 {
     use HasApiTokens,WithBoot,HasPassword, HasFactory,HasRoles, Notifiable;
     protected $guard = 'user';
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'phone',
-        'password',
-        'active',
-        'city_id',
-    ];
+    protected $guarded = [];
 
     protected $hidden = [
         'password',
