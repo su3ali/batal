@@ -21,12 +21,11 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/verify', [AuthController::class, 'verify']);
 
-require __DIR__ . '/core.router.php';
 
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
 
 Route::middleware('auth:sanctum')->group(function () {
-
+    require __DIR__ . '/core.router.php';
     require __DIR__ . '/auth.router.php';
     require __DIR__ . '/users.router.php';
     require __DIR__ . '/checkout.router.php';

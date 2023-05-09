@@ -17,10 +17,10 @@ class UserAddressResource extends JsonResource
         return [
             'id'      => $this->id,
             'address' => $this->address,
-            'shipping'=> ShippingResource::make($this->shipping),
-            'area'    => $this->shipping?->area->title,
-            'area_id'    => $this->shipping?->area->id,
+            'name' => $this->name,
             'user_id' => $this->user_id,
+            'is_default' => $this->is_default,
+            'active' => $this->active,
         ];
     }
 }

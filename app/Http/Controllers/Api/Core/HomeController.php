@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Core;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Checkout\UserAddressResource;
 use App\Http\Resources\MainCategory\MainCategoryResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Service\ServiceCategoryResource;
@@ -10,11 +11,14 @@ use App\Http\Resources\Service\ServiceResource;
 use App\Http\Resources\Store\StoreResource;
 use App\Models\Banner;
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\Service;
+use App\Models\UserAddresses;
 use App\Support\Api\ApiResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -27,23 +31,31 @@ class HomeController extends Controller
 
     protected function index(Request $request)
     {
+        $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
+        $this->body['addresses'] = UserAddressResource::collection($addresses);
         $images = [];
         $banner = Banner::with('bannerImages')->first();
         if ($banner && $banner->bannerImages->first()) {
             foreach ($banner->bannerImages as $banner) {
-                $url = $banner->image? asset($banner->image) : '';
+                $url = $banner->image ? asset($banner->image) : '';
                 if ($url) {
                     $images[] = $url;
                 }
             }
         }
         $this->body['banners'] = $images;
+        $buyServiceLists = Order::query()->select('service_id',DB::raw('count(*) as total'))
+            ->groupBy('service_id')
+            ->orderBy('total', 'DESC')
+            ->get();
 
-        $services = Service::query()->where('active', 1)->get();
-        $this->body['services'] = ServiceResource::collection($services);
+        $mostSellingServices = Service::query()->whereIn('id', $buyServiceLists->pluck('service_id'))
+            ->where('active',1)
+            ->get();
+        $this->body['services_most_wanted'] = ServiceResource::collection($mostSellingServices);
 
         $servicesCategories = Category::query()->where('active', 1)->get();
-        $this->body['categories'] = ServiceCategoryResource::collection($servicesCategories);
+        $this->body['services_categories'] = ServiceCategoryResource::collection($servicesCategories);
 
 
         return self::apiResponse(200, null, $this->body);

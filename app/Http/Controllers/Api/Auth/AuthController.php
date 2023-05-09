@@ -31,40 +31,42 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $validated = $request->all();
-        $cred = ['phone' => $validated['phone']];
+        $validated = $request->validate([
+            'phone' => 'required|numeric'
+        ], $request->all());
+        $user = User::query()->where('phone', $validated['phone'])->first();
+        if (!$user) {
+            $user = User::query()->create([
+                'phone' => $validated['phone'],
+                'city_id' => 0,
+            ]);
+        }
+        $this->message = t_('login successfully, but code is needed');
+        $this->body['user'] = UserResource::make($user);
+        return self::apiResponse(200, $this->message, $this->body);
+    }
 
-        if (\auth()->attempt($cred)) {
-            $user = Auth::user();
-            $this->message = t_('login successfully');
-            $this->body['user'] = UserResource::make($user);
-            return self::apiResponse(200, $this->message, $this->body);
-
-        } else {
-
+    public function verify(Request $request)
+    {
+        $user = User::query()->where('id', $request->user_id)->first();
+        if ($request->code == 111111 && $user) {
+                Auth::loginUsingId($user->id);
+                $this->message = t_('login successfully');
+                $this->body['user'] = UserResource::make($user);
+                $this->body['accessToken'] = $user->createToken('user-token')->plainTextToken;
+                return self::apiResponse(200, $this->message, $this->body);
+            }
             $this->message = t_('auth failed');
             return self::apiResponse(400, $this->message, $this->body);
         }
 
-    }
+        public
+        function logout(Request $request)
+        {
+            auth()->user('sanctum')->tokens()->delete();
+            $this->message = t_('Logged out');
 
-    public function verify(Request $request){
-        if ($request->code == 111111){
-            $user = User::query()->where('id', $request->id)->first();
-            $this->body['user'] = UserResource::make($user);
-            $this->body['accessToken'] = $user->createToken('user-token')->plainTextToken;
             return self::apiResponse(200, $this->message, $this->body);
+
         }
-        $this->message = t_('auth failed');
-            return self::apiResponse(400, $this->message, $this->body);
     }
-
-    public function logout(Request $request)
-    {
-        auth()->user('sanctum')->tokens()->delete();
-        $this->message = t_('Logged out');
-
-        return self::apiResponse(200, $this->message, $this->body);
-
-    }
-}
