@@ -10,6 +10,17 @@
     </style>
     @endpush
 
+
+@php
+
+        $dataTabel = 'dataTable-service';
+        $type = 'service';
+        if (request()->query('type') && request()->query('type') == 'package'){
+            $dataTabel = 'dataTable-package';
+            $type = 'package';
+        }
+@endphp
+
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -61,23 +72,28 @@
 
                     </div>
                     <div class="table-responsive">
-                        <table id="html5-extension" class="table table-hover non-hover">
-                            <thead>
-                            <tr>
-                                <th>رقم الحجز</th>
-                                <th>رقم الطلب</th>
-                                <th>اسم العميل</th>
-                                <th>الخدمة المطلوبة</th>
-                                <th>التاريخ</th>
-                                <th>الساعات</th>
-                                <th>الكميه</th>
-                                <th>الفريق الفني</th>
-                                <th>حالة الحجز</th>
-                                <th>ملاحظات</th>
-                                <th class="no-content">{{__('dash.actions')}}</th>
-                            </tr>
-                            </thead>
-                        </table>
+
+
+                        <ul class="nav nav-tabs  mb-3 mt-3" id="simpletab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link @if($type == 'service') active @endif" id="service-tab"  href="{{url('admin/bookings?type=service')}}" role="tab" aria-controls="service" aria-selected="true">حجوزات خدمات</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link @if($type == 'package') active @endif" id="package-tab"  href="{{url('admin/bookings?type=package')}}" role="tab" aria-controls="package" aria-selected="false">حجوزات باقات</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="simpletabContent">
+                            <div class="tab-pane fade @if($type == 'service') show active @endif " id="service" role="tabpanel" aria-labelledby="service-tab">
+                                @include('dashboard.bookings.partial.service')
+
+                            </div>
+                            <div class="tab-pane fade @if($type == 'package') show active @endif " id="package" role="tabpanel" aria-labelledby="package-tab">
+                                @include('dashboard.bookings.partial.contract')
+                            </div>
+                        </div>
+
+
                     </div>
 
 
@@ -93,7 +109,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#html5-extension').DataTable({
+            $('#{{$dataTabel}}').DataTable({
                 dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
                     "<'table-responsive'tr>" +
                     "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -104,7 +120,7 @@
                 processing: true,
                 responsive: true,
                 serverSide: true,
-                ajax: '{{ route('dashboard.bookings.index') }}',
+                ajax: '{{ url('admin/bookings?type='.$type) }}',
                 columns: [
                     {data: 'booking_no', name: 'booking_no'},
                     {data: 'order', name: 'order'},

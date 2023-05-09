@@ -24,7 +24,7 @@
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
 
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.contract_packages.index')}}">باقات العقود</a></li>
+                                        href="{{route('dashboard.contract_packages.index')}}">باقات التقاول</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">إنشاء باقة</li>
                             </ol>
                         </nav>

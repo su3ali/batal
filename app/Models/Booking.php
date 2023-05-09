@@ -15,13 +15,19 @@ class Booking extends Model
     ];
 
     public function order(){
-        return $this->belongsTo(Order::class, 'order_id');
+        return $this->belongsTo(Order::class, 'order_id','id');
+    }
+    public function contract(){
+        return $this->belongsTo(Contract::class, 'contract_order_id','id');
     }
     public function customer(){
         return $this->belongsTo(User::class, 'user_id');
     }
     public function service(){
         return $this->hasOne(Service::class, 'id','service_id');
+    }
+    public function package(){
+        return $this->hasOne(ContractPackage::class, 'id','package_id');
     }
     public function group(){
         return $this->belongsTo(Group::class, 'group_id');

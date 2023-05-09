@@ -26,16 +26,31 @@ class BookingController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $bookings = Booking::query()->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            $bookings = Booking::query()->where('type','service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            if (\request()->query('type') == 'package'){
+                $bookings = Booking::query()->where('type','contract')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            }
+
             return DataTables::of($bookings)
                 ->addColumn('order', function ($row) {
-                    return $row->order?->id;
+                    $order = $row->order?->id;
+                    if (\request()->query('type') == 'package') {
+                        $order = $row->contract?->id;
+                    }
+                    return $order;
                 })
                 ->addColumn('customer', function ($row) {
                     return $row->customer?->first_name . ' ' . $row->customer?->last_name;
                 })
                 ->addColumn('service', function ($row) {
-                    return $row->service?->title;
+                    $service = $row->service?->title;
+
+                    if (\request()->query('type') == 'package'){
+                        $service = $row->package?->name;
+                    }
+
+                    return $service;
+
                 })
                 ->addColumn('time', function ($row) {
                     return Carbon::createFromTimestamp($row->time)->toTimeString();
