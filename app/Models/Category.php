@@ -42,4 +42,7 @@ class Category extends Model
 
         return $image;
     }
+    public function services(){
+        return $this->hasMany(Service::class, 'category_id');
+    }
 }

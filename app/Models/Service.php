@@ -28,6 +28,13 @@ class Service extends Model
             return $this->description_en;
         }
     }
+    public function getTer_condAttribute(){
+        if (app()->getLocale()=='ar'){
+            return $this->ter_cond_ar;
+        }else{
+            return $this->ter_cond_en;
+        }
+    }
 
 
     public function serviceImages()
