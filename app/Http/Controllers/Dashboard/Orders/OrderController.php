@@ -119,6 +119,7 @@ class OrderController extends Controller
             'notes' => $request->notes,
             'quantity' => $request->quantity,
             'date' => $request->day,
+            'type' => 'service',
             'time' => Carbon::createFromTimestamp($request->start_time)->toTimeString(),
         ];
 

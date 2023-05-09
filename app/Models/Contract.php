@@ -21,4 +21,8 @@ class Contract extends Model
     public function package(){
         return $this->hasOne(ContractPackage::class, 'id', 'package_id');
     }
+
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

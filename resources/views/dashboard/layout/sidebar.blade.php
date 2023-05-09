@@ -162,7 +162,7 @@
                 </a>
                 <ul class="collapse submenu list-unstyled" id="booking" data-parent="#accordionExample">
                     <li>
-                        <a href="{{route('dashboard.bookings.index')}}"> الحجوزات </a>
+                        <a href="{{url('admin/bookings?type=service')}}"> الحجوزات </a>
                     </li>
                     <li>
                         <a href="{{route('dashboard.booking_statuses.index')}}"> حالات الحجز </a>
@@ -235,7 +235,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers">
                             <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
 
-                        <span>إدارة العقود</span>
+                        <span>إدارة التقاول</span>
                     </div>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -247,11 +247,15 @@
                 </a>
                 <ul class="collapse submenu list-unstyled" id="contract" data-parent="#accordionExample">
                     <li>
-                        <a href="{{route('dashboard.contract_packages.index')}}"> باقات العقود </a>
+                        <a href="{{route('dashboard.contract_packages.index')}}"> باقات التقاول </a>
                     </li>
 
+{{--                    <li>--}}
+{{--                        <a href="{{route('dashboard.contracts.index')}}"> التقاول </a>--}}
+{{--                    </li>--}}
+
                     <li>
-                        <a href="{{route('dashboard.contracts.index')}}"> العقود </a>
+                        <a href="{{route('dashboard.contract_order.index')}}"> طلب التقاول </a>
                     </li>
                 </ul>
             </li>
