@@ -399,7 +399,7 @@
         function change(hidden_itr) {
             var price = parseFloat($('#unit_price-' + hidden_itr).val());
             var qty = parseFloat($('.quantity-' + hidden_itr).val());
-            var total = qty * price
+            var total = price
             $('#total-' + hidden_itr).val(total)
             $('#rowTotal-' + hidden_itr).html(total)
             pos_total_row()
