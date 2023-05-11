@@ -53,6 +53,7 @@ class HomeController extends Controller
             ->where('active',1)
             ->get();
         $this->body['services_most_wanted'] = ServiceResource::collection($mostSellingServices);
+        $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->get()->shuffle());
 
         $servicesCategories = Category::query()->where('active', 1)->get();
         $this->body['services_categories'] = ServiceCategoryResource::collection($servicesCategories);
