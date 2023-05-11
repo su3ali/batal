@@ -35,7 +35,6 @@ class AddressController extends Controller
             'active' => 'nullable|in:on,off',
             'is_default' => 'required|in:yes,no',
         ]);
-
         $data = $request->except('_token', 'active', 'is_default');
 
         if ($request['active'] && $request['active'] == 'on') {
