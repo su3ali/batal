@@ -22,4 +22,7 @@ class Order extends Model
     public function status(){
         return $this->hasOne(OrderStatus::class, 'id', 'status_id');
     }
+    public function bookings(){
+        return $this->hasMany(Booking::class, 'order_id');
+    }
 }

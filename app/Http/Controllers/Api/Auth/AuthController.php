@@ -31,11 +31,14 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        $user = User::query()->where('phone', $request->phone)->first();
         $validated = $request->validate([
-            'phone' => 'required|numeric'
+            'phone' => 'required|numeric|unique:users,phone,'.$user->id
         ], $request->all());
-        $user = User::query()->where('phone', $validated['phone'])->first();
         if (!$user) {
+            $validated = $request->validate([
+                'phone' => 'required|numeric|unique:users,phone'
+            ], $request->all());
             $user = User::query()->create([
                 'phone' => $validated['phone'],
                 'city_id' => 0,
