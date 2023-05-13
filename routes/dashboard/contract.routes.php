@@ -13,3 +13,4 @@ Route::resource('contract_order', 'Contracts\ContractOrderController');
 Route::get('contract_order/contractPackage/autoCompleteContract', 'Contracts\ContractOrderController@autoCompleteContract')->name('contract_order.autoCompleteContract');
 Route::get('contract_order/contractPackage/getContractById', 'Contracts\ContractOrderController@getContractById')->name('contract_order.getContractById');
 Route::get('contract_order/contractPackage/getAvailableTime', 'Contracts\ContractOrderController@getAvailableTime')->name('contract_order.getAvailableTime');
+Route::get('contract_order/contractPackage/showBookingDiv', 'Contracts\ContractOrderController@showBookingDiv')->name('contract_order.showBookingDiv');

@@ -131,12 +131,15 @@
             var des_en = $(this).attr('data-des_en');
             var parent_id = $(this).attr('data-parent_id');
             var img = $(this).attr('data-image');
+            var group_ids = $(this).attr('data-group_id');
 
             $('#title_ar').val(title_ar)
             $('#title_en').val(title_en)
             $('#parent_id').val(parent_id)
             CKEDITOR.instances['description_ar'].setData(des_ar);
             CKEDITOR.instances['description_en'].setData(des_en);
+                $('.group_ids').val(JSON.parse(group_ids)).trigger('change')
+
 
             if (img != ''){
                 $('.editImage .custom-file-container__image-preview').css('background-image', 'url("'+img+'")');

@@ -320,7 +320,8 @@
                                     label: key.title_ar,
                                     value: key.id,
                                     price: key.price,
-                                    count_group : key.count_group ?? 1
+                                    count_group : key.count_group ?? 1,
+                                    is_quantity : key.is_quantity
 
                                 };
                             }));
@@ -330,11 +331,19 @@
                 select: function (event, ui) {
                     event.preventDefault();
                     // Set selection
-                    $('.quantity-' + hidden_itr).attr("data-max", ui.item.count_group);
+                    // $('.quantity-' + hidden_itr).attr("data-max", ui.item.count_group);
                     $('.name-' + hidden_itr).val(ui.item.label); // display the selected text
                     $('.service_id-' + hidden_itr).val(ui.item.value); // save selected id to input
                     $('#unit_price-' + hidden_itr).val(ui.item.price);
                     $('.quantity-' + hidden_itr).val(ui.item.count_group);
+
+                    if(ui.item.is_quantity == 0){
+                        $('.quantity-down').prop('disabled', true);
+                        $('.quantity-up').prop('disabled', true);
+                        $('.quantity-' + hidden_itr).prop('disabled', true);
+
+                    }
+
                     change($(this).attr('data-itr'))
 
                     $(".reservatoinData").flatpickr({

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard\Core;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Group;
 use App\Traits\imageTrait;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -47,7 +48,7 @@ class CategoryController extends Controller
 
                                 <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'"
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
-                                  data-parent_id="'.$category->parent_id.'" data-image="'.$category->image.'" data-toggle="modal" data-target="#editModel">
+                                  data-parent_id="'.$category->parent_id.'" data-image="'.$category->image.'" data-group_id="'.$category->groups()->pluck('group_id').'" data-toggle="modal" data-target="#editModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
 
@@ -68,7 +69,9 @@ class CategoryController extends Controller
         }
 
         $categories = Category::whereNull('parent_id')->get();
-        return view('dashboard.core.categories.index',compact('categories'));
+        $groups = Group::query()->get();
+
+        return view('dashboard.core.categories.index',compact('categories','groups'));
     }
 
     public function create()
@@ -85,17 +88,19 @@ class CategoryController extends Controller
             'description_ar' => 'required',
             'description_en' => 'required',
             'parent_id' => 'nullable|exists:categories,id',
+            'group_ids' => 'required|array',
+            'group_ids.*' => 'required|exists:groups,id',
         ]);
 
-        $data=$request->except('_token','avatar');
+        $data=$request->except('_token','avatar','group_ids');
 
         if ($request->has('avatar')){
             $image=$this->storeImages($request->avatar,'category');
                 $data['slug']= 'storage/images/category'.'/'.$image;
         }
 
-        Category::updateOrCreate($data);
-
+        $category = Category::updateOrCreate($data);
+        $category->groups()->sync($request->group_ids);
         session()->flash('success');
         return redirect()->back();
     }
@@ -116,8 +121,10 @@ class CategoryController extends Controller
             'description_ar' => 'required',
             'description_en' => 'required',
             'parent_id' => 'nullable|exists:categories,id',
+            'group_ids' => 'required|array',
+            'group_ids.*' => 'required|exists:groups,id',
         ]);
-        $data=$request->except('_token','avatar');
+        $data=$request->except('_token','avatar','group_ids');
 
 
         $category = Category::find($id);
@@ -129,6 +136,7 @@ class CategoryController extends Controller
             $data['slug']= 'storage/images/category'.'/'.$image;
         }
         $category->update($data);
+        $category->groups()->sync($request->group_ids);
         session()->flash('success');
         return redirect()->back();
     }

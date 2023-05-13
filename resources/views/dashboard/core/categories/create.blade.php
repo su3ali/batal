@@ -60,7 +60,24 @@
                         </div>
 
                             <input type="hidden" name="parent_id" value="">
+                        <div class="form-row mb-2">
+                            <div class="form-group col-md-12">
 
+                                <label for="group_ids">المجموعات</label>
+                                <select id="group_ids" multiple class="select2 form-control pt-1"
+                                        name="group_ids[]" required>
+                                    <option disabled>{{__('dash.choose')}}</option>
+                                    @foreach($groups as $group)
+                                        <option value="{{$group->id}}">{{$group->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('group_ids')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                        </div>
 
                         <div class="form-row mb-3">
 

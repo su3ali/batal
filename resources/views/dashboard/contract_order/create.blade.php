@@ -1,5 +1,13 @@
 @extends('dashboard.layout.layout')
 
+@push('style')
+    <style>
+        #bookingHeader{
+            background-color : rgb(239 245 255) !important;
+        }
+    </style>
+
+@endpush
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -87,7 +95,9 @@
                                 @include('dashboard.contract_order.serviceTable')
 
 
-                                @include('dashboard.contract_order.time')
+                                <div class="col-xl-12 col-lg-12 col-sm-12 reservition  layout-spacing" style="display:none;">
+
+                                </div>
 
                                 <div class="widget-content widget-content-area m-3 mt-0">
                                     <div class="form-row  card bg-light-dark m-3">
@@ -220,16 +230,18 @@
         $('body').on('change', '#getData', function (e) {
             e.preventDefault()
             var Data = $(this).val();
+            var itr = $(this).data('itr');
 
             $.ajax({
                 url: "{{route('dashboard.contract_order.getAvailableTime')}}",
                 data: {
                     'date': Data,
-                    'id': $('.service_id-1').val()
+                    'id': $('.service_id-1').val(),
+                    'itr': itr,
                 },
                 cache: false,
                 success: function (html) {
-                    $('#select-time-available').html(html);
+                    $('#select-time-available_'+itr).html(html);
                 }
             });
 
@@ -336,6 +348,28 @@
                     $('.quantity-' + hidden_itr).val(ui.item.visit_number);
                     change($(this).attr('data-itr'))
 
+                    showBookingDiv(ui.item.value)
+
+
+                    return false;
+                },
+            })
+
+
+        }
+
+
+        function showBookingDiv(package_id) {
+
+            $.ajax({
+                url: "{{route('dashboard.contract_order.showBookingDiv')}}",
+                data: {
+                    'id': package_id
+                },
+                cache: false,
+                success: function (html) {
+                    $('.reservition').html(html);
+
                     $(".reservatoinData").flatpickr({
                         inline: true,
                         minDate: "today",
@@ -352,13 +386,10 @@
                             },
                         },
                     });
-                    return false;
-                },
-            })
-
+                }
+            });
 
         }
-
 
         function changeQty(button, hidden_itr) {
             var input = $('.quantity-' + hidden_itr);
