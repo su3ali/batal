@@ -35,7 +35,7 @@
 @endforeach
 
 @else
-    <div class="select-time">
-        <h4 class="text-center" style="padding: 113px;">لا يوجد حجزات متوفره اليوم</h4>
+    <div class="text-center">
+        <img width="40%" src="{{asset('images/time.png')}}">
     </div>
 @endif

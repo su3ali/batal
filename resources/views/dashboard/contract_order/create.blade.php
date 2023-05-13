@@ -325,7 +325,6 @@
                         },
                         success: function (data) {
 
-                            $('.reservition').show();
                             response($.map(data, function (key, el) {
                                 return {
                                     label: key.name_ar,
@@ -341,13 +340,13 @@
                 select: function (event, ui) {
                     event.preventDefault();
                     // Set selection
+                    $('.reservition').show();
                     $('.quantity-' + hidden_itr).attr("data-max", ui.item.visit_number);
                     $('.name-' + hidden_itr).val(ui.item.label); // display the selected text
                     $('.service_id-' + hidden_itr).val(ui.item.value); // save selected id to input
                     $('#unit_price-' + hidden_itr).val(ui.item.price);
                     $('.quantity-' + hidden_itr).val(ui.item.visit_number);
                     change($(this).attr('data-itr'))
-
                     showBookingDiv(ui.item.value)
 
 

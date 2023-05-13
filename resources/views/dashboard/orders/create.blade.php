@@ -313,7 +313,6 @@
                         },
                         success: function (data) {
 
-                            $('.reservition').show();
                             response($.map(data, function (key, el) {
                                 console.log(key)
                                 return {
@@ -362,6 +361,7 @@
                             },
                         },
                     });
+                    $('.reservition').show();
                     return false;
                 },
             })
