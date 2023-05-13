@@ -67,7 +67,6 @@ class AddressController extends Controller
         $address = UserAddresses::find($id);
         if ($address) {
             $request->validate([
-                'user_id' => 'required|exists:users,id',
                 'country_id' => 'nullable|exists:countries,id',
                 'city_id' => 'nullable|exists:cities,id',
                 'region_id' => 'nullable|exists:regions,id',
@@ -95,6 +94,8 @@ class AddressController extends Controller
                 ]);
                 $data['is_default'] = 1;
             }
+            $data['user_id'] = auth('sanctum')->user()->id;
+
             $address->update($data);
             $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
             $this->body['addresses'] = UserAddressResource::collection($addresses);

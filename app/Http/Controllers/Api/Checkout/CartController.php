@@ -28,7 +28,7 @@ class CartController extends Controller
             $cart = Cart::query()->where('user_id', auth()->user()->id)->where('service_id', $service->id)
                 ->first();
             if ($cart) {
-                return self::apiResponse(400, t_('Already In Your Cart!'), $this->body);
+//                return self::apiResponse(400, t_('Already In Your Cart!'), $this->body);
             }
             Cart::query()->create([
                 'user_id' => auth()->user()->id,
@@ -49,7 +49,14 @@ class CartController extends Controller
     protected function index(): JsonResponse
     {
         $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
-        $this->body['carts'] = CartResource::collection($carts);
+
+        $cat_ids = $carts->pluck('category_id');
+        $this->body['carts'] = [];
+        foreach ($cat_ids as $cat_id){
+            if ($cat_id){
+                $this->body['carts'][$cat_id] = CartResource::collection($carts->where('category_id', $cat_id));
+            }
+        }
         if ($carts) {
             $total = number_format($this->calc_total($carts), 2, '.', '');
 
