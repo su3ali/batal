@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Checkout;
 
-use App\Http\Resources\Product\AdditionsResource;
+use App\Http\Resources\service\AdditionsResource;
 use App\Models\Addition;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,23 +16,21 @@ class CartResource extends JsonResource
      */
     public function toArray($request)
     {
-        $adds_ids = $this->cart_additions->pluck('addition_id')->toArray();
-        $adds_obj = Addition::query()->whereIn('id', $adds_ids)->get();
-        $adds = array_sum($adds_obj->pluck('price')->toArray());
-        if ($this->size == 'none'){
-            $price = $this->product?->price;
-        }else{
-            $price = $this->product? $this->product[$this->size] : '';
+        $images = [];
+        foreach ($this->service->serviceImages as $serviceImage){
+            if ($serviceImage->image){
+                $images[] = asset($serviceImage->image);
+            }
         }
         return [
             'id' => $this->id,
-            'product_id' => $this->product_id,
-            'product_title' => $this->product?->title,
+            'service_id' => $this->service_id,
+            'category_id' => $this->service->category->id,
+            'category_title' => $this->service->category->title,
+            'service_title' => $this->service?->title,
             'quantity' => $this->quantity,
-            'size' => $this->size,
-            'product_image' => $this->product?->getMedia('images')->first()->original_url,
-            'additions' => AdditionsResource::collection($adds_obj),
-            'price' => (($price + $adds) * $this->quantity),
+            'service_image' => $images,
+            'price' => ($this->price * $this->quantity),
         ];
     }
 }

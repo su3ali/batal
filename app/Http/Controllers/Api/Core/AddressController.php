@@ -110,8 +110,9 @@ class AddressController extends Controller
         $address = UserAddresses::find($id);
         if ($address) {
             $address->delete();
-            return self::apiResponse(200, 'deleted successfully', $this->body);
-        } else {
+            $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
+            $this->body['addresses'] = UserAddressResource::collection($addresses);
+            return self::apiResponse(200, null, $this->body);        } else {
             return self::apiResponse(200, 'not found or already deleted', $this->body);
         }
 
