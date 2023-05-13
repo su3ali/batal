@@ -56,7 +56,4 @@ class Service extends Model
         return $this->category->groups->count();
     }
 
-    public function category(){
-        return $this->hasOne(Category::class, 'id', 'category_id');
-    }
 }
