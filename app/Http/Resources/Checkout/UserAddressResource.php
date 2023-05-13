@@ -21,6 +21,9 @@ class UserAddressResource extends JsonResource
             'user_id' => $this->user_id,
             'is_default' => $this->is_default,
             'active' => $this->active,
+            'lat' => $this->lat,
+            'long' => $this->long,
+            'phone' => $this->phone,
         ];
     }
 }

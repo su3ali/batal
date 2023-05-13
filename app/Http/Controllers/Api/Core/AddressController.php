@@ -34,6 +34,9 @@ class AddressController extends Controller
             'name' => 'required|string|max:300',
             'active' => 'nullable|in:on,off',
             'is_default' => 'required|in:yes,no',
+            'lat' => 'nullable|Numeric',
+            'long' => 'nullable|Numeric',
+            'phone' => 'nullable|Numeric',
         ]);
         $data = $request->except('_token', 'active', 'is_default');
 
@@ -72,6 +75,9 @@ class AddressController extends Controller
                 'name' => 'required|string|max:300',
                 'active' => 'nullable|in:on,off',
                 'is_default' => 'required|in:yes,no',
+                'lat' => 'nullable|Numeric',
+                'long' => 'nullable|Numeric',
+                'phone' => 'nullable|Numeric',
             ]);
             $data = $request->except('_token', 'active', 'is_default');
 
