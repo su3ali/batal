@@ -83,7 +83,7 @@ class ContractOrderController extends Controller
             'notes' => 'nullable|String',
             'quantity' => 'required|Numeric',
             'day' => 'array|required',
-            'day.*' => 'array|required',
+            'day.*' => 'required',
             'start_time' => 'array|required',
             'start_time.*' => 'required',
         ];
