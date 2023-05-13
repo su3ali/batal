@@ -782,6 +782,7 @@ rejected_bills
     'Customers' => 'العملاء',
     'customer name' => 'اسم العميل',
     'user addresses' => 'عناوين العميل',
+    'r.s' => 'ريال سعودي',
 
 
 ];

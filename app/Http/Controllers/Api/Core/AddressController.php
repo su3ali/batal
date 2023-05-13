@@ -27,7 +27,6 @@ class AddressController extends Controller
     protected function addAddress(Request $request)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'country_id' => 'nullable|exists:countries,id',
             'city_id' => 'nullable|exists:cities,id',
             'region_id' => 'nullable|exists:regions,id',
@@ -35,8 +34,10 @@ class AddressController extends Controller
             'name' => 'required|string|max:300',
             'active' => 'nullable|in:on,off',
             'is_default' => 'required|in:yes,no',
+            'lat' => 'nullable|Numeric',
+            'long' => 'nullable|Numeric',
+            'phone' => 'nullable|Numeric',
         ]);
-
         $data = $request->except('_token', 'active', 'is_default');
 
         if ($request['active'] && $request['active'] == 'on') {
@@ -52,6 +53,7 @@ class AddressController extends Controller
             ]);
             $data['is_default'] = 1;
         }
+        $data['user_id'] = auth('sanctum')->user()->id;
         UserAddresses::query()->create($data);
 
         $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
@@ -65,7 +67,6 @@ class AddressController extends Controller
         $address = UserAddresses::find($id);
         if ($address) {
             $request->validate([
-                'user_id' => 'required|exists:users,id',
                 'country_id' => 'nullable|exists:countries,id',
                 'city_id' => 'nullable|exists:cities,id',
                 'region_id' => 'nullable|exists:regions,id',
@@ -73,6 +74,9 @@ class AddressController extends Controller
                 'name' => 'required|string|max:300',
                 'active' => 'nullable|in:on,off',
                 'is_default' => 'required|in:yes,no',
+                'lat' => 'nullable|Numeric',
+                'long' => 'nullable|Numeric',
+                'phone' => 'nullable|Numeric',
             ]);
             $data = $request->except('_token', 'active', 'is_default');
 
@@ -90,6 +94,8 @@ class AddressController extends Controller
                 ]);
                 $data['is_default'] = 1;
             }
+            $data['user_id'] = auth('sanctum')->user()->id;
+
             $address->update($data);
             $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
             $this->body['addresses'] = UserAddressResource::collection($addresses);
@@ -105,8 +111,9 @@ class AddressController extends Controller
         $address = UserAddresses::find($id);
         if ($address) {
             $address->delete();
-            return self::apiResponse(200, 'deleted successfully', $this->body);
-        } else {
+            $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
+            $this->body['addresses'] = UserAddressResource::collection($addresses);
+            return self::apiResponse(200, null, $this->body);        } else {
             return self::apiResponse(200, 'not found or already deleted', $this->body);
         }
 

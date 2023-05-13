@@ -75,11 +75,11 @@ class CustomerController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'email' => 'required|email|max:255|unique:users,email',
+            'email' => 'nullable|email|max:255|unique:users,email',
             'phone' => 'required|numeric|unique:users,phone',
-            'password' => ['required', 'confirmed', Password::min(4)],
+            'password' => ['nullable', 'confirmed', Password::min(4)],
             'active' => 'nullable|in:on,off',
-            'city_id' => 'required|exists:cities,id',
+            'city_id' => 'nullable|exists:cities,id',
         ]);
 
         $data=$request->except('_token','password_confirmation','active');
@@ -109,11 +109,11 @@ class CustomerController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'email' => 'required|email|max:255|unique:users,email,'.$id,
+            'email' => 'nullable|email|max:255|unique:users,email,'.$id,
             'phone' => 'required|numeric|unique:users,phone,'.$id,
-            'password' => ['confirmed', Password::min(4)],
+            'password' => ['nullable', 'confirmed', Password::min(4)],
             'active' => 'nullable|in:on,off',
-            'city_id' => 'required|exists:cities,id',
+            'city_id' => 'nullable|exists:cities,id',
 
         ]);
         $data=$request->except('_token','password_confirmation','active');

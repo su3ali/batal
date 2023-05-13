@@ -30,6 +30,11 @@ class User extends Authenticatable
         return $this->hasOne(City::class, 'id', 'city_id');
     }
 
-
+    public function orders(){
+        return $this->hasMany(Order::class, 'user_id');
+    }
+    public function bookings(){
+        return $this->hasMany(Booking::class, 'user_id');
+    }
 
 }

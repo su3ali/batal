@@ -35,4 +35,7 @@ class Booking extends Model
     public function booking_status(){
         return $this->hasOne(BookingStatus::class, 'id','booking_status_id');
     }
+    public function booking_setting(){
+        return $this->hasOne(BookingStatus::class, 'id','booking_status_id');
+    }
 }

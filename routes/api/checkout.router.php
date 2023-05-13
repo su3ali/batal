@@ -3,11 +3,14 @@
 use App\Http\Controllers\Api\Checkout\CartController;
 use App\Http\Controllers\Api\Checkout\CheckoutController;
 use App\Http\Controllers\Api\Checkout\CouponController;
+Route::prefix('carts')->group(function (){
+    Route::post('add_to_cart', [CartController::class, 'add_to_cart']);
+    Route::get('/', [CartController::class, 'index']);
+    Route::get('delete', [CartController::class, 'delete_cart']);
+    Route::post('control_cart_item', [CartController::class, 'controlItem']);
 
-Route::post('add_to_cart', [CartController::class, 'add_to_cart']);
-Route::get('cart', [CartController::class, 'index']);
-Route::get('delete/cart', [CartController::class, 'delete_cart']);
-Route::post('control_cart_item', [CartController::class, 'controlItem']);
+});
+
 
 Route::get('address', [CheckoutController::class, 'index']);
 Route::post('add-address', [CheckoutController::class, 'addAddress']);

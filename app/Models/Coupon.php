@@ -23,4 +23,10 @@ class Coupon extends Model
             return $this->description_en;
         }
     }
+    public function category(){
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
+    public function service(){
+        return $this->hasOne(Service::class, 'id', 'service_id');
+    }
 }
