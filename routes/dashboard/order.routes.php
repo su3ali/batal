@@ -9,4 +9,5 @@ Route::get('order/customer/autoCompleteCustomer', 'Orders\OrderController@autoCo
 Route::get('order/service/autoCompleteService', 'Orders\OrderController@autoCompleteService')->name('order.autoCompleteService');
 Route::get('order/service/getServiceById', 'Orders\OrderController@getServiceById')->name('order.getServiceById');
 Route::get('order/service/getAvailableTime', 'Orders\OrderController@getAvailableTime')->name('order.getAvailableTime');
+Route::get('order/showService', 'Orders\OrderController@showService')->name('order.showService');
 

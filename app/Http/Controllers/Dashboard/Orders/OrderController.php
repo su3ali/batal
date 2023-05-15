@@ -45,8 +45,9 @@ class OrderController extends Controller
                 ->addColumn('control', function ($row) {
 
                     $html = '
-
-
+                        <a href="' . route('dashboard.order.showService','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
                                 <a data-table_id="html5-extension" data-href="'.route('dashboard.orders.destroy', $row->id).'" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
@@ -64,6 +65,34 @@ class OrderController extends Controller
         }
 
         return view('dashboard.orders.index');
+    }
+
+    public function showService()
+    {
+
+        if (request()->ajax()) {
+
+            $orders = OrderService::where('order_id',request()->query('id'))->get();
+            return DataTables::of($orders)
+                ->addColumn('service', function ($row) {
+                    return $row->service?->title;
+                })
+                ->addColumn('quantity', function ($row) {
+                    return $row->quantity;
+                })
+                ->addColumn('price', function ($row) {
+                    return $row->price;
+                })
+
+                ->rawColumns([
+                    'service',
+                    'quantity',
+                    'price',
+                ])
+                ->make(true);
+        }
+
+        return view('dashboard.orders.showService');
     }
 
 
