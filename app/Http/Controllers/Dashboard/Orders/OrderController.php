@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingSetting;
 use App\Models\Category;
+use App\Models\CategoryGroup;
 use App\Models\City;
+use App\Models\Group;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
@@ -108,6 +110,12 @@ class OrderController extends Controller
 
 
         $order = Order::query()->create($data);
+
+//        $group_id = Booking::where('service_id',$request->service_id)->pluck('group_id')->toArray();
+//        $service = Service::where('id',$request->service_id)->first();
+//        $groups = CategoryGroup::where('category_id',$service->category_id)->whereNotIn('group_id',$group_id)->pluck('group_id')->toArray();
+
+
         $last = Booking::query()->latest()->first()?->id;
         $booking_no = 'dash2023/'.$last?$last+1: 1;
         $booking = [
@@ -116,6 +124,7 @@ class OrderController extends Controller
             'service_id' => $request->service_id,
             'order_id' => $order->id,
             'booking_status_id' => 1,
+//            'group_id' => current($groups),
             'notes' => $request->notes,
             'quantity' => $request->quantity,
             'date' => $request->day,

@@ -75,7 +75,7 @@ class ServiceController extends Controller
     public function create()
     {
         $categories = category::whereNull('parent_id')->where('active', 1)->get()->pluck('title', 'id');
-        $groups = Group::query()->whereNotIn('id', ServiceGroup::query()->pluck('group_id')->toArray())->get();
+        $groups = Group::query()->get();
         return view('dashboard.core.services.create', compact('categories', 'groups'));
     }
 
@@ -91,20 +91,28 @@ class ServiceController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|Numeric',
             'type' => 'required|in:evaluative,fixed',
-            'group_ids' => 'required|array',
-            'group_ids.*' => 'required|exists:groups,id',
+//            'group_ids' => 'required|array',
+//            'group_ids.*' => 'required|exists:groups,id',
             'start_from' => 'nullable|Numeric',
+            'is_quantity' => 'nullable|in:on,off',
+
         ]);
 
-        $data = $request->except(['_token', 'group_ids']);
+        $data = $request->except(['_token', 'group_ids','is_quantity']);
+
+        if ($request['is_quantity'] && $request['is_quantity'] == 'on'){
+            $data['is_quantity'] = 1;
+        }else{
+            $data['is_quantity'] = 0;
+        }
 
         $service = Service::query()->create($data);
-        foreach ($request->group_ids as $group_id) {
-            ServiceGroup::query()->create([
-                'service_id' => $service->id,
-                'group_id' => $group_id,
-            ]);
-        }
+//        foreach ($request->group_ids as $group_id) {
+//            ServiceGroup::query()->create([
+//                'service_id' => $service->id,
+//                'group_id' => $group_id,
+//            ]);
+//        }
 
         session()->flash('success');
         return redirect()->route('dashboard.core.service.index');
@@ -135,10 +143,19 @@ class ServiceController extends Controller
             'price' => 'required|Numeric',
             'type' => 'required|in:evaluative,fixed',
             'start_from' => 'nullable|Numeric',
-            'group_ids' => 'required|array',
-            'group_ids.*' => 'required|exists:groups,id'
+//            'group_ids' => 'required|array',
+//            'group_ids.*' => 'required|exists:groups,id',
+            'is_quantity' => 'nullable|in:on,off',
+
         ]);
-        $data = $request->except(['_token', 'group_ids']);
+        $data = $request->except(['_token', 'group_ids','is_quantity']);
+
+        if ($request['is_quantity'] && $request['is_quantity'] == 'on'){
+            $data['is_quantity'] = 1;
+        }else{
+            $data['is_quantity'] = 0;
+        }
+
 
         if ($request->type == 'fixed') {
             $data['start_from'] = null;
@@ -148,12 +165,12 @@ class ServiceController extends Controller
         $service->update($data);
 
         ServiceGroup::query()->where('service_id', $service->id)->delete();
-        foreach ($request->group_ids as $group_id) {
-            ServiceGroup::query()->create([
-                'service_id' => $service->id,
-                'group_id' => $group_id
-            ]);
-        }
+//        foreach ($request->group_ids as $group_id) {
+//            ServiceGroup::query()->create([
+//                'service_id' => $service->id,
+//                'group_id' => $group_id
+//            ]);
+//        }
         session()->flash('success');
         return redirect()->route('dashboard.core.service.index');
     }

@@ -1,4 +1,4 @@
-<div class="modal fade animated rotateInDownLeft custo-rotateInDownLeft" id="technicianModal"
+<div class="modal fade " id="technicianModal"
      role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">

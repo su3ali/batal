@@ -1,5 +1,6 @@
+@if($times)
 
-@foreach($times as $time)
+    @foreach($times as $time)
 
 
 @if($notAvailable->isNotEmpty())
@@ -33,3 +34,9 @@
 @endif
 
 @endforeach
+
+@else
+    <div class="text-center">
+        <img width="40%" src="{{asset('images/time.png')}}">
+    </div>
+@endif

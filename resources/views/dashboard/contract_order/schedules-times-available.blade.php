@@ -1,4 +1,4 @@
-
+@if($times)
 @foreach($times as $time)
 
 
@@ -9,9 +9,9 @@
         <label
             class="bg-btn-hover dark-hover fw-bold  radio"
             dir="{{get_current_lang()=='en'?'ltr':'rtl'}}"
-            for="timeselect-{{$time->timestamp}}">
-            <input name="start_time" type="radio" class="btn-check time"
-                                                         id="timeselect-{{$time->timestamp}}"
+            for="timeselect-{{$itr}}-{{$time->timestamp}}">
+            <input name="start_time[{{$itr}}]" type="radio" class="btn-check time"
+                                                         id="timeselect-{{$itr}}-{{$time->timestamp}}"
                                                          value="{{$time->timestamp}}" {{array_sum($notAvailable->pluck('quantity')->toArray()) === $package->visit_number && in_array($time->timestamp,$notAvailable->pluck('time')->toArray()) ? 'disabled' : ''}}>
            <span> {{$time->format('g:i A')}} </span>
         </label>
@@ -23,9 +23,9 @@
         <label
             class="bg-btn-hover dark-hover fw-bold  radio"
             dir="{{get_current_lang()=='en'?'ltr':'rtl'}}"
-            for="timeselect-{{$time->timestamp}}">
-            <input name="start_time" type="radio" class="btn-check time"
-                   id="timeselect-{{$time->timestamp}}"
+            for="timeselect-{{$itr}}-{{$time->timestamp}}">
+            <input name="start_time[{{$itr}}]" type="radio" class="btn-check time"
+                   id="timeselect-{{$itr}}-{{$time->timestamp}}"
                    value="{{$time->timestamp}}">
             <span> {{$time->format('g:i A')}} </span>
         </label>
@@ -33,3 +33,9 @@
 @endif
 
 @endforeach
+
+@else
+    <div class="text-center">
+        <img width="40%" src="{{asset('images/time.png')}}">
+    </div>
+@endif

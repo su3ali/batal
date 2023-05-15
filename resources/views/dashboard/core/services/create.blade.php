@@ -184,17 +184,30 @@
                                 </div>
 
                                 <div class="form-row mb-2">
-                                    <div class="form-group col-md-12">
+{{--                                    <div class="form-group col-md-6">--}}
 
-                                        <label for="group_ids">المجموعات</label>
-                                        <select id="group_ids" multiple class="select2 form-control pt-1"
-                                                name="group_ids[]" required>
-                                            <option disabled>{{__('dash.choose')}}</option>
-                                            @foreach($groups as $group)
-                                                <option value="{{$group->id}}">{{$group->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('group_ids')
+{{--                                        <label for="group_ids">المجموعات</label>--}}
+{{--                                        <select id="group_ids" multiple class="select2 form-control pt-1"--}}
+{{--                                                name="group_ids[]" required>--}}
+{{--                                            <option disabled>{{__('dash.choose')}}</option>--}}
+{{--                                            @foreach($groups as $group)--}}
+{{--                                                <option value="{{$group->id}}">{{$group->name}}</option>--}}
+{{--                                            @endforeach--}}
+{{--                                        </select>--}}
+{{--                                        @error('group_ids')--}}
+{{--                                        <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                        @enderror--}}
+
+{{--                                    </div>--}}
+
+                                    <div class="form-group col-md-6">
+                                        <label for="is_quantity"></label>
+                                        <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
+                                            <label class="mx-5" for="is_quantity">الكميه</label>
+                                            <input type="checkbox" name="is_quantity" id="is_quantity" checked>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        @error('status')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 

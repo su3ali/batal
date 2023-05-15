@@ -25,11 +25,11 @@
                     </td>
                     <td style="width: 220px;">
                         <div class="input-group input-number">
-                            <span class="input-group-btn"><button type="button" onclick="changeQty(this,1)" class="btn btn-default btn-flat quantity-down">
+                            <span class="input-group-btn"><button type="button" disabled onclick="changeQty(this,1)" class="btn btn-default btn-flat quantity-down">
                                       <i data-feather="minus" class="text-danger"></i>
                                 </button></span>
-                            <input type="number" value="1"  data-min="1"  onkeyup="change(1)" class="quantity-1 input_number input_quantity form-control" name="quantity">
-                            <span class="input-group-btn"><button type="button" onclick="changeQty(this,1)" class="btn btn-default btn-flat quantity-up">
+                            <input type="number" value="1"  data-min="1" readonly  onkeyup="change(1)" class="quantity-1 input_number input_quantity form-control" name="quantity">
+                            <span class="input-group-btn"><button type="button" disabled onclick="changeQty(this,1)" class="btn btn-default btn-flat quantity-up">
 
                                      <i data-feather="plus" class="text-success"></i>
                                 </button></span>

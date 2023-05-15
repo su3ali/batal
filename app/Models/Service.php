@@ -47,15 +47,13 @@ class Service extends Model
         return $this->hasOne(BookingSetting::class,'service_id','id');
     }
 
-    public function groups(){
-        return $this->belongsToMany(Group::class, 'service_groups');
+    public function category()
+    {
+        return $this->hasOne(Category::class,'id','category_id');
     }
 
     public function getCountGroupAttribute(){
-        return $this->groups->count();
+        return $this->category->groups->count();
     }
 
-    public function category(){
-        return $this->hasOne(Category::class, 'id', 'category_id');
-    }
 }

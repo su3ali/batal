@@ -72,6 +72,9 @@ class ContractOrderController extends Controller
      */
     protected function store(Request $request): RedirectResponse
     {
+
+
+
         $rules = [
             'user_id' => 'required|exists:users,id',
             'service_id' => 'required|exists:contract_packages,id',
@@ -79,8 +82,10 @@ class ContractOrderController extends Controller
             'payment_method' => 'required|in:visa,cache',
             'notes' => 'nullable|String',
             'quantity' => 'required|Numeric',
-            'day' => 'required',
-            'start_time' => 'required'
+            'day' => 'array|required',
+            'day.*' => 'required',
+            'start_time' => 'array|required',
+            'start_time.*' => 'required',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
@@ -102,20 +107,27 @@ class ContractOrderController extends Controller
         $order = Contract::query()->create($data);
         $last = Booking::query()->latest()->first()?->id;
         $booking_no = 'dash2023/'.$last?$last+1: 1;
-        $booking = [
-            'booking_no' => $booking_no,
-            'user_id' => $request->user_id,
-            'package_id' => $request->service_id,
-            'contract_order_id' => $order->id,
-            'booking_status_id' => 1,
-            'notes' => $request->notes,
-            'quantity' => $request->quantity,
-            'date' => $request->day,
-            'type' => 'contract',
-            'time' => \Illuminate\Support\Carbon::createFromTimestamp($request->start_time)->toTimeString(),
-        ];
 
-        Booking::query()->create($booking);
+
+        foreach ($request->day as $key => $item){
+            $booking = [
+                'booking_no' => $booking_no,
+                'user_id' => $request->user_id,
+                'package_id' => $request->service_id,
+                'contract_order_id' => $order->id,
+                'booking_status_id' => 1,
+                'notes' => $request->notes,
+                'quantity' => 1,
+                'date' => $item,
+                'type' => 'contract',
+                'time' => \Illuminate\Support\Carbon::createFromTimestamp($request->start_time[$key])->toTimeString(),
+            ];
+            Booking::query()->create($booking);
+
+        }
+
+
+
 
         session()->flash('success');
         return redirect()->back();
@@ -151,6 +163,7 @@ class ContractOrderController extends Controller
 
     protected function getAvailableTime(Request $request)
     {
+        $itr = $request->itr;
         $day = \Illuminate\Support\Carbon::parse($request->date)->locale('en')->dayName;
 
         $package = ContractPackage::where('id',$request->id)->first();
@@ -170,7 +183,16 @@ class ContractOrderController extends Controller
 
         $notAvailable = Booking::where('type','contract')->where('package_id',$request->id)->where('date',$request->date)->where('booking_status_id', 1)->get();
 
-        return view('dashboard.contract_order.schedules-times-available', compact('times','notAvailable','package'));
+        return view('dashboard.contract_order.schedules-times-available', compact('times','notAvailable','package','itr'));
+    }
+
+
+    protected function showBookingDiv(Request $request)
+    {
+
+        $package = ContractPackage::where('id',$request->id)->first('visit_number');
+
+        return view('dashboard.contract_order.time', compact('package'));
     }
 
     protected function destroy($id)

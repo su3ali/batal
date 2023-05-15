@@ -1,4 +1,4 @@
-<div class="modal fade animated rotateInDownLeft custo-rotateInDownLeft" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -60,7 +60,24 @@
                         </div>
 
                             <input type="hidden" name="parent_id" value="">
+                        <div class="form-row mb-2">
+                            <div class="form-group col-md-12">
 
+                                <label for="group_ids">المجموعات</label>
+                                <select id="group_ids" multiple class="select2 form-control pt-1"
+                                        name="group_ids[]" required>
+                                    <option disabled>{{__('dash.choose')}}</option>
+                                    @foreach($groups as $group)
+                                        <option value="{{$group->id}}">{{$group->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('group_ids')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                        </div>
 
                         <div class="form-row mb-3">
 

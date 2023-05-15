@@ -66,9 +66,9 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-md-12 text-right mb-3">
 
-                        <a href="{{route('dashboard.bookings.create')}}" id="" class="btn btn-primary card-tools">
-                            {{__('dash.add_new')}}
-                        </a>
+{{--                        <a href="{{route('dashboard.bookings.create')}}" id="" class="btn btn-primary card-tools">--}}
+{{--                            {{__('dash.add_new')}}--}}
+{{--                        </a>--}}
 
                     </div>
                     <div class="table-responsive">

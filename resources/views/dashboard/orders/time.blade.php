@@ -22,7 +22,9 @@
                         </h5>
 
                         <div class="d-flex gap-5 select-time-list flex-wrap" id="select-time-available">
-
+                            <div class="text-center">
+                                <img width="40%" src="{{asset('images/time.png')}}">
+                            </div>
                         </div>
                     </section>
                 </div>
