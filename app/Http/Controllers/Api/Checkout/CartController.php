@@ -127,10 +127,10 @@ class CartController extends Controller
                 $controlClass = new ControlCart();
                 $response = $controlClass->makeAction($request->action, $cart, $service);
 
+                $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
                 $total = number_format($this->calc_total($carts), 2);
                 $cat_ids = $carts->pluck('category_id');
                 if (key_exists('success', $response)) {
-                    $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
                     $this->body['total'] = $total;
                     $this->body['carts'] = [];
                     foreach ($cat_ids as $cat_id) {
