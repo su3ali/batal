@@ -103,6 +103,8 @@
         </div>
 
     </div>
+
+    @include('dashboard.bookings.partial.add_group')
 @endsection
 
 @push('script')
@@ -138,21 +140,29 @@
             });
         });
 
-        $(document).on('click', '#edit-booking-status', function () {
-            let id = $(this).data('id');
-            let name_ar = $(this).data('name_ar');
-            let name_en = $(this).data('name_en');
-            let description_ar = $(this).data('description_ar');
-            let description_en = $(this).data('description_en');
-            $('#edit_name_ar').val(name_ar)
-            $('#edit_name_en').val(name_en)
-            CKEDITOR.instances['edit_description_ar'].setData(description_ar);
-            CKEDITOR.instances['edit_description_en'].setData(description_en);
+        $(document).on('click', '#add-work-exp', function () {
+            let booking_id = $(this).data('id');
+            let service_id = $(this).data('service_id');
+            let type = $(this).data('type');
+            $.ajax({
+                url: '{{route('dashboard.getGroupByService')}}',
+                type: 'get',
+                data: {service_id: service_id,type:type},
+                success: function (data) {
+                    console.log(data)
 
-            let action = "{{route('dashboard.booking_statuses.update', 'id')}}";
-            action = action.replace('id', id)
-            $('#edit_booking_status_form').attr('action', action);
+                    if (data.length != 0){
+                        $.each(data, function (i, item) {
 
+                            var newOption = new Option(item, i, true, true);
+                            $('#group_id').append(newOption);
+
+                        });
+                    }
+                    $('#booking_id').val(booking_id);
+
+                }
+            });
         })
 
         $("body").on('change', '#customSwitchStatus', function () {
@@ -172,6 +182,23 @@
                     })
                 }
             });
+        })
+
+
+        $("body").on('change', '#status', function () {
+            if ($(this).val() == 'canceled') {
+                $('.notes').removeClass('col-md-12');
+                $('.notes').addClass('col-md-6');
+                $('.reason_cancel').show();
+
+
+            } else {
+                $('.notes').removeClass('col-md-6');
+                $('.notes').addClass('col-md-12');
+                $('.reason_cancel').hide();
+
+            }
+
         })
 
 

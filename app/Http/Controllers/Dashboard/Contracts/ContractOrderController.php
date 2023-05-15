@@ -111,7 +111,7 @@ class ContractOrderController extends Controller
 
         foreach ($request->day as $key => $item){
             $booking = [
-                'booking_no' => $booking_no,
+                'booking_no' => $booking_no+$key,
                 'user_id' => $request->user_id,
                 'package_id' => $request->service_id,
                 'contract_order_id' => $order->id,

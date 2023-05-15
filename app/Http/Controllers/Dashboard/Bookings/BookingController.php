@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Dashboard\Bookings;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\BookingStatus;
+use App\Models\CategoryGroup;
+use App\Models\Contract;
+use App\Models\ContractPackage;
 use App\Models\Group;
 use App\Models\Order;
 use App\Models\Service;
@@ -62,9 +65,17 @@ class BookingController extends Controller
                     return $row->booking_status?->name;
                 })
                 ->addColumn('control', function ($row) {
+                    $data = $row->service_id;
+                    if (\request()->query('type') == 'package'){
+                        $data = $row->package_id;
+                    }
+
                     $html = '
 
-
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '"  data-service_id="' . $data . '" data-type="'.\request()->query('type').'"
+                                  data-toggle="modal" data-target="#addGroupModel">
+                            اضافة فريق
+                       </button>
                                 <a data-table_id="html5-extension" data-href="' . route('dashboard.bookings.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>';
@@ -176,6 +187,33 @@ class BookingController extends Controller
         }
         $bookingStatus->save();
         return response('success');
+    }
+
+
+    protected function getGroupByService(Request $request)
+    {
+
+
+
+        if ($request->type =='package'){
+
+            $package = ContractPackage::where('id',$request->service_id)->first();
+
+            $service= Service::where('id',$package->service_id)->first('category_id');
+
+            $groupIds = CategoryGroup::where('category_id',$service->category_id)->pluck('group_id')->toArray();
+
+            $group = Group::whereIn('id',$groupIds)->get()->pluck('name','id')->toArray();
+        }else{
+            $service= Service::where('id',$request->service_id)->first('category_id');
+
+            $groupIds = CategoryGroup::where('category_id',$service->category_id)->pluck('group_id')->toArray();
+
+            $group = Group::whereIn('id',$groupIds)->get()->pluck('name','id')->toArray();
+        }
+
+        return response($group);
+
     }
 
 }
