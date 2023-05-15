@@ -86,8 +86,9 @@
 
                                 @include('dashboard.orders.serviceTable')
 
-
                                 @include('dashboard.orders.time')
+
+
 
                                 <div class="widget-content widget-content-area m-3 mt-0">
                                     <div class="form-row  card bg-light-dark m-3">
@@ -97,7 +98,9 @@
                                                 <span id="totalafterdiscountspan">0</span>
                                             </h4>
 
-                                            <input hidden name="price" id="totalafterdiscount"
+                                            <input hidden name="total" id="totalafterdiscount"
+                                                   class="form-control">
+                                            <input hidden name="all_quantity" id="all_quantity"
                                                    class="form-control">
 
                                         </div>
@@ -220,16 +223,18 @@
         $('body').on('change', '#getData', function (e) {
             e.preventDefault()
             var Data = $(this).val();
+            var itr = $(this).data('itr');
 
             $.ajax({
                 url: "{{route('dashboard.order.getAvailableTime')}}",
                 data: {
                     'date': Data,
-                    'id': $('.service_id-1').val()
+                    'id': $('.service_id-'+itr).val(),
+                    'itr': itr,
                 },
                 cache: false,
                 success: function (html) {
-                    $('#select-time-available').html(html);
+                    $('#select-time-available_'+itr).html(html);
                 }
             });
 
@@ -251,24 +256,24 @@
 
 
                         <input type='text' class="form-control name-` + itr + `" data-itr="` + itr + `" >
-                        <input type='hidden' class="service_id-` + itr + `" name="services[` + itr + `][service_id]"  >
+                        <input type='hidden' class="service_id-` + itr + `" name="service_id[` + itr + `]"  >
 
                     </td>
                     <td style="width: 190px;">
                         <div class="input-group input-number">
-                            <span class="input-group-btn"><button type="button" onclick="changeQty(this,` + itr + `)" class="btn btn-default btn-flat quantity-down"><i class="far fa-minus text-danger"></i></button></span>
-                            <input type="number" value="1"  onkeyup="change(` + itr + `)" data-min="1" class=" quantity-` + itr + ` input_number input_quantity form-control"  name="services[` + itr + `][quantity]">
-                            <span class="input-group-btn"><button type="button" onclick="changeQty(this,` + itr + `)" class="btn btn-default btn-flat quantity-up"><i class="far fa-pulse text-success"></i></button></span>
+                            <span class="input-group-btn"><button type="button" onclick="changeQty(this,` + itr + `)" class="btn btn-default btn-flat quantity-down"><i data-feather="minus" class="text-danger"></i></button></span>
+                            <input type="number" value="1"  onkeyup="change(` + itr + `)" data-min="1" class=" quantity-` + itr + ` input_number input_quantity form-control"  name="quantity[` + itr + `]">
+                            <span class="input-group-btn"><button type="button" onclick="changeQty(this,` + itr + `)" class="btn btn-default btn-flat quantity-up"><i data-feather="plus" class="text-success"></i></button></span>
                         </div>
 
                     </td>
 
                     <td style="width: 200px;">
-                        <input type="number" onkeyup="change(` + itr + `)"  class="form-control unit_price" id="unit_price-` + itr + `" name="services[` + itr + `][unit_price]">
+                        <input type="number" onkeyup="change(` + itr + `)"  class="form-control unit_price" id="unit_price-` + itr + `" name="unit_price[` + itr + `]">
                     </td>
 
                     <td>
-                        <input type="hidden" id="total-` + itr + `" class="form-control pos_line_total" value="0">
+                        <input type="hidden" name="price[`+itr+`]" id="total-` + itr + `" class="form-control pos_line_total" value="0">
                         <div id="rowTotal-` + itr + `">0</div> ريال
                     </td>
 
@@ -342,8 +347,50 @@
                         $('.quantity-' + hidden_itr).prop('disabled', true);
 
                     }
+                    var i = $(this).attr('data-itr');
+                    change(i)
+$('#toggleAccordion').append(`<div class="card">
+    <div class="card-header" id="bookingHeader">
+        <section class="mb-0 mt-0">
+            <div role="menu" class="collapsed" data-toggle="collapse" data-target="#defaultAccordion`+i+`" aria-expanded="true" aria-controls="defaultAccordion`+i+`">
+                         الحجز `+i+`
+</div>
+</section>
+</div>
 
-                    change($(this).attr('data-itr'))
+<div id="defaultAccordion`+i+`" class="collapse" aria-labelledby="..." data-parent="#toggleAccordion">
+                <div class="card-body">
+                    <div class="col-md-12 mb-3">
+                        <div class="row ">
+                            <div class="col-xl-6 col-lg-6 col-sm-6  layout-spacing">
+                                <section class="calender-custom">
+                                    <h5 class="fw-bold mb-5 ff-din-demi text-center">
+                                        اختر تاريخ حجزك
+                                    </h5>
+
+                                    <input type="text" class="reservatoinData" data-itr="`+i+`" required id="getData" name="day[`+i+`]" hidden>
+                                </section>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-sm-6  layout-spacing">
+                                <section>
+                                    <h5 class="fw-bold mb-5 ff-din-demi text-center">
+                                        اختر الوقت المناسب
+                                    </h5>
+
+                                    <div class="d-flex gap-5 select-time-list flex-wrap" id="select-time-available_`+i+`">
+                                        <div class="text-center">
+                                            <img width="40%" src="{{asset('images/time.png')}}">
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>`)
 
                     $(".reservatoinData").flatpickr({
                         inline: true,
@@ -436,6 +483,7 @@
             });
 
 
+            $('#all_quantity').val(total_quantity);
             $('#totalafterdiscount').val(total_price);
             $('#totalafterdiscountspan').html(total_price);
 

@@ -11,7 +11,7 @@
                 <th>الكمية</th>
                 <th>سعر الوحده</th>
                 <th>المجموع</th>
-{{--                <th class="no-content">{{__('dash.actions')}}</th>--}}
+                <th class="no-content">{{__('dash.actions')}}</th>
             </tr>
             </thead>
             <tbody id="item-service">
@@ -20,7 +20,7 @@
                     <td style="width: 450px;">
 
                         <input type='text' class="form-control name-1" data-itr="1">
-                        <input type='hidden' class="service_id-1" name="service_id"  >
+                        <input type='hidden' class="service_id-1" name="service_id[1]"  >
 
                     </td>
                     <td style="width: 220px;">
@@ -28,7 +28,7 @@
                             <span class="input-group-btn"><button type="button" onclick="changeQty(this,1)" class="btn btn-default btn-flat quantity-down">
                                       <i data-feather="minus" class="text-danger"></i>
                                 </button></span>
-                            <input type="number" value="1"  data-min="1"  onkeyup="change(1)" class="quantity-1 input_number input_quantity form-control" name="quantity">
+                            <input type="number" value="1"  data-min="1"  onkeyup="change(1)" class="quantity-1 input_number input_quantity form-control" name="quantity[1]">
                             <span class="input-group-btn"><button type="button" onclick="changeQty(this,1)" class="btn btn-default btn-flat quantity-up">
 
                                      <i data-feather="plus" class="text-success"></i>
@@ -38,20 +38,20 @@
                     </td>
 
                     <td style="width: 250px;">
-                        <input type="text" onkeyup="change(1)"  class="form-control unit_price" id="unit_price-1" name="unit_price">
+                        <input type="text" onkeyup="change(1)"  class="form-control unit_price" id="unit_price-1" name="unit_price[1]">
                     </td>
 
                     <td>
-                        <input type="hidden" id="total-1" class="form-control pos_line_total" value="0">
+                        <input type="hidden" id="total-1" name="price[1]" class="form-control pos_line_total" value="0">
 
                         <div id="rowTotal-1">0</div> ريال
                     </td>
 
-{{--                    <td>--}}
-{{--                        <button type="button" data-itr="1" class="btn btn-primary card-tools plus-service">--}}
-{{--                            +--}}
-{{--                        </button>--}}
-{{--                    </td>--}}
+                    <td>
+                        <button type="button" data-itr="1" class="btn btn-primary card-tools plus-service">
+                            +
+                        </button>
+                    </td>
                 </tr>
 
             </tbody>

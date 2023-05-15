@@ -10,6 +10,7 @@ use App\Models\CategoryGroup;
 use App\Models\City;
 use App\Models\Group;
 use App\Models\Order;
+use App\Models\OrderService;
 use App\Models\Service;
 use App\Models\User;
 use App\Traits\schedulesTrait;
@@ -35,8 +36,11 @@ class OrderController extends Controller
                 ->addColumn('user', function ($row) {
                     return $row->user?->first_name .' ' . $row->user?->last_name;
                 })
-                ->addColumn('service', function ($row) {
-                    return $row->service?->title;
+                ->addColumn('quantity', function ($row) {
+                    return $row->quantity;
+                })
+                ->addColumn('status', function ($row) {
+                    return $row->status?->name;
                 })
                 ->addColumn('control', function ($row) {
 
@@ -52,9 +56,7 @@ class OrderController extends Controller
                 })
                 ->rawColumns([
                     'user',
-                    'service',
-                    'day',
-                    'start_time',
+                    'quantity',
                     'status',
                     'control',
                 ])
@@ -82,15 +84,22 @@ class OrderController extends Controller
      */
     protected function store(Request $request): RedirectResponse
     {
+
         $rules = [
             'user_id' => 'required|exists:users,id',
-            'service_id' => 'required|exists:services,id',
-            'price' => 'required|Numeric',
+            'service_id' => 'array|required|exists:services,id',
+            'service_id.*' => 'required',
+            'price' => 'required',
             'payment_method' => 'required|in:visa,cache',
             'notes' => 'nullable|String',
-            'quantity' => 'required|Numeric',
-            'day' => 'required',
-            'start_time' => 'required'
+            'quantity' => 'array|required',
+            'quantity.*' => 'required',
+            'day' => 'array|required',
+            'day.*' => 'required',
+            'start_time' => 'array|required',
+            'start_time.*' => 'required',
+            'total' => 'required',
+            'all_quantity' => 'required',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
@@ -100,39 +109,46 @@ class OrderController extends Controller
 
         $data = [
             'user_id' => $request->user_id,
-            'service_id' => $request->service_id,
-            'price' => $request->price,
+            'total' => $request->total,
+            'sub_total' => $request->sub_total ?? 0,
+            'discount' => 0,
             'status_id' => 1,
             'payment_method' => $request->payment_method,
             'notes' => $request->notes,
-            'quantity' => $request->quantity,
-        ];
+            'quantity' => $request->all_quantity,
 
+        ];
 
         $order = Order::query()->create($data);
+        foreach ($request->service_id as $key => $service_id){
+            $order_service = [
+                'order_id' => $order->id,
+                'service_id' => $service_id,
+                'price' => $request->price[$key],
+                'quantity' => $request->quantity[$key],
+            ];
 
-//        $group_id = Booking::where('service_id',$request->service_id)->pluck('group_id')->toArray();
-//        $service = Service::where('id',$request->service_id)->first();
-//        $groups = CategoryGroup::where('category_id',$service->category_id)->whereNotIn('group_id',$group_id)->pluck('group_id')->toArray();
+            OrderService::create($order_service);
 
 
-        $last = Booking::query()->latest()->first()?->id;
-        $booking_no = 'dash2023/'.$last?$last+1: 1;
-        $booking = [
-            'booking_no' => $booking_no,
-            'user_id' => $request->user_id,
-            'service_id' => $request->service_id,
-            'order_id' => $order->id,
-            'booking_status_id' => 1,
+            $last = Booking::query()->latest()->first()?->id;
+            $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
+            $booking = [
+                'booking_no' => $booking_no,
+                'user_id' => $request->user_id,
+                'service_id' => $request->service_id[$key],
+                'order_id' => $order->id,
+                'booking_status_id' => 1,
 //            'group_id' => current($groups),
-            'notes' => $request->notes,
-            'quantity' => $request->quantity,
-            'date' => $request->day,
-            'type' => 'service',
-            'time' => Carbon::createFromTimestamp($request->start_time)->toTimeString(),
-        ];
+                'notes' => $request->notes,
+                'quantity' => $request->quantity[$key],
+                'date' => $request->day[$key],
+                'type' => 'service',
+                'time' => Carbon::createFromTimestamp($request->start_time[$key])->toTimeString(),
+            ];
+            Booking::query()->create($booking);
 
-        Booking::query()->create($booking);
+        }
 
         session()->flash('success');
         return redirect()->back();
@@ -247,6 +263,7 @@ class OrderController extends Controller
 
     protected function getAvailableTime(Request $request)
     {
+        $itr = $request->itr;
         $day = Carbon::parse($request->date)->locale('en')->dayName;
 
         $bookSetting = BookingSetting::where('service_id', $request->id)->first();
@@ -266,7 +283,7 @@ class OrderController extends Controller
 
         $service = Service::where('id',$request->id)->first();
 
-        return view('dashboard.orders.schedules-times-available', compact('times','notAvailable','service'));
+        return view('dashboard.orders.schedules-times-available', compact('times','notAvailable','service','itr'));
     }
 
 }
