@@ -15,7 +15,8 @@ Route::prefix('orders')->middleware('auth')->group(function () {
 Route::prefix('coupons')->middleware('auth')->group(function () {
 
     Route::get('/', [CouponsController::class, 'allCoupons']);
-
+    Route::post('submit_coupon', [CouponsController::class, 'submit']);
+    Route::post('cancel_coupon', [CouponsController::class, 'cancel']);
 });
 Route::prefix('bookings')->middleware('auth')->group(function () {
 

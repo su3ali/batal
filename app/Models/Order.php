@@ -25,4 +25,7 @@ class Order extends Model
     public function bookings(){
         return $this->hasMany(Booking::class, 'order_id');
     }
+    public function services(){
+        return $this->belongsToMany(Order::class, 'order_services')->withPivot(['price', 'quantity']);
+    }
 }

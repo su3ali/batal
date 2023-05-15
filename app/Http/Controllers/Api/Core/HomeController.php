@@ -50,10 +50,10 @@ class HomeController extends Controller
             ->get();
 
         $mostSellingServices = Service::query()->whereIn('id', $buyServiceLists->pluck('service_id'))
-            ->where('active',1)
+            ->where('active',1)->take(9)
             ->get();
         $this->body['services_most_wanted'] = ServiceResource::collection($mostSellingServices);
-        $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->get()->shuffle());
+        $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->take(9)->get()->shuffle());
 
         $servicesCategories = Category::query()->where('active', 1)->get();
         $this->body['services_categories'] = ServiceCategoryResource::collection($servicesCategories);

@@ -1,25 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Api\Checkout;
-
-use App\Bll\Payment;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\Checkout\AddAddressRequest;
-use App\Http\Requests\Api\Checkout\CheckoutRequest;
-use App\Http\Resources\Checkout\CartResource;
-use App\Http\Resources\Checkout\UserAddressResource;
-use App\Http\Resources\Core\AreaResource;
-use App\Models\Area;
+use App\Models\Booking;
 use App\Models\Cart;
 use App\Models\Order;
-use App\Models\Product;
-use App\Models\ProductOrder;
-use App\Models\Shipping;
-use App\Models\Transaction;
-use App\Models\UserAddress;
+use App\Models\OrderService;
+use App\Models\Service;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
-use Paytabscom\Laravel_paytabs\paypage;
+use Illuminate\Support\Carbon;
 
 
 class CheckoutController extends Controller
@@ -31,45 +21,14 @@ class CheckoutController extends Controller
         $this->middleware('localize');
     }
 
-    protected function index()
+    protected function checkout(Request $request)
     {
-        $user = auth()->user('sanctum');
-        $address = UserAddress::where('user_id', $user->id)->latest()->get()->unique('address');
-        $this->body['user_address'] = UserAddressResource::collection($address);
-
-        return self::apiResponse(200, null, $this->body);
-    }
-
-    protected function addAddress(AddAddressRequest $request)
-    {
-
-        $user = auth()->user('sanctum');
-        $areas = Area::query()->whereNotNull('parent_id')->where('active', 1)->get();
-        $shipping = Shipping::where('area_id', $request->area_id)->where('active', 1)->first();
-        $address = UserAddress::create([
-            'shipping_id' => $shipping->id,
-            'user_id' => $user->id,
-            'address' => $request->address,
-            'lat' => $request->lat,
-            'lon' => $request->lon,
-        ]);
-        $this->body['areas'] = AreaResource::collection($areas);
-        $this->body['user_address'] = UserAddressResource::make($address);
-
-        return self::apiResponse(200, null, $this->body);
-    }
-
-    protected function getArea()
-    {
-
-        $areas = Area::query()->whereHas('shipping')->whereNotNull('parent_id')->where('active', 1)->get();
-        $this->body['areas'] = AreaResource::collection($areas);
-
-        return self::apiResponse(200, null, $this->body);
-    }
-
-    protected function checkout(CheckoutRequest $request)
-    {
+        $rules = [
+            'user_address_id' => 'required|exists:user_addresses,id',
+            'payment_method' => 'required|in:cache,visa',
+            'coupon' => 'nullable|numeric',
+        ];
+        $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
         $carts = Cart::query()->where('user_id', $user->id)->get();
         if (!$carts->first()) {
@@ -91,48 +50,53 @@ class CheckoutController extends Controller
 
     private function saveOrder($user, $request, $total, $carts)
     {
-        $user_address = UserAddress::query()->find($request->user_address_id);
         $order = Order::create([
             'user_id' => $user->id,
             'discount' => $request->coupon,
             'user_address_id' => $request->user_address_id,
             'sub_total' => $total,
-            'address' => $user_address?->address,
             'total' => ($total - $request->coupon),
-            'payment_type' => $request->payment_type == 1 ? 'cache on delivery' : 'online payment',
-            'status' => 'waiting',
+            'payment_method' => $request->payment_method,
+            'status_id' => 1,
         ]);
         foreach ($carts as $cart) {
-            if ($cart->product_id){
-                $product = Product::find($cart->product_id);
-                ProductOrder::create([
-                    'order_id' => $order->id,
-                    'product_id' => $cart->product_id,
-                    'title' => $product?->getTranslations('title'),
-                    'price' => $cart->price,
-                    'quantity' => $cart->quantity,
-                ]);
-                $product = Product::query()->find($cart->product_id);
-                if ($product){
-                    $product->stock = $product->stock - $cart->quantity;
-                    $product->sales = ($product->sales + $cart->quantity);
-                    $product->save();
-                }
-            }
-        }
-        if ($request->payment_type != 1) {
-            $address = $user_address->address;
-            $city = $user_address->shipping->area->title;
-            $country = Area::query()->find($user_address->shipping->area->parent_id)?->title;
-            $total = $total + $order->shipping?->price;
-            $payment = new Payment($total, $user, $order, $address, $city, $country);
-            return $payment->payment();
-        }
-        if ($request->payment_type == 1) {
-            Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
-            return self::apiResponse(200, t_('order created successfully'), []);
-        }
+            OrderService::create([
+                'order_id' => $order->id,
+                'service_id' => $cart->service_id,
+                'price' => $cart->price,
+                'quantity' => $cart->quantity,
+            ]);
+            $service = Service::query()->find($cart->service_id);
+            $service?->save();
 
+            $last = Booking::query()->latest()->first()?->id;
+            $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
+            Booking::query()->create([
+                'booking_no' => $booking_no,
+                'user_id' => auth('sanctum')->user()->id,
+                'service_id' => $cart->service_id,
+                'order_id' => $order->id,
+                'booking_status_id' => 1,
+                'notes' => $cart->notes,
+                'quantity' => $cart->quantity,
+                'date' => $cart->date,
+                'type' => 'service',
+                'time' => Carbon::createFromTimestamp($cart->time)->toTimeString(),
+            ]);
+        }
+//        if ($request->payment_type != 1) {
+//            $address = $user_address->address;
+//            $city = $user_address->shipping->area->title;
+//            $country = Area::query()->find($user_address->shipping->area->parent_id)?->title;
+//            $total = $total + $order->shipping?->price;
+//            $payment = new Payment($total, $user, $order, $address, $city, $country);
+//            return $payment->payment();
+//        }
+        if ($request->payment_method == 'cache') {
+            Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
+            $this->body['order_id'] = $order->id;
+            return self::apiResponse(200, t_('order created successfully'), $this->body);
+        }
     }
 
 
@@ -143,10 +107,10 @@ class CheckoutController extends Controller
 
         if ($result->success) {
             $carts = Cart::where('user_id', $order->user_id)->get();
-            foreach ($carts as $cart){
-                $product = $cart->product;
-                $product->stock = $cart->product->stock - $cart->quantity;
-                $product->save();
+            foreach ($carts as $cart) {
+                $service = $cart->service;
+                $service->stock = $cart->service->stock - $cart->quantity;
+                $service->save();
             }
             Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
 
