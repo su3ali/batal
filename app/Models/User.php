@@ -36,5 +36,8 @@ class User extends Authenticatable
     public function bookings(){
         return $this->hasMany(Booking::class, 'user_id');
     }
+    public function carts(){
+        return $this->hasMany(Cart::class, 'user_id');
+    }
 
 }
