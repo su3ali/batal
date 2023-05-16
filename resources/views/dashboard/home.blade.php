@@ -108,7 +108,7 @@
                         <tr>
                             <th>#</th>
                             <th>{{__('dash.customer_name')}}</th>
-                            <th>{{__('dash.service')}}</th>
+                            <th>{{__('dash.quantity')}}</th>
                             <th>{{__('dash.price_value')}}</th>
                         </tr>
                         </thead>
@@ -209,8 +209,8 @@
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'user', name: 'user'},
-                    {data: 'service', name: 'service'},
-                    {data: 'price', name: 'price'},
+                    {data: 'quantity', name: 'quantity'},
+                    {data: 'total', name: 'total'},
 
                 ]
             });
