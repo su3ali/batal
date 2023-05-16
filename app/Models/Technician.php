@@ -13,4 +13,9 @@ class Technician extends Model
         return $this->hasOne(Specialization::class, 'id', 'spec_id');
     }
 
+
+    public function group(){
+        return $this->hasOne(Group::class, 'id', 'group_id');
+    }
+
 }
