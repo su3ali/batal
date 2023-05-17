@@ -8,6 +8,7 @@ use App\Http\Resources\Checkout\CartResource;
 use App\Models\Booking;
 use App\Models\BookingSetting;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Service;
 use App\Support\Api\ApiResponse;
 use App\Traits\schedulesTrait;
@@ -59,7 +60,11 @@ class CartController extends Controller
         $this->body['carts'] = [];
         foreach ($cat_ids as $cat_id) {
             if ($cat_id) {
-                $this->body['carts'][$cat_id] = CartResource::collection($carts->where('category_id', $cat_id));
+                $this->body['carts'][] = [
+                    'category_id' => $cat_id,
+                    'category_title' => Category::query()->find($cat_id)?->title,
+                    'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
+                ];
             }
         }
         $total = number_format($this->calc_total($carts), 2, '.', '');
@@ -135,7 +140,11 @@ class CartController extends Controller
                     $this->body['carts'] = [];
                     foreach ($cat_ids as $cat_id) {
                         if ($cat_id) {
-                            $this->body['carts'][$cat_id] = CartResource::collection($carts->where('category_id', $cat_id));
+                            $this->body['carts'][] = [
+                                'category_id' => $cat_id,
+                                'category_title' => Category::query()->find($cat_id)?->title,
+                                'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
+                            ];
                         }
                     }
                     return self::apiResponse(200, $response['success'], $this->body);
