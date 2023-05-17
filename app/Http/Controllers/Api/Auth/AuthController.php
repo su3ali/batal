@@ -32,9 +32,9 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $user = User::query()->where('phone', $request->phone)->first();
-        $validated = $request->validate([
-            'phone' => 'required|numeric|unique:users,phone,'.$user->id
-        ], $request->all());
+
+
+
         if (!$user) {
             $validated = $request->validate([
                 'phone' => 'required|numeric|unique:users,phone'
@@ -43,6 +43,10 @@ class AuthController extends Controller
                 'phone' => $validated['phone'],
                 'city_id' => 0,
             ]);
+        }else{
+            $validated = $request->validate([
+                'phone' => 'required|numeric|unique:users,phone,'.$user->id
+            ], $request->all());
         }
         $this->message = t_('login successfully, but code is needed');
         $this->body['user'] = UserResource::make($user);
