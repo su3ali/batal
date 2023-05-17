@@ -38,7 +38,7 @@ class Category extends Model
         $image = explode('/',$this->slug);
         $name = end($image);
 
-        $image = "data:image/png;base64,".base64_encode(file_get_contents(public_path("storage\\images\\category\\".$name)));
+        $image = "data:image/png;base64,".base64_encode(file_get_contents(public_path("storage/images/category/".$name)));
 
         return $image;
     }
