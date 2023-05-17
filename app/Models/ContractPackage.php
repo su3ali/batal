@@ -37,7 +37,7 @@ class ContractPackage extends Model
         $image = explode('/',$this->image);
         $name = end($image);
 
-        $image = "data:image/png;base64,".base64_encode(file_get_contents(public_path("storage\\images\\contract_packages\\".$name)));
+        $image = "data:image/png;base64,".base64_encode(file_get_contents(public_path("storage/images/contract_packages/".$name)));
 
         return $image;
     }
