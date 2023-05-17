@@ -15,6 +15,116 @@
                 </a>
             </li>
 
+
+            <li class="menu">
+                <a href="#visits" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+
+                        <span>إدارة الزيارات</span>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                <ul class="collapse submenu list-unstyled" id="visits" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.visits.index')}}"> الزيارات </a>
+                    </li>
+
+                    <li>
+                        <a href="{{route('dashboard.reason_cancel.index')}}"> أسباب الإلغاء </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu">
+                <a href="#contract" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-package"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+
+                        <span>إدارة التقاول</span>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                <ul class="collapse submenu list-unstyled" id="contract" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.contract_packages.index')}}"> باقات التقاول </a>
+                    </li>
+
+                    {{--                    <li>--}}
+                    {{--                        <a href="{{route('dashboard.contracts.index')}}"> التقاول </a>--}}
+                    {{--                    </li>--}}
+
+                    <li>
+                        <a href="{{route('dashboard.contract_order.index')}}"> طلب التقاول </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu">
+                <a href="#orders" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <div class="icon-container">
+                            <i data-feather="shopping-cart"></i><span class="icon-name"> الطلبات </span>
+                        </div>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                <ul class="collapse submenu list-unstyled" id="orders" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.orders.index')}}"> الطلبات </a>
+                    </li>
+                    <li>
+                        <a href="{{route('dashboard.order_statuses.index')}}"> حالات الطلب </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="menu">
+                <a href="#booking" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <div class="icon-container">
+                            <i data-feather="book"></i><span class="icon-name"> الحجوزات </span>
+                        </div>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                <ul class="collapse submenu list-unstyled" id="booking" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{url('admin/bookings?type=service')}}"> الحجوزات </a>
+                    </li>
+                    <li>
+                        <a href="{{route('dashboard.booking_statuses.index')}}"> حالات الحجز </a>
+                    </li>
+                    <li>
+                        <a href="{{route('dashboard.booking_setting.index')}}"> اعدادات الحجوزات </a>
+                    </li>
+                </ul>
+            </li>
+
+
             <li class="menu">
                 <a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -120,58 +230,6 @@
                     </li>
                 </ul>
             </li>
-            <li class="menu">
-                <a href="#orders" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <div class="icon-container">
-                            <i data-feather="shopping-cart"></i><span class="icon-name"> الطلبات </span>
-                        </div>
-                    </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="feather feather-chevron-right">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-                <ul class="collapse submenu list-unstyled" id="orders" data-parent="#accordionExample">
-                    <li>
-                        <a href="{{route('dashboard.orders.index')}}"> الطلبات </a>
-                    </li>
-                    <li>
-                        <a href="{{route('dashboard.order_statuses.index')}}"> حالات الطلب </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="menu">
-                <a href="#booking" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <div class="icon-container">
-                            <i data-feather="book"></i><span class="icon-name"> الحجوزات </span>
-                        </div>
-                    </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="feather feather-chevron-right">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-                <ul class="collapse submenu list-unstyled" id="booking" data-parent="#accordionExample">
-                    <li>
-                        <a href="{{url('admin/bookings?type=service')}}"> الحجوزات </a>
-                    </li>
-                    <li>
-                        <a href="{{route('dashboard.booking_statuses.index')}}"> حالات الحجز </a>
-                    </li>
-                    <li>
-                        <a href="{{route('dashboard.booking_setting.index')}}"> اعدادات الحجوزات </a>
-                    </li>
-                </ul>
-            </li>
-
 
 
             <li class="menu">
@@ -225,62 +283,6 @@
                 </ul>
             </li>
 
-
-            <li class="menu">
-                <a href="#contract" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-package"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-
-                        <span>إدارة التقاول</span>
-                    </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="feather feather-chevron-right">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-                <ul class="collapse submenu list-unstyled" id="contract" data-parent="#accordionExample">
-                    <li>
-                        <a href="{{route('dashboard.contract_packages.index')}}"> باقات التقاول </a>
-                    </li>
-
-{{--                    <li>--}}
-{{--                        <a href="{{route('dashboard.contracts.index')}}"> التقاول </a>--}}
-{{--                    </li>--}}
-
-                    <li>
-                        <a href="{{route('dashboard.contract_order.index')}}"> طلب التقاول </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="menu">
-                <a href="#visits" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-
-                        <span>إدارة الزيارات</span>
-                    </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="feather feather-chevron-right">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-                <ul class="collapse submenu list-unstyled" id="visits" data-parent="#accordionExample">
-                    <li>
-                        <a href="{{route('dashboard.visits.index')}}"> الزيارات </a>
-                    </li>
-
-                    <li>
-                        <a href="{{route('dashboard.reason_cancel.index')}}"> أسباب الإلغاء </a>
-                    </li>
-                </ul>
-            </li>
 
 
             <li class="menu">
