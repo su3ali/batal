@@ -67,7 +67,7 @@ class AuthController extends Controller
     public function verify(Request $request)
     {
         $user = User::query()->where('id', $request->user_id)->first();
-        if ($request->code == 111111 && $user) {
+        if ($request->code == $user->code && $user) {
                 Auth::loginUsingId($user->id);
                 $this->message = t_('login successfully');
                 $this->body['user'] = UserResource::make($user);
