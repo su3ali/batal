@@ -14,21 +14,26 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Sms\HiSms;
 use App\Support\Api\ApiResponse;
+use App\Traits\SMSTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use MoemenGaballah\Msegat\Msegat;
 
 class AuthController extends Controller
 {
-    use ApiResponse;
+    use ApiResponse, SMSTrait;
 
     public function __construct()
     {
         $this->middleware('localize');
     }
 
+    /**
+     * @throws \Exception
+     */
     public function login(Request $request)
     {
         $user = User::query()->where('phone', $request->phone)->first();
@@ -48,6 +53,12 @@ class AuthController extends Controller
                 'phone' => 'required|numeric|unique:users,phone,'.$user->id
             ], $request->all());
         }
+        $code = random_int(1000, 9999);
+        $user->update([
+            'code' => $code
+        ]);
+        $m = "رمز التحقق: ".$code;
+        $msg = $this->sendMessage($validated['phone'], $m);
         $this->message = t_('login successfully, but code is needed');
         $this->body['user'] = UserResource::make($user);
         return self::apiResponse(200, $this->message, $this->body);
