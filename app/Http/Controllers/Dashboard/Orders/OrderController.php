@@ -297,6 +297,10 @@ class OrderController extends Controller
 
         $bookSetting = BookingSetting::where('service_id', $request->id)->first();
 
+        if ($bookSetting == null){
+            return respone()->json('error');
+        }
+
         $get_time = $this->getTime($day,$bookSetting);
 
         $times = [];

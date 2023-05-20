@@ -234,7 +234,16 @@
                 },
                 cache: false,
                 success: function (html) {
-                    $('#select-time-available_'+itr).html(html);
+                    if(html === 'error'){
+                        swal({
+                            title: "{{__('dash.successful_operation')}}",
+                            text: "{{__('dash.request_executed_successfully')}}",
+                            type: 'error',
+                            padding: '2em'
+                        })
+                    }else{
+                        $('#select-time-available_'+itr).html(html);
+                    }
                 }
             });
 

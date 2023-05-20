@@ -95,15 +95,22 @@ class ServiceController extends Controller
 //            'group_ids.*' => 'required|exists:groups,id',
             'start_from' => 'nullable|Numeric',
             'is_quantity' => 'nullable|in:on,off',
+            'best_seller' => 'nullable|in:on,off',
 
         ]);
 
-        $data = $request->except(['_token', 'group_ids','is_quantity']);
+        $data = $request->except(['_token', 'group_ids','is_quantity','best_seller']);
 
         if ($request['is_quantity'] && $request['is_quantity'] == 'on'){
             $data['is_quantity'] = 1;
         }else{
             $data['is_quantity'] = 0;
+        }
+
+        if ($request['best_seller'] && $request['best_seller'] == 'on'){
+            $data['best_seller'] = 1;
+        }else{
+            $data['best_seller'] = 0;
         }
 
         $service = Service::query()->create($data);
@@ -146,14 +153,21 @@ class ServiceController extends Controller
 //            'group_ids' => 'required|array',
 //            'group_ids.*' => 'required|exists:groups,id',
             'is_quantity' => 'nullable|in:on,off',
+            'best_seller' => 'nullable|in:on,off',
 
         ]);
-        $data = $request->except(['_token', 'group_ids','is_quantity']);
+        $data = $request->except(['_token', 'group_ids','is_quantity','best_seller']);
 
         if ($request['is_quantity'] && $request['is_quantity'] == 'on'){
             $data['is_quantity'] = 1;
         }else{
             $data['is_quantity'] = 0;
+        }
+
+        if ($request['best_seller'] && $request['best_seller'] == 'on'){
+            $data['best_seller'] = 1;
+        }else{
+            $data['best_seller'] = 0;
         }
 
 
