@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Orders\OrdersController;
 Route::prefix('orders')->middleware('auth')->group(function () {
 
     Route::get('/', [OrdersController::class, 'myOrders']);
+    Route::get('/{id}', [OrdersController::class, 'orderDetails']);
 //    Route::post('refund')
 
 });

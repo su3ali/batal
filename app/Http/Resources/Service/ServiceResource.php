@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Service;
 
+use App\Models\Service;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ServiceResource extends JsonResource
@@ -14,18 +15,24 @@ class ServiceResource extends JsonResource
      */
     public function toArray($request)
     {
+        $service = Service::query()->find($this['id']);
         $images = [];
-        foreach ($this->serviceImages as $serviceImage){
+        foreach ($service->serviceImages as $serviceImage){
             if ($serviceImage->image){
                 $images[] = asset($serviceImage->image);
             }
         }
+        if (isset($this['quantity'])){
+            $quantity = $this['quantity'];
+        }else{
+            $quantity = null;
+        }
         return [
-
-            'id'  => $this->id,
-            'title'  => $this->title,
-            'price' => $this->price,
-            'images' => $images
+            'id'  => $this['id'],
+            'title'  => $this['title'],
+            'price' => $service['price'],
+            'images' => $images,
+            'quantity' => $quantity
         ];
     }
 }
