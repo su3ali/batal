@@ -45,6 +45,9 @@ class BookingController extends Controller
                 ->addColumn('customer', function ($row) {
                     return $row->customer?->first_name . ' ' . $row->customer?->last_name;
                 })
+                ->addColumn('customer_phone', function ($row) {
+                    return $row->customer?->phone;
+                })
                 ->addColumn('service', function ($row) {
                     $service = $row->service?->title;
 
@@ -84,6 +87,7 @@ class BookingController extends Controller
                 ->rawColumns([
                     'order',
                     'customer',
+                    'customer_phone',
                     'service',
                     'group',
                     'status',

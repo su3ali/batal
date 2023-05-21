@@ -221,7 +221,7 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.length > 0) {
-
+                        $('.image_preview').empty()
                         $.each(response, function (key, val) {
 
                             $('.image_preview').append(`<div class="div-preview col-sm-2" style="width: 18rem;">
