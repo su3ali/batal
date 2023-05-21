@@ -16,9 +16,10 @@ class ServiceCategoryResource extends JsonResource
     {
         return [
 
-            'id'  => $this->id,
-            'title'  => $this->title,
-            'image' => $this->slug? asset($this->slug) : ''
+            'id'  => $this['id'],
+            'title'  => $this['title'],
+            'image' => $this['slug']? asset($this['slug']) : '',
+            'services' => ServiceResource::collection(collect($this['services']))
         ];
     }
 }

@@ -2,10 +2,17 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Product\ProductResource;
+use App\Http\Resources\Service\ServiceCategoryResource;
+use App\Http\Resources\Service\ServiceResource;
 use App\Models\BookingSetting;
+use App\Models\Category;
+use App\Models\Order;
+use App\Models\Service;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class OrderResource extends JsonResource
 {
@@ -24,23 +31,12 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'status' => $this->status->name,
-            'service_main_category' => [
-                'category_id' => $this->service?->category->id,
-                'category_name' => $this->service?->category->title,
-                'category_image' => $this->service?->category->slug? asset($this->service?->category->slug) : '',
-                'category_service' => [
-                    'service_id' => $this->service?->id,
-                    'service_name' => $this->service?->title,
-                    'service_price' => $this->price,
-                    'service_quantity' => $this->quantity,
-                    'service_images' => $images,
-                    'notes' => $this->notes
-                ]
-            ],
+            'categories' => ServiceCategoryResource::collection($this->categories),
             'date' => Carbon::parse($this->bookings->first()->date)->format('d M'),
             'time_start' => Carbon::parse($this->bookings->first()->time)->format('g:i A'),
             'time_end' => Carbon::parse($this->bookings->first()->time)
-                ->addMinutes(($bookingSettings->service_duration + $bookingSettings->buffering_time) * $this->quantity)->format('g:i A'),
+                ->addMinutes((($bookingSettings?$bookingSettings->service_duration : 0) +
+                        ($bookingSettings?$bookingSettings->buffering_time : 0)) * $this->quantity)->format('g:i A'),
         ];
     }
 }
