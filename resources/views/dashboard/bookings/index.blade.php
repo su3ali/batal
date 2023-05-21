@@ -127,6 +127,7 @@
                     {data: 'booking_no', name: 'booking_no'},
                     {data: 'order', name: 'order'},
                     {data: 'customer', name: 'customer'},
+                    {data: 'customer_phone', name: 'customer_phone'},
                     {data: 'service', name: 'service'},
                     {data: 'date', name: 'date'},
                     {data: 'time', name: 'time'},
