@@ -8,7 +8,6 @@ trait SMSTrait{
         $username = config('msegat.MSEGAT_USERNAME');
         $userSender = config('msegat.MSEGAT_USER_SENDER');
         $apiKey = config('msegat.MSEGAT_API_KEY');
-
         if(empty($username)){
             throw new \Exception('Please add msegata username in file env');
         }
