@@ -120,7 +120,7 @@ class CartController extends Controller
                 $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
                 $cat_ids = $carts->pluck('category_id');
                 $this->body['carts'] = [];
-                foreach ($request->category_ids as $key => $category_id) {
+                foreach ($cat_ids as $key => $category_id) {
                     Cart::query()->where('user_id', auth('sanctum')->user()->id)
                         ->where('category_id', $category_id)->update([
                             'date' => $request->date[$key],
