@@ -13,9 +13,11 @@ class OrderResource extends JsonResource
     public function toArray($request)
     {
         $images = [];
-        foreach ($this->service->serviceImages as $serviceImage){
-            if ($serviceImage->image){
-                $images[] = asset($serviceImage->image);
+        foreach ($this->services as $service){
+            foreach ($service->serviceImages as $serviceImage){
+                if ($serviceImage->image){
+                    $images[] = asset($serviceImage->image);
+                }
             }
         }
         $bookingSettings = BookingSetting::query()->where('service_id', $this->service?->id)->first();

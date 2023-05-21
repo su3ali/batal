@@ -120,13 +120,14 @@ class CartController extends Controller
                 $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
                 $cat_ids = $carts->pluck('category_id');
                 $this->body['carts'] = [];
-                foreach ($cat_ids as $key => $category_id) {
-                    Cart::query()->where('user_id', auth('sanctum')->user()->id)
-                        ->where('category_id', $category_id)->update([
-                            'date' => $request->date[$key],
-                            'time' => Carbon::parse($request->time[$key])->toTimeString(),
-                            'notes' => $request->notes[$key]
-                        ]);
+                foreach ($cat_ids as $cat_id) {
+                    if ($cat_id) {
+                        $this->body['carts'][] = [
+                            'category_id' => $cat_id,
+                            'category_title' => Category::query()->find($cat_id)?->title,
+                            'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
+                        ];
+                    }
                 }
                 return self::apiResponse(200, $response['success'], $this->body);
             }
