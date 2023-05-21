@@ -223,24 +223,9 @@
                                 </div>
 
                                 <div class="form-row mb-2">
-{{--                                    <div class="form-group col-md-6">--}}
 
-{{--                                        <label for="group_ids">المجموعات</label>--}}
-{{--                                        <select id="group_ids" multiple class="select2 form-control pt-1"--}}
-{{--                                                name="group_ids[]" required>--}}
-{{--                                            <option disabled>{{__('dash.choose')}}</option>--}}
-{{--                                            @foreach($groups as $group)--}}
-{{--                                                <option--}}
-{{--                                                    value="{{$group->id}}" {{in_array($group->id, $service->groups->pluck('id')->toArray())? 'selected' : ''}}>{{$group->name}}</option>--}}
-{{--                                            @endforeach--}}
-{{--                                        </select>--}}
-{{--                                        @error('group_ids')--}}
-{{--                                        <div class="alert alert-danger">{{ $message }}</div>--}}
-{{--                                        @enderror--}}
 
-{{--                                    </div>--}}
-
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-3">
                                         <label for="is_quantity"></label>
                                         <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
                                             <label class="mx-5" for="is_quantity">الكميه</label>
@@ -253,7 +238,7 @@
 
                                     </div>
 
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-3">
                                         <label for="is_quantity"></label>
                                         <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
                                             <label class="mx-5" for="is_quantity">الاكثر مبيعا</label>
@@ -265,6 +250,22 @@
                                         @enderror
 
                                     </div>
+
+                                <div class="form-group col-md-6">
+
+                                    <label for="measurement_id">وحدات القياس</label>
+                                    <select id="measurement_id"  class="select2 form-control pt-1"
+                                            name="measurement_id" required>
+                                        <option disabled>{{__('dash.choose')}}</option>
+                                        @foreach($measurements as $measurement)
+                                            <option value="{{$measurement->id}}" @if($measurement->id == $service->measurement_id) selected @endif>{{$measurement->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('measurement_id')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
 
                                 </div>
 

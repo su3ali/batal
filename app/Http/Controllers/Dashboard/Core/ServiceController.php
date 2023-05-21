@@ -6,6 +6,7 @@ use App\Enums\Core\ServiceType;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Group;
+use App\Models\Measurement;
 use App\Models\Service;
 use App\Models\ServiceGroup;
 use App\Models\ServiceImages;
@@ -76,7 +77,8 @@ class ServiceController extends Controller
     {
         $categories = category::whereNull('parent_id')->where('active', 1)->get()->pluck('title', 'id');
         $groups = Group::query()->get();
-        return view('dashboard.core.services.create', compact('categories', 'groups'));
+        $measurements = Measurement::query()->get();
+        return view('dashboard.core.services.create', compact('categories', 'groups','measurements'));
     }
 
     public function store(Request $request)
@@ -89,6 +91,7 @@ class ServiceController extends Controller
             'ter_cond_ar' => 'required|String|min:3',
             'ter_cond_en' => 'required|String|min:3',
             'category_id' => 'required|exists:categories,id',
+            'measurement_id' => 'required|exists:measurements,id',
             'price' => 'required|Numeric',
             'type' => 'required|in:evaluative,fixed',
 //            'group_ids' => 'required|array',
@@ -133,7 +136,8 @@ class ServiceController extends Controller
             ->whereNotIn('id', ServiceGroup::query()->pluck('group_id')->toArray())
             ->orWhereIn('id', ServiceGroup::query()->where('service_id', $service->id)->pluck('group_id')->toArray())
             ->get();
-        return view('dashboard.core.services.edit', compact('service', 'categories', 'groups'));
+        $measurements = Measurement::query()->get();
+        return view('dashboard.core.services.edit', compact('service', 'categories', 'groups','measurements'));
     }
 
     public function update(Request $request, $id)
@@ -147,6 +151,7 @@ class ServiceController extends Controller
             'ter_cond_ar' => 'required|String|min:3',
             'ter_cond_en' => 'required|String|min:3',
             'category_id' => 'required|exists:categories,id',
+            'measurement_id' => 'required|exists:measurements,id',
             'price' => 'required|Numeric',
             'type' => 'required|in:evaluative,fixed',
             'start_from' => 'nullable|Numeric',
