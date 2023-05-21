@@ -1,10 +1,6 @@
 <?php
 namespace App\Traits;
 
-
-
-use MoemenGaballah\Msegat\Msegat;
-
 trait SMSTrait{
 
     public static function data($numbers = "", $message = '')
@@ -12,7 +8,6 @@ trait SMSTrait{
         $username = config('msegat.MSEGAT_USERNAME');
         $userSender = config('msegat.MSEGAT_USER_SENDER');
         $apiKey = config('msegat.MSEGAT_API_KEY');
-
         if(empty($username)){
             throw new \Exception('Please add msegata username in file env');
         }
@@ -40,7 +35,10 @@ trait SMSTrait{
         return $fields;
     }
 
-    public static function sendMessage($numbers = '',$message = '')
+    /**
+     * @throws \Exception
+     */
+    public static function sendMessage($numbers = '', $message = '')
     {
         $ch = curl_init();
 
@@ -50,7 +48,7 @@ trait SMSTrait{
 
         curl_setopt($ch, CURLOPT_POST, TRUE);
 
-        $fields = Msegat::data($numbers,$message);
+        $fields = self::data($numbers,$message);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(

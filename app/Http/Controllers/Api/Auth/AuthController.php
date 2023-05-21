@@ -68,6 +68,9 @@ class AuthController extends Controller
     {
         $user = User::query()->where('id', $request->user_id)->first();
         if ($request->code == $user->code && $user) {
+                $user->update([
+                    'code' => null
+                ]);
                 Auth::loginUsingId($user->id);
                 $this->message = t_('login successfully');
                 $this->body['user'] = UserResource::make($user);
@@ -78,8 +81,7 @@ class AuthController extends Controller
             return self::apiResponse(400, $this->message, $this->body);
         }
 
-        public
-        function logout(Request $request)
+        public function logout(Request $request)
         {
             auth()->user('sanctum')->tokens()->delete();
             $this->message = t_('Logged out');
