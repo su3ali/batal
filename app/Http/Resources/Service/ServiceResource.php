@@ -22,12 +22,17 @@ class ServiceResource extends JsonResource
                 $images[] = asset($serviceImage->image);
             }
         }
+        if (isset($this['quantity'])){
+            $quantity = $this['quantity'];
+        }else{
+            $quantity = null;
+        }
         return [
-
             'id'  => $this['id'],
             'title'  => $this['title'],
             'price' => $service['price'],
-            'images' => $images
+            'images' => $images,
+            'quantity' => $quantity
         ];
     }
 }

@@ -27,16 +27,17 @@ class OrderResource extends JsonResource
                 }
             }
         }
-        $bookingSettings = BookingSetting::query()->where('service_id', $this->service?->id)->first();
+        $cats = $this->categories;
+        $categories = Category::query()->whereIn('id', $cats->pluck('id'))->get();
+        $order_id = $this->id;
+        foreach ($categories as $key => $category){
+            $category->order_id = $order_id;
+            $category->services = $cats[$key]['services'];
+        }
         return [
             'id' => $this->id,
             'status' => $this->status->name,
-            'categories' => ServiceCategoryResource::collection($this->categories),
-            'date' => Carbon::parse($this->bookings->first()->date)->format('d M'),
-            'time_start' => Carbon::parse($this->bookings->first()->time)->format('g:i A'),
-            'time_end' => Carbon::parse($this->bookings->first()->time)
-                ->addMinutes((($bookingSettings?$bookingSettings->service_duration : 0) +
-                        ($bookingSettings?$bookingSettings->buffering_time : 0)) * $this->quantity)->format('g:i A'),
+            'categories' => OrderCategoryResource::collection($categories),
         ];
     }
 }
