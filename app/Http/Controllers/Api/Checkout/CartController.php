@@ -131,6 +131,8 @@ class CartController extends Controller
                         ];
                     }
                 }
+                $total = number_format($this->calc_total($carts), 2, '.', '');
+                $this->body['total'] = $total;
                 return self::apiResponse(200, $response['success'], $this->body);
             }
             $service = service::query()->where('id', $cart->service_id)->first();
