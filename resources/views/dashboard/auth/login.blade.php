@@ -3,6 +3,12 @@
     <div class="form-container outer">
         <div class="form-form">
             <div class="form-form-wrap">
+                <div class="text-center">
+                    @if(\App\Models\Setting::first()->logo != null)
+                        <img src="{{asset(\App\Models\Setting::first()->logo)}}" class="flag-width" alt="flag" style="width: 150px;margin-top: 33px"/>
+                    @endif
+                </div>
+
                 <div class="form-container">
                     <div class="form-content">
 

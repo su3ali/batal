@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard\Core\Administration;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\Administration\AdminRequest;
 use App\Http\Requests\Dashboard\Administration\ProfileRequest;
+use App\Models\Admin;
 use App\Models\User;
 use App\Support\Crud\WithCrud;
 use Collective\Html\FormFacade;
@@ -18,7 +19,7 @@ class AdminProfileController extends Controller
     use WithCrud;
     protected string $path = 'dashboard.core.administration.profile';
 
-    protected string $model = User::class;
+    protected string $model = Admin::class;
     public function __construct() {
         $this->middleware('permission:admin_profile');
     }

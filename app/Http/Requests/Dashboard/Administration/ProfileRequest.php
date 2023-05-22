@@ -13,10 +13,10 @@ class ProfileRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|max:255|unique:users,email,' . request()->route('profile'),
-            'phone' => 'required|numeric|unique:users,phone,' . request()->route('profile'),
-            'gender' => 'required|in:male,female',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => 'required|email|max:255|unique:admins,email,' . request()->route('profile'),
+            'phone' => 'required|numeric|unique:admins,phone,' . request()->route('profile'),
             'password' => ['nullable', 'confirmed', Password::min(4)],
             'avatar' => 'nullable|image',
             'active' => 'nullable',

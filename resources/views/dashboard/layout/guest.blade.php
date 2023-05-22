@@ -19,6 +19,16 @@
         body{
             font-family: Cairo, Serif !important;
         }
+        .form-form .form-container{
+            min-height: auto!important;
+        }
+        .btn-primary {
+            color: #fff !important;
+            background-color: #2fcff5 !important;
+            border-color: #2fcff5;
+            box-shadow: 0 10px 20px -10px #2fcff5;
+        }
+
     </style>
 </head>
 <body class="form">

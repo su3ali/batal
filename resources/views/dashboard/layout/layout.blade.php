@@ -142,6 +142,7 @@
             border-radius: 4px;
             height: 43px;
         }
+
     </style>
     @stack('style')
     <script type="text/javascript" src="{{ asset('admin_dashboard/bower_components/ckeditor/ckeditor.js') }}"></script>

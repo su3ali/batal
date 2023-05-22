@@ -121,6 +121,16 @@ class BannersController extends Controller
         return response('success');
     }
 
+    public function destroy($id)
+    {
+        $banner = Banner::find($id);
+        $banner->delete();
+        return [
+            'success' => true,
+            'msg' => __("dash.deleted_success")
+        ];
+    }
+
 //    public function uploadImage(Request $request){
 //        $request->validate([
 //            'file' => 'required',
