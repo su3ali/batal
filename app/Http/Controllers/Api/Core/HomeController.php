@@ -33,17 +33,17 @@ class HomeController extends Controller
     {
         $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
         $this->body['addresses'] = UserAddressResource::collection($addresses);
-//        $images = [];
-        $banner = Banner::query()->where('active',1)->get();
-//        if ($banner && $banner->bannerImages->first()) {
-//            foreach ($banner->bannerImages as $banner) {
-//                $url = $banner->image ? asset($banner->image) : '';
-//                if ($url) {
-//                    $images[] = $url;
-//                }
-//            }
-//        }
-        $this->body['banners'] = $banner;
+        $images = [];
+        $banners = Banner::query()->where('active',1)->get();
+        if ($banners->count() > 0) {
+            foreach ($banners as $banner) {
+                $url = $banner->image ? asset($banner->image) : '';
+                if ($url) {
+                    $images[] = $url;
+                }
+            }
+        }
+        $this->body['banners'] = $images;
 //        $buyServiceLists = Order::query()->select('service_id',DB::raw('count(*) as total'))
 //            ->groupBy('service_id')
 //            ->orderBy('total', 'DESC')
