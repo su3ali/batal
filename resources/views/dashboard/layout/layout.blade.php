@@ -16,7 +16,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>{{\App\Models\Setting::first()?\App\Models\Setting::first()->$name : 'site name'}}</title>
-    <link rel="icon" type="image/x-icon" href="{{asset(app()->getLocale().'/assets/img/favicon.ico')}}"/>
+    @if(\App\Models\Setting::first()->logo != null)
+    <link rel="icon" type="image/x-icon" href="{{asset(\App\Models\Setting::first()->logo)}}"/>
+    @else
+        <link rel="icon" type="image/x-icon" href="{{asset(app()->getLocale().'/assets/img/favicon.ico')}}"/>
+    @endif
     {{--<link href="{{asset(app()->getLocale().'/assets/css/loader.css')}}" rel="stylesheet" type="text/css"/>--}}
     {{--<script src="{{asset(app()->getLocale().'/assets/js/loader.js')}}"></script>--}}
     <link href="{{asset(app()->getLocale().'/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css"/>
@@ -120,7 +124,6 @@
             background-color: #0a58ca;
             color: #fff;
             border-radius: 9px;
-
             margin-bottom: 0;
         }
 
@@ -133,6 +136,12 @@
             margin-bottom: 0;
         }
 
+
+       .logo img{
+            width: 48px;
+            border-radius: 4px;
+            height: 43px;
+        }
     </style>
     @stack('style')
     <script type="text/javascript" src="{{ asset('admin_dashboard/bower_components/ckeditor/ckeditor.js') }}"></script>

@@ -26,10 +26,9 @@ class GeneralSettingRequest extends FormRequest
         return [
             'site_name_ar'=>'required',
             'site_name_en'=>'required',
-            'google_api_key' => 'required',
-
+            'google_api_key' => 'nullable',
+            'logo'=>'nullable|max:5120',
             //            'reports_logo'=>'mimes:png|dimensions:max_width=100,max_height=100',
-            //            'logo'=>'mimes:png|dimensions:max_width=100,max_height=100',
         ];
     }
 

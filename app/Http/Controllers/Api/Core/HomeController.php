@@ -34,9 +34,9 @@ class HomeController extends Controller
         $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
         $this->body['addresses'] = UserAddressResource::collection($addresses);
         $images = [];
-        $banner = Banner::with('bannerImages')->first();
-        if ($banner && $banner->bannerImages->first()) {
-            foreach ($banner->bannerImages as $banner) {
+        $banners = Banner::query()->where('active',1)->get();
+        if ($banners->count() > 0) {
+            foreach ($banners as $banner) {
                 $url = $banner->image ? asset($banner->image) : '';
                 if ($url) {
                     $images[] = $url;
@@ -44,14 +44,14 @@ class HomeController extends Controller
             }
         }
         $this->body['banners'] = $images;
-        $buyServiceLists = Order::query()->select('service_id',DB::raw('count(*) as total'))
-            ->groupBy('service_id')
-            ->orderBy('total', 'DESC')
-            ->get();
+//        $buyServiceLists = Order::query()->select('service_id',DB::raw('count(*) as total'))
+//            ->groupBy('service_id')
+//            ->orderBy('total', 'DESC')
+//            ->get();
 
-        $mostSellingServices = Service::query()->whereIn('id', $buyServiceLists->pluck('service_id'))
+        $mostSellingServices = Service::query()->where('best_seller',1)
             ->where('active',1)->take(9)
-            ->get();
+            ->get()->shuffle();
         $this->body['services_most_wanted'] = ServiceResource::collection($mostSellingServices);
         $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->take(9)->get()->shuffle());
 

@@ -181,7 +181,7 @@
 
 
             <li class="menu">
-                <a href="#service" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <a href="#service1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-server"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
 
@@ -195,7 +195,7 @@
                         </svg>
                     </div>
                 </a>
-                <ul class="collapse submenu list-unstyled" id="service" data-parent="#accordionExample">
+                <ul class="collapse submenu list-unstyled" id="service1" data-parent="#accordionExample">
                     <li>
                         <a href="{{route('dashboard.core.service.index')}}"> {{__('dash.Services')}} </a>
                     </li>
@@ -340,6 +340,9 @@
                     </div>
                 </a>
                 <ul class="collapse submenu list-unstyled" id="setting" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.settings')}}">الاعدادات العامة</a>
+                    </li>
                     <li>
                         <a href="{{route('dashboard.country.index')}}"> {{__('dash.Countries')}} </a>
                     </li>

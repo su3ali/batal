@@ -73,7 +73,7 @@ class CartController extends Controller
         return self::apiResponse(200, null, $this->body);
     }
 
-    public function updateCart(Request $request)
+    protected function updateCart(Request $request)
     {
 
         if (auth()->user()->carts->first()) {
@@ -83,7 +83,7 @@ class CartController extends Controller
                 'date' => 'required|array',
                 'date.*' => 'required|date',
                 'time' => 'required|array',
-                'time.*' => 'required|date_format:H:i A',
+                'time.*' => 'required|date_format:h:i A',
                 'notes' => 'nullable|array',
                 'notes.*' => 'nullable|string|max:191',
             ];
