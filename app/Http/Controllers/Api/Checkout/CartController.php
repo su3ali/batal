@@ -86,7 +86,7 @@ class CartController extends Controller
                 'notes' => 'nullable|array',
                 'notes.*' => 'nullable|string|max:191',
             ];
-            $request->validate($rules, $request->all());
+//            $request->validate($rules, $request->all());
             $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
             if (
                 count($request->category_ids) < $cartCategoryCount
