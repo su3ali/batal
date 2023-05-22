@@ -157,9 +157,9 @@
     </div>
 @endsection
 
-@push('script')
-    <script>
-        let secondUpload = new FileUploadWithPreview('mySecondImage')
-    </script>
+{{--@push('script')--}}
+{{--    <script>--}}
+{{--        let secondUpload = new FileUploadWithPreview('mySecondImage')--}}
+{{--    </script>--}}
 
-@endpush
+{{--@endpush--}}
