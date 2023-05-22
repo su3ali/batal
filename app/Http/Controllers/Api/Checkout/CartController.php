@@ -73,8 +73,9 @@ class CartController extends Controller
         return self::apiResponse(200, null, $this->body);
     }
 
-    protected function updateCart(Request $request)
+    public function updateCart(Request $request)
     {
+
         if (auth()->user()->carts->first()) {
             $rules = [
                 'category_ids' => 'required|array',
@@ -86,6 +87,7 @@ class CartController extends Controller
                 'notes' => 'nullable|array',
                 'notes.*' => 'nullable|string|max:191',
             ];
+
             $request->validate($rules, $request->all());
             $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
             if (
@@ -102,7 +104,7 @@ class CartController extends Controller
                     ->where('category_id', $category_id)->update([
                         'date' => $request->date[$key],
                         'time' => Carbon::parse($request->time[$key])->toTimeString(),
-                        'notes' => $request->notes[$key]
+                        'notes' => $request->notes ? array_key_exists($key,$request->notes) ? $request->notes[$key] : '' :''
                     ]);
             }
             return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
