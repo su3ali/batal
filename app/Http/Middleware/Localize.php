@@ -15,13 +15,13 @@ class Localize
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
+    protected const ALLOWED_LOCALIZATIONS = ['en', 'ar'];
     public function handle(Request $request, Closure $next)
     {
-        if (!session('locale')) {
-            session()->put('locale', 'ar');
-            session()->put('rtl', true);
-        }
-        App::setLocale(session('locale'));
+        $localization = $request->header('Accept-Language');
+        $localization = in_array($localization, self::ALLOWED_LOCALIZATIONS, true) ? $localization : 'en';
+        app()->setLocale($localization);
+
         return $next($request);
     }
 }
