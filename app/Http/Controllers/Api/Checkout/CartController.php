@@ -73,7 +73,7 @@ class CartController extends Controller
         return self::apiResponse(200, null, $this->body);
     }
 
-    public function updateCart(Request $request)
+    protected function updateCart(Request $request)
     {
 
         if (auth()->user()->carts->first()) {
