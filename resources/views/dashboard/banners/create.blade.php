@@ -35,6 +35,26 @@
                                 @enderror
                             </div>
 
+                            <div class="col-md-4 custom-file-container form-group"
+                                 data-upload-id="mySecondImage">
+                                <label>{{__('dash.upload')}}<a href="javascript:void(0)"
+                                                               class="custom-file-container__image-clear"
+                                                               title="Clear Image">x</a></label>
+                                <div style="display: flex">
+                                    <label class="custom-file-container__custom-file">
+                                        <input type="file"
+                                               class="custom-file-container__custom-file__custom-file-input"
+                                               name="image"
+                                        >
+                                        {{--<input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>--}}
+                                        <span
+                                            class="custom-file-container__custom-file__custom-file-control"></span>
+                                    </label>
+
+                                    <div class=" col-md-2 custom-file-container__image-preview"></div>
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
@@ -75,4 +95,9 @@
         })
 
     </script>
+
+
+        <script>
+            let secondUpload = new FileUploadWithPreview('mySecondImage')
+        </script>
     @endpush

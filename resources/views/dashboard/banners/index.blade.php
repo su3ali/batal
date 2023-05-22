@@ -74,7 +74,7 @@
 
     </div>
     @include('dashboard.banners.edit')
-    @include('dashboard.banners.images')
+{{--    @include('dashboard.banners.images')--}}
 
 @endsection
 
@@ -132,9 +132,14 @@
             let id = $(this).attr('data-id');
             let title_ar = $(this).attr('data-title_ar');
             let title_en = $(this).attr('data-title_en');
+            var img = $(this).attr('data-image');
 
             $('#title_ar').val(title_ar)
             $('#title_en').val(title_en)
+
+            if (img != ''){
+                $('.editImage .custom-file-container__image-preview').css('background-image', 'url("'+img+'")');
+            }
 
             let action = "{{route('dashboard.banners.update', 'id')}}";
             action = action.replace('id', id)
@@ -163,58 +168,58 @@
         })
 
 
-        $(document).on('click', '.image', function () {
+        {{--$(document).on('click', '.image', function () {--}}
 
-            $('.image_preview').empty();
-            let id = $(this).attr('data-id');
-            let url = '{{route('dashboard.banners.getImage')}}';
-            let token = '{{ csrf_token() }}';
-            let temp = "{{url('/')}}";
-            $('#banner_id').val(id)
-            $.ajax({
-                url: url,
-                method: "post",
-                data: {'_token': token, 'id': id},
-                dataType: 'json',
-                success: function (response) {
-                    if (response.length > 0) {
+        {{--    $('.image_preview').empty();--}}
+        {{--    let id = $(this).attr('data-id');--}}
+        {{--    let url = '{{route('dashboard.banners.getImage')}}';--}}
+        {{--    let token = '{{ csrf_token() }}';--}}
+        {{--    let temp = "{{url('/')}}";--}}
+        {{--    $('#banner_id').val(id)--}}
+        {{--    $.ajax({--}}
+        {{--        url: url,--}}
+        {{--        method: "post",--}}
+        {{--        data: {'_token': token, 'id': id},--}}
+        {{--        dataType: 'json',--}}
+        {{--        success: function (response) {--}}
+        {{--            if (response.length > 0) {--}}
 
-                        $.each(response, function (key, val) {
+        {{--                $.each(response, function (key, val) {--}}
 
-                            $('.image_preview').append(`<div class="div-preview col-sm-2" style="width: 18rem;">
-                            <a data-fancybox="gallery" href="${temp}/` + val['image'] + `"><img class="card-img-top" style="width: 111px;"  src="${temp}/` + val['image'] + `"  alt="Card image cap"></a>
-                        <div class="card-body">
-                            <a href="javascript:;" class="btn btn-danger deleteImage" data-id="` + val['id'] + `">{{__('dash.delete')}}</a>
-                        </div>
-                        </div>`);
-                        });
-                    }
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    var errors = $.parseJSON(xhr.responseText);
-                }
-            });
+        {{--                    $('.image_preview').append(`<div class="div-preview col-sm-2" style="width: 18rem;">--}}
+        {{--                    <a data-fancybox="gallery" href="${temp}/` + val['image'] + `"><img class="card-img-top" style="width: 111px;"  src="${temp}/` + val['image'] + `"  alt="Card image cap"></a>--}}
+        {{--                <div class="card-body">--}}
+        {{--                    <a href="javascript:;" class="btn btn-danger deleteImage" data-id="` + val['id'] + `">{{__('dash.delete')}}</a>--}}
+        {{--                </div>--}}
+        {{--                </div>`);--}}
+        {{--                });--}}
+        {{--            }--}}
+        {{--        },--}}
+        {{--        error: function (xhr, textStatus, errorThrown) {--}}
+        {{--            var errors = $.parseJSON(xhr.responseText);--}}
+        {{--        }--}}
+        {{--    });--}}
 
-        });
-        $(document).on('click', '.deleteImage', function () {
-            let id = $(this).data('id');
-            let url = '{{route('dashboard.banners.deleteImage')}}';
-            let token = ' {{ csrf_token() }}';
-            let button = $(this);
-            $.ajax({
-                url: url,
-                method: "post",
-                data: {'_token': token, 'id': id},
-                dataType: 'json',
-                success: function (response) {
+        {{--});--}}
+        {{--$(document).on('click', '.deleteImage', function () {--}}
+        {{--    let id = $(this).data('id');--}}
+        {{--    let url = '{{route('dashboard.banners.deleteImage')}}';--}}
+        {{--    let token = ' {{ csrf_token() }}';--}}
+        {{--    let button = $(this);--}}
+        {{--    $.ajax({--}}
+        {{--        url: url,--}}
+        {{--        method: "post",--}}
+        {{--        data: {'_token': token, 'id': id},--}}
+        {{--        dataType: 'json',--}}
+        {{--        success: function (response) {--}}
 
-                    button.closest('.div-preview').remove();
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    var errors = $.parseJSON(xhr.responseText);
-                }
-            });
-        });
+        {{--            button.closest('.div-preview').remove();--}}
+        {{--        },--}}
+        {{--        error: function (xhr, textStatus, errorThrown) {--}}
+        {{--            var errors = $.parseJSON(xhr.responseText);--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--});--}}
 
     </script>
 

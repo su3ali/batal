@@ -36,12 +36,10 @@ class BannersController extends Controller
 
                     $html = '
 
-                    <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools image" data-id="' . $row->id . '" data-toggle="modal" data-target="#bannerImageModel">
-                            <i class="far fa-image fa-2x"></i>
-                       </button>
+
 
                                 <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '"  data-title_ar="' . $row->title_ar . '"
-                                 data-title_en="' . $row->title_en . '" data-toggle="modal" data-target="#editBannerModel">
+                                 data-title_en="' . $row->title_en . '" data-image="'.$row->slug.'" data-toggle="modal" data-target="#editBannerModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
 
@@ -64,13 +62,23 @@ class BannersController extends Controller
     protected function store(Request $request){
         $rules = [
             'title_ar' => 'required|String|min:3|max:100',
-            'title_en' => 'required|String|min:3|max:100'
+            'title_en' => 'required|String|min:3|max:100',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }
         $validated = $validated->validated();
+
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $request->image->move(storage_path('app/public/images/banners/'), $filename);
+            $validated['image'] = 'storage/images/banners'.'/'. $filename;
+        }
+
         Banner::query()->create($validated);
         session()->flash('success');
         return redirect()->back();
@@ -79,13 +87,25 @@ class BannersController extends Controller
         $banner = Banner::query()->where('id', $id)->first();
         $rules = [
             'title_ar' => 'required|String|min:3|max:100',
-            'title_en' => 'required|String|min:3|max:100'
+            'title_en' => 'required|String|min:3|max:100',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
             return redirect()->back()->with('errors', $validated->errors());
         }
         $validated = $validated->validated();
+
+        if ($request->hasFile('image')) {
+            if (File::exists(public_path($banner->image))) {
+                File::delete(public_path($banner->image));
+            }
+            $image = $request->file('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $request->image->move(storage_path('app/public/images/banners/'), $filename);
+            $validated['image'] = 'storage/images/banners'.'/'. $filename;
+        }
+
         $banner->update($validated);
         session()->flash('success');
         return redirect()->back();
@@ -101,52 +121,52 @@ class BannersController extends Controller
         return response('success');
     }
 
-    public function uploadImage(Request $request){
-        $request->validate([
-            'file' => 'required',
-            'banner_id' => 'required',
-        ]);
-
-        if ($request->has('file')){
-            $image=$this->storeImages($request->file,'banners');
-            $image= 'storage/images/banners'.'/'.$image;
-        }
-
-        BannerImage::create([
-            'image' =>$image,
-            'banner_id' =>$request->banner_id,
-        ]);
-        $bannerImage = BannerImage::where('banner_id',$request->banner_id)->latest()->first();
-
-        return response()->json($bannerImage);
-
-    }
-
-    public function getImage(Request $request){
-        $request->validate([
-            'id' => 'required',
-        ]);
-
-        $banner = Banner::query()->find($request->id);
-        if (!$banner) {
-            return response()->json('error');
-        }
-        return response()->json($banner->bannerImages);
-
-    }
-
-    public function deleteImage(Request $request){
-        $request->validate([
-            'id' => 'required',
-        ]);
-        $image = BannerImage::find($request->id);
-
-        if (File::exists(public_path($image->image))) {
-            File::delete(public_path($image->image));
-        }
-        $image->delete();
-        return response()->json('success');
-    }
+//    public function uploadImage(Request $request){
+//        $request->validate([
+//            'file' => 'required',
+//            'banner_id' => 'required',
+//        ]);
+//
+//        if ($request->has('file')){
+//            $image=$this->storeImages($request->file,'banners');
+//            $image= 'storage/images/banners'.'/'.$image;
+//        }
+//
+//        BannerImage::create([
+//            'image' =>$image,
+//            'banner_id' =>$request->banner_id,
+//        ]);
+//        $bannerImage = BannerImage::where('banner_id',$request->banner_id)->latest()->first();
+//
+//        return response()->json($bannerImage);
+//
+//    }
+//
+//    public function getImage(Request $request){
+//        $request->validate([
+//            'id' => 'required',
+//        ]);
+//
+//        $banner = Banner::query()->find($request->id);
+//        if (!$banner) {
+//            return response()->json('error');
+//        }
+//        return response()->json($banner->bannerImages);
+//
+//    }
+//
+//    public function deleteImage(Request $request){
+//        $request->validate([
+//            'id' => 'required',
+//        ]);
+//        $image = BannerImage::find($request->id);
+//
+//        if (File::exists(public_path($image->image))) {
+//            File::delete(public_path($image->image));
+//        }
+//        $image->delete();
+//        return response()->json('success');
+//    }
 
 
 

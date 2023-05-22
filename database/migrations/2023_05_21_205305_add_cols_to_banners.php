@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColsToService extends Migration
+class AddColsToBanners extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddColsToService extends Migration
      */
     public function up()
     {
-        Schema::table('services', function (Blueprint $table) {
-            $table->boolean('best_seller')->default(0)->nullable()->after('is_quantity');
+        Schema::table('banners', function (Blueprint $table) {
+            $table->string('image')->nullable()->after('active');
+
         });
     }
 
@@ -25,7 +26,7 @@ class AddColsToService extends Migration
      */
     public function down()
     {
-        Schema::table('services', function (Blueprint $table) {
+        Schema::table('banners', function (Blueprint $table) {
             //
         });
     }
