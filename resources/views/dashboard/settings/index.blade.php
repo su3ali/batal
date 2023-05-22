@@ -92,5 +92,14 @@
 @push('script')
     <script>
         let secondUpload = new FileUploadWithPreview('mySecondImage')
+
+
+        $(document).ready( function(){
+            var img = '{{$settings->image}}'
+            console.log(img)
+            if (img != ''){
+                $('.custom-file-container__image-preview').css('background-image', 'url("'+img+'")');
+            }
+        });
     </script>
 @endpush
