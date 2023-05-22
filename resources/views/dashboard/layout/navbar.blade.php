@@ -2,6 +2,11 @@
     <header class="header navbar navbar-expand-sm">
 
         <ul class="navbar-item theme-brand flex-row  text-center">
+            <li class="nav-item">
+                <a href="{{route('dashboard.home')}}" class="nav-link logo">
+                    <img src="{{asset(\App\Models\Setting::first()->logo)}}" class="flag-width" alt="flag">
+                </a>
+            </li>
             <li class="nav-item theme-text">
                 <a href="{{route('dashboard.home')}}" class="nav-link"> {{\App\Models\Setting::first()->$name}} </a>
             </li>
