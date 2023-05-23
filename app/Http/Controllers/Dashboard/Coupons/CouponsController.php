@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
@@ -22,6 +23,9 @@ class CouponsController extends Controller
                 })
                 ->addColumn('value', function ($row) {
                     return $row->type == 'percentage'? $row->value.'%' : $row->value.' ريال سعودي ';
+                })
+                ->addColumn('image', function ($row) {
+                    return '<img class="img-fluid" src="'.asset($row->image).'"/>';
                 })
                 ->addColumn('status', function ($row) {
                     $checked = '';
@@ -49,6 +53,7 @@ class CouponsController extends Controller
                 ->rawColumns([
                     'title',
                     'value',
+                    'image',
                     'status',
                     'control',
                 ])
@@ -74,7 +79,9 @@ class CouponsController extends Controller
             'times_used' => 'nullable|numeric',
             'code' => 'nullable|string',
             'description_ar' => 'nullable|string|min:3',
-            'description_en' => 'nullable|string|min:3'
+            'description_en' => 'nullable|string|min:3',
+            'image' => 'required|image|mimes:jpeg,jpg,png,gif',
+
         ];
         if ($request->sale_area == 'category'){
             $rules['category_id'] = 'required|exists:categories,id';
@@ -91,6 +98,14 @@ class CouponsController extends Controller
             $last = Coupon::query()->latest()->first()?->id;
             $validated['code'] = 'coupon2023-'.$last?$last+1: 1;
         }
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $request->image->move(storage_path('app/public/images/coupons/'), $filename);
+            $validated['image'] = 'storage/images/coupons'.'/'. $filename;
+        }
+
         Coupon::query()->create($validated);
         session()->flash('success');
         return redirect()->route('dashboard.coupons.index');
@@ -114,7 +129,9 @@ class CouponsController extends Controller
             'times_used' => 'nullable|numeric',
             'code' => 'nullable|string',
             'description_ar' => 'nullable|string|min:3',
-            'description_en' => 'nullable|string|min:3'
+            'description_en' => 'nullable|string|min:3',
+            'image' => 'required|image|mimes:jpeg,jpg,png,gif',
+
         ];
         if ($request->sale_area == 'category'){
             $rules['category_id'] = 'required|exists:categories,id';
@@ -139,6 +156,17 @@ class CouponsController extends Controller
             $validated['service_id'] = null;
             $validated['category_id'] = null;
         }
+
+        if ($request->hasFile('image')) {
+            if (File::exists(public_path($coupon->image))) {
+                File::delete(public_path($coupon->image));
+            }
+            $image = $request->file('image');
+            $filename = time() . '.' . $image->getClientOriginalExtension();
+            $request->image->move(storage_path('app/public/images/coupons/'), $filename);
+            $validated['image'] = 'storage/images/coupons'.'/'. $filename;
+        }
+
        $coupon->update($validated);
         session()->flash('success');
         return redirect()->route('dashboard.coupons.index');

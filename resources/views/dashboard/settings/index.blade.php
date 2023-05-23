@@ -46,16 +46,25 @@
                     <form method="post" action="{{route('dashboard.settings')}}"  enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 layout-top-spacing">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
                                 <x-forms.input :type="'text'" :value="$settings->site_name_ar" :name="'site_name_ar'" :class="'form-control'" :label="__('dash.site_name_arabic')"/>
                             </div>
-                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 layout-top-spacing">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
                                 <x-forms.input :type="'text'" :value="$settings->site_name_en" :name="'site_name_en'" :class="'form-control'" :label="__('dash.site_name_english')"/>
                             </div>
-                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 layout-top-spacing">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
                                 <x-forms.input :type="'text'" :value="$settings->google_api_key" :name="'google_api_key'" :class="'form-control'" :label="'google api key'"/>
                             </div>
-                            <div class="col-xl-5 col-lg-5 col-md-5 col-sm-12 layout-top-spacing">
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
+                                <x-forms.input :type="'text'" :value="$settings->phone" :name="'phone'" :class="'form-control'" :label="__('dash.phone')"/>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
+                                <x-forms.input :type="'text'" :value="$settings->whats_app" :name="'whats_app'" :class="'form-control'" :label="__('رقم الواتس اب')"/>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
+                                <x-forms.input :type="'text'" :value="$settings->email" :name="'email'" :class="'form-control'" :label="__('dash.email')"/>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
                                 <div class="col-md-12 custom-file-container form-group"
                                      data-upload-id="mySecondImage">
                                     <label>{{__('dash.upload')}}<a href="javascript:void(0)"
@@ -77,6 +86,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <button type="submit" class="btn btn-primary mt-4">{{__('dash.submit')}}</button>
 
                     </form>

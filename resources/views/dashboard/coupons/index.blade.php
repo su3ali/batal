@@ -58,6 +58,7 @@
                                 <th>العنوان</th>
                                 <th>الكود</th>
                                 <th>القيمة</th>
+                                <th>الصوره</th>
                                 <th>تاريخ التفعيل</th>
                                 <th>تاريخ الانتهاء</th>
                                 <th>حالة النشاط</th>
@@ -105,6 +106,7 @@
                     {data: 'title', name: 'title'},
                     {data: 'code', name: 'code'},
                     {data: 'value', name: 'value'},
+                    {data: 'image', name: 'image'},
                     {data: 'start', name: 'start'},
                     {data: 'end', name: 'end'},
                     {data: 'status', name: 'status'},

@@ -23,6 +23,21 @@ class Coupon extends Model
             return $this->description_en;
         }
     }
+
+    public function getavatarAttribute(){
+
+        if ($this->image == null || \File::exists(public_path($this->image)) == false){
+            return '';
+        }
+
+        $image = explode('/',$this->image);
+        $name = end($image);
+
+        $image = "data:image/png;base64,".base64_encode(file_get_contents(public_path("storage/images/coupons/".$name)));
+
+        return $image;
+    }
+
     public function category(){
         return $this->hasOne(Category::class, 'id', 'category_id');
     }

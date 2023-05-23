@@ -28,6 +28,9 @@ class GeneralSettingRequest extends FormRequest
             'site_name_en'=>'required',
             'google_api_key' => 'nullable',
             'logo'=>'nullable|max:5120',
+            'phone'=>'nullable',
+            'whats_app'=>'nullable',
+            'email'=>'nullable|',
             //            'reports_logo'=>'mimes:png|dimensions:max_width=100,max_height=100',
         ];
     }

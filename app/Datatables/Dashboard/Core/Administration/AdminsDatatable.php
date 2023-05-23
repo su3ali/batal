@@ -36,7 +36,7 @@ class AdminsDatatable extends BaseDatatable
             'roles' => function ($model) {
                 $html = ' ';
                 foreach ($model->roles as $role) {
-                    $html .= '<button class="btn-success">'.$role->name.'</button> ';
+                    $html .= '<button class="btn btn-sm btn-primary">'.$role->name.'</button> ';
                 }
                 return $html;
             },

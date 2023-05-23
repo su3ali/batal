@@ -228,7 +228,7 @@
                                     <div class="form-group col-md-3">
                                         <label for="is_quantity"></label>
                                         <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
-                                            <label class="mx-5" for="is_quantity">الكميه</label>
+                                            <label class="mx-5" for="is_quantity">السماح بزياده الكميه</label>
                                             <input type="checkbox" name="is_quantity" id="is_quantity" @if($service->is_quantity == 1) checked @endif>
                                             <span class="slider round"></span>
                                         </label>

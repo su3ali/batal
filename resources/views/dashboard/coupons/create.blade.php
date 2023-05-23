@@ -57,7 +57,7 @@
                             <div class="box-body">
 
                                 <div class="form-row mb-3">
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-4">
                                         <label for="title_ar">العنوان باللغة العربية</label>
                                         <input type="text" name="title_ar" class="form-control"
                                                id="title_ar"
@@ -69,7 +69,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-4">
                                         <label for="title_en">العنوان باللغة الإنجليزية</label>
                                         <input type="text" name="title_en" class="form-control"
                                                id="title_en"
@@ -80,6 +80,27 @@
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md-4 custom-file-container form-group"
+                                         data-upload-id="mySecondImage">
+                                        <label>{{__('dash.upload')}}<a href="javascript:void(0)"
+                                                                       class="custom-file-container__image-clear"
+                                                                       title="Clear Image">x</a></label>
+                                        <div style="display: flex">
+                                            <label class="custom-file-container__custom-file">
+                                                <input required type="file"
+                                                       class="custom-file-container__custom-file__custom-file-input"
+                                                       name="image"
+                                                >
+                                                {{--<input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>--}}
+                                                <span
+                                                    class="custom-file-container__custom-file__custom-file-control"></span>
+                                            </label>
+
+                                            <div class=" col-md-2 custom-file-container__image-preview"></div>
+                                        </div>
+                                    </div>
+
 
 
                                 </div> {{-- title --}}
@@ -299,5 +320,11 @@
             }
         })
     </script>
+    @push('script')
+        <script>
+            let secondUpload = new FileUploadWithPreview('mySecondImage')
+
+        </script>
+    @endpush
 @endpush
 
