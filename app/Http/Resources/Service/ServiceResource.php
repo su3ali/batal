@@ -32,6 +32,7 @@ class ServiceResource extends JsonResource
             'title'  => $this['title'],
             'price' => $service['price'],
             'images' => $images,
+            'able_to_add_quantity_in_cart' => isset($this['is_quantity'])? $this['is_quantity']: null,
             'quantity' => $quantity
         ];
     }

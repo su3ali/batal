@@ -24,11 +24,13 @@ class CouponsResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'code' => $this->code,
+            'service_id' => $this->service_id,
+            'category_id' => $this->category_id,
             'start' => $this->start,
             'end' => $this->end,
             'value_type' => $this->type,
             'value' => $this->value,
-            'image' => $image
+            'image' => asset($this->image)
         ];
     }
 }

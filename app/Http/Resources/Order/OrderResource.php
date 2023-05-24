@@ -38,6 +38,8 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'status' => $this->status->name,
             'categories' => OrderCategoryResource::collection($categories),
+            'notes' => $this->notes,
+            'total' => $this->total
         ];
     }
 }
