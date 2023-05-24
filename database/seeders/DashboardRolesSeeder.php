@@ -79,6 +79,18 @@ class DashboardRolesSeeder extends Seeder
             ['name'=>'view_setting', 'name_en' => 'view setting', 'name_ar' => 'عرض الإعدادات'],
             ['name'=>'update_setting', 'name_en' => 'update setting', 'name_ar' => 'تغيير الإعدادات'],
             ['name'=>'admin_profile', 'name_en' => 'admin profile', 'name_ar' => 'صفحة الأدمن الشخصية'],
+            ['name'=>'visits', 'name_en' => 'visits', 'name_ar' => 'الزيارات'],
+            ['name'=>'packages', 'name_en' => 'packages', 'name_ar' => 'التقاول'],
+            ['name'=>'orders', 'name_en' => 'orders', 'name_ar' => 'الطلبات'],
+            ['name'=>'bookings', 'name_en' => 'bookings', 'name_ar' => 'الحجوزات'],
+            ['name'=>'categories', 'name_en' => 'categories', 'name_ar' => 'الأقسام'],
+            ['name'=>'services', 'name_en' => 'services', 'name_ar' => 'الخدمات'],
+            ['name'=>'technicians', 'name_en' => 'technicians', 'name_ar' => 'الفنيين'],
+            ['name'=>'wallets', 'name_en' => 'wallets', 'name_ar' => 'المحافظ'],
+            ['name'=>'customers', 'name_en' => 'customers', 'name_ar' => 'العملاء'],
+            ['name'=>'rates', 'name_en' => 'rates', 'name_ar' => 'التقييمات'],
+            ['name'=>'coupons', 'name_en' => 'coupons', 'name_ar' => 'الكوبونات'],
+            ['name'=>'system_settings', 'name_en' => 'system_settings', 'name_ar' => 'إعدادات النظام'],
         ]);
         Permission::insert($permissions->transform(fn ($i) => ['name' => $i['name'], 'name_ar' => $i['name_ar'], 'name_en' => $i['name_en'], 'guard_name' => 'dashboard'])
                                        ->toArray());
