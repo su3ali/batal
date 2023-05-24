@@ -100,7 +100,6 @@
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
                     {data: 'status', name: 'status'},
-                    {data: 'control', name: 'control', orderable: false, searchable: false},
 
                 ]
             });
