@@ -16,8 +16,8 @@ class SettingSeeder extends Seeder
     {
         Setting::query()->truncate();
         Setting::query()->create([
-            'site_name_ar' => 'تطبيق',
-            'site_name_en' => 'App',
+            'site_name_ar' => 'بطل',
+            'site_name_en' => 'Batal',
         ]);
     }
 }
