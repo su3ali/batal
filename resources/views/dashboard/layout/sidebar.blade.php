@@ -38,6 +38,10 @@
                     </li>
 
                     <li>
+                        <a href="{{route('dashboard.visits_statuses.index')}}"> حالات الزيارات </a>
+                    </li>
+
+                    <li>
                         <a href="{{route('dashboard.reason_cancel.index')}}"> أسباب الإلغاء </a>
                     </li>
                 </ul>
@@ -308,6 +312,28 @@
                     <li>
                         <a href="{{route('dashboard.rates.RateService')}}"> تقييمات خدمات </a>
                     </li>
+                </ul>
+            </li>
+
+            <li class="menu">
+                <a href="#notification" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                        <span>إدارة الاشعارات</span>
+                    </div>
+                    <div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-chevron-right">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                <ul class="collapse submenu list-unstyled" id="notification" data-parent="#accordionExample">
+                    <li>
+                        <a href="{{route('dashboard.notification.showNotification')}}">ارسال اشعارات </a>
+                    </li>
+
                 </ul>
             </li>
 

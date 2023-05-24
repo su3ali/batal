@@ -77,7 +77,7 @@ class VisitsController extends Controller
             'booking_id' => 'required|exists:bookings,id',
             'assign_to_id' => 'required|exists:groups,id',
             'note' => 'nullable',
-            'status' => 'required',
+            'visits_status_id' => 'required|exists:visits_statuses,id',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {

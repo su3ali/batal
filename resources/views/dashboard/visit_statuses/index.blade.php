@@ -22,7 +22,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">حالات الطلب</li>
+                                <li class="breadcrumb-item active" aria-current="page">حالات الزيارات</li>
                             </ol>
                         </nav>
 
@@ -34,7 +34,7 @@
         </header>
     </div>
 
-{{--    @include('dashboard.order_statuses.create')--}}
+{{--    @include('dashboard.visit_statuses.create')--}}
 @endsection
 
 @section('content')
@@ -47,7 +47,7 @@
                     <div class="col-md-12 text-right mb-3">
 
 {{--                        <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal"--}}
-{{--                                data-target="#createOrderStatusModel">--}}
+{{--                                data-target="#createBookingStatusModel">--}}
 {{--                            {{__('dash.add_new')}}--}}
 {{--                        </button>--}}
 
@@ -70,7 +70,7 @@
         </div>
 
     </div>
-{{--    @include('dashboard.order_statuses.edit')--}}
+{{--    @include('dashboard.visit_statuses.edit')--}}
 @endsection
 
 @push('script')
@@ -95,18 +95,17 @@
                 },
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('dashboard.order_statuses.index') }}',
+                ajax: '{{ route('dashboard.visits_statuses.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
                     {data: 'status', name: 'status'},
-                    // {data: 'control', name: 'control', orderable: false, searchable: false},
 
                 ]
             });
         });
 
-        $(document).on('click', '#edit-order-status', function () {
+        $(document).on('click', '#edit-booking-status', function () {
             let id = $(this).data('id');
             let name_ar = $(this).data('name_ar');
             let name_en = $(this).data('name_en');
@@ -117,9 +116,9 @@
             CKEDITOR.instances['edit_description_ar'].setData(description_ar);
             CKEDITOR.instances['edit_description_en'].setData(description_en);
 
-            let action = "{{route('dashboard.order_statuses.update', 'id')}}";
+            let action = "{{route('dashboard.visits_statuses.update', 'id')}}";
             action = action.replace('id', id)
-            $('#edit_order_status_form').attr('action', action);
+            $('#edit_booking_status_form').attr('action', action);
 
         })
 
@@ -128,7 +127,7 @@
             let id = $(this).attr('data-id');
 
             $.ajax({
-                url: '{{route('dashboard.order_statuses.change_status')}}',
+                url: '{{route('dashboard.visits_statuses.change_status')}}',
                 type: 'get',
                 data: {id: id, active: active},
                 success: function (data) {

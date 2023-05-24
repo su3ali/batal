@@ -69,7 +69,8 @@ class AuthController extends Controller
         $user = User::query()->where('id', $request->user_id)->first();
         if ($request->code == $user->code && $user) {
                 $user->update([
-                    'code' => null
+                    'code' => null,
+                    'fcm_token' => $request->fcm_token
                 ]);
                 Auth::loginUsingId($user->id);
                 $this->message = t_('login successfully');
