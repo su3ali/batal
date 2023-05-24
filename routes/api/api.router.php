@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     require __DIR__ . '/users.router.php';
     require __DIR__ . '/checkout.router.php';
     require __DIR__ . '/order.router.php';
+    require __DIR__ . '/settings.router.php';
 
 
 });
