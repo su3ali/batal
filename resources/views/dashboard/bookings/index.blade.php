@@ -194,21 +194,21 @@
         })
 
 
-        $("body").on('change', '#status', function () {
-            if ($(this).val() == 'canceled') {
-                $('.notes').removeClass('col-md-12');
-                $('.notes').addClass('col-md-6');
-                $('.reason_cancel').show();
-
-
-            } else {
-                $('.notes').removeClass('col-md-6');
-                $('.notes').addClass('col-md-12');
-                $('.reason_cancel').hide();
-
-            }
-
-        })
+        // $("body").on('change', '#status', function () {
+        //     if ($(this).val() == 'canceled') {
+        //         $('.notes').removeClass('col-md-12');
+        //         $('.notes').addClass('col-md-6');
+        //         $('.reason_cancel').show();
+        //
+        //
+        //     } else {
+        //         $('.notes').removeClass('col-md-6');
+        //         $('.notes').addClass('col-md-12');
+        //         $('.reason_cancel').hide();
+        //
+        //     }
+        //
+        // })
 
 
     </script>

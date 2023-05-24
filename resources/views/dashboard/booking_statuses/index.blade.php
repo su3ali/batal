@@ -34,7 +34,7 @@
         </header>
     </div>
 
-    @include('dashboard.booking_statuses.create')
+{{--    @include('dashboard.booking_statuses.create')--}}
 @endsection
 
 @section('content')
@@ -46,10 +46,10 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-md-12 text-right mb-3">
 
-                        <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal"
-                                data-target="#createBookingStatusModel">
-                            {{__('dash.add_new')}}
-                        </button>
+{{--                        <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal"--}}
+{{--                                data-target="#createBookingStatusModel">--}}
+{{--                            {{__('dash.add_new')}}--}}
+{{--                        </button>--}}
 
                     </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -58,7 +58,7 @@
                             <th>#</th>
                             <th>اسم الحالة</th>
                             <th>حالة النشاط</th>
-                            <th class="no-content">{{__('dash.actions')}}</th>
+{{--                            <th class="no-content">{{__('dash.actions')}}</th>--}}
                         </tr>
                         </thead>
                     </table>
@@ -70,7 +70,7 @@
         </div>
 
     </div>
-    @include('dashboard.booking_statuses.edit')
+{{--    @include('dashboard.booking_statuses.edit')--}}
 @endsection
 
 @push('script')
@@ -85,6 +85,14 @@
                 "language": {
                     "url": "{{app()->getLocale() == 'ar'? '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json' : '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json'}}"
                 },
+                buttons: {
+                    buttons: [
+                        {extend: 'copy', className: 'btn btn-sm'},
+                        {extend: 'csv', className: 'btn btn-sm'},
+                        {extend: 'excel', className: 'btn btn-sm'},
+                        {extend: 'print', className: 'btn btn-sm'}
+                    ]
+                },
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('dashboard.booking_statuses.index') }}',
@@ -92,7 +100,7 @@
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
                     {data: 'status', name: 'status'},
-                    {data: 'control', name: 'control', orderable: false, searchable: false},
+                    // {data: 'control', name: 'control', orderable: false, searchable: false},
 
                 ]
             });

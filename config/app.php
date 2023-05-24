@@ -56,6 +56,8 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'firebase_credentials' => 'AAAAktbYcks:APA91bF3BcPnoZdEFaIY2DixMRsQkgTNst-lRUGp2duMMzyG2lsf3h6ZfmK1A1N2_zSbTY36VREWSrQHHhE2SQP0a7wJ9MT9reXJZk28OI4uzqQb5McYNCJYGpsIachB2J9SN10pu5PL',
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

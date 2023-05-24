@@ -1,9 +1,9 @@
-<div class="modal fade " id="addGroupModel" tabindex="-1"
+<div class="modal fade " id="createBookingStatusModel" tabindex="-1"
      role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">اضافة فريق</h5>
+                <h5 class="modal-title" id="exampleModalLabel">إنشاء حالة زياره</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -14,69 +14,63 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{route('dashboard.visits.store')}}" method="post" class="form-horizontal"
+                <form action="{{route('dashboard.visits_statuses.store')}}" method="post" class="form-horizontal"
                       enctype="multipart/form-data" id="create_order_status_form" data-parsley-validate="">
                     @csrf
                     <div class="box-body">
 
-                        <input type="hidden" name="booking_id" id="booking_id">
-                        <div class="form-row mb-2">
+                        <div class="form-row mb-3">
                             <div class="form-group col-md-6">
-
-                                <label for="group_ids">المجموعات</label>
-                                <select id="group_id"  class="select2 form-control pt-1"
-                                        name="assign_to_id" required>
-                                    <option disabled selected>{{__('dash.choose')}}</option>
-
-                                </select>
-                                @error('group_id')
+                                <label for="name_ar">اسم الحالة باللغة العربية</label>
+                                <input type="text" name="name_ar" class="form-control"
+                                       id="name_ar"
+                                       placeholder="أدخل الإسم"
+                                >
+                                @error('name_ar')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
-
                             </div>
 
                             <div class="form-group col-md-6">
-
-                                <label for="status">الحاله</label>
-                                <select id="status"  class="select2 form-control pt-1"
-                                        name="visits_status_id" required>
-                                    <option disabled selected>{{__('dash.choose')}}</option>
-                                    @foreach($visitsStatuses as $key => $status)
-                                    <option value="{{$key}}">{{$status}}</option>
-                                    @endforeach
-                                </select>
-                                @error('visits_status_id')
+                                <label for="name_en">اسم الحالة باللغة الإنجليزية</label>
+                                <input type="text" name="name_en" class="form-control"
+                                       id="name_en"
+                                       placeholder="أدخل الإسم"
+                                >
+                                @error('name_en')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
-
                             </div>
+
 
                         </div>
 
-                        <div class="form-row mb-2">
-                            <div class="form-group reason_cancel col-md-6" style="display:none;">
+                        <div class="form-row mb-3">
 
-                                <label for="inputEmail4">سبب الالغاء</label>
-                                <textarea name="reason_cancel" class="ckeditor" cols="10" rows="5"></textarea>
-                                @error('reason_cancel')
+
+                            <div class="form-group col-md-6">
+
+                                <label for="description_ar">{{__('dash.description_ar')}}</label>
+                                <textarea name="description_ar" id="description_ar" class="ckeditor" cols="30" rows="10"></textarea>
+                                @error('description_ar')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
 
                             </div>
 
-                            <div class="form-group notes col-md-12">
+                            <div class="form-group col-md-6">
 
-                                <label for="inputEmail4">ملاحظات</label>
-                                <textarea name="note" class="ckeditor" cols="10" rows="5"></textarea>
-                                @error('notes')
+                                <label for="description_en">{{__('dash.description_en')}}</label>
+                                <textarea name="description_en" id="description_en" class="ckeditor" cols="30" rows="10"></textarea>
+                                @error('description_en')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
 
                             </div>
+
+
 
                         </div>
-
-
 
                     </div>
                     <div class="modal-footer">

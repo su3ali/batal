@@ -12,6 +12,7 @@ use App\Models\Group;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\VisitsStatus;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\RedirectResponse;
@@ -95,8 +96,9 @@ class BookingController extends Controller
                 ])
                 ->make(true);
         }
+        $visitsStatuses = VisitsStatus::query()->pluck('name','id')->all();
 
-        return view('dashboard.bookings.index');
+        return view('dashboard.bookings.index',compact('visitsStatuses'));
     }
 
     protected function create()
