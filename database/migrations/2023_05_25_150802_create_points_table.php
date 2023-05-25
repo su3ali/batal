@@ -15,6 +15,14 @@ class CreatePointsTable extends Migration
     {
         Schema::create('points', function (Blueprint $table) {
             $table->id();
+            $table->integer('points');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('order_id')->nullable();
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+            $table->enum('status', ['used', 'earned']);
+            $table->string('title')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderService;
 use App\Models\Service;
+use App\Models\Transaction;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -57,7 +58,7 @@ class CheckoutController extends Controller
             'sub_total' => $total,
             'total' => ($total - $request->coupon),
             'payment_method' => $request->payment_method,
-            'status_id' => 1,
+            'status_id' => 3,
         ]);
         foreach ($carts as $cart) {
             OrderService::create([
@@ -93,7 +94,14 @@ class CheckoutController extends Controller
 //            return $payment->payment();
 //        }
         if ($request->payment_method == 'cache') {
+            $transaction = Transaction::create([
+                'order_id' => $order->id,
+                'transaction_number' => 'cache/'.rand(1111111111, 9999999999),
+                'payment_result' => 'success',
+            ]);
             Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
+            $order->status_id = 4;
+            $order->save();
             $this->body['order_id'] = $order->id;
             return self::apiResponse(200, t_('order created successfully'), $this->body);
         }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Core;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Checkout\UserAddressResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Models\UserAddresses;
 use App\Support\Api\ApiResponse;
@@ -20,7 +21,7 @@ class PersonalInfoController extends Controller
 
     protected function getUserInfo()
     {
-        $user = auth('sanctum')->user();
+        $user = UserResource::make(auth('sanctum')->user());
         $this->body['user'] = $user;
         return self::apiResponse(200, null, $this->body);
     }
