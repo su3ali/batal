@@ -58,6 +58,7 @@ class CartController extends Controller
 
         $cat_ids = $carts->pluck('category_id');
         $this->body['carts'] = [];
+        $cat_ids = array_unique($cat_ids->toArray());
         foreach ($cat_ids as $cat_id) {
             if ($cat_id) {
                 $this->body['carts'][] = [
@@ -104,7 +105,7 @@ class CartController extends Controller
                     ->where('category_id', $category_id)->update([
                         'date' => $request->date[$key],
                         'time' => Carbon::parse($request->time[$key])->toTimeString(),
-                        'notes' => $request->notes ? array_key_exists($key,$request->notes) ? $request->notes[$key] : '' :''
+                        'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : ''
                     ]);
             }
             return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
