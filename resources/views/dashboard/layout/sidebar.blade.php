@@ -15,7 +15,7 @@
                 </a>
             </li>
 
-
+            @can('visits')
             <li class="menu">
                 <a href="#visits" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -46,6 +46,8 @@
                     </li>
                 </ul>
             </li>
+            @endcan
+            @can('packages')
             <li class="menu">
                 <a href="#contract" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -75,7 +77,8 @@
                     </li>
                 </ul>
             </li>
-
+            @endcan
+            @can('orders')
             <li class="menu">
                 <a href="#orders" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -100,6 +103,8 @@
                     </li>
                 </ul>
             </li>
+            @endcan
+            @can('bookings')
             <li class="menu">
                 <a href="#booking" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -127,7 +132,7 @@
                     </li>
                 </ul>
             </li>
-
+            @endcan
 
             <li class="menu">
                 <a href="#app" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -159,7 +164,7 @@
                 </ul>
             </li>
 
-
+            @can('categories')
             <li class="menu">
                 <a href="#admin" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -182,8 +187,9 @@
                     </li>
                 </ul>
             </li>
+            @endcan
 
-
+            @can('services')
             <li class="menu">
                 <a href="#service1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -205,7 +211,9 @@
                     </li>
                 </ul>
             </li>
+            @endcan
 
+            @can('technicians')
             <li class="menu">
                 <a href="#tech" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -234,8 +242,9 @@
                     </li>
                 </ul>
             </li>
+            @endcan
 
-
+            @can('wallets')
             <li class="menu">
                 <a href="#wallet" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -262,7 +271,9 @@
 
                 </ul>
             </li>
+            @endcan
 
+            @can('customers')
             <li class="menu">
                 <a href="#customer" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -286,9 +297,9 @@
 
                 </ul>
             </li>
+            @endcan
 
-
-
+            @can('rates')
             <li class="menu">
                 <a href="#rates" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -314,7 +325,9 @@
                     </li>
                 </ul>
             </li>
+            @endcan
 
+            @can('notification')
             <li class="menu">
                 <a href="#notification" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -336,7 +349,9 @@
 
                 </ul>
             </li>
+            @endcan
 
+            @can('coupons')
             <li class="menu">
                 <a href="{{route('dashboard.coupons.index')}}" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -348,8 +363,9 @@
                     </div>
                 </a>
             </li>
+            @endcan
 
-
+            @can('system_settings')
             <li class="menu">
                 <a href="#setting" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
@@ -394,7 +410,7 @@
 
                 </ul>
             </li>
-
+            @endcan
 
 
             {{--@can('view_setting')--}}

@@ -91,6 +91,7 @@ class DashboardRolesSeeder extends Seeder
             ['name'=>'rates', 'name_en' => 'rates', 'name_ar' => 'التقييمات'],
             ['name'=>'coupons', 'name_en' => 'coupons', 'name_ar' => 'الكوبونات'],
             ['name'=>'system_settings', 'name_en' => 'system_settings', 'name_ar' => 'إعدادات النظام'],
+            ['name'=>'notification', 'name_en' => 'notification', 'name_ar' => 'الاشعارات'],
         ]);
         Permission::insert($permissions->transform(fn ($i) => ['name' => $i['name'], 'name_ar' => $i['name_ar'], 'name_en' => $i['name_en'], 'guard_name' => 'dashboard'])
                                        ->toArray());

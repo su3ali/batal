@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard\Core;
 
 use App\Enums\Core\ServiceType;
 use App\Http\Controllers\Controller;
+use App\Models\BookingSetting;
 use App\Models\Category;
 use App\Models\Group;
 use App\Models\Measurement;
@@ -117,6 +118,18 @@ class ServiceController extends Controller
         }
 
         $service = Service::query()->create($data);
+
+
+        BookingSetting::create([
+            'service_id' => $service->id,
+            'service_start_date' => 'Saturday',
+            'service_end_date' => 'Thursday',
+            'available_service' => 4,
+            'service_start_time' => '12:34:00',
+            'service_end_time' => '18:34:00',
+            'service_duration' => 30,
+            'buffering_time' => 10,
+        ]);
 //        foreach ($request->group_ids as $group_id) {
 //            ServiceGroup::query()->create([
 //                'service_id' => $service->id,

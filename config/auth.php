@@ -44,6 +44,10 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+        'technician' => [
+            'driver' => 'session',
+            'provider' => 'technicians',
+        ],
     ],
 
     /*
@@ -73,6 +77,11 @@ return [
              'driver' => 'eloquent',
              'model' => App\Models\User::class,
          ],
+
+        'technicians' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Technician::class,
+        ],
     ],
 
     /*
