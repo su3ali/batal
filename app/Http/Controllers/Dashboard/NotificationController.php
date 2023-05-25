@@ -53,7 +53,9 @@ class NotificationController extends Controller
 
 
         if (!$FcmToken || count($FcmToken) == 0){
-            return redirect()->back();
+
+            return redirect()->back()->withErrors(['fcm_token' => 'لا يمكن ارسال الاشعارت لعدم توفر رمز الجهاز']);
+
         }
 
 
