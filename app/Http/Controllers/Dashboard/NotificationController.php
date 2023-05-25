@@ -35,7 +35,7 @@ class NotificationController extends Controller
             'message'=>'required',
             'type'=>'required'
         ]);
-        if ($request->type == 'customers'){
+        if ($request->type == 'customer'){
             if ($request->customer_id == 'all'){
                 $FcmToken = User::whereNotNull('fcm_token')->pluck('fcm_token')->all();
             }else{
@@ -49,6 +49,11 @@ class NotificationController extends Controller
                 $technician = Technician::where('id',$request->technician_id)->first('fcm_token');
                 $FcmToken = $technician->fcm_token;
             }
+        }
+
+
+        if (!$FcmToken || count($FcmToken) == 0){
+            return redirect()->back();
         }
 
 

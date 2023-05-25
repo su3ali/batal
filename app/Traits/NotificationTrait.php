@@ -9,6 +9,7 @@ trait NotificationTrait
    public function pushNotification($notification)
   {
       $auth_key = Config::get('app.firebase_credentials');
+      dd($auth_key);
       $device_token = $notification['device_token'];
 
       $data = [

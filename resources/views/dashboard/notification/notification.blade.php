@@ -88,7 +88,7 @@
 
                                     <div class="form-group col-md-6 div-customer">
                                         <label for="customer">العملاء</label>
-                                        <select required class="form-control customer_id"  style="width: 100%; padding: 8px"
+                                        <select  class="form-control customer_id"  style="width: 100%; padding: 8px"
                                                 name="customer_id">
                                             <option value="all" selected>الكل</option>
                                             @foreach($customers as $key => $customer)
@@ -103,7 +103,7 @@
 
                                     <div class="form-group col-md-6 div-technician" style="display:none;">
                                         <label for="customer">الفنيين</label>
-                                        <select required class="form-control technician_id" style="width: 100%; padding: 8px"
+                                        <select  class="form-control technician_id" disabled style="width: 100%; padding: 8px"
                                                 name="technician_id">
                                             <option value="all" selected>الكل</option>
                                             @foreach($technicians as $key => $technician)
