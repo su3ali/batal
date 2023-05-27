@@ -22,13 +22,9 @@ class ServiceController extends Controller
     }
 
     protected function orderedServices(){
-        $buyServiceLists = Order::query()->select('service_id',DB::raw('count(*) as total'))
-            ->groupBy('service_id')
-            ->orderBy('total', 'DESC')
-            ->get();
-
-        $mostSellingServices = Service::query()->whereIn('id', $buyServiceLists->pluck('service_id'))
-            ->get();
+        $mostSellingServices = Service::query()->where('best_seller',1)
+            ->where('active',1)
+            ->get()->shuffle();
         $this->body['most_ordered_services'] = ServiceResource::collection($mostSellingServices);
         return self::apiResponse(200, null, $this->body);
 

@@ -78,24 +78,12 @@ class HomeController extends Controller
     protected function search(Request $request): JsonResponse
     {
         if ($request->title) {
-            $products = Product::query()
-                ->whereNot('active', 0)
-                ->where('title', 'LIKE', '%' . $request->title . '%')->get();
-            if ($products) {
-                $this->body['products'] = ProductResource::collection($products);
-            } else {
-                return self::apiResponse(200, t_('No products was founded.'), null);
-            }
-            $stores = Store::query()->whereNot('active', 0)
-                ->where('title', 'LIKE', '%' . $request->title . '%')->get();
-            if ($stores) {
-                $this->body['stores'] = StoreResource::collection($stores);
-            } else {
-                return self::apiResponse(200, t_('No stores was founded.'), null);
-            }
+            $services = Service::query()->where('title_ar', 'like', '%'.$request->title.'%')
+                ->orWhere('title_en', 'like', '%'.$request->title.'%')->where('active', 1)->get();
+            $this->body['services'] = ServiceResource::collection($services);
             return self::apiResponse(200, '', $this->body);
         } else {
-            return self::apiResponse(200, t_('No products was founded.'), null);
+            return self::apiResponse(200, t_('No Services was founded.'), null);
         }
     }
 

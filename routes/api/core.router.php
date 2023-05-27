@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\SinglePages\StoreController;
 
 Route::prefix('home')->group(function (){
     Route::get('/', [HomeController::class, 'index']);
+    Route::get('/search', [HomeController::class, 'search']);
 });
 
 Route::prefix('services')->group(function (){

@@ -30,7 +30,7 @@ class CouponsResource extends JsonResource
             'end' => $this->end,
             'value_type' => $this->type,
             'value' => $this->value,
-            'image' => asset($this->image)
+            'image' => asset($this->image? : 'images/default.jpg')
         ];
     }
 }
