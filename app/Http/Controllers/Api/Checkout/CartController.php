@@ -147,6 +147,7 @@ class CartController extends Controller
                 if (key_exists('success', $response)) {
                     $this->body['total'] = $total;
                     $this->body['carts'] = [];
+                    $cat_ids = array_unique($cat_ids->toArray());
                     foreach ($cat_ids as $cat_id) {
                         if ($cat_id) {
                             $this->body['carts'][] = [

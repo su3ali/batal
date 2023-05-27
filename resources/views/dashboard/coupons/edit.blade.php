@@ -208,13 +208,13 @@
                                     <div class="col-md-6">
 
                                         <div class="form-group">
-                                            <label for="times_used">مرات الاستخدام</label>
-                                            <input type="number" name="times_used" class="form-control"
-                                                   id="times_used"
+                                            <label for="times_limit">مرات الاستخدام</label>
+                                            <input type="number" name="times_limit" class="form-control"
+                                                   id="times_limit"
                                                    placeholder="أدخل العدد"
-                                                   value="{{$coupon->times_used}}"
+                                                   value="{{$coupon->times_limit}}"
                                             >
-                                            @error('times_used')
+                                            @error('times_limit')
                                             <div class="alert alert-danger">{{ $message }}</div>
                                             @enderror
 
