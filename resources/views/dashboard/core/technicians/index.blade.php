@@ -117,6 +117,7 @@
         $(document).on('click', '#edit-tech', function () {
             let id = $(this).data('id');
             let name = $(this).data('name');
+            let user_name = $(this).data('user_name');
             let email = $(this).data('email');
             let phone = $(this).data('phone');
             let specialization = $(this).data('specialization');
@@ -130,6 +131,7 @@
             let image = $(this).data('image');
             $('#tech_id').val(id)
             $('#edit_name').val(name)
+            $('#edit_user_name').val(user_name)
             $('#edit_email').val(email)
             $('#edit_phone').val(phone)
             $('#edit_spec').val(specialization).trigger('change')

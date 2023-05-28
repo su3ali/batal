@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\DataTables;
 
@@ -47,7 +48,7 @@ class TechnicianController extends Controller
                         </label>';
                 })
                 ->addColumn('control', function ($row) {
-                    $html = '<button type="button" id="edit-tech" class="btn btn-primary btn-sm card-tools edit" data-id="'.$row->id.'"  data-name="'.$row->name.'"
+                    $html = '<button type="button" id="edit-tech" class="btn btn-primary btn-sm card-tools edit" data-id="'.$row->id.'"  data-name="'.$row->name.'" data-user_name="'.$row->user_name.'"
                                  data-email="'.$row->email.'" data-phone="'.$row->phone.'" data-specialization="'.$row->spec_id.'"
                                  data-active="'.$row->active.'" data-group_id="'.$row->group_id.'"
                                   data-country_id="'.$row->country_id.'" data-address="'.$row->address.'" data-wallet_id="'.$row->wallet_id.'"
@@ -80,6 +81,8 @@ class TechnicianController extends Controller
             'name' => 'required|String|min:3',
             'email' => 'required|Email|unique:technicians,email',
             'phone' => 'required|unique:technicians,phone',
+            'user_name' => 'required|unique:technicians,user_name',
+            'password' => ['required', 'confirmed', Password::min(4)],
             'spec_id' => 'required|exists:specializations,id',
             'country_id' => 'required',
             'identity_id' => 'required|Numeric',
@@ -116,6 +119,7 @@ class TechnicianController extends Controller
             'name' => 'required|String|min:3',
             'email' => 'required|Email|unique:technicians,email,'.$id,
             'phone' => 'required|unique:technicians,phone,'.$id,
+            'user_name' => 'required|unique:technicians,user_name,'.$id,
             'spec_id' => 'required|exists:specializations,id',
             'country_id' => 'required',
             'identity_id' => 'required|Numeric',
@@ -125,6 +129,7 @@ class TechnicianController extends Controller
             'group_id' => 'nullable',
             'image' => 'required|image|mimes:jpeg,jpg,png,gif',
             'active' => 'nullable|in:on,off',
+            'password' => ['nullable', 'confirmed', Password::min(4)],
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {

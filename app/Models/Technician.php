@@ -13,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Technician extends Authenticatable
 {
-    use HasApiTokens,WithBoot,HasPassword, HasFactory,HasRoles, Notifiable;
+    use HasApiTokens,HasPassword, HasFactory,HasRoles, Notifiable;
     protected $guard = 'technician';
     protected $guarded = [];
 

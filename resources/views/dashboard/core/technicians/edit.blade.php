@@ -20,7 +20,7 @@
                     {!! method_field('PUT') !!}
                     <div class="box-body">
                         <div class="form-row mb-3">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="edit_name">{{__('dash.name')}}</label>
                                 <input type="hidden" id="tech_id" name="tech_id">
                                 <input required type="text" name="name" class="form-control"
@@ -32,13 +32,49 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
+                                <label for="edit_user_name">اسم الفني</label>
+                                <input required type="text"  name="user_name" class="form-control"
+                                       id="edit_user_name"
+                                       placeholder="اسم الفني المستخدم"
+                                >
+                                @error('user_name')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-4">
                                 <label for="edit_email">{{__('dash.email')}}</label>
                                 <input type="email" name="email" class="form-control"
                                        id="edit_email"
                                        placeholder="{{__('dash.email')}}"
                                 >
                                 @error('email')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-row mb-3">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">{{__('dash.password')}}</label>
+                                <input type="password" name="password" class="form-control"
+                                       id="inputEmail4"
+                                       placeholder="{{__('dash.password')}}"
+                                >
+                                @error('password')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    for="inputEmail4">{{__('dash.password_confirmation')}}</label>
+                                <input type="password" name="password_confirmation"
+                                       class="form-control"
+                                       id="inputEmail4"
+                                       placeholder="{{__('dash.password_confirmation')}}"
+                                >
+                                @error('password_confirmation')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>

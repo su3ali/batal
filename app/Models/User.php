@@ -40,4 +40,8 @@ class User extends Authenticatable
         return $this->hasMany(Cart::class, 'user_id');
     }
 
+    public function address(){
+        return $this->hasOne(UserAddresses::class, 'user_id')->where('is_default',1);
+    }
+
 }

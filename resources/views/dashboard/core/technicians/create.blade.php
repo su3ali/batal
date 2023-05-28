@@ -19,7 +19,7 @@
                     @csrf
                     <div class="box-body">
                         <div class="form-row mb-3">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
                                 <label for="inputEmail4">{{__('dash.name')}}</label>
                                 <input required type="text" name="name" class="form-control"
                                        id="inputEmail4"
@@ -30,13 +30,49 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-4">
+                                <label for="inputEmail4">اسم الفني</label>
+                                <input required type="text" name="user_name" class="form-control"
+                                       id="inputEmail4"
+                                       placeholder="اسم الفني المستخدم"
+                                >
+                                @error('user_name')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="form-group col-md-4">
                                 <label for="inputEmail4">{{__('dash.email')}}</label>
                                 <input type="email" name="email" class="form-control"
                                        id="inputEmail4"
                                        placeholder="{{__('dash.email')}}"
                                 >
                                 @error('email')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="form-row mb-3">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">{{__('dash.password')}}</label>
+                                <input type="password" name="password" class="form-control"
+                                       id="inputEmail4"
+                                       placeholder="{{__('dash.password')}}"
+                                >
+                                @error('password')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label
+                                    for="inputEmail4">{{__('dash.password_confirmation')}}</label>
+                                <input type="password" name="password_confirmation"
+                                       class="form-control"
+                                       id="inputEmail4"
+                                       placeholder="{{__('dash.password_confirmation')}}"
+                                >
+                                @error('password_confirmation')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>

@@ -17,4 +17,8 @@ class Visit extends Model
     public function booking(){
         return $this->belongsTo(Booking::class, 'booking_id');
     }
+
+    public function status(){
+        return $this->belongsTo(VisitsStatus::class, 'visits_status_id');
+    }
 }

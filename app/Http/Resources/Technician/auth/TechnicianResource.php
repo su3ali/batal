@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Resources\User;
+namespace App\Http\Resources\Technician\auth;
 
-use App\Http\Resources\Checkout\UserAddressResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class TechnicianResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,13 +17,12 @@ class UserResource extends JsonResource
         return [
 
             'id'  => $this->id,
-            'first_name'  => $this->first_name,
-            'last_name'  => $this->last_name,
+            'user_name'  => $this->user_name,
+            'name'  => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
             'fcm_token' => $this->fcm_token,
             'points' => $this->point,
-            'address' => UserAddressResource::make($this->address),
         ];
     }
 }
