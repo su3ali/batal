@@ -52,7 +52,7 @@ class VisitsController extends Controller
             $q->whereHas('order',function ($q){
                 $q->whereHas('services')->whereHas('user',function($q){
                     $q->whereHas('address');
-                })
+                });
             });
         })->with('booking',function ($q){
             $q->with('order',function ($q){
