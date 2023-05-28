@@ -73,17 +73,18 @@ class VisitsController extends Controller
     protected function orderDetails($id){
 
         $orders = Visit::whereHas('booking',function($q){
-            $q->whereHas('order',function ($q){
-                $q->whereHas('services')->whereHas('user',function($q){
-                    $q->whereHas('address');
-                });
+            $q->whereHas('service',function($q){
+                $q->whereHas('category');
+            })->whereHas('customer',function($q){
+                $q->whereHas('address');
             });
+
         })->with('booking',function ($q){
-            $q->with('order',function ($q){
-                $q->with(['services','user'=>function($q){
-                    $q->with('address');
-                }]);
-            });
+            $q->with(['service'=>function($q){
+                $q->with('category');
+            },'customer'=>function($q){
+                $q->with('address');
+            }]);
         })->with('status')->where('id',$id)->first();
 
         $this->body['visits'] = VisitsResource::collection($orders);
