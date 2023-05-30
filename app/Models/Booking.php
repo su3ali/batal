@@ -40,6 +40,6 @@ class Booking extends Model
     }
 
     public function address(){
-        return $this->hasOne(UserAddresses::class,'id', 'user_id');
+        return $this->hasOne(UserAddresses::class,'id', 'user_address_id');
     }
 }
