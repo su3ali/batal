@@ -28,17 +28,17 @@ class VisitsController extends Controller
     protected function myCurrentOrders()
     {
 
-        $orders = Visit::with('status')->whereHas('booking', function ($q) {
-            $q->whereHas('customer')->whereHas('address')->whereHas('service', function ($q) {
+        $orders = Visit::whereHas('booking', function ($q) {
+            $q->whereHas('service', function ($q) {
                 $q->whereHas('category');
             });
 
         })->with('booking', function ($q) {
-            $q->with(['customer','address','service' => function ($q) {
+            $q->with(['service' => function ($q) {
                 $q->with('category');
             }]);
 
-        })->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
+        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }
