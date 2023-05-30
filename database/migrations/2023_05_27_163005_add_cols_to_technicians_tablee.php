@@ -15,7 +15,7 @@ class AddColsToTechniciansTablee extends Migration
     {
         Schema::table('technicians', function (Blueprint $table) {
             $table->string('name')->nullable()->change();
-            $table->string('email')->unique()->nullable()->change();
+            $table->string('email')->nullable()->change();
             $table->string('phone')->nullable()->change();
             $table->unsignedBigInteger('country_id')->nullable()->change();
             $table->string('identity_id')->nullable()->change();
