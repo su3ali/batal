@@ -2,7 +2,7 @@
     $name = 'site_name_'.app()->getLocale();
     $msgs = [];
     if (session('errors')){
-        foreach(session('errors')->default->getmessages() as $message){
+        foreach(session('errors')->getmessages() as $message){
             foreach ($message as $m){
               $msgs[] = $m;
             }

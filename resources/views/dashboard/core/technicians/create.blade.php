@@ -25,9 +25,6 @@
                                        id="inputEmail4"
                                        placeholder="{{__('dash.name')}}"
                                 >
-                                @error('name')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
 
                             <div class="form-group col-md-4">
@@ -36,9 +33,6 @@
                                        id="inputEmail4"
                                        placeholder="اسم الفني المستخدم"
                                 >
-                                @error('user_name')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
 
                             <div class="form-group col-md-4">
@@ -47,9 +41,6 @@
                                        id="inputEmail4"
                                        placeholder="{{__('dash.email')}}"
                                 >
-                                @error('email')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
 
@@ -60,9 +51,6 @@
                                        id="inputEmail4"
                                        placeholder="{{__('dash.password')}}"
                                 >
-                                @error('password')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label
@@ -72,9 +60,6 @@
                                        id="inputEmail4"
                                        placeholder="{{__('dash.password_confirmation')}}"
                                 >
-                                @error('password_confirmation')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
 
@@ -85,9 +70,6 @@
                                        id="inputEmail4"
                                        placeholder="{{__('dash.phone')}}"
                                 >
-                                @error('phone')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
 
                             <div class="form-group col-md-6">
@@ -100,9 +82,6 @@
                                         <option value="{{$spec->id}}">{{$spec->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('specialization')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
                             </div>
                         </div>
@@ -117,9 +96,6 @@
                                     <option value="1">Egypt</option>
                                     {{--                                    @endforeach--}}
                                 </select>
-                                @error('nationality')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
                             </div>
 
@@ -129,9 +105,6 @@
                                        id=""
                                        placeholder="{{__('dash.identity_number')}}"
                                 >
-                                @error('identity')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
                         <div class="form-row mb-3">
@@ -140,9 +113,6 @@
                                 <label for="birth">{{__('dash.birth_date')}}</label>
                                 <input required id="birth" name="birth_date" type="date" class="form-control datepicker"
                                        data-date-format="dd/mm/yyyy">
-                                @error('birth_date')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
                             </div>
 
@@ -156,9 +126,6 @@
                                     <option value="1">wallet</option>
                                     {{--                                    @endforeach--}}
                                 </select>
-                                @error('nationality')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
                             </div>
                         </div>
@@ -190,9 +157,6 @@
                                           rows="3"
                                           placeholder="{{__('dash.identity_number')}}"
                                 ></textarea>
-                                @error('image')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
                             </div>
                         </div>
                         <div class="form-row mb-3">
@@ -206,9 +170,6 @@
                                         <option value="{{$group->id}}">{{$group->name}}</option>
                                     @endforeach
                                 </select>
-                                @error('group_id')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
                             </div>
                             <div class="form-group col-md-6">
@@ -218,9 +179,6 @@
                                     <input type="checkbox" name="active" id="status" checked>
                                     <span class="slider round"></span>
                                 </label>
-                                @error('status')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
 
                             </div>
                         </div>

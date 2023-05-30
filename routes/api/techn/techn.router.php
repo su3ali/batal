@@ -25,6 +25,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     require __DIR__ . '/auth.router.php';
     require __DIR__ . '/home.router.php';
+    require __DIR__ . '/visits.router.php';
 
 });
 

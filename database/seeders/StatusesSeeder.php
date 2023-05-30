@@ -55,6 +55,10 @@ class StatusesSeeder extends Seeder
         ];
         $visitStatuses = [
             [
+                'name_ar' => 'قيد الانتظار',
+                'name_en' => 'waiting',
+            ],
+            [
                 'name_ar' => 'في الطريق',
                 'name_en' => 'on way',
             ],

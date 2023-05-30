@@ -41,7 +41,7 @@ class VisitsController extends Controller
                     return $row->duration;
                 })
                 ->addColumn('status', function ($row) {
-                    return $row->status;
+                    return $row->status->name;
                 })
                 ->addColumn('control', function ($row) {
 

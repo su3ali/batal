@@ -172,7 +172,7 @@
                                                                title="Clear Image">x</a></label>
                                 <div style="display: flex">
                                     <label class="custom-file-container__custom-file">
-                                        <input required type="file"
+                                        <input type="file"
                                                class="custom-file-container__custom-file__custom-file-input"
                                                name="image"
                                         >

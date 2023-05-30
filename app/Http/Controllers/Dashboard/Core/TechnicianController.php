@@ -77,6 +77,7 @@ class TechnicianController extends Controller
      */
     protected function store(Request $request): RedirectResponse
     {
+
         $rules = [
             'name' => 'required|String|min:3',
             'email' => 'required|Email|unique:technicians,email',
@@ -127,13 +128,13 @@ class TechnicianController extends Controller
             'wallet_id' => 'required',
             'address' => 'required|String',
             'group_id' => 'nullable',
-            'image' => 'required|image|mimes:jpeg,jpg,png,gif',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
             'active' => 'nullable|in:on,off',
             'password' => ['nullable', 'confirmed', Password::min(4)],
         ];
         $validated = Validator::make($request->all(), $rules);
-        if ($validated->fails()) {
-            return redirect()->back()->with('errors', $validated->errors());
+        if ($validated->fails()) {;
+            return redirect()->to(route('dashboard.core.technician.index'))->with('errors', $validated->errors());
         }
         $validated = $validated->validated();
         if ($validated['active'] && $validated['active'] == 'on'){

@@ -24,72 +24,107 @@ class VisitsController extends Controller
         $this->middleware('localize');
     }
 
-    protected function myCurrentOrders(){
+    protected function myCurrentOrders()
+    {
 
 //        $visit = Visit::where('assign_to_id',auth('sanctum')->user()->group_id)->first();
 //        $booking = Booking::where('id',$visit->booking_id)->first();
-        $orders = Visit::whereHas('booking',function($q){
-                $q->whereHas('service',function($q){
-                    $q->whereHas('category');
-                })->whereHas('customer',function($q){
-                            $q->whereHas('address');
-                        });
-
-        })->with('booking',function ($q){
-                $q->with(['service'=>function($q){
-                    $q->with('category');
-                },'customer'=>function($q){
-                    $q->with('address');
-                }]);
-
-        })->with('status')->whereIn('visits_status_id',[1,2,3,4])->where('assign_to_id',auth('sanctum')->user()->group_id)->get();
-
-        $this->body['visits'] = VisitsResource::collection($orders);
-        return self::apiResponse(200, null, $this->body);
-    }
-
-    protected function myPreviousOrders(){
-
-        $orders = Visit::whereHas('booking',function($q){
-            $q->whereHas('service',function($q){
+        $orders = Visit::whereHas('booking', function ($q) {
+            $q->whereHas('service', function ($q) {
                 $q->whereHas('category');
-            })->whereHas('customer',function($q){
+            })->whereHas('customer', function ($q) {
                 $q->whereHas('address');
             });
 
-        })->with('booking',function ($q){
-            $q->with(['service'=>function($q){
+        })->with('booking', function ($q) {
+            $q->with(['service' => function ($q) {
                 $q->with('category');
-            },'customer'=>function($q){
+            }, 'customer' => function ($q) {
                 $q->with('address');
             }]);
-        })->with('status')->where('visits_status_id',5)->where('assign_to_id',auth('sanctum')->user()->group_id)->get();
 
+        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }
 
+    protected function myPreviousOrders()
+    {
 
-    protected function orderDetails($id){
-
-        $orders = Visit::whereHas('booking',function($q){
-            $q->whereHas('service',function($q){
+        $orders = Visit::whereHas('booking', function ($q) {
+            $q->whereHas('service', function ($q) {
                 $q->whereHas('category');
-            })->whereHas('customer',function($q){
+            })->whereHas('customer', function ($q) {
                 $q->whereHas('address');
             });
 
-        })->with('booking',function ($q){
-            $q->with(['service'=>function($q){
+        })->with('booking', function ($q) {
+            $q->with(['service' => function ($q) {
                 $q->with('category');
-            },'customer'=>function($q){
+            }, 'customer' => function ($q) {
                 $q->with('address');
             }]);
-        })->with('status')->where('id',$id)->first();
+        })->with('status')->where('visits_status_id', 5)->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
 
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }
 
+
+    protected function orderDetails($id)
+    {
+
+        $orders = Visit::whereHas('booking', function ($q) {
+            $q->whereHas('service', function ($q) {
+                $q->whereHas('category');
+            })->whereHas('customer', function ($q) {
+                $q->whereHas('address');
+            });
+
+        })->with('booking', function ($q) {
+            $q->with(['service' => function ($q) {
+                $q->with('category');
+            }, 'customer' => function ($q) {
+                $q->with('address');
+            }]);
+        })->with('status')->where('id', $id)->first();
+
+        $this->body['visits'] = VisitsResource::collection($orders);
+        return self::apiResponse(200, null, $this->body);
+    }
+
+    protected function changeStatus(Request $request)
+    {
+        $rules = [
+            'type' => 'required|in:visit,order,booking',
+            'cancel_reason_id' => 'nullable|exists:reason_cancels,id',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
+            'note' => 'nullable|string|min:3|max:255'
+        ];
+        if ($request->type == 'visit') {
+
+            $rules['id'] = 'required|exists:visits,id';
+            $rules['status_id'] = 'required|exists:visits_statuses,id';
+
+            $request->validate($rules, $request->all());
+
+            $model = Visit::query()->where('id', $request->id)->first();
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = time() . '.' . $image->getClientOriginalExtension();
+                $request->image->move(storage_path('app/public/images/visits/'), $filename);
+                $request['image'] = 'storage/images/visits' . '/' . $filename;
+            }
+            $model->update([
+                'visits_status_id' => $request->status_id,
+                'reason_cancel_id' => $request->cancel_reason_id,
+                'note' => $request->note,
+                'image' => $request->image
+            ]);
+            return $this->orderDetails($model->id);
+        }
+
+    }
 
 }

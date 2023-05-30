@@ -130,7 +130,7 @@ class CouponsController extends Controller
             'code' => 'nullable|string',
             'description_ar' => 'nullable|string|min:3',
             'description_en' => 'nullable|string|min:3',
-            'image' => 'required|image|mimes:jpeg,jpg,png,gif',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
 
         ];
         if ($request->sale_area == 'category'){
