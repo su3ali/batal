@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\DataTables;
 
@@ -82,7 +83,7 @@ class TechnicianController extends Controller
             'name' => 'required|String|min:3',
             'email' => 'required|Email|unique:technicians,email',
             'phone' => 'required|unique:technicians,phone',
-            'user_name' => 'required|unique:technicians,user_name',
+            'user_name' => ['required', 'regex:/^[^\s]+$/', 'unique:technicians,user_name'],
             'password' => ['required', 'confirmed', Password::min(4)],
             'spec_id' => 'required|exists:specializations,id',
             'country_id' => 'required',
@@ -94,7 +95,7 @@ class TechnicianController extends Controller
             'image' => 'required|image|mimes:jpeg,jpg,png,gif',
             'active' => 'nullable|in:on,off',
         ];
-        $validated = Validator::make($request->all(), $rules);
+        $validated = Validator::make($request->all(), $rules, [ 'user_name.regex' => 'يجب أن لا يحتوي اسم المستخدم على أي مسافات']);
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }
@@ -120,7 +121,7 @@ class TechnicianController extends Controller
             'name' => 'required|String|min:3',
             'email' => 'required|Email|unique:technicians,email,'.$id,
             'phone' => 'required|unique:technicians,phone,'.$id,
-            'user_name' => 'required|unique:technicians,user_name,'.$id,
+            'user_name' => ['required', 'regex:/^[^\s]+$/', 'unique:technicians,user_name,'.$id],
             'spec_id' => 'required|exists:specializations,id',
             'country_id' => 'required',
             'identity_id' => 'required|Numeric',
@@ -132,7 +133,7 @@ class TechnicianController extends Controller
             'active' => 'nullable|in:on,off',
             'password' => ['nullable', 'confirmed', Password::min(4)],
         ];
-        $validated = Validator::make($request->all(), $rules);
+        $validated = Validator::make($request->all(), $rules, [ 'user_name.regex' => 'يجب أن لا يحتوي اسم المستخدم على أي مسافات']);
         if ($validated->fails()) {;
             return redirect()->to(route('dashboard.core.technician.index'))->with('errors', $validated->errors());
         }
