@@ -28,7 +28,7 @@ class VisitsController extends Controller
     protected function myCurrentOrders()
     {
 
-        $orders = Visit::->with('status')->whereHas('booking', function ($q) {
+        $orders = Visit::with('status')->whereHas('booking', function ($q) {
             $q->whereHas('customer')->whereHas('address')->whereHas('service', function ($q) {
                 $q->whereHas('category');
             });
