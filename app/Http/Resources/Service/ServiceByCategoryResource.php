@@ -33,7 +33,7 @@ class ServiceByCategoryResource extends JsonResource
             'title'  => $this['title'],
             'price' => $service['price'],
             'images' => $images,
-            'category' => MainCategoryResource::make($this->category),
+            'category' => ServiceCategoryResource::make($this->category),
             'able_to_add_quantity_in_cart' => isset($this['is_quantity'])? $this['is_quantity']: null,
             'quantity' => $quantity
         ];

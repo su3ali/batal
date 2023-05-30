@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Visit;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class VisitsController extends Controller
 {
@@ -74,7 +75,7 @@ class VisitsController extends Controller
     protected function orderDetails($id)
     {
 
-        $orders = Visit::whereHas('booking', function ($q) {
+        $order = Visit::whereHas('booking', function ($q) {
             $q->whereHas('service', function ($q) {
                 $q->whereHas('category');
             })->whereHas('customer', function ($q) {
@@ -89,7 +90,7 @@ class VisitsController extends Controller
             }]);
         })->with('status')->where('id', $id)->first();
 
-        $this->body['visits'] = VisitsResource::collection($orders);
+        $this->body['visits'] = VisitsResource::make($order);
         return self::apiResponse(200, null, $this->body);
     }
 
@@ -110,17 +111,21 @@ class VisitsController extends Controller
 
             $model = Visit::query()->where('id', $request->id)->first();
 
+            $image = null;
             if ($request->hasFile('image')) {
+                if (File::exists(public_path($model->image))) {
+                    File::delete(public_path($model->image));
+                }
                 $image = $request->file('image');
                 $filename = time() . '.' . $image->getClientOriginalExtension();
                 $request->image->move(storage_path('app/public/images/visits/'), $filename);
-                $request['image'] = 'storage/images/visits' . '/' . $filename;
+                $image = 'storage/images/visits' . '/' . $filename;
             }
             $model->update([
                 'visits_status_id' => $request->status_id,
                 'reason_cancel_id' => $request->cancel_reason_id,
                 'note' => $request->note,
-                'image' => $request->image
+                'image' => $image
             ]);
             return $this->orderDetails($model->id);
         }
