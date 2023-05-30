@@ -22,7 +22,7 @@ class AddColsToTechniciansTablee extends Migration
             $table->date('birth_date')->nullable()->change();
             $table->string('image')->nullable()->change();
             $table->text('address')->nullable()->change();
-            $table->string('user_name');
+            $table->string('user_name')->change();
             $table->string('password');
             $table->integer('code')->nullable();
         });
