@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Technician\home;
 
+use App\Http\Resources\Checkout\UserAddressResource;
 use App\Http\Resources\Service\ServiceByCategoryResource;
 use App\Http\Resources\Service\ServiceResource;
 use App\Http\Resources\User\UserResource;
@@ -20,6 +21,7 @@ class VisitsResource extends JsonResource
             'status' => $this->status->name,
             'booking_no' => $this->booking?->booking_no,
             'user' => UserResource::make($this->booking->customer),
+            'address' => UserAddressResource::make($this->booking->address),
             'service' => ServiceByCategoryResource::make($this->booking->service),
             'note' => $this->note,
             'image' => asset($this->image),

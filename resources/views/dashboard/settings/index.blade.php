@@ -85,6 +85,55 @@
                                     </div>
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+
+                                <label for="term_ar">الشروط والاحكام العربية</label>
+                                <textarea name="term_ar" id="term_ar" class="ckeditor" cols="30"
+                                          rows="10">{{$settings->term_ar}}</textarea>
+                                @error('term_ar')
+                                <div class="alert term_ar-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-6">
+
+                                <label for="term_en">الشروط والاحكام الإنجليزية</label>
+                                <textarea name="term_en" id="term_en" class="ckeditor" cols="30"
+                                          rows="10">{{$settings->term_en}}</textarea>
+                                @error('term_en')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-6">
+
+                                <label for="privacy_ar">سياسة الخصوصيه العربية</label>
+                                <textarea name="privacy_ar" id="privacy_ar" class="ckeditor" cols="30"
+                                          rows="10">{{$settings->privacy_ar}}</textarea>
+                                @error('privacy_ar')
+                                <div class="alert term_ar-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-6">
+
+                                <label for="privacy_en">سياسة الخصوصيه الإنجليزية</label>
+                                <textarea name="privacy_en" id="privacy_en" class="ckeditor" cols="30"
+                                          rows="10">{{$settings->privacy_en}}</textarea>
+                                @error('privacy_en')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary mt-4">{{__('dash.submit')}}</button>

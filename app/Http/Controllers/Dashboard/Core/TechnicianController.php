@@ -133,9 +133,9 @@ class TechnicianController extends Controller
             'active' => 'nullable|in:on,off',
             'password' => ['nullable', 'confirmed', Password::min(4)],
         ];
-        $validated = Validator::make($request->all(), $rules, [ 'user_name.regex' => 'يجب أن لا يحتوي اسم المستخدم على أي مسافات']);
+        $validated = Validator::make($request->all(), $rules, ['user_name.regex' => 'يجب أن لا يحتوي اسم المستخدم على أي مسافات']);
         if ($validated->fails()) {;
-            return redirect()->to(route('dashboard.core.technician.index'))->with('errors', $validated->errors());
+            return redirect()->to(route('dashboard.core.technician.index'))->withErrors($validated->errors());
         }
         $validated = $validated->validated();
         if ($validated['active'] && $validated['active'] == 'on'){

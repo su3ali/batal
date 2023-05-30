@@ -36,7 +36,7 @@ class AuthController extends Controller
             $techn = Auth::guard('technician')->user();
             $this->message = t_('login successfully, but code is needed');
             $this->body['technician'] = TechnicianResource::make($techn);
-            $this->body['accessToken'] = $techn->createToken('technician-token')->plainTextToken;
+            $this->body['accessToken'] = $techn->createToken('technician-token',['technician'])->plainTextToken;
             return self::apiResponse(200, $this->message, $this->body);
         }else{
             $this->message = t_('auth failed');

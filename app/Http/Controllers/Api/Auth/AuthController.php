@@ -75,7 +75,7 @@ class AuthController extends Controller
                 Auth::loginUsingId($user->id);
                 $this->message = t_('login successfully');
                 $this->body['user'] = UserResource::make($user);
-                $this->body['accessToken'] = $user->createToken('user-token')->plainTextToken;
+                $this->body['accessToken'] = $user->createToken('user-token',['user'])->plainTextToken;
                 return self::apiResponse(200, $this->message, $this->body);
             }
             $this->message = t_('auth failed');

@@ -30,7 +30,11 @@ class GeneralSettingRequest extends FormRequest
             'logo'=>'nullable|max:5120',
             'phone'=>'nullable',
             'whats_app'=>'nullable',
-            'email'=>'nullable|',
+            'email'=>'nullable',
+            'term_ar'=>'nullable|string|min:3',
+            'term_en'=>'nullable|string|min:3',
+            'privacy_ar'=>'nullable|string|min:3',
+            'privacy_en'=>'nullable|string|min:3',
             //            'reports_logo'=>'mimes:png|dimensions:max_width=100,max_height=100',
         ];
     }

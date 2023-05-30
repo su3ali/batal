@@ -24,10 +24,11 @@ Route::get('/getLang', [LangController::class, 'getLang']);
 
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum','abilities:technician'])->group(function () {
     require __DIR__ . '/auth.router.php';
     require __DIR__ . '/home.router.php';
     require __DIR__ . '/visits.router.php';
+    require __DIR__ . '/settings.router.php';
 
 });
 

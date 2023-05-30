@@ -38,4 +38,8 @@ class Booking extends Model
     public function booking_setting(){
         return $this->hasOne(BookingStatus::class, 'id','booking_status_id');
     }
+
+    public function address(){
+        return $this->hasOne(UserAddresses::class,'id', 'user_id');
+    }
 }

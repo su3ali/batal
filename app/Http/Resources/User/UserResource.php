@@ -24,7 +24,6 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'fcm_token' => $this->fcm_token,
             'points' => $this->point,
-            'address' => UserAddressResource::make($this->address),
         ];
     }
 }

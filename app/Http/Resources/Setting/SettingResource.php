@@ -16,6 +16,10 @@ class SettingResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'whats_app' => $this->whats_app,
+            'term_ar' => $this->term_ar,
+            'term_en' => $this->term_en,
+            'privacy_ar' => $this->privacy_ar,
+            'privacy_en' => $this->privacy_en,
         ];
     }
 

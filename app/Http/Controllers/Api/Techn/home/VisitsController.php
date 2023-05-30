@@ -28,21 +28,15 @@ class VisitsController extends Controller
     protected function myCurrentOrders()
     {
 
-//        $visit = Visit::where('assign_to_id',auth('sanctum')->user()->group_id)->first();
-//        $booking = Booking::where('id',$visit->booking_id)->first();
         $orders = Visit::whereHas('booking', function ($q) {
             $q->whereHas('service', function ($q) {
                 $q->whereHas('category');
-            })->whereHas('customer', function ($q) {
-                $q->whereHas('address');
-            });
+            })->whereHas('customer')->whereHas('address');
 
         })->with('booking', function ($q) {
             $q->with(['service' => function ($q) {
                 $q->with('category');
-            }, 'customer' => function ($q) {
-                $q->with('address');
-            }]);
+            },'customer','address']);
 
         })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
         $this->body['visits'] = VisitsResource::collection($orders);
@@ -55,16 +49,13 @@ class VisitsController extends Controller
         $orders = Visit::whereHas('booking', function ($q) {
             $q->whereHas('service', function ($q) {
                 $q->whereHas('category');
-            })->whereHas('customer', function ($q) {
-                $q->whereHas('address');
-            });
+            })->whereHas('customer')->whereHas('address');
 
         })->with('booking', function ($q) {
             $q->with(['service' => function ($q) {
                 $q->with('category');
-            }, 'customer' => function ($q) {
-                $q->with('address');
-            }]);
+            },'customer','address']);
+
         })->with('status')->where('visits_status_id', 5)->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
 
         $this->body['visits'] = VisitsResource::collection($orders);
@@ -78,16 +69,13 @@ class VisitsController extends Controller
         $order = Visit::whereHas('booking', function ($q) {
             $q->whereHas('service', function ($q) {
                 $q->whereHas('category');
-            })->whereHas('customer', function ($q) {
-                $q->whereHas('address');
-            });
+            })->whereHas('customer')->whereHas('address');
 
         })->with('booking', function ($q) {
             $q->with(['service' => function ($q) {
                 $q->with('category');
-            }, 'customer' => function ($q) {
-                $q->with('address');
-            }]);
+            },'customer','address']);
+
         })->with('status')->where('id', $id)->first();
 
         $this->body['visits'] = VisitsResource::make($order);
