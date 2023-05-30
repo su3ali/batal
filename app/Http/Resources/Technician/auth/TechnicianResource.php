@@ -19,6 +19,7 @@ class TechnicianResource extends JsonResource
             'id'  => $this->id,
             'user_name'  => $this->user_name,
             'name'  => $this->name,
+            'image'  => asset($this->image),
             'email' => $this->email,
             'phone' => $this->phone,
             'fcm_token' => $this->fcm_token,
