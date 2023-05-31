@@ -74,6 +74,10 @@ class StatusesSeeder extends Seeder
                 'name_ar' => 'مكتمل',
                 'name_en' => 'complete',
             ],
+            [
+                'name_ar' => 'ملغي',
+                'name_en' => 'canceled',
+            ]
         ];
 
         foreach ($bookingStatuses as $bookingStatus){
