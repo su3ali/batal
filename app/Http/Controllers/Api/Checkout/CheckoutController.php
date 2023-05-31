@@ -77,7 +77,7 @@ class CheckoutController extends Controller
                 'user_id' => auth('sanctum')->user()->id,
                 'service_id' => $cart->service_id,
                 'order_id' => $order->id,
-                'user_address_id ' => $order->user_address_id,
+                'user_address_id' => $order->user_address_id,
                 'booking_status_id' => 1,
                 'notes' => $cart->notes,
                 'quantity' => $cart->quantity,

@@ -29,8 +29,10 @@ class BookingController extends Controller
 
     public function index()
     {
+
         if (request()->ajax()) {
-            $bookings = Booking::query()->where('type','service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            $bookings = Booking::query()->groupBy('bookings.category_id')->where('type','service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+
             if (\request()->query('type') == 'package'){
                 $bookings = Booking::query()->where('type','contract')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
             }
@@ -50,7 +52,8 @@ class BookingController extends Controller
                     return $row->customer?->phone;
                 })
                 ->addColumn('service', function ($row) {
-                    $service = $row->service?->title;
+
+                    $service = $book->service?->title;
 
                     if (\request()->query('type') == 'package'){
                         $service = $row->package?->name;
