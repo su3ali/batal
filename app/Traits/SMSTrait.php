@@ -29,6 +29,7 @@ trait SMSTrait{
             "numbers"      => $numbers,
             "userSender"   => $userSender,
             "apiKey"       => $apiKey,
+            "msgEncoding"       => 'UTF8',
             "msg"          => $message
         ]);
 
