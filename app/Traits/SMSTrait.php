@@ -58,6 +58,7 @@ trait SMSTrait{
 
         $response = curl_exec($ch);
         $info = curl_getinfo($ch);
+
         curl_close($ch);
 
         $response = json_decode($response);
