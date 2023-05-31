@@ -21,4 +21,7 @@ class Visit extends Model
     public function status(){
         return $this->belongsTo(VisitsStatus::class, 'visits_status_id');
     }
+    public function cancelReason(){
+        return $this->belongsTo(ReasonCancel::class, 'reason_cancel_id');
+    }
 }
