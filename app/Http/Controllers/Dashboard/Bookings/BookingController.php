@@ -31,7 +31,7 @@ class BookingController extends Controller
     {
 
         if (request()->ajax()) {
-            $bookings = Booking::query()->groupBy('bookings.category_id')->where('type','service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            $bookings = Booking::query()->where('type','service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
 
             if (\request()->query('type') == 'package'){
                 $bookings = Booking::query()->where('type','contract')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
