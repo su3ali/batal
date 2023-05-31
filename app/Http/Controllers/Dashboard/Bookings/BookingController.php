@@ -53,7 +53,7 @@ class BookingController extends Controller
                 })
                 ->addColumn('service', function ($row) {
 
-                    $service = $book->service?->title;
+                    $service = $row->service?->title;
 
                     if (\request()->query('type') == 'package'){
                         $service = $row->package?->name;
