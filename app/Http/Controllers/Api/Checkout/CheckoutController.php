@@ -84,7 +84,7 @@ class CheckoutController extends Controller
                 'quantity' => $cart->quantity,
                 'date' => $cart->date,
                 'type' => 'service',
-                'time' => Carbon::createFromTimestamp($cart->time)->toTimeString(),
+                'time' => Carbon::parse($cart->time)->toTimeString(),
             ]);
         }
 //        if ($request->payment_type != 1) {

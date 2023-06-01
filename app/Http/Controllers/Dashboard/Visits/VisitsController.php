@@ -72,7 +72,8 @@ class VisitsController extends Controller
         return view('dashboard.visits.index');
     }
 
-    protected function store(Request $request){
+    protected function store(Request $request)
+    {
         $rules = [
             'booking_id' => 'required|exists:bookings,id',
             'assign_to_id' => 'required|exists:groups,id',
@@ -85,20 +86,28 @@ class VisitsController extends Controller
         }
         $validated = $validated->validated();
 
-        $booking = Booking::where('id',$request->booking_id)->first();
-        if($booking->type == 'contract'){
-            $package = ContractPackage::where('id',$booking->package_id)->first();
-            $bookingSetting =BookingSetting::where('service_id',$package->service_id)->first();
-        }else{
-            $bookingSetting =BookingSetting::where('service_id',$booking->service_id)->first();
+        $booking = Booking::with('service.category')->where('id', $request->booking_id)->first();
+        $semiBookings = Booking::query()->where('category_id', $booking->category_id)
+            ->where('order_id', $booking->order_id)->get();
+        $service_ids = $semiBookings->pluck('service_id')->toArray();
+        if ($booking->type == 'contract') {
+            $package = ContractPackage::query()->where('id', $booking->package_id)->first();
+            $bookingSettings = BookingSetting::query()->where('service_id', $package->service_id)->get();
+        } else {
+            $bookingSettings = BookingSetting::query()->whereIn('service_id', $service_ids)->get();
         }
 
-        $start_time =Carbon::createFromTimestamp($booking->time)->toTimeString();
-
+        $start_time = Carbon::createFromTimestamp($booking->time);
+        $end_time = Carbon::parse($booking->time)
+            ->addMinutes(
+                array_sum($bookingSettings->pluck('service_duration')->toArray())
+                +
+                array_sum($bookingSettings->pluck('buffering_time')->toArray())
+            );
         $validated['start_time'] = $start_time;
-        $validated['end_time'] = Carbon::createFromTimestamp($booking->time)->addMinutes($bookingSetting->service_duration + $bookingSetting->buffering_time);
-        $validated['duration'] = $bookingSetting->service_duration;
-        $validated['visite_id'] = rand(1111,9999).'_'.date('Ymd');
+        $validated['end_time'] = $end_time;
+        $validated['duration'] = $end_time->diffInMinutes($start_time);
+        $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
         Visit::query()->create($validated);
 //
 //        $booking->update([
@@ -111,8 +120,8 @@ class VisitsController extends Controller
 
     public function show($id)
     {
-            $visits = Visit::where('id',$id)->first();
-        return view('dashboard.visits.show', compact( 'visits'));
+        $visits = Visit::where('id', $id)->first();
+        return view('dashboard.visits.show', compact('visits'));
     }
 
 }

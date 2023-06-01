@@ -15,7 +15,7 @@ class OrderCategoryResource extends JsonResource
     public function toArray($request)
     {
         $bookingSettings = BookingSetting::query()
-            ->where('service_id', collect($this['services'])->first()['id'])->first();
+            ->whereIn('service_id', collect($this['services'])->pluck('id')->toArray())->get();
         $order = Order::with('bookings')->find($this['order_id']);
         return [
             'id'  => $this['id'],
@@ -25,8 +25,17 @@ class OrderCategoryResource extends JsonResource
             'date' => Carbon::parse($order->bookings->first()->date)->format('d M'),
             'time_start' => Carbon::parse($order->bookings->first()->time)->format('g:i A'),
             'time_end' => Carbon::parse($order->bookings->first()->time)
-                ->addMinutes((($bookingSettings?$bookingSettings->service_duration : 0) +
-                        ($bookingSettings?$bookingSettings->buffering_time : 0)) * $this->quantity)->format('g:i A'),
+                ->addMinutes(
+                    array_sum($bookingSettings->pluck('service_duration')->toArray())
+                    +
+                    array_sum($bookingSettings->pluck('buffering_time')->toArray())
+                )->format('g:i A'),
+            'total_duration' => Carbon::parse($order->bookings->first()->time)
+                ->addMinutes(
+                    array_sum($bookingSettings->pluck('service_duration')->toArray())
+                    +
+                    array_sum($bookingSettings->pluck('buffering_time')->toArray())
+                )->diffInMinutes(Carbon::parse($order->bookings->first()->time))
         ];
     }
 }
