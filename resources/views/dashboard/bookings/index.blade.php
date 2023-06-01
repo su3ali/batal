@@ -156,7 +156,7 @@
             $.ajax({
                 url: '{{route('dashboard.getGroupByService')}}',
                 type: 'get',
-                data: {service_id: service_id,type:type},
+                data: {service_id: service_id,type:type, booking_id:booking_id},
                 success: function (data) {
                     console.log(data)
 

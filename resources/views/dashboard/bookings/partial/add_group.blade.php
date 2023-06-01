@@ -34,22 +34,22 @@
                                 @enderror
 
                             </div>
+                            <input type="hidden" name="visits_status_id" value="1">
+{{--                            <div class="form-group col-md-6">--}}
 
-                            <div class="form-group col-md-6">
+{{--                                <label for="status">الحاله</label>--}}
+{{--                                <select id="status"  class="select2 form-control pt-1"--}}
+{{--                                        name="visits_status_id" required>--}}
+{{--                                    <option disabled selected>{{__('dash.choose')}}</option>--}}
+{{--                                    @foreach($visitsStatuses as $key => $status)--}}
+{{--                                    <option value="{{$key}}">{{$status}}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+{{--                                @error('visits_status_id')--}}
+{{--                                <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                @enderror--}}
 
-                                <label for="status">الحاله</label>
-                                <select id="status"  class="select2 form-control pt-1"
-                                        name="visits_status_id" required>
-                                    <option disabled selected>{{__('dash.choose')}}</option>
-                                    @foreach($visitsStatuses as $key => $status)
-                                    <option value="{{$key}}">{{$status}}</option>
-                                    @endforeach
-                                </select>
-                                @error('visits_status_id')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-
-                            </div>
+{{--                            </div>--}}
 
                         </div>
 

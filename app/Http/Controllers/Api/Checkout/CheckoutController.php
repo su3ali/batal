@@ -76,6 +76,7 @@ class CheckoutController extends Controller
                 'booking_no' => $booking_no,
                 'user_id' => auth('sanctum')->user()->id,
                 'service_id' => $cart->service_id,
+                'category_id' => Service::query()->find($cart->service_id)->category->id,
                 'order_id' => $order->id,
                 'user_address_id' => $order->user_address_id,
                 'booking_status_id' => 1,

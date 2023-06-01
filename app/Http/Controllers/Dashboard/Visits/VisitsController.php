@@ -100,13 +100,13 @@ class VisitsController extends Controller
         $validated['duration'] = $bookingSetting->service_duration;
         $validated['visite_id'] = rand(1111,9999).'_'.date('Ymd');
         Visit::query()->create($validated);
-
-        $booking->update([
-            'booking_status_id'=> 2
-        ]);
+//
+//        $booking->update([
+//            'booking_status_id'=> 2
+//        ]);
 
         session()->flash('success');
-        return redirect()->route('dashboard.visits.index');
+        return redirect()->back();
     }
 
     public function show($id)
