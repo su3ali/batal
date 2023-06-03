@@ -41,9 +41,11 @@ trait NotificationTrait
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
     $result = curl_exec($ch);
+
     if ($result === FALSE) {
       die('FCM Send Error: ' . curl_error($ch));
     }
+
     curl_close($ch);
   }
 }
