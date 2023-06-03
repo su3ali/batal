@@ -67,7 +67,7 @@ class NotificationController extends Controller
             'message' => $request->message,
         ];
 
-      $this->sendNotification($notification);
+      $this->pushNotification($notification);
         return redirect()->back();
 
     }
