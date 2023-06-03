@@ -37,14 +37,14 @@ class NotificationController extends Controller
         ]);
         if ($request->type == 'customer'){
             if ($request->customer_id == 'all'){
-                $FcmToken = User::whereNotNull('fcm_token')->pluck('fcm_token')->all();
+                $FcmTokenArray = User::whereNotNull('fcm_token')->pluck('fcm_token')->all();
             }else{
                 $user = User::where('id',$request->customer_id)->first('fcm_token');
                 $FcmToken = $user->fcm_token;
             }
         }else{
             if ($request->technician_id == 'all'){
-                $FcmToken = Technician::whereNotNull('fcm_token')->pluck('fcm_token')->all();
+                $FcmTokenArray = Technician::whereNotNull('fcm_token')->pluck('fcm_token')->all();
             }else{
                 $technician = Technician::where('id',$request->technician_id)->first('fcm_token');
                 $FcmToken = $technician->fcm_token;
@@ -52,15 +52,17 @@ class NotificationController extends Controller
         }
 
 
-        if (!$FcmToken || count($FcmToken) == 0){
+        if (isset($FcmToken) && $FcmToken == null){
 
             return redirect()->back()->withErrors(['fcm_token' => 'لا يمكن ارسال الاشعارت لعدم توفر رمز الجهاز']);
 
+        }elseif(isset($FcmTokenArray) && count($FcmTokenArray) == 0){
+            return redirect()->back()->withErrors(['fcm_token' => 'لا يمكن ارسال الاشعارت لعدم توفر رمز الجهاز']);
         }
 
 
         $notification = [
-            'device_token' => $FcmToken,
+            'device_token' => $FcmToken ?? $FcmTokenArray,
             'title' => $request->title,
             'message' => $request->message,
         ];
