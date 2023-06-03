@@ -149,31 +149,35 @@ class OrderController extends Controller
         ];
 
         $order = Order::query()->create($data);
-        foreach ($request->service_id as $key => $service_id){
+        foreach ($request->service_id as $key => $service_id) {
+            $service = Service::where('id',$request->service_id)->first('category_id');
             $order_service = [
                 'order_id' => $order->id,
                 'service_id' => $service_id,
                 'price' => $request->price[$key],
                 'quantity' => $request->quantity[$key],
+                'category_id' => $service->category_id,
             ];
 
             OrderService::create($order_service);
-
-
+        }
+        $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
+        foreach ($category_ids as $key => $category_id) {
             $last = Booking::query()->latest()->first()?->id;
             $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
             $booking = [
                 'booking_no' => $booking_no,
                 'user_id' => $request->user_id,
-                'service_id' => $request->service_id[$key],
+//                'service_id' => $request->service_id[$key],
                 'order_id' => $order->id,
                 'booking_status_id' => 1,
+                'category_id' => $category_id,
 //            'group_id' => current($groups),
                 'notes' => $request->notes,
-                'quantity' => $request->quantity[$key],
-                'date' => $request->day[$key],
+//                'quantity' => $request->quantity[$key],
+                'date' => $request->day[0],
                 'type' => 'service',
-                'time' => Carbon::createFromTimestamp($request->start_time[$key])->toTimeString(),
+                'time' => Carbon::createFromTimestamp($request->start_time[0])->toTimeString(),
             ];
             Booking::query()->create($booking);
 

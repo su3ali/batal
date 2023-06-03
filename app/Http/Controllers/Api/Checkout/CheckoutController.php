@@ -66,17 +66,24 @@ class CheckoutController extends Controller
                 'service_id' => $cart->service_id,
                 'price' => $cart->price,
                 'quantity' => $cart->quantity,
+                'category_id' => $cart->category_id,
             ]);
             $service = Service::query()->find($cart->service_id);
             $service?->save();
+        }
+        $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
+        foreach ($category_ids as $key => $category_id) {
+
+            $cart = Cart::query()->where('user_id', auth('sanctum')->user()->id)
+                ->where('category_id', $category_id)->first();
 
             $last = Booking::query()->latest()->first()?->id;
             $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
             Booking::query()->create([
                 'booking_no' => $booking_no,
                 'user_id' => auth('sanctum')->user()->id,
-                'service_id' => $cart->service_id,
-                'category_id' => Service::query()->find($cart->service_id)->category->id,
+//                'service_id' => $cart->service_id,
+                'category_id' => $category_id,
                 'order_id' => $order->id,
                 'user_address_id' => $order->user_address_id,
                 'booking_status_id' => 1,
