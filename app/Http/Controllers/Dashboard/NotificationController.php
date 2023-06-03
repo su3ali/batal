@@ -64,7 +64,7 @@ class NotificationController extends Controller
         $notification = [
             'device_token' => isset($FcmToken) ?[$FcmToken] : $FcmTokenArray,
             'title' => $request->title,
-            'message' => $request->message,
+            'message' => strip_tags($request->message),
         ];
 
       $this->pushNotification($notification);
