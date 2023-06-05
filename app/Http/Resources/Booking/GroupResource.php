@@ -14,6 +14,8 @@ class GroupResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'lat' => $this->lat,
+            'lon' => $this->lon,
             'name' => $this->name,
             'leader' => TechnicianResource::make($this->leader)
         ];
