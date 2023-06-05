@@ -47,16 +47,14 @@ class VisitsController extends Controller
     {
 
         $orders = Visit::whereHas('booking', function ($q) {
-            $q->whereHas('service', function ($q) {
-                $q->whereHas('category');
-            })->whereHas('customer')->whereHas('address');
+            $q->whereHas('customer')->whereHas('address');
 
         })->with('booking', function ($q) {
             $q->with(['service' => function ($q) {
                 $q->with('category');
             },'customer','address']);
 
-        })->with('status')->where('visits_status_id', 5)->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
+        })->with('status')->whereIn('visits_status_id', [5, 6])->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }
@@ -95,7 +93,11 @@ class VisitsController extends Controller
 
             $model = Visit::query()->where('id', $request->id)->first();
 
-            $image = null;
+            $data = [
+                'visits_status_id' => $request->status_id,
+                'reason_cancel_id' => $request->cancel_reason_id,
+                'note' => $request->note,
+            ];
             if ($request->hasFile('image')) {
                 if (File::exists(public_path($model->image))) {
                     File::delete(public_path($model->image));
@@ -104,13 +106,9 @@ class VisitsController extends Controller
                 $filename = time() . '.' . $image->getClientOriginalExtension();
                 $request->image->move(storage_path('app/public/images/visits/'), $filename);
                 $image = 'storage/images/visits' . '/' . $filename;
+                $data['image'] = $image;
             }
-            $model->update([
-                'visits_status_id' => $request->status_id,
-                'reason_cancel_id' => $request->cancel_reason_id,
-                'note' => $request->note,
-                'image' => $image
-            ]);
+            $model->update($data);
             return $this->orderDetails($model->id);
         }
 
