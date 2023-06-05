@@ -19,7 +19,7 @@ class NotificationController extends Controller
     {
 
         $technicians = Technician::query()->whereNotNull('fcm_token')->pluck('name','id')->all();
-        $customers = User::query()->whereNotNull('fcm_token')->pluck('first_name','id')->all();
+        $customers = User::query()->whereNotNull('fcm_token')->get();
 
 
         return view('dashboard.notification.notification',compact('customers','technicians'));

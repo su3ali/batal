@@ -9,7 +9,10 @@ use App\Models\Booking;
 use App\Models\BookingSetting;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\CategoryGroup;
+use App\Models\Group;
 use App\Models\Service;
+use App\Models\Visit;
 use App\Support\Api\ApiResponse;
 use App\Traits\schedulesTrait;
 use Carbon\CarbonInterval;
@@ -36,6 +39,7 @@ class CartController extends Controller
             if ($cart) {
                 return self::apiResponse(400, t_('Already In Your Cart!'), $this->body);
             }
+
             Cart::query()->create([
                 'user_id' => auth()->user()->id,
                 'service_id' => $service->id,
@@ -100,7 +104,26 @@ class CartController extends Controller
             ) {
                 return self::apiResponse(400, t_('date or time is missed'), $this->body);
             }
+
             foreach ($request->category_ids as $key => $category_id) {
+
+                $countGroup = CategoryGroup::where('category_id',$category_id)->count();
+
+                $countGroupInBooking = Visit::with(['booking'=>function($q) use($category_id,$key,$request){
+                    $q->where('category_id',$category_id)->where('date',$request->date[$key])
+                        ->where('time',$request->time[$key]);
+                }])->whereNotIn('visits_status_id',[5,6])->count();
+
+                $countInBooking = Booking::with(['visit'=>function($q){
+                    $q->whereNotIn('visits_status_id',[5,6]);
+                }])->where('category_id',$category_id)->where('date',$request->date[$key])
+                    ->where('time',$request->time[$key])->count();
+
+                if ($countGroup == $countGroupInBooking || $countInBooking == $countGroup){
+                    return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
+                }
+
+
                 Cart::query()->where('user_id', auth('sanctum')->user()->id)
                     ->where('category_id', $category_id)->update([
                         'date' => $request->date[$key],

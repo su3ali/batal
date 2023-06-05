@@ -91,8 +91,8 @@
                                         <select  class="form-control customer_id"  style="width: 100%; padding: 8px"
                                                 name="customer_id">
                                             <option value="all" selected>الكل</option>
-                                            @foreach($customers as $key => $customer)
-                                            <option value="{{$key}}">{{$customer}}</option>
+                                            @foreach($customers as $customer)
+                                            <option value="{{$customer->id}}">{{$customer->first_name}} - {{ $customer->phone}}</option>
                                                 @endforeach
                                         </select>
                                         @error('customer_id')
