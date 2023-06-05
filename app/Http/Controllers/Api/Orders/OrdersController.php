@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\Orders;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Service\ServiceResource;
+use App\Models\Booking;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\RateTechnician;
+use App\Models\Technician;
 use App\Models\User;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
@@ -37,5 +40,27 @@ class OrdersController extends Controller
             ->first();
         $this->body['order'] = OrderResource::make($order);
         return self::apiResponse(200, null, $this->body);
+    }
+    protected function rateTechnicians(Request $request){
+        $rules = [
+            'group_id' => 'required|exists:groups,id',
+            'booking_id' => 'required|exists:bookings,id',
+            'rate' => 'required|integer',
+            'note' => 'nullable|string|max:255',
+        ];
+        $request->validate($rules, $request->all());
+        $technicians = Technician::query()->where('group_id', $request->group_id)->get();
+        $order_id = Booking::query()->find('booking_id')->order_id;
+        foreach ($technicians as $technician){
+            RateTechnician::query()->create([
+               'user_id' => auth()->user()->id,
+               'technician_id' => $technician->id,
+               'order_id' => $order_id,
+               'rate' => $request->rate,
+               'note' => $request->note,
+            ]);
+        }
+        return self::apiResponse(200, 'rated successfully', $this->body);
+
     }
 }

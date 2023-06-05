@@ -97,8 +97,8 @@ class VisitsController extends Controller
             $bookingSettings = BookingSetting::query()->whereIn('service_id', $service_ids)->get();
         }
 
-        $start_time = Carbon::createFromTimestamp($booking->time);
-        $end_time = Carbon::createFromTimestamp($booking->end_time);
+        $start_time = Carbon::parse($booking->time);
+        $end_time = Carbon::parse($booking->end_time);
         $validated['start_time'] = $start_time;
         $validated['end_time'] = $end_time;
         $validated['duration'] = $end_time->diffInMinutes($start_time);

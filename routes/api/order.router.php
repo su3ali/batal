@@ -30,10 +30,10 @@ Route::prefix('coupons')->middleware('auth')->group(function () {
     Route::post('cancel_coupon', [CouponsController::class, 'cancel']);
 });
 Route::prefix('bookings')->middleware('auth')->group(function () {
-
     Route::get('/', [BookingsController::class, 'myBookings']);
     Route::get('/{id}', [BookingsController::class, 'bookingDetails']);
     Route::post('/change_status', [VisitsController::class, 'changeStatus']);
-
-
+});
+Route::prefix('rate')->middleware('auth')->group(function (){
+    Route::post('technicians', [OrdersController::class, 'rateTechnicians']);
 });
