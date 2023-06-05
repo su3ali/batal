@@ -50,7 +50,7 @@ class OrdersController extends Controller
         ];
         $request->validate($rules, $request->all());
         $technicians = Technician::query()->where('group_id', $request->group_id)->get();
-        $order_id = Booking::query()->find('booking_id')->order_id;
+        $order_id = Booking::query()->find($request->booking_id)->order_id;
         foreach ($technicians as $technician){
             RateTechnician::query()->create([
                'user_id' => auth()->user()->id,

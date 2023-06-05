@@ -21,7 +21,3 @@ Route::post('home_search', [HomeController::class, 'search']);
 Route::post('home_filter', [HomeController::class, 'filter']);
 
 
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('rate', [HomeController::class, 'rate']);
-});
