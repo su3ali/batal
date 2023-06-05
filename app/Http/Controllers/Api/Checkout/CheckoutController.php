@@ -78,8 +78,9 @@ class CheckoutController extends Controller
             $cart = Cart::query()->where('user_id', auth('sanctum')->user()->id)
                 ->where('category_id', $category_id)->first();
 
-            $last = Booking::query()->latest()->first()?->id;
-            $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
+            $last = Booking::query()->latest()->first()?Booking::query()->latest()->first()->id : 0;
+            $num = $last ? $last + 1 : 1;
+            $booking_no = 'dash2023/' . $num;
             $minutes = 0;
             foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service){
                 $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)

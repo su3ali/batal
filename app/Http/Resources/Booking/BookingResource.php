@@ -17,7 +17,7 @@ class BookingResource extends JsonResource
         return [
             'id' => $this->id,
             'booking_no' => $this->booking_no,
-            'status' => StatusResource::make($this->visit->status),
+            'status' => $this->visit? StatusResource::make($this->visit->status) : [],
             'category' => CategoryBasicResource::make($this->category),
             'services' => ServiceResource::collection($services),
             'image' => $this->category->slug? asset($this->category->slug) : '',

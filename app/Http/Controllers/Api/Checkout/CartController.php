@@ -70,7 +70,7 @@ class CartController extends Controller
         }
         $total = number_format($this->calc_total($carts), 2, '.', '');
         $this->body['total'] = $total;
-
+        $this->body['total_items_in_cart'] = auth()->user()->carts->count();
         return self::apiResponse(200, null, $this->body);
     }
 
@@ -134,6 +134,7 @@ class CartController extends Controller
                 }
                 $total = number_format($this->calc_total($carts), 2, '.', '');
                 $this->body['total'] = $total;
+                $this->body['total_items_in_cart'] = auth()->user()->carts->count();
                 return self::apiResponse(200, $response['success'], $this->body);
             }
             $service = service::query()->where('id', $cart->service_id)->first();
@@ -157,6 +158,7 @@ class CartController extends Controller
                             ];
                         }
                     }
+                    $this->body['total_items_in_cart'] = auth()->user()->carts->count();
                     return self::apiResponse(200, $response['success'], $this->body);
                 } else {
                     return self::apiResponse(400, $response['error'], $this->body);
