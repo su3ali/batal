@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Technician\home;
 
+use App\Http\Resources\Booking\BookingResource;
+use App\Http\Resources\Booking\GroupResource;
 use App\Http\Resources\Checkout\UserAddressResource;
 use App\Http\Resources\Order\StatusResource;
 use App\Http\Resources\Service\ServiceByCategoryResource;
@@ -20,17 +22,15 @@ class VisitsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'status' => StatusResource::make($this->status),
+            'group' => GroupResource::make($this->group),
             'all_statuses' => StatusResource::collection(VisitsStatus::all()),
             'all_cancel_reasons' => CancelReasonsResource::collection(ReasonCancel::all()),
-            'booking_no' => $this->booking?->booking_no,
+            'booking_details' => BookingResource::make($this->booking),
             'user' => UserResource::make($this->booking->customer),
             'address' => UserAddressResource::make($this->booking->address),
-            'service' => ServiceByCategoryResource::make($this->booking->service),
             'note' => $this->note,
-            'image' => asset($this->image),
+            'image' => $this->image?->asset($this->image),
             'cancel_reason' => $this->cancelReason? CancelReasonsResource::make($this->cancelReason) : null,
-            'created_at' => Carbon::make($this->created_at)->toDateTimeString(),
         ];
     }
 }

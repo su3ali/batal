@@ -21,7 +21,6 @@ class OrderCategoryResource extends JsonResource
             'id'  => $this['id'],
             'title'  => $this['title'],
             'image' => $this['slug']? asset($this['slug']) : '',
-            'services' => ServiceResource::collection(collect($this['services'])),
             'date' => Carbon::parse($order->bookings->first()->date)->format('d M'),
             'time_start' => Carbon::parse($order->bookings->first()->time)->format('g:i A'),
             'time_end' => Carbon::parse($order->bookings->first()->time)

@@ -152,11 +152,12 @@
         $(document).on('click', '#add-work-exp', function () {
             let booking_id = $(this).data('id');
             let service_id = $(this).data('service_id');
+            let category_id = $(this).data('category_id');
             let type = $(this).data('type');
             $.ajax({
                 url: '{{route('dashboard.getGroupByService')}}',
                 type: 'get',
-                data: {service_id: service_id,type:type, booking_id:booking_id},
+                data: {service_id: service_id,type:type, booking_id:booking_id, category_id:category_id, },
                 success: function (data) {
                     console.log(data)
 

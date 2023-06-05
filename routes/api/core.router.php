@@ -3,12 +3,6 @@
 use App\Http\Controllers\Api\Core\ContactUsController;
 use App\Http\Controllers\Api\Core\HomeController;
 use App\Http\Controllers\Api\Core\ServiceController;
-use App\Http\Controllers\Api\Intro\IntroController;
-use App\Http\Controllers\Api\Product\Operations\ProductOperationsController;
-use App\Http\Controllers\Api\SinglePages\CategoryController;
-use App\Http\Controllers\Api\SinglePages\ProductController;
-use App\Http\Controllers\Api\SinglePages\SettingsController;
-use App\Http\Controllers\Api\SinglePages\StoreController;
 
 Route::prefix('home')->group(function (){
     Route::get('/', [HomeController::class, 'index']);

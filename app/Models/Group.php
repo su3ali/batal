@@ -19,4 +19,7 @@ class Group extends Model
     public function services(){
         return $this->belongsToMany(Service::class,'service_groups');
     }
+    protected function leader(){
+        return $this->hasOne(Technician::class, 'id','technician_id');
+    }
 }

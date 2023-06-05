@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Order;
 
+use App\Http\Resources\Booking\BookingResource;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Service\ServiceCategoryResource;
@@ -19,25 +20,10 @@ class OrderResource extends JsonResource
 
     public function toArray($request)
     {
-        $images = [];
-        foreach ($this->services as $service){
-            foreach ($service->serviceImages as $serviceImage){
-                if ($serviceImage->image){
-                    $images[] = asset($serviceImage->image);
-                }
-            }
-        }
-        $cats = $this->categories;
-        $categories = Category::query()->whereIn('id', $cats->pluck('id'))->get();
-        $order_id = $this->id;
-        foreach ($categories as $key => $category){
-            $category->order_id = $order_id;
-            $category->services = $cats[$key]['services'];
-        }
         return [
             'id' => $this->id,
             'status' => $this->status->name,
-            'categories' => OrderCategoryResource::collection($categories),
+            'categories' => BookingResource::collection($this->bookings),
             'notes' => $this->notes,
             'total' => $this->total
         ];

@@ -80,7 +80,7 @@ class BookingController extends Controller
                     if (!in_array($row->id, Visit::query()->pluck('booking_id')->toArray())) {
                         $html = '
 
-                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '" data-category_id="'.$row->category_id.'"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
                                   data-toggle="modal" data-target="#addGroupModel">
                             اضافة فريق
                        </button>';
@@ -221,19 +221,8 @@ class BookingController extends Controller
 
             $group = Group::whereIn('id', $groupIds)->get()->pluck('name', 'id')->toArray();
         } else {
-            $booking = Booking::query()->find($request->booking_id);
-            $semiBookings = Booking::query()->where('order_id', $booking->order_id)
-                ->where('user_id', $booking->user_id)->where('category_id', $booking->category_id)->pluck('id');
-            $visit_group = Visit::query()->whereIn('booking_id', $semiBookings->toArray())->first()?->assign_to_id;
-            if ($visit_group){
-                $group = Group::query()->where('id', $visit_group)->get()->pluck('name', 'id')->toArray();
-            }else{
-                $service = Service::where('id', $request->service_id)->first('category_id');
-
-                $groupIds = CategoryGroup::where('category_id', $service->category_id)->pluck('group_id')->toArray();
-
-                $group = Group::whereIn('id', $groupIds)->get()->pluck('name', 'id')->toArray();
-            }
+            $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
+            $group = Group::whereIn('id', $groupIds)->get()->pluck('name', 'id')->toArray();
         }
 
         return response($group);

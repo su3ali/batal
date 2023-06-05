@@ -42,4 +42,10 @@ class Booking extends Model
     public function address(){
         return $this->hasOne(UserAddresses::class,'id', 'user_address_id');
     }
+    public function visit(){
+        return $this->hasOne(Visit::class);
+    }
+    public function category(){
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
 }

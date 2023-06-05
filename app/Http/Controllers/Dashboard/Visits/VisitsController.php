@@ -98,12 +98,7 @@ class VisitsController extends Controller
         }
 
         $start_time = Carbon::createFromTimestamp($booking->time);
-        $end_time = Carbon::parse($booking->time)
-            ->addMinutes(
-                array_sum($bookingSettings->pluck('service_duration')->toArray())
-                +
-                array_sum($bookingSettings->pluck('buffering_time')->toArray())
-            );
+        $end_time = Carbon::createFromTimestamp($booking->end_time);
         $validated['start_time'] = $start_time;
         $validated['end_time'] = $end_time;
         $validated['duration'] = $end_time->diffInMinutes($start_time);

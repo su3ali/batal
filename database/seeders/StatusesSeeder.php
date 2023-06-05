@@ -67,8 +67,8 @@ class StatusesSeeder extends Seeder
                 'name_en' => 'start working',
             ],
             [
-                'name_ar' => 'تم التسليم',
-                'name_en' => 'delivered handed',
+                'name_ar' => 'طلب التسليم',
+                'name_en' => 'complete request',
             ],
             [
                 'name_ar' => 'مكتمل',

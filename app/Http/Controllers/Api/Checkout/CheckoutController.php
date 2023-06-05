@@ -71,7 +71,8 @@ class CheckoutController extends Controller
             $service = Service::query()->find($cart->service_id);
             $service?->save();
         }
-        $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
+        $category_ids = $carts->pluck('category_id')->toArray();
+        $category_ids = array_unique($category_ids);
         foreach ($category_ids as $key => $category_id) {
 
             $cart = Cart::query()->where('user_id', auth('sanctum')->user()->id)
@@ -79,6 +80,12 @@ class CheckoutController extends Controller
 
             $last = Booking::query()->latest()->first()?->id;
             $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
+            $minutes = 0;
+            foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service){
+                $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
+                        * $carts->where('service_id', $service->id)->first()->quantity;
+                $minutes += $serviceMinutes;
+            }
             Booking::query()->create([
                 'booking_no' => $booking_no,
                 'user_id' => auth('sanctum')->user()->id,
@@ -92,6 +99,7 @@ class CheckoutController extends Controller
                 'date' => $cart->date,
                 'type' => 'service',
                 'time' => Carbon::parse($cart->time)->toTimeString(),
+                'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
             ]);
         }
 //        if ($request->payment_type != 1) {
@@ -109,8 +117,6 @@ class CheckoutController extends Controller
                 'payment_result' => 'success',
             ]);
             Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
-            $order->status_id = 4;
-            $order->save();
             $this->body['order_id'] = $order->id;
             return self::apiResponse(200, t_('order created successfully'), $this->body);
         }

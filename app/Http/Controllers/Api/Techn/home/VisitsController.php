@@ -29,16 +29,16 @@ class VisitsController extends Controller
     {
 
         $orders = Visit::whereHas('booking', function ($q) {
-            $q->whereHas('service', function ($q) {
-                $q->whereHas('category');
-            })->whereHas('customer')->whereHas('address');
+            $q->whereHas('customer')->whereHas('address');
 
         })->with('booking', function ($q) {
             $q->with(['service' => function ($q) {
                 $q->with('category');
             },'customer','address']);
 
-        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
+        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id', auth('sanctum')->user()->group_id)
+            ->get();
+
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }
@@ -57,7 +57,6 @@ class VisitsController extends Controller
             },'customer','address']);
 
         })->with('status')->where('visits_status_id', 5)->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
-
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }
@@ -67,9 +66,7 @@ class VisitsController extends Controller
     {
 
         $order = Visit::whereHas('booking', function ($q) {
-            $q->whereHas('service', function ($q) {
-                $q->whereHas('category');
-            })->whereHas('customer')->whereHas('address');
+            $q->whereHas('customer')->whereHas('address');
 
         })->with('booking', function ($q) {
             $q->with(['service' => function ($q) {
@@ -91,7 +88,6 @@ class VisitsController extends Controller
             'note' => 'nullable|string|min:3|max:255'
         ];
         if ($request->type == 'visit') {
-
             $rules['id'] = 'required|exists:visits,id';
             $rules['status_id'] = 'required|exists:visits_statuses,id';
 
