@@ -4,21 +4,25 @@ namespace App\Http\Controllers\Api\Techn\home;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Order\StatusResource;
 use App\Http\Resources\Service\ServiceResource;
 use App\Http\Resources\Technician\home\VisitsResource;
 use App\Models\Booking;
 use App\Models\Category;
 use App\Models\Group;
 use App\Models\Order;
+use App\Models\Technician;
 use App\Models\User;
 use App\Models\Visit;
 use App\Support\Api\ApiResponse;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class VisitsController extends Controller
 {
     use ApiResponse;
+    use NotificationTrait;
 
     public function __construct()
     {
@@ -109,8 +113,61 @@ class VisitsController extends Controller
                 $data['image'] = $image;
             }
             $model->update($data);
+
+
+            $user = User::where('id',$model->booking->user_id)->first('fcm_token');
+
+
+            $notify = [
+                'device_token'=>$user->fcm_token,
+                'data' =>[
+                    'visit_id'=>$request->id,
+                    'booking_id'=>$model->booking_id,
+                    'order_id'=>$model->booking?->order_id,
+                    'image'=>$image,
+                    'visit_status'=>StatusResource::make($model->visits_status_id),
+                    'type'=>'change status',
+                ]
+            ];
+
+            $this->pushNotificationBackground($notify);
+
             return $this->orderDetails($model->id);
         }
+
+    }
+    protected function sendLatLong(Request $request)
+    {
+        $rules = [
+            'lat' => 'required',
+            'long' => 'required',
+        ];
+
+
+        $request->validate($rules, $request->all());
+
+        $techn = Technician::where('id',auth('sanctum')->user()->id)->first();
+
+        $model = Visit::query()->where('assign_to_id', $techn->group_id)->where('visit_status_id',2)->first();
+
+        $user = User::where('id',$model->booking->user_id)->first('fcm_token');
+
+
+        $notify = [
+            'device_token'=>$user->fcm_token,
+            'data' =>[
+                'visit_id'=>$model->id,
+                'booking_id'=>$model->booking_id,
+                'order_id'=>$model->booking?->order_id,
+                'lat'=>$request->lat,
+                'long'=>$request->long,
+                'type'=>'live location',
+            ]
+        ];
+
+        $this->pushNotificationBackground($notify);
+
+        return self::apiResponse(200, t_('Update Location successfully'), $this->body);
 
     }
 
