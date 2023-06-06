@@ -148,7 +148,14 @@ class VisitsController extends Controller
 
         $techn = Technician::where('id',auth('sanctum')->user()->id)->first();
 
-        $model = Visit::query()->where('assign_to_id', $techn->group_id)->where('visit_status_id',2)->first();
+        $model = Visit::query()->where('assign_to_id', $techn->group_id)->where('visits_status_id',2)->first();
+
+        if (!$model){
+            return self::apiResponse(400, t_('visit not found'), $this->body);
+
+        }
+
+
 
         $user = User::where('id',$model->booking->user_id)->first('fcm_token');
 
