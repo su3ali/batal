@@ -126,7 +126,7 @@ class VisitsController extends Controller
                     'booking_id'=>$model->booking_id,
                     'order_id'=>$model->booking?->order_id,
                     'image'=>$image??'',
-                    'visit_status'=>StatusResource::make($model->visits_status_id),
+                    'visit_status'=>StatusResource::make($model->status),
                     'type'=>'change status',
                 ]
             ];
