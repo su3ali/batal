@@ -146,6 +146,7 @@ class CartController extends Controller
                 $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
                 $cat_ids = $carts->pluck('category_id');
                 $this->body['carts'] = [];
+                $cat_ids = array_unique($cat_ids->toArray());
                 foreach ($cat_ids as $cat_id) {
                     if ($cat_id) {
                         $this->body['carts'][] = [
