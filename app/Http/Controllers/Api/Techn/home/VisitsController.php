@@ -102,6 +102,7 @@ class VisitsController extends Controller
                 'reason_cancel_id' => $request->cancel_reason_id,
                 'note' => $request->note,
             ];
+            $image = null;
             if ($request->hasFile('image')) {
                 if (File::exists(public_path($model->image))) {
                     File::delete(public_path($model->image));
