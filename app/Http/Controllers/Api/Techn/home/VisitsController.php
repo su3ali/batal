@@ -120,7 +120,7 @@ class VisitsController extends Controller
 
 
             $notify = [
-                'device_token'=>$user->fcm_token,
+                'device_token'=>[$user->fcm_token],
                 'data' =>[
                     'visit_id'=>$request->id,
                     'booking_id'=>$model->booking_id,
@@ -159,7 +159,7 @@ class VisitsController extends Controller
         $user = User::where('id',$model->booking->user_id)->first('fcm_token');
 
         $notify = [
-            'device_token'=>$user->fcm_token,
+            'device_token'=>[$user->fcm_token],
             'data' =>[
                 'visit_id'=>$model->id,
                 'booking_id'=>$model->booking_id,
