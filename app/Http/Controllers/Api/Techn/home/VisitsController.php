@@ -118,20 +118,28 @@ class VisitsController extends Controller
 
             $user = User::where('id',$model->booking->user_id)->first('fcm_token');
 
-            $orderDetails = $this->orderDetails($model->id);
+            $order = Visit::whereHas('booking', function ($q) {
+                $q->whereHas('customer')->whereHas('address');
 
+            })->with('booking', function ($q) {
+                $q->with(['service' => function ($q) {
+                    $q->with('category');
+                },'customer','address']);
+
+            })->with('status')->where('id', $model->id)->first();
+            $visit = VisitsResource::make($order);
             $notify = [
                 'device_token'=>[$user->fcm_token],
                 'data' =>[
-                    'order_details'=>$orderDetails->body,
+                    'order_details'=>$visit,
                     'type'=>'change status',
                 ]
             ];
 
             $this->pushNotificationBackground($notify);
 
-            return self::apiResponse(200, null, $orderDetails->body);
-        }
+            $this->body['visits'] = $visit;
+            return self::apiResponse(200, null, $this->body);        }
 
     }
     protected function sendLatLong(Request $request)
