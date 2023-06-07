@@ -118,22 +118,19 @@ class VisitsController extends Controller
 
             $user = User::where('id',$model->booking->user_id)->first('fcm_token');
 
+            $orderDetails = $this->orderDetails($model->id);
 
             $notify = [
                 'device_token'=>[$user->fcm_token],
                 'data' =>[
-                    'visit_id'=>$request->id,
-                    'booking_id'=>$model->booking_id,
-                    'order_id'=>$model->booking?->order_id,
-                    'image'=>$image??'',
-                    'visit_status'=>StatusResource::make($model->status),
+                    'order_details'=>$orderDetails->body,
                     'type'=>'change status',
                 ]
             ];
 
             $this->pushNotificationBackground($notify);
 
-            return $this->orderDetails($model->id);
+            return self::apiResponse(200, null, $orderDetails->body);
         }
 
     }
