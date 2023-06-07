@@ -58,23 +58,7 @@ class CartController extends Controller
 
     protected function index(): JsonResponse
     {
-        $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
-
-        $cat_ids = $carts->pluck('category_id');
-        $this->body['carts'] = [];
-        $cat_ids = array_unique($cat_ids->toArray());
-        foreach ($cat_ids as $cat_id) {
-            if ($cat_id) {
-                $this->body['carts'][] = [
-                    'category_id' => $cat_id,
-                    'category_title' => Category::query()->find($cat_id)?->title,
-                    'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
-                ];
-            }
-        }
-        $total = number_format($this->calc_total($carts), 2, '.', '');
-        $this->body['total'] = $total;
-        $this->body['total_items_in_cart'] = auth()->user()->carts->count();
+        $this->handleCartResponse();
         return self::apiResponse(200, null, $this->body);
     }
 
@@ -143,22 +127,7 @@ class CartController extends Controller
             if (request()->action == 'delete') {
                 $cart->delete();
                 $response = ['success' => 'deleted successfully'];
-                $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
-                $cat_ids = $carts->pluck('category_id');
-                $this->body['carts'] = [];
-                $cat_ids = array_unique($cat_ids->toArray());
-                foreach ($cat_ids as $cat_id) {
-                    if ($cat_id) {
-                        $this->body['carts'][] = [
-                            'category_id' => $cat_id,
-                            'category_title' => Category::query()->find($cat_id)?->title,
-                            'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
-                        ];
-                    }
-                }
-                $total = number_format($this->calc_total($carts), 2, '.', '');
-                $this->body['total'] = $total;
-                $this->body['total_items_in_cart'] = auth()->user()->carts->count();
+                $this->handleCartResponse();
                 return self::apiResponse(200, $response['success'], $this->body);
             }
             $service = service::query()->where('id', $cart->service_id)->first();
@@ -249,5 +218,28 @@ class CartController extends Controller
         //check if groups available to be continued
         $this->body['times'] = $finalAvailTimes;
         return self::apiResponse(200, null, $this->body);
+    }
+
+    /**
+     * @return void
+     */
+    protected function handleCartResponse(): void
+    {
+        $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
+        $cat_ids = $carts->pluck('category_id');
+        $this->body['carts'] = [];
+        $cat_ids = array_unique($cat_ids->toArray());
+        foreach ($cat_ids as $cat_id) {
+            if ($cat_id) {
+                $this->body['carts'][] = [
+                    'category_id' => $cat_id,
+                    'category_title' => Category::query()->find($cat_id)?->title,
+                    'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
+                ];
+            }
+        }
+        $total = number_format($this->calc_total($carts), 2, '.', '');
+        $this->body['total'] = $total;
+        $this->body['total_items_in_cart'] = auth()->user()->carts->count();
     }
 }
