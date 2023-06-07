@@ -124,7 +124,7 @@ class VisitsController extends Controller
                     'visit_id'=>$request->id,
                     'booking_id'=>$model->booking_id,
                     'order_id'=>$model->booking?->order_id,
-                    'image'=>$image,
+                    'image'=>$image??'',
                     'visit_status'=>StatusResource::make($model->visits_status_id),
                     'type'=>'change status',
                 ]
@@ -155,10 +155,7 @@ class VisitsController extends Controller
 
         }
 
-
-
         $user = User::where('id',$model->booking->user_id)->first('fcm_token');
-
 
         $notify = [
             'device_token'=>$user->fcm_token,
