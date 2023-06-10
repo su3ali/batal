@@ -11,6 +11,19 @@
         .gm-style{
             position: relative;
         }
+        #floating-panel {
+            position: absolute;
+            top: 10px;
+            left: 35%;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: "Roboto", "sans-serif";
+            line-height: 30px;
+            padding-left: 10px;
+        }
     </style>
 @endpush
 
@@ -142,8 +155,18 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="card">
                         <div class="card-body p-0">
+                            <div id="floating-panel">
+                                <b>Mode of Travel: </b>
+                                <select id="mode">
+                                    <option value="DRIVING">Driving</option>
+                                    <option value="WALKING">Walking</option>
+                                    <option value="BICYCLING">Bicycling</option>
+                                    <option value="TRANSIT">Transit</option>
+                                </select>
+                            </div>
+                            <div id="map">
 
-                            <div id="map"></div>
+                            </div>
 
 
                         </div>
@@ -229,14 +252,15 @@
         }
 
         function initMap(locations) {
+            const directionsRenderer = new google.maps.DirectionsRenderer();
+            const directionsService = new google.maps.DirectionsService();
             const myLatLng = { lat: locations[1].lat , lng: locations[1].lng };
             const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 15,
+                zoom: 14,
                 center: myLatLng,
 
             });
 
-            var infowindow = new google.maps.InfoWindow();
 
             var marker, i;
 
@@ -245,14 +269,6 @@
                     position: new google.maps.LatLng(locations[i].lat, locations[i].lng),
                     map: map
                 });
-
-                google.maps.event.addListener(marker, 'click', (function(marker, i) {
-                    return function() {
-                        infowindow.setContent(locations[i][0]);
-                        infowindow.open(map, marker);
-                    }
-                })(marker, i));
-
             }
 
 
@@ -265,6 +281,32 @@
             });
 
             flightPath.setMap(map);
+
+
+            directionsRenderer.setMap(map);
+            calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
+            document.getElementById("mode").addEventListener("change", () => {
+                calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
+            });
+        }
+
+        function calculateAndDisplayRoute(directionsService, directionsRenderer,locations) {
+            const selectedMode = document.getElementById("mode").value;
+
+            directionsService
+                .route({
+                    origin: { lat: locations[0].lat , lng: locations[0].lng },
+                    destination: { lat: locations[1].lat , lng: locations[1].lng },
+                    // Note that Javascript allows us to access the constant
+                    // using square brackets and a string value as its
+                    // "property."
+                    travelMode: google.maps.TravelMode[selectedMode],
+                })
+                .then((response) => {
+                    console.log(response)
+                    directionsRenderer.setDirections(response);
+                })
+                .catch((e) => console.log("Directions request failed due to " + status));
         }
 
         window.initMap = initMap;

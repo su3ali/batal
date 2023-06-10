@@ -173,6 +173,11 @@ class VisitsController extends Controller
 
         }
 
+        $model->update([
+            'lat'=>$request->lat,
+            'long'=>$request->long,
+        ]);
+
         $user = User::where('id',$model->booking->user_id)->first('fcm_token');
 
         $notify = [
