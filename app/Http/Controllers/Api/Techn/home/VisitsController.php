@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\Visit;
 use App\Support\Api\ApiResponse;
 use App\Traits\NotificationTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -93,6 +94,7 @@ class VisitsController extends Controller
             $rules['id'] = 'required|exists:visits,id';
             $rules['status_id'] = 'required|exists:visits_statuses,id';
 
+
             $request->validate($rules, $request->all());
 
             $model = Visit::query()->where('id', $request->id)->first();
@@ -113,6 +115,16 @@ class VisitsController extends Controller
                 $image = 'storage/images/visits' . '/' . $filename;
                 $data['image'] = $image;
             }
+
+
+            if ($request->status_id == 3){
+                $data['start_date'] = Carbon::now();
+            }
+
+            if ($request->status_id == 5){
+                $data['end_date'] = Carbon::now();
+            }
+
             $model->update($data);
 
 

@@ -29,6 +29,8 @@ class VisitsResource extends JsonResource
             'user' => UserResource::make($this->booking->customer),
             'address' => UserAddressResource::make($this->booking->address),
             'note' => $this->note,
+            'start_date' => $this->start_date ?? null,
+            'end_date' => $this->end_date ?? null,
             'image' => $this->image?asset($this->image) : null,
             'cancel_reason' => $this->cancelReason? CancelReasonsResource::make($this->cancelReason) : null,
         ];

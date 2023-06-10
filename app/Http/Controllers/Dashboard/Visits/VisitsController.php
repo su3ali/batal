@@ -8,6 +8,8 @@ use App\Models\BannerImage;
 use App\Models\Booking;
 use App\Models\BookingSetting;
 use App\Models\ContractPackage;
+use App\Models\OrderService;
+use App\Models\Service;
 use App\Models\Visit;
 use App\Traits\imageTrait;
 use Illuminate\Http\Request;
@@ -116,7 +118,10 @@ class VisitsController extends Controller
     public function show($id)
     {
         $visits = Visit::where('id', $id)->first();
-        return view('dashboard.visits.show', compact('visits'));
+        $service_ids = OrderService::where('order_id',$visits->booking->order_id)->where('category_id',$visits->booking->category_id)->get()->pluck('service_id');
+        $services = Service::whereIn('id',$service_ids)->get()->pluck('title');
+
+        return view('dashboard.visits.show', compact('visits','services'));
     }
 
 }

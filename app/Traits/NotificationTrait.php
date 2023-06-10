@@ -19,18 +19,18 @@ trait NotificationTrait
           "priority" => "high",
           "mutable-content"=> 1,
       ];
-      $notification = [
-          'title' => $notification['title'] ,
-          'body' => $notification['message'],
-          'sound' => 'default',
-          "priority" => "high",
-          "mutable-content"=> 1,
-          'data' => $data
-      ];
+//      $notification = [
+//          'title' => $notification['title'] ,
+//          'body' => $notification['message'],
+//          'sound' => 'default',
+//          "priority" => "high",
+//          "mutable-content"=> 1,
+//          'data' => $data
+//      ];
 
     $fields = json_encode([
       'registration_ids' => $device_token,
-      'notification' => $notification,
+//      'notification' => $notification,
       'data' => $data,
     ]);
 

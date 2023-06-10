@@ -1,4 +1,18 @@
 @extends('dashboard.layout.layout')
+@push('style')
+    <style>
+        div#map {
+            position: relative!important;
+            overflow: hidden!important;
+            width:100%;
+            height:519px;
+            /*display: contents;*/
+        }
+        .gm-style{
+            position: relative;
+        }
+    </style>
+@endpush
 
 @section('sub-header')
     <div class="sub-header-container">
@@ -41,7 +55,7 @@
 
         <div class="row layout-top-spacing">
 
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="col-xl-6 col-lg-6 col-sm-6  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <div class="card">
                         <div class="card-header">
@@ -64,12 +78,23 @@
                                 </tr>
                                 <tr>
                                     @if($visits->booking && $visits->booking->type == 'service')
-                                    <th>اسم الخدمه</th>
-                                    <td>{{$visits->booking?->service?->title}}</td>
+                                    <th>اسم التصنيف</th>
+                                    <td>{{$visits->booking?->category?->title}}</td>
+
                                     @else
                                         <th>اسم الباقه</th>
                                         <td>{{$visits->booking?->package?->name}}</td>
                                     @endif
+                                </tr>
+                                <tr>
+                                        <th>اسماء الخدمات</th>
+
+                                        <td>
+                                            @foreach($services as $service)
+                                                <button class="btn-sm btn-primary">{{$service}}</button>
+                                            @endforeach
+                                        </td>
+
                                 </tr>
                                 <tr>
                                     <th>اسم المجموعه الفنيه</th>
@@ -92,7 +117,7 @@
 
                                 <tr>
                                     <th>الحاله</th>
-                                    <td>{{$visits->status}}</td>
+                                    <td>{{$visits->status?->name}}</td>
                                 </tr>
 
                                 <tr>
@@ -113,10 +138,57 @@
                 </div>
             </div>
 
+            <div class="col-xl-6 col-lg-6 col-sm-6  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <div class="card">
+                        <div class="card-body p-0">
+
+                            <div id="map"></div>
+
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+            <div class="col-xl-6 col-lg-6 col-sm-6  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <div class="card">
+                        <div class="card-body p-0">
+
+
+
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+
+                </div>
+            </div>
+
+
         </div>
 
     </div>
 @endsection
+
+@php
+    $latUser = $visits->booking?->address?->lat;
+    $longUser = $visits->booking?->address?->long;
+    $latTechn = $visits->lat??0;
+    $longTechn = $visits->long??0;
+
+    $locations = [
+        ['lat'=>$latUser,'lng'=>$longUser],
+        ['lat'=>$latTechn,'lng'=>$longTechn],
+    ]
+
+@endphp
 
 @push('script')
 
@@ -149,5 +221,36 @@
         });
 
     </script>
+
+    <script type="text/javascript">
+        function initMap() {
+            const locations = <?php echo json_encode($locations) ?>;
+            const map = new google.maps.Map(document.getElementById("map"));
+            var infowindow = new google.maps.InfoWindow();
+            var bounds = new google.maps.LatLngBounds();
+            for (var location of locations) {
+                var marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(location.lat, location.lng),
+                    map: map
+                });
+                bounds.extend(marker.position);
+                google.maps.event.addListener(marker, 'click', (function(marker, location) {
+                    return function() {
+                        infowindow.setContent(location.lat + " & " + location.lng);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, location));
+
+            }
+            map.fitBounds(bounds);
+
+
+        }
+
+        window.initMap = initMap;
+    </script>
+
+    <script type="text/javascript" async defer
+            src="https://maps.google.com/maps/api/js?key={{ Config::get('app.GOOGLE_MAP_KEY') }}&callback=initMap" ></script>
 
 @endpush
