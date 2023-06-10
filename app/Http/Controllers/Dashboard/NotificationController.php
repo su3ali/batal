@@ -6,10 +6,11 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Models\Technician;
 use App\Models\User;
+use App\Notifications\SendPushNotification;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Notification;
 
 
 class NotificationController extends Controller
@@ -37,18 +38,36 @@ class NotificationController extends Controller
         ]);
         if ($request->type == 'customer'){
             if ($request->customer_id == 'all'){
-                $FcmTokenArray = User::whereNotNull('fcm_token')->pluck('fcm_token')->all();
+                $FcmTokenArray = User::whereNotNull('fcm_token')->get()->pluck('fcm_token');
             }else{
                 $user = User::where('id',$request->customer_id)->first('fcm_token');
                 $FcmToken = $user->fcm_token;
             }
         }else{
             if ($request->technician_id == 'all'){
-                $FcmTokenArray = Technician::whereNotNull('fcm_token')->pluck('fcm_token')->all();
+                $allTechn = Technician::whereNotNull('fcm_token')->get();
+
+                $FcmTokenArray = $allTechn->pluck('fcm_token');
+
+
+                foreach ($allTechn as $tech){
+                    Notification::send(
+                        $tech,
+                        new SendPushNotification($request->title,$request->message)
+                    );
+                }
+
             }else{
-                $technician = Technician::where('id',$request->technician_id)->first('fcm_token');
+                $technician = Technician::where('id',$request->technician_id)->first();
                 $FcmToken = $technician->fcm_token;
+
+                Notification::send(
+                    $technician,
+                    new SendPushNotification($request->title,$request->message)
+                );
+
             }
+
         }
 
 

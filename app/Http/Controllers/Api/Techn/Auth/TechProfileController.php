@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Techn\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Checkout\UserAddressResource;
+use App\Http\Resources\NotificationResource;
 use App\Http\Resources\Technician\auth\TechnicianResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\Technician;
@@ -12,6 +13,7 @@ use App\Models\UserAddresses;
 use App\Support\Api\ApiResponse;
 use App\Traits\SMSTrait;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
 
 class TechProfileController extends Controller
@@ -118,4 +120,26 @@ class TechProfileController extends Controller
 
         return self::apiResponse(200, t_('Modified successfully'), $this->body);
     }
+
+    protected function getNotification()
+    {
+        $techn = auth('sanctum')->user();
+        $this->body['notification'] = NotificationResource::collection($techn->unreadNotifications);
+        return self::apiResponse(200, null, $this->body);
+    }
+
+    protected function deleteNotification(Request $request)
+    {
+        \DB::table('notifications')->where('id',$request->id)->delete();
+        $this->message = t_('Delete successfully');
+        return self::apiResponse(200, $this->message, $this->body);
+    }
+
+    protected function readNotification(Request $request)
+    {
+        \DB::table('notifications')->where('id',$request->id)->update(['read_at' => now()]);
+        $this->message = t_('Read Notification Successfully');
+        return self::apiResponse(200, $this->message, $this->body);
+    }
+
 }
