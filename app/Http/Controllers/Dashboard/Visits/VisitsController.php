@@ -124,4 +124,22 @@ class VisitsController extends Controller
         return view('dashboard.visits.show', compact('visits','services'));
     }
 
+
+    public function getLocation(Request $request)
+    {
+        $visits = Visit::where('id', $request->id)->first();
+
+        $latUser = $visits->booking?->address?->lat;
+        $longUser = $visits->booking?->address?->long;
+        $latTechn = $visits->lat??0;
+        $longTechn = $visits->long??0;
+
+        $locations = [
+            ['lat'=>(int)$latUser,'lng'=>(int)$longUser],
+            ['lat'=>(int)$latTechn,'lng'=>(int)$longTechn],
+        ];
+
+        return response()->json($locations);
+    }
+
 }

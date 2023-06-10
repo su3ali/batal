@@ -34,6 +34,9 @@ class AuthController extends Controller
         if (Auth::guard('technician')->attempt($cred)) {
 
             $techn = Auth::guard('technician')->user();
+            $techn->update([
+                'fcm_token' => $request->fcm_token
+            ]);
             $this->message = t_('login successfully, but code is needed');
             $this->body['technician'] = TechnicianResource::make($techn);
             $this->body['accessToken'] = $techn->createToken('technician-token',['technician'])->plainTextToken;

@@ -177,18 +177,6 @@
     </div>
 @endsection
 
-@php
-    $latUser = $visits->booking?->address?->lat;
-    $longUser = $visits->booking?->address?->long;
-    $latTechn = $visits->lat??0;
-    $longTechn = $visits->long??0;
-
-    $locations = [
-        ['lat'=>$latUser,'lng'=>$longUser],
-        ['lat'=>$latTechn,'lng'=>$longTechn],
-    ]
-
-@endphp
 
 @push('script')
 
@@ -223,34 +211,66 @@
     </script>
 
     <script type="text/javascript">
-        function initMap() {
-            const locations = <?php echo json_encode($locations) ?>;
-            const map = new google.maps.Map(document.getElementById("map"));
+
+        $(document).ready(function () {
+            getLocation();
+        })
+        function getLocation(){
+            var id = "{{$visits->id}}";
+            $.ajax({
+                url: '{{route('dashboard.visits.getLocation')}}',
+                type: 'post',
+                data: {id: id,_token: "{{csrf_token()}}"},
+                success: function (data) {
+                    console.log(data)
+                    initMap(data)
+                }
+            });
+        }
+
+        function initMap(locations) {
+            const myLatLng = { lat: locations[1].lat , lng: locations[1].lng };
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: myLatLng,
+
+            });
+
             var infowindow = new google.maps.InfoWindow();
-            var bounds = new google.maps.LatLngBounds();
-            for (var location of locations) {
-                var marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(location.lat, location.lng),
+
+            var marker, i;
+
+            for (i = 0; i < locations.length; i++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locations[i].lat, locations[i].lng),
                     map: map
                 });
-                bounds.extend(marker.position);
-                google.maps.event.addListener(marker, 'click', (function(marker, location) {
+
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
-                        infowindow.setContent(location.lat + " & " + location.lng);
+                        infowindow.setContent(locations[i][0]);
                         infowindow.open(map, marker);
                     }
-                })(marker, location));
+                })(marker, i));
 
             }
-            map.fitBounds(bounds);
 
 
+            const flightPath = new google.maps.Polyline({
+                path: locations,
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+            });
+
+            flightPath.setMap(map);
         }
 
         window.initMap = initMap;
     </script>
 
     <script type="text/javascript" async defer
-            src="https://maps.google.com/maps/api/js?key={{ Config::get('app.GOOGLE_MAP_KEY') }}&callback=initMap" ></script>
+            src="https://maps.google.com/maps/api/js?key={{ Config::get('app.GOOGLE_MAP_KEY') }}" ></script>
 
 @endpush
