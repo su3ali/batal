@@ -311,7 +311,7 @@
 
         window.initMap = initMap;
 
-        setTimeout(getLocation,30000)
+        setInterval(getLocation,30000)
     </script>
 
     <script type="text/javascript" async defer
