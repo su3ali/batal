@@ -58,7 +58,7 @@ class CheckoutController extends Controller
             'sub_total' => $total,
             'total' => ($total - $request->coupon),
             'payment_method' => $request->payment_method,
-            'status_id' => 3,
+            'status_id' => 1,
         ]);
         foreach ($carts as $cart) {
             OrderService::create([
