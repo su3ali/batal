@@ -124,7 +124,7 @@ class TechProfileController extends Controller
     protected function getNotification()
     {
         $techn = auth('sanctum')->user();
-        $this->body['notification'] = NotificationResource::collection($techn->unreadNotifications);
+        $this->body['notification'] = NotificationResource::collection($techn->notifications);
         return self::apiResponse(200, null, $this->body);
     }
 
