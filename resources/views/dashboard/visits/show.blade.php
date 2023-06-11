@@ -1,30 +1,6 @@
 @extends('dashboard.layout.layout')
 @push('style')
-    <style>
-        div#map {
-            position: relative!important;
-            overflow: hidden!important;
-            width:100%;
-            height:519px;
-            /*display: contents;*/
-        }
-        .gm-style{
-            position: relative;
-        }
-        #floating-panel {
-            position: absolute;
-            top: 10px;
-            left: 35%;
-            z-index: 5;
-            background-color: #fff;
-            padding: 5px;
-            border: 1px solid #999;
-            text-align: center;
-            font-family: "Roboto", "sans-serif";
-            line-height: 30px;
-            padding-left: 10px;
-        }
-    </style>
+    <link href="{{asset('css/VisitShowStyle.css')}}" rel="stylesheet" type="text/css"/>
 @endpush
 
 @section('sub-header')
@@ -184,7 +160,21 @@
                     <div class="card">
                         <div class="card-body p-0">
 
+                            <div class="stepper-horizontal" id="stepper1">
+                                @foreach($visit_status as $key => $status)
+                                <div class="step" data-id="{{$status->id}}">
+                                    <div class="step-circle">
+{{--                                        <span>{{$status->id}}</span>--}}
+                                    </div>
+                                    <div class="step-title">{{$status->name}}</div>
+                                    @if($key != $visit_status->keys()->last())
+                                    <div class="step-bar-left"></div>
+                                    @endif
 
+                                </div>
+                                @endforeach
+
+                            </div>
 
                         </div>
                         <!-- /.card-body -->
@@ -240,6 +230,37 @@
                 ]
             });
         });
+
+    </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            visitStatus();
+        })
+
+            function visitStatus(){
+            var id = "{{$visits->id}}";
+            $.ajax({
+                url: '{{route('dashboard.visits.updateStatus')}}',
+                type: 'post',
+                data: {id: id,_token: "{{csrf_token()}}"},
+                success: function (data) {
+                    var steps = document.getElementsByClassName('step');
+
+                    $.each(steps,function(index, node){
+                        var stepNum = node.getAttribute('data-id');
+                        if (stepNum == data) {
+                            node.setAttribute("id", "await");
+                        }
+                        if (stepNum < data) {
+                            node.setAttribute("id", "done");
+                        }
+
+                    })
+                }
+            });
+        }
 
     </script>
 

@@ -11,6 +11,7 @@ use App\Models\ContractPackage;
 use App\Models\OrderService;
 use App\Models\Service;
 use App\Models\Visit;
+use App\Models\VisitsStatus;
 use App\Traits\imageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -121,7 +122,9 @@ class VisitsController extends Controller
         $service_ids = OrderService::where('order_id',$visits->booking->order_id)->where('category_id',$visits->booking->category_id)->get()->pluck('service_id');
         $services = Service::whereIn('id',$service_ids)->get()->pluck('title');
 
-        return view('dashboard.visits.show', compact('visits','services'));
+        $visit_status = VisitsStatus::where('active',1)->get();
+
+        return view('dashboard.visits.show', compact('visits','services','visit_status'));
     }
 
 
@@ -140,6 +143,14 @@ class VisitsController extends Controller
         ];
 
         return response()->json($locations);
+    }
+
+
+    public function updateStatus(Request $request)
+    {
+        $visits = Visit::where('id', $request->id)->first();
+
+        return response()->json($visits->visits_status_id);
     }
 
 }
