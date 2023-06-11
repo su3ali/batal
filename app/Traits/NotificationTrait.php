@@ -15,9 +15,6 @@ trait NotificationTrait
       $data = [
           'title' => $notification['title'] ,
           'body' => $notification['message'],
-          'sound' => 'default',
-          "priority" => "high",
-          "mutable-content"=> 1,
       ];
 //      $notification = [
 //          'title' => $notification['title'] ,
@@ -31,7 +28,10 @@ trait NotificationTrait
     $fields = json_encode([
       'registration_ids' => $device_token,
 //      'notification' => $notification,
-      'data' => $data,
+    'data' => $data,
+    'sound' => 'default',
+    "priority" => "high",
+    "mutable-content"=> 1,
     ]);
 
     $ch = curl_init();
@@ -57,12 +57,12 @@ trait NotificationTrait
 
         $data = [
             'data' => $notification['data'],
-            "priority" => "high",
         ];
 
         $fields = json_encode([
             'registration_ids' => $device_token,
             'data' => $data,
+            "priority" => "high",
         ]);
 
         $ch = curl_init();

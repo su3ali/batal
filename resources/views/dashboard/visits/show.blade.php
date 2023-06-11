@@ -179,7 +179,7 @@
 
 
 
-            <div class="col-xl-6 col-lg-6 col-sm-6  layout-spacing">
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <div class="card">
                         <div class="card-body p-0">
@@ -200,7 +200,17 @@
     </div>
 @endsection
 
+@php
+    $latUser = $visits->booking?->address?->lat;
+    $longUser = $visits->booking?->address?->long;
+    $latTechn = $visits->lat??0;
+    $longTechn = $visits->long??0;
 
+    $locations = [
+        ['lat'=>(int)$latUser,'lng'=>(int)$longUser],
+        ['lat'=>(int)$latTechn,'lng'=>(int)$longTechn],
+    ];
+@endphp
 @push('script')
 
     <script type="text/javascript">
@@ -235,9 +245,6 @@
 
     <script type="text/javascript">
 
-        $(document).ready(function () {
-            getLocation();
-        })
         function getLocation(){
             var id = "{{$visits->id}}";
             $.ajax({
@@ -245,25 +252,22 @@
                 type: 'post',
                 data: {id: id,_token: "{{csrf_token()}}"},
                 success: function (data) {
-                    console.log(data)
-                    initMap(data)
+                    updatePosition(data)
                 }
             });
         }
-
-        function initMap(locations) {
-            const directionsRenderer = new google.maps.DirectionsRenderer();
-            const directionsService = new google.maps.DirectionsService();
-            const myLatLng = { lat: locations[1].lat , lng: locations[1].lng };
-            const map = new google.maps.Map(document.getElementById("map"), {
+        let map;
+        let marker;
+        let directionsRenderer;
+        let directionsService;
+        function initMap() {
+             directionsRenderer = new google.maps.DirectionsRenderer();
+             directionsService = new google.maps.DirectionsService();
+            const locations = <?php echo json_encode($locations) ?>;
+            map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 14,
-                center: myLatLng,
-
+                // center: myLatLng,
             });
-
-
-            var marker, i;
-
             for (i = 0; i < locations.length; i++) {
                 marker = new google.maps.Marker({
                     position: new google.maps.LatLng(locations[i].lat, locations[i].lng),
@@ -272,15 +276,15 @@
             }
 
 
-            const flightPath = new google.maps.Polyline({
-                path: locations,
-                geodesic: true,
-                strokeColor: "#FF0000",
-                strokeOpacity: 1.0,
-                strokeWeight: 2,
-            });
-
-            flightPath.setMap(map);
+            // const flightPath = new google.maps.Polyline({
+            //     path: locations,
+            //     geodesic: true,
+            //     strokeColor: "#FF0000",
+            //     strokeOpacity: 1.0,
+            //     strokeWeight: 2,
+            // });
+            //
+            // flightPath.setMap(map);
 
 
             directionsRenderer.setMap(map);
@@ -295,8 +299,8 @@
 
             directionsService
                 .route({
-                    origin: { lat: locations[0].lat , lng: locations[0].lng },
-                    destination: { lat: locations[1].lat , lng: locations[1].lng },
+                    origin: { lat: locations[1].lat , lng: locations[1].lng },
+                    destination: { lat: locations[0].lat , lng: locations[0].lng },
                     // Note that Javascript allows us to access the constant
                     // using square brackets and a string value as its
                     // "property."
@@ -309,12 +313,30 @@
                 .catch((e) => console.log("Directions request failed due to " + status));
         }
 
+        function updatePosition(locations)
+        {
+
+            // new google.maps.Marker({
+            //     position: new google.maps.LatLng(locations[1].lat, locations[1].lng),
+            //     map: map
+            // });
+
+            directionsRenderer.setMap(map);
+            calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
+            document.getElementById("mode").addEventListener("change", () => {
+                calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
+            });
+
+        }
+
         window.initMap = initMap;
+
+
 
         setInterval(getLocation,30000)
     </script>
 
     <script type="text/javascript" async defer
-            src="https://maps.google.com/maps/api/js?key={{ Config::get('app.GOOGLE_MAP_KEY') }}" ></script>
+            src="https://maps.google.com/maps/api/js?key={{ Config::get('app.GOOGLE_MAP_KEY') }}&callback=initMap" ></script>
 
 @endpush
