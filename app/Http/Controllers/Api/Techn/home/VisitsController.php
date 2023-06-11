@@ -97,7 +97,7 @@ class VisitsController extends Controller
 
             $request->validate($rules, $request->all());
 
-            $model = Visit::query()->where('id', $request->id)->first();
+            $model = Visit::with('booking.order')->where('id', $request->id)->first();
 
             $data = [
                 'visits_status_id' => $request->status_id,
@@ -116,10 +116,19 @@ class VisitsController extends Controller
                 $data['image'] = $image;
             }
 
-
             if ($request->status_id == 3){
                 $data['start_date'] = Carbon::now();
+                $order = $model->booking->order;
+                $visits_ids = [];
+                foreach ($order->bookings as $booking){
+                    $visits_ids[] = $booking->visit->id;
+                }
+                if (!in_array(3, $visits_ids)){
+                    $order->status_id = 3;
+                    $order->save();
+                }
             }
+
 
             if ($request->status_id == 5){
                 $data['end_date'] = Carbon::now();
@@ -127,6 +136,18 @@ class VisitsController extends Controller
 
             $model->update($data);
 
+            if (in_array($request->status_id, [5,6])){
+                $order = $model->booking->order;
+                $visits_ids = [];
+                foreach ($order->bookings as $booking){
+                    $visits_ids[] = $booking->visit->id;
+                }
+                $difference = array_diff($visits_ids, [1,2,3,4]);
+                if (count($difference) == count($visits_ids)) {
+                    $order->status_id = 4;
+                    $order->save();
+                }
+            }
 
             $user = User::where('id',$model->booking->user_id)->first('fcm_token');
 
