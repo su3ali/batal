@@ -257,41 +257,41 @@
             });
         }
         let map;
-        let marker;
         let directionsRenderer;
-        let directionsService;
         function initMap() {
-             directionsRenderer = new google.maps.DirectionsRenderer();
-             directionsService = new google.maps.DirectionsService();
             const locations = <?php echo json_encode($locations) ?>;
             map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 14,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
                 // center: myLatLng,
             });
-            for (i = 0; i < locations.length; i++) {
-                marker = new google.maps.Marker({
-                    position: new google.maps.LatLng(locations[i].lat, locations[i].lng),
-                    map: map
-                });
-            }
 
 
-            // const flightPath = new google.maps.Polyline({
-            //     path: locations,
-            //     geodesic: true,
-            //     strokeColor: "#FF0000",
-            //     strokeOpacity: 1.0,
-            //     strokeWeight: 2,
-            // });
-            //
-            // flightPath.setMap(map);
 
+            updatePosition(locations);
+            document.getElementById("mode").addEventListener("change", () => {
+                updatePosition(locations);
+            });
 
             directionsRenderer.setMap(map);
+
+
+        }
+
+
+
+        function updatePosition(locations)
+        {
+
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            var directionsService = new google.maps.DirectionsService();
+
             calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
             document.getElementById("mode").addEventListener("change", () => {
                 calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
             });
+
+
         }
 
         function calculateAndDisplayRoute(directionsService, directionsRenderer,locations) {
@@ -301,32 +301,13 @@
                 .route({
                     origin: { lat: locations[1].lat , lng: locations[1].lng },
                     destination: { lat: locations[0].lat , lng: locations[0].lng },
-                    // Note that Javascript allows us to access the constant
-                    // using square brackets and a string value as its
-                    // "property."
+
                     travelMode: google.maps.TravelMode[selectedMode],
                 })
                 .then((response) => {
-                    console.log(response)
                     directionsRenderer.setDirections(response);
                 })
                 .catch((e) => console.log("Directions request failed due to " + status));
-        }
-
-        function updatePosition(locations)
-        {
-
-            // new google.maps.Marker({
-            //     position: new google.maps.LatLng(locations[1].lat, locations[1].lng),
-            //     map: map
-            // });
-
-            directionsRenderer.setMap(map);
-            calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
-            document.getElementById("mode").addEventListener("change", () => {
-                calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
-            });
-
         }
 
         window.initMap = initMap;
