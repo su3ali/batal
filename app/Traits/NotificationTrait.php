@@ -31,12 +31,6 @@ trait NotificationTrait
       'registration_ids' => $device_token,
 //      'notification' => $notification,
     'data' => $data,
-    'android' => [
-        "priority" => "HIGH",
-    ],
-        'ios' => [
-            "priority" => "HIGH",
-        ],
     'sound' => 'default',
     "priority" => "HIGH",
     "mutable-content"=> 1,
@@ -70,12 +64,6 @@ trait NotificationTrait
         $fields = json_encode([
             'registration_ids' => $device_token,
             'data' => $data,
-            'android' => [
-                "priority" => "HIGH",
-            ],
-            'ios' => [
-                "priority" => "HIGH",
-            ],
             "priority" => "HIGH",
         ]);
 
