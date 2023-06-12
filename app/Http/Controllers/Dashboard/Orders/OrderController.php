@@ -37,7 +37,9 @@ class OrderController extends Controller
                     return $row->user?->first_name .' ' . $row->user?->last_name;
                 })
                 ->addColumn('quantity', function ($row) {
-                    return $row->quantity;
+                    $qu = OrderService::where('order_id',$row->id)->get()->pluck('quantity')->toArray();
+
+                    return array_sum($qu);
                 })
                 ->addColumn('status', function ($row) {
                     return $row->status?->name;
