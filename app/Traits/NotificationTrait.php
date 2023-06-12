@@ -13,10 +13,10 @@ trait NotificationTrait
       $device_token = $notification['device_token'];
 
       $data = [
-          'title' => $notification['title'] ,
+          'id' => random_int(1,9999),
+          'title' => $notification['title'],
           'body' => $notification['message'],
       ];
-
 
 //      $notification = [
 //          'title' => $notification['title'] ,
