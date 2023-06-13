@@ -268,6 +268,16 @@
                         <input type='hidden' class="service_id-` + itr + `" name="service_id[` + itr + `]"  >
 
                     </td>
+
+<td style="width: 400px;">
+
+
+
+                        <input type='text' class="form-control category_name-` + itr + `" data-itr="` + itr + `" >
+                        <input type='hidden' class="category_id-` + itr + `" name="category_id[` + itr + `]"  >
+
+                    </td>
+
                     <td style="width: 190px;">
                         <div class="input-group input-number">
                             <span class="input-group-btn"><button type="button" onclick="changeQty(this,` + itr + `)" class="btn btn-default btn-flat quantity-down"><i data-feather="minus" class="text-danger"></i></button></span>
@@ -334,7 +344,9 @@
                                     value: key.id,
                                     price: key.price,
                                     count_group : key.count_group ?? 1,
-                                    is_quantity : key.is_quantity
+                                    is_quantity : key.is_quantity,
+                                    category_name : key.category.title_ar,
+                                    category_id : key.category.id,
 
                                 };
                             }));
@@ -349,6 +361,8 @@
                     $('.service_id-' + hidden_itr).val(ui.item.value); // save selected id to input
                     $('#unit_price-' + hidden_itr).val(ui.item.price);
                     $('.quantity-' + hidden_itr).val(ui.item.count_group);
+                    $('.category_id-' + hidden_itr).val(ui.item.category_id);
+                    $('.category_name-' + hidden_itr).val(ui.item.category_name);
 
                     if(ui.item.is_quantity == 0){
                         $('.quantity-down').prop('disabled', true);

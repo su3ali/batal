@@ -8,6 +8,7 @@
             <tr>
 
                 <th>{{__('dash.service')}}</th>
+                <th>{{__('dash.category')}}</th>
                 <th>الكمية</th>
                 <th>سعر الوحده</th>
                 <th>المجموع</th>
@@ -23,6 +24,14 @@
                         <input type='hidden' class="service_id-1" name="service_id[1]"  >
 
                     </td>
+
+                    <td style="width: 450px;">
+
+                        <input type='text' readonly class="form-control category_name-1" data-itr="1">
+                        <input type='hidden' class="category_id-1" name="category_id[1]"  >
+
+                    </td>
+
                     <td style="width: 220px;">
                         <div class="input-group input-number">
                             <span class="input-group-btn"><button type="button" onclick="changeQty(this,1)" class="btn btn-default btn-flat quantity-down">

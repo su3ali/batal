@@ -93,17 +93,12 @@ class CartController extends Controller
 
                 $countGroup = CategoryGroup::where('category_id',$category_id)->count();
 
-                $countGroupInBooking = Visit::with(['booking'=>function($q) use($category_id,$key,$request){
-                    $q->where('category_id',$category_id)->where('date',$request->date[$key])
-                        ->where('time',$request->time[$key]);
-                }])->whereNotIn('visits_status_id',[5,6])->count();
-
                 $countInBooking = Booking::with(['visit'=>function($q){
                     $q->whereNotIn('visits_status_id',[5,6]);
                 }])->where('category_id',$category_id)->where('date',$request->date[$key])
-                    ->where('time',$request->time[$key])->count();
+                    ->where('time',Carbon::createFromFormat('H:i A',$request->time[$key])->format('H:i:s'))->count();
 
-                if ($countGroup == $countGroupInBooking || $countInBooking == $countGroup){
+                if ($countInBooking == $countGroup){
                     return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
                 }
 

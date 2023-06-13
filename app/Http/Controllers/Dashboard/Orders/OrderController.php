@@ -176,6 +176,7 @@ class OrderController extends Controller
             OrderService::create($order_service);
         }
         $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
+        $category_ids = array_unique($category_ids);
         foreach ($category_ids as $key => $category_id) {
             $last = Booking::query()->latest()->first()?->id;
             $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
@@ -287,10 +288,10 @@ class OrderController extends Controller
 
             $search = $request->q;
             if (app()->getLocale() == 'ar'){
-                $services = Service::where('title_ar', 'LIKE', "%$search%")->get();
+                $services = Service::with('category')->where('title_ar', 'LIKE', "%$search%")->get();
 
             }else{
-                $services = Service::where('title_en', 'LIKE', "%$search%")->get();
+                $services = Service::with('category')->where('title_en', 'LIKE', "%$search%")->get();
             }
 
         }
