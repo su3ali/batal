@@ -43,6 +43,8 @@ class NotificationController extends Controller
                 $user = User::where('id',$request->customer_id)->first('fcm_token');
                 $FcmToken = $user->fcm_token;
             }
+
+            $type = 'customer';
         }else{
             if ($request->technician_id == 'all'){
                 $allTechn = Technician::whereNotNull('fcm_token')->get();
@@ -68,6 +70,8 @@ class NotificationController extends Controller
 
             }
 
+            $type = 'technician';
+
         }
 
 
@@ -84,6 +88,7 @@ class NotificationController extends Controller
             'device_token' => isset($FcmToken) ?[$FcmToken] : $FcmTokenArray,
             'title' => $request->title,
             'message' => strip_tags($request->message),
+            'type'=>$type??''
         ];
 
       $this->pushNotification($notification);
