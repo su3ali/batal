@@ -46,7 +46,7 @@ class CouponsController extends Controller
                 ]);
                 $coupon->times_used++;
                 $coupon->save();
-                $coupon_value = $coupon->value;
+                $coupon_value = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
                 $total = $total - $coupon_value;
                 $this->body['coupon_value'] = $coupon_value;
                 $this->body['total'] = $total;
