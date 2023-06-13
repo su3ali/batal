@@ -143,7 +143,7 @@
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
-                        <span>{{__('dash.administration')}}</span>
+                        <span>إدارة المستخدمين</span>
                     </div>
                     <div>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -152,12 +152,12 @@
                 <ul class="collapse submenu list-unstyled" id="app" data-parent="#accordionExample">
                     @can('view_admins')
                         <li>
-                            <a href="{{route('dashboard.core.administration.admins.index')}}"> {{__('dash.admins')}} </a>
+                            <a href="{{route('dashboard.core.administration.admins.index')}}"> المستخدمين </a>
                         </li>
                     @endcan
                     @can('view_roles')
                         <li>
-                            <a href="{{route('dashboard.core.administration.roles.index')}}"> {{__('dash.roles')}} </a>
+                            <a href="{{route('dashboard.core.administration.roles.index')}}"> الصلاحيات </a>
                         </li>
                     @endcan
 

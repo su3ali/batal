@@ -36,6 +36,17 @@ class OrderController extends Controller
                 ->addColumn('user', function ($row) {
                     return $row->user?->first_name .' ' . $row->user?->last_name;
                 })
+                ->addColumn('category', function ($row) {
+                    $qu = OrderService::where('order_id',$row->id)->get()->pluck('category_id')->toArray();
+                    $cat_ids = array_unique($qu);
+                    $categorys = Category::whereIn('id',$cat_ids)->get();
+                    $html ='';
+                    foreach ($categorys as $category){
+                        $html.='<button class="btn-sm btn-primary">'.$category->title.'</button>' ;
+                    }
+
+                    return $html;
+                })
                 ->addColumn('quantity', function ($row) {
                     $qu = OrderService::where('order_id',$row->id)->get()->pluck('quantity')->toArray();
 
@@ -59,6 +70,7 @@ class OrderController extends Controller
                 })
                 ->rawColumns([
                     'user',
+                    'category',
                     'quantity',
                     'status',
                     'control',
