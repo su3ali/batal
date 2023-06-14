@@ -47,6 +47,11 @@ class Service extends Model
         return $this->hasOne(BookingSetting::class,'service_id','id');
     }
 
+    public function measurement()
+    {
+        return $this->hasOne(Measurement::class,'measurement_id','id');
+    }
+
     public function category()
     {
         return $this->hasOne(Category::class,'id','category_id');

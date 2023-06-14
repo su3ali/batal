@@ -149,7 +149,6 @@ class OrderController extends Controller
             return redirect()->back()->withErrors($validated->errors());
         }
 
-
         $data = [
             'user_id' => $request->user_id,
             'total' => $request->total,
@@ -175,11 +174,18 @@ class OrderController extends Controller
 
             OrderService::create($order_service);
         }
-        $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
-        $category_ids = array_unique($category_ids);
+//        $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
+        $category_ids = array_unique($request->category_id);
         foreach ($category_ids as $key => $category_id) {
             $last = Booking::query()->latest()->first()?->id;
             $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
+
+            foreach (Service::with('BookingSetting')->whereIn('id', $request->service_id)->get() as $service){
+                $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
+                    * OrderService::where('service_id', $service->id)->where('order_id',$order->id)->first()->quantity;
+                $minutes += $serviceMinutes;
+            }
+
             $booking = [
                 'booking_no' => $booking_no,
                 'user_id' => $request->user_id,
@@ -190,9 +196,10 @@ class OrderController extends Controller
 //            'group_id' => current($groups),
                 'notes' => $request->notes,
 //                'quantity' => $request->quantity[$key],
-                'date' => $request->day[0],
+                'date' => $request->day[$category_id],
                 'type' => 'service',
-                'time' => Carbon::createFromTimestamp($request->start_time[0])->toTimeString(),
+                'time' => Carbon::createFromTimestamp($request->start_time[$category_id])->toTimeString(),
+                'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
             ];
             Booking::query()->create($booking);
 
@@ -288,10 +295,10 @@ class OrderController extends Controller
 
             $search = $request->q;
             if (app()->getLocale() == 'ar'){
-                $services = Service::with('category')->where('title_ar', 'LIKE', "%$search%")->get();
+                $services = Service::where('title_ar', 'LIKE', "%$search%")->get();
 
             }else{
-                $services = Service::with('category')->where('title_en', 'LIKE', "%$search%")->get();
+                $services = Service::where('title_en', 'LIKE', "%$search%")->get();
             }
 
         }
@@ -311,31 +318,52 @@ class OrderController extends Controller
 
     protected function getAvailableTime(Request $request)
     {
+
+        $rules = [
+            'date' => 'required|date',
+            'service_ids' => 'required|array',
+            'service_ids.*' => 'required|exists:services,id',
+        ];
+        $request->validate($rules, $request->all());
         $itr = $request->itr;
+
         $day = Carbon::parse($request->date)->locale('en')->dayName;
 
-        $bookSetting = BookingSetting::where('service_id', $request->id)->first();
-
-        if ($bookSetting == null){
-            return respone()->json('error');
-        }
-
-        $get_time = $this->getTime($day,$bookSetting);
-
         $times = [];
-        if($get_time == true){
-            $times = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
-                ->toPeriod(
-                    \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
-                    Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
-                );
+        foreach ($request->service_ids as $service_id) {
+            $bookSetting = BookingSetting::where('service_id', $service_id)->first();
+            if ($bookSetting) {
+                $get_time = $this->getTime($day, $bookSetting);
+                if ($get_time == true) {
+                    $times[] = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
+                        ->toPeriod(
+                            \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
+                            Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
+                        );
+                }
+
+            }
         }
+        $finalAvailTimes = [];
+        $oldMemory = [];
+        foreach ($times as $time) {
+            $allTimes = [];
+            foreach ($time as $t) {
+                $allTimes[] = $t;
+            }
+            if (isset($oldMemory[0])) {
+                $finalAvailTimes = array_intersect($allTimes, $oldMemory);
+            } else {
+                $oldMemory = $allTimes;
+                $finalAvailTimes = $allTimes;
+            }
+        }
+        $notAvailable = Booking::whereIn('service_id',$request->service_ids)->where('date',$request->date)->where('booking_status_id', 1)->get();
 
-        $notAvailable = Booking::where('service_id',$request->id)->where('date',$request->date)->where('booking_status_id', 1)->get();
+        $service = Service::whereIn('id',$request->service_ids)->get();
 
-        $service = Service::where('id',$request->id)->first();
 
-        return view('dashboard.orders.schedules-times-available', compact('times','notAvailable','service','itr'));
+        return view('dashboard.orders.schedules-times-available', compact('finalAvailTimes','notAvailable','service','itr'));
     }
 
 }

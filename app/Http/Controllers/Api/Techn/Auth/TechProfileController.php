@@ -137,7 +137,12 @@ class TechProfileController extends Controller
 
     protected function readNotification(Request $request)
     {
-        \DB::table('notifications')->where('id',$request->id)->update(['read_at' => now()]);
+        $techn = auth('sanctum')->user();
+
+        foreach ($techn->unreadNotifications as $notification) {
+             $notification->update(['read_at' => now()]);
+         }
+
         $this->message = t_('Read Notification Successfully');
         return self::apiResponse(200, $this->message, $this->body);
     }

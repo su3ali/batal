@@ -21,14 +21,14 @@
                     <td style="width: 450px;">
 
                         <input type='text' class="form-control name-1" data-itr="1">
-                        <input type='hidden' class="service_id-1" name="service_id[1]"  >
+                        <input type='hidden' class="service-each service_id-1" name="service_id[1]"  >
 
                     </td>
 
                     <td style="width: 450px;">
 
-                        <input type='text' readonly class="form-control category_name-1" data-itr="1">
-                        <input type='hidden' class="category_id-1" name="category_id[1]"  >
+                        <input type='text' readonly class="form-control category_name-1">
+                        <input type='hidden' class="cate-each category_id-1" name="category_id[1]"  >
 
                     </td>
 
