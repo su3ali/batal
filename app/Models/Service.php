@@ -49,7 +49,7 @@ class Service extends Model
 
     public function measurement()
     {
-        return $this->hasOne(Measurement::class,'measurement_id','id');
+        return $this->hasOne(Measurement::class,'id','measurement_id');
     }
 
     public function category()

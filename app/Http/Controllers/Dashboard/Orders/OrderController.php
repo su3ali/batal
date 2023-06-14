@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\OrderService;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\UserAddresses;
 use App\Traits\schedulesTrait;
 use Carbon\CarbonInterval;
 use Illuminate\Http\RedirectResponse;
@@ -154,16 +155,17 @@ class OrderController extends Controller
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }
-
+dd($request->all());
         $data = [
             'user_id' => $request->user_id,
-            'total' => $request->total,
-            'sub_total' => $request->sub_total ?? 0,
+            'total' => $request->sub_total ?? 0,
+            'sub_total' => $request->total,
             'discount' => 0,
             'status_id' => 1,
             'payment_method' => $request->payment_method,
             'notes' => $request->notes,
             'quantity' => $request->all_quantity,
+            'user_address_id' => UserAddresses::where('user_id',$request->user_id)->where('is_default',1)->first()->id,
 
         ];
 
@@ -197,6 +199,7 @@ class OrderController extends Controller
                 'user_id' => $request->user_id,
 //                'service_id' => $request->service_id[$key],
                 'order_id' => $order->id,
+                'user_address_id' => $order->user_address_id,
                 'booking_status_id' => 1,
                 'category_id' => $category_id,
 //            'group_id' => current($groups),
@@ -205,7 +208,7 @@ class OrderController extends Controller
                 'date' => $request->day[$category_id],
                 'type' => 'service',
                 'time' => Carbon::createFromTimestamp($request->start_time[$category_id])->toTimeString(),
-                'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
+                'end_time' => Carbon::parse($request->start_time[$category_id])->addMinutes($minutes)->toTimeString(),
             ];
             Booking::query()->create($booking);
 
