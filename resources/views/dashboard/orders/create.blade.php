@@ -167,6 +167,7 @@
 @endsection
 
 @push('script')
+
     <script type="text/javascript">
 
         $.ajaxSetup({
@@ -280,7 +281,7 @@
 
                     </td>
 
-<td style="width: 400px;">
+<td style="width: 250px;">
 
 
 
@@ -298,7 +299,7 @@
 
                     </td>
 
-                    <td style="width: 200px;">
+                    <td style="width: 150px;">
                         <input type="number" onkeyup="change(` + itr + `)"  class="form-control unit_price" id="unit_price-` + itr + `" name="unit_price[` + itr + `]">
                     </td>
 
@@ -311,6 +312,7 @@
                         <button class="minus-service btn btn-danger" type="button">x</button>
                     </td>
                 </tr>`);
+            feather.replace();
             $(this).attr('data-itr', itr);
             $('#itr').val(itr);
 

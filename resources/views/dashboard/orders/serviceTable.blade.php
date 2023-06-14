@@ -18,14 +18,14 @@
             <tbody id="item-service">
             <input type="hidden" id="itr" value="1">
                 <tr>
-                    <td style="width: 450px;">
+                    <td style="width: 400px;">
 
                         <input type='text' class="form-control name-1" data-itr="1">
                         <input type='hidden' class="service-each service_id-1" name="service_id[1]"  >
 
                     </td>
 
-                    <td style="width: 450px;">
+                    <td style="width: 250px;">
 
                         <input type='text' readonly class="form-control category_name-1">
                         <input type='hidden' class="cate-each category_id-1" name="category_id[1]"  >
@@ -46,7 +46,7 @@
 
                     </td>
 
-                    <td style="width: 250px;">
+                    <td style="width: 150px;">
                         <input type="text" onkeyup="change(1)"  class="form-control unit_price" id="unit_price-1" name="unit_price[1]">
                     </td>
 
