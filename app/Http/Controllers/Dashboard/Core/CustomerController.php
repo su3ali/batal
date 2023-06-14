@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\User;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\File;
@@ -30,7 +29,7 @@ class CustomerController extends Controller
                 })
                 ->addColumn('status', function ($user) {
                     $checked = '';
-                    if ($user->active == 1){
+                    if ($user->active == 1) {
                         $checked = 'checked';
                     }
                     return '<label class="switch s-outline s-outline-info  mb-4 mr-2">
@@ -41,17 +40,16 @@ class CustomerController extends Controller
                 ->addColumn('controll', function ($user) {
 
                     $html = '
-                    <a href="'.route('dashboard.core.address.index', 'id='.$user->id).'" class="mr-2 btn btn-outline-primary btn-sm"><i class="far fa-address-book fa-2x"></i> </a>
-                    <a href="'.route('dashboard.core.customer.edit', $user->id).'" class="mr-2 btn btn-outline-warning btn-sm"><i class="far fa-edit fa-2x"></i> </a>
+                    <a href="' . route('dashboard.core.address.index', 'id=' . $user->id) . '" class="mr-2 btn btn-outline-primary btn-sm"><i class="far fa-address-book fa-2x"></i> </a>
+                    <a href="' . route('dashboard.core.customer.edit', $user->id) . '" class="mr-2 btn btn-outline-warning btn-sm"><i class="far fa-edit fa-2x"></i> </a>
 
-                                <a data-href="'.route('dashboard.core.customer.destroy', $user->id).'" data-id="'.$user->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
+                                <a data-href="' . route('dashboard.core.customer.destroy', $user->id) . '" data-id="' . $user->id . '" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
                                 ';
 
                     return $html;
                 })
-
                 ->rawColumns([
                     'name',
                     'status',
@@ -65,9 +63,9 @@ class CustomerController extends Controller
 
     public function create()
     {
-        $cities = City::where('active',1)->get()->pluck('title','id');
+        $cities = City::where('active', 1)->get()->pluck('title', 'id');
 
-        return view('dashboard.core.customers.create',compact('cities'));
+        return view('dashboard.core.customers.create', compact('cities'));
     }
 
     public function store(Request $request)
@@ -77,19 +75,12 @@ class CustomerController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'nullable|email|max:255|unique:users,email',
             'phone' => 'required|numeric|unique:users,phone',
-            'password' => ['nullable', 'confirmed', Password::min(4)],
             'active' => 'nullable|in:on,off',
             'city_id' => 'nullable|exists:cities,id',
         ]);
 
-        $data=$request->except('_token','password_confirmation','active');
-
-        if ($request['active'] && $request['active'] == 'on'){
-            $data['active'] = 1;
-        }else{
-            $data['active'] = 0;
-        }
-
+        $data = $request->except('_token', 'active');
+        $data['active'] = 1;
         User::query()->create($data);
 
         session()->flash('success');
@@ -98,9 +89,9 @@ class CustomerController extends Controller
 
     public function edit($id)
     {
-        $user = User::where('id',$id)->first();
-        $cities = City::where('active',1)->get()->pluck('title','id');
-        return view('dashboard.core.customers.edit', compact( 'user','cities'));
+        $user = User::where('id', $id)->first();
+        $cities = City::where('active', 1)->get()->pluck('title', 'id');
+        return view('dashboard.core.customers.edit', compact('user', 'cities'));
     }
 
     public function update(Request $request, $id)
@@ -109,21 +100,16 @@ class CustomerController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
-            'email' => 'nullable|email|max:255|unique:users,email,'.$id,
-            'phone' => 'required|numeric|unique:users,phone,'.$id,
-            'password' => ['nullable', 'confirmed', Password::min(4)],
+            'email' => 'nullable|email|max:255|unique:users,email,' . $id,
+            'phone' => 'required|numeric|unique:users,phone,' . $id,
             'active' => 'nullable|in:on,off',
             'city_id' => 'nullable|exists:cities,id',
 
         ]);
-        $data=$request->except('_token','password_confirmation','active');
+        $data = $request->except('_token', 'active');
 
+        $data['active'] = 1;
 
-        if ($request['active'] && $request['active'] == 'on'){
-            $data['active'] = 1;
-        }else{
-            $data['active'] = 0;
-        }
 
         $user = User::find($id);
         $user->update($data);
@@ -142,16 +128,17 @@ class CustomerController extends Controller
         ];
     }
 
-    public function change_status(Request $request){
-        $admin = User::where('id',$request->id)->first();
-        if ($request->active == 'true'){
+    public function change_status(Request $request)
+    {
+        $admin = User::where('id', $request->id)->first();
+        if ($request->active == 'true') {
             $active = 1;
-        }else{
+        } else {
             $active = 0;
         }
 
         $admin->active = $active;
         $admin->save();
-        return response()->json(['sucess'=>true]);
+        return response()->json(['sucess' => true]);
     }
 }

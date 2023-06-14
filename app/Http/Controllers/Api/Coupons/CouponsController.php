@@ -52,6 +52,11 @@ class CouponsController extends Controller
                     'user_id' => auth()->user()->id,
                     'coupon_id' => $coupon->id
                 ]);
+                foreach ($carts as $cart){
+                    $cart->update([
+                       'coupon_id' => $coupon->id
+                    ]);
+                }
                 $coupon->times_used++;
                 $coupon->save();
                 $coupon_value = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
@@ -84,7 +89,11 @@ class CouponsController extends Controller
                 ->where('coupon_id', $coupon->id)->delete();
             $coupon->times_used--;
             $coupon->save();
-
+            foreach ($carts as $cart){
+                $cart->update([
+                    'coupon_id' => null
+                ]);
+            }
             $coupon_value = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
             $sub_total = $request->total - $coupon_value;
 

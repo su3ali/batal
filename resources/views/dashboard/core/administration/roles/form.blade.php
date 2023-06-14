@@ -292,68 +292,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
-                                                        >
-                                                        <span class="new-control-indicator"></span><span
-                                                            class="new-chk-content text-primary"><b>{{__('dash.core')}}</b></span>
-                                                    </label>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="n-chk col-md-3 form-row">
-                                                            <label
-                                                                class="new-control new-checkbox new-checkbox-text checkbox-success">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    name="permissions[{{$permissions[8]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
-                                                                    {{isset($model)? in_array($permissions[8]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
-                                                                >
-                                                                <span
-                                                                    class="new-control-indicator"></span><span
-                                                                    class="new-chk-content"><b>{{$permissions[8]->$name}}</b></span>
-                                                            </label>
-                                                        </div>
-                                                        <div class="n-chk col-md-3 form-row">
-                                                            <label
-                                                                class="new-control new-checkbox new-checkbox-text checkbox-success">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    name="permissions[{{$permissions[9]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
-                                                                    {{isset($model)? in_array($permissions[9]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
-                                                                >
-                                                                <span
-                                                                    class="new-control-indicator"></span><span
-                                                                    class="new-chk-content"><b>{{$permissions[9]->$name}}</b></span>
-                                                            </label>
-                                                        </div>
-                                                        <div class="n-chk col-md-3 form-row">
-                                                            <label
-                                                                class="new-control new-checkbox new-checkbox-text checkbox-success">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    name="permissions[{{$permissions[10]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
-                                                                    {{isset($model)? in_array($permissions[10]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
-                                                                >
-                                                                <span
-                                                                    class="new-control-indicator"></span><span
-                                                                    class="new-chk-content"><b>{{$permissions[10]->$name}}</b></span>
-                                                            </label>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="card component-card_2 col-md-12 px-0">
-                                                <div class="form-group h-50 mb-0 px-3 pt-2" style="background-color: #0072ff42;">
-                                                    <label
-                                                        class="new-control new-checkbox new-checkbox-text checkbox-success">
-                                                        <input
-                                                            type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-visits"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الزيارات</b></span>
@@ -367,7 +306,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[12]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-visits"
                                                                     {{isset($model)? in_array($permissions[12]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -381,7 +320,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[13]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-visits"
                                                                     {{isset($model)? in_array($permissions[13]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -395,7 +334,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[14]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-visits"
                                                                     {{isset($model)? in_array($permissions[14]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -409,7 +348,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[15]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-visits"
                                                                     {{isset($model)? in_array($permissions[15]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -428,7 +367,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-packages"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>التقاول</b></span>
@@ -442,7 +381,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[17]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-packages"
                                                                     {{isset($model)? in_array($permissions[17]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -456,7 +395,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[18]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-packages"
                                                                     {{isset($model)? in_array($permissions[18]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -470,7 +409,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[19]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-packages"
                                                                     {{isset($model)? in_array($permissions[19]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -484,7 +423,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[20]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-packages"
                                                                     {{isset($model)? in_array($permissions[20]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -503,7 +442,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-orders"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الطلبات</b></span>
@@ -517,7 +456,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[22]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-orders"
                                                                     {{isset($model)? in_array($permissions[22]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -531,7 +470,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[23]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-orders"
                                                                     {{isset($model)? in_array($permissions[23]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -545,7 +484,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[24]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-orders"
                                                                     {{isset($model)? in_array($permissions[24]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -559,7 +498,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[25]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-orders"
                                                                     {{isset($model)? in_array($permissions[25]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -578,7 +517,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-bookings"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الحجوزات</b></span>
@@ -592,7 +531,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[27]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-bookings"
                                                                     {{isset($model)? in_array($permissions[27]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -606,7 +545,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[28]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-bookings"
                                                                     {{isset($model)? in_array($permissions[28]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -620,7 +559,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[29]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-bookings"
                                                                     {{isset($model)? in_array($permissions[29]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -634,7 +573,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[30]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-bookings"
                                                                     {{isset($model)? in_array($permissions[30]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -653,7 +592,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-cats"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الأقسام</b></span>
@@ -667,7 +606,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[32]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-cats"
                                                                     {{isset($model)? in_array($permissions[32]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -681,7 +620,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[33]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-cats"
                                                                     {{isset($model)? in_array($permissions[33]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -695,7 +634,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[34]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-cats"
                                                                     {{isset($model)? in_array($permissions[34]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -709,7 +648,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[35]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-cats"
                                                                     {{isset($model)? in_array($permissions[35]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -728,7 +667,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-services"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الحدمات</b></span>
@@ -742,7 +681,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[37]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-services"
                                                                     {{isset($model)? in_array($permissions[37]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -756,7 +695,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[38]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-services"
                                                                     {{isset($model)? in_array($permissions[38]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -770,7 +709,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[39]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-services"
                                                                     {{isset($model)? in_array($permissions[39]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -784,7 +723,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[40]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-services"
                                                                     {{isset($model)? in_array($permissions[40]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -803,7 +742,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-techs"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الفنيين</b></span>
@@ -817,7 +756,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[42]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-techs"
                                                                     {{isset($model)? in_array($permissions[42]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -831,7 +770,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[43]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-techs"
                                                                     {{isset($model)? in_array($permissions[43]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -845,7 +784,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[44]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-techs"
                                                                     {{isset($model)? in_array($permissions[44]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -859,7 +798,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[45]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-techs"
                                                                     {{isset($model)? in_array($permissions[45]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -878,7 +817,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-customers"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>العملاء</b></span>
@@ -892,7 +831,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[48]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-customers"
                                                                     {{isset($model)? in_array($permissions[48]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -906,7 +845,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[49]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-customers"
                                                                     {{isset($model)? in_array($permissions[49]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -920,7 +859,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[50]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-customers"
                                                                     {{isset($model)? in_array($permissions[50]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -934,7 +873,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[51]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-customers"
                                                                     {{isset($model)? in_array($permissions[51]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -953,7 +892,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-coupons"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الكوبونات</b></span>
@@ -967,7 +906,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[54]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-coupons"
                                                                     {{isset($model)? in_array($permissions[54]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -981,7 +920,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[55]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-coupons"
                                                                     {{isset($model)? in_array($permissions[55]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -995,7 +934,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[56]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-coupons"
                                                                     {{isset($model)? in_array($permissions[56]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1009,7 +948,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[57]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-coupons"
                                                                     {{isset($model)? in_array($permissions[57]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1028,7 +967,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-notifications"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>الإشعارات</b></span>
@@ -1042,7 +981,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[60]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-notifications"
                                                                     {{isset($model)? in_array($permissions[60]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1056,7 +995,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[61]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-notifications"
                                                                     {{isset($model)? in_array($permissions[61]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1070,7 +1009,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[62]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-notifications"
                                                                     {{isset($model)? in_array($permissions[62]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1084,7 +1023,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[63]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-notifications"
                                                                     {{isset($model)? in_array($permissions[63]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1103,7 +1042,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-wallets"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>المحافظ</b></span>
@@ -1117,7 +1056,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[46]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-wallets"
                                                                     {{isset($model)? in_array($permissions[46]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1135,7 +1074,7 @@
                                                         class="new-control new-checkbox new-checkbox-text checkbox-success">
                                                         <input
                                                             type="checkbox"
-                                                            class="new-control-input check-all-core"
+                                                            class="new-control-input check-all-rates"
                                                         >
                                                         <span class="new-control-indicator"></span><span
                                                             class="new-chk-content text-primary"><b>التقييمات</b></span>
@@ -1149,7 +1088,7 @@
                                                                 <input
                                                                     type="checkbox"
                                                                     name="permissions[{{$permissions[52]->id}}]"
-                                                                    class="new-control-input perm-check perm-check-core"
+                                                                    class="new-control-input perm-check perm-check-rates"
                                                                     {{isset($model)? in_array($permissions[52]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
                                                                 >
                                                                 <span
@@ -1287,14 +1226,68 @@
                     let matches = $("input.perm-check:checkbox:not(:checked)");
                     checkViewAll(matches)
                 });
-                $(".check-all-homesections").click(function () {
-                    let boxes = $('.perm-check-homesections');
+                $(".check-all-orders").click(function () {
+                    let boxes = $('.perm-check-orders');
                     boxes.prop('checked', this.checked);
                     let matches = $("input.perm-check:checkbox:not(:checked)");
                     checkViewAll(matches)
                 });
-                $(".check-all-profile").click(function () {
-                    let boxes = $('.perm-check-profile');
+                $(".check-all-visits").click(function () {
+                    let boxes = $('.perm-check-visits');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-bookings").click(function () {
+                    let boxes = $('.perm-check-bookings');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-cats").click(function () {
+                    let boxes = $('.perm-check-cats');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-services").click(function () {
+                    let boxes = $('.perm-check-services');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-techs").click(function () {
+                    let boxes = $('.perm-check-techs');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-customers").click(function () {
+                    let boxes = $('.perm-check-customers');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-coupons").click(function () {
+                    let boxes = $('.perm-check-coupons');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-notifications").click(function () {
+                    let boxes = $('.perm-check-notifications');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-wallets").click(function () {
+                    let boxes = $('.perm-check-wallets');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-rates").click(function () {
+                    let boxes = $('.perm-check-rates');
                     boxes.prop('checked', this.checked);
                     let matches = $("input.perm-check:checkbox:not(:checked)");
                     checkViewAll(matches)

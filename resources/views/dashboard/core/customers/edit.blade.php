@@ -101,31 +101,6 @@
 
                         </div>
 
-                        <div class="form-row mb-3">
-                            <div class="form-group col-md-6">
-                                <label for="inputEmail4">{{__('dash.password')}}</label>
-                                <input type="password" name="password" class="form-control"
-                                       id="inputEmail4"
-                                       placeholder="{{__('dash.password')}}"
-                                >
-                                @error('password')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label
-                                    for="inputEmail4">{{__('dash.password_confirmation')}}</label>
-                                <input type="password" name="password_confirmation"
-                                       class="form-control"
-                                       id="inputEmail4"
-                                       placeholder="{{__('dash.password_confirmation')}}"
-                                >
-                                @error('password_confirmation')
-                                <div class="alert alert-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
                         <div class="form-group col-md-6">
 
                             <label for="inputEmail4">{{__('dash.city')}}</label>
