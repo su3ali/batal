@@ -236,7 +236,7 @@ class CartController extends Controller
         $total = number_format($this->calc_total($carts), 2, '.', '');
         $this->body['total'] = $total;
         $this->body['total_items_in_cart'] = auth()->user()->carts->count();
-        $this->body['coupon'] = [];
+        $this->body['coupon'] = null;
         $coupon = $carts->first()->coupon;
         if ($coupon){
             $discount_value = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
