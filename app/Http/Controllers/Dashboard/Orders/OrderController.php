@@ -134,7 +134,6 @@ class OrderController extends Controller
      */
     protected function store(Request $request): RedirectResponse
     {
-
         $rules = [
             'user_id' => 'required|exists:users,id',
             'service_id' => 'array|required|exists:services,id',
@@ -155,7 +154,6 @@ class OrderController extends Controller
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }
-dd($request->all());
         $data = [
             'user_id' => $request->user_id,
             'total' => $request->sub_total ?? 0,
@@ -165,7 +163,7 @@ dd($request->all());
             'payment_method' => $request->payment_method,
             'notes' => $request->notes,
             'quantity' => $request->all_quantity,
-            'user_address_id' => UserAddresses::where('user_id',$request->user_id)->where('is_default',1)->first()->id,
+            'user_address_id' => UserAddresses::where('user_id',$request->user_id)->where('is_default',1)->first()->id ?? null,
 
         ];
 
@@ -187,13 +185,15 @@ dd($request->all());
         foreach ($category_ids as $key => $category_id) {
             $last = Booking::query()->latest()->first()?->id;
             $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
-
+            $minutes = 0;
             foreach (Service::with('BookingSetting')->whereIn('id', $request->service_id)->get() as $service){
                 $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
                     * OrderService::where('service_id', $service->id)->where('order_id',$order->id)->first()->quantity;
                 $minutes += $serviceMinutes;
             }
 
+            $orderService = OrderService::where('service_id', $service->id)->where('order_id',$order->id)->get()->pluck('quantity')->toArray();
+            $quantity = array_sum($orderService);
             $booking = [
                 'booking_no' => $booking_no,
                 'user_id' => $request->user_id,
@@ -204,11 +204,11 @@ dd($request->all());
                 'category_id' => $category_id,
 //            'group_id' => current($groups),
                 'notes' => $request->notes,
-//                'quantity' => $request->quantity[$key],
+                'quantity' => $quantity,
                 'date' => $request->day[$category_id],
                 'type' => 'service',
                 'time' => Carbon::createFromTimestamp($request->start_time[$category_id])->toTimeString(),
-                'end_time' => Carbon::parse($request->start_time[$category_id])->addMinutes($minutes)->toTimeString(),
+                'end_time' => Carbon::createFromTimestamp($request->start_time[$category_id])->addMinutes($minutes)->toTimeString(),
             ];
             Booking::query()->create($booking);
 

@@ -321,24 +321,20 @@
         $("body").on('click', '.minus-service', function () {
             var itr = $('.plus-service').attr('data-itr');
             var category_id = $('.category_id-' + itr).val();
-            var cate_array = [];
+            var number = 0;
             $('.cate-each').each(function () {
+
                 var cate_each = $(this).val();
-                cate_array.push(Number(cate_each))
+
+                if(cate_each == category_id){
+                    number++
+                }
             })
-
-
-            var lenght = cate_array.filter(function (value) {
-                return value === category_id;
-            }).length
-
-            console.log(lenght)
-
             itr--
             $('.plus-service').attr('data-itr', itr)
             $('#itr').val(itr);
             $(this).parent().parent().remove();
-            if (lenght == 1) {
+            if (number == 1) {
                 $('.card-' + category_id).remove();
             }
             pos_total_row()
@@ -383,6 +379,11 @@
                 },
                 select: function (event, ui) {
                     event.preventDefault();
+                    //if edit in first select
+                    if (hidden_itr == 1){
+                        $('.card-appointment').remove();
+                    }
+
                     // Set selection
                     // $('.quantity-' + hidden_itr).attr("data-max", ui.item.count_group);
                     $('.name-' + hidden_itr).val(ui.item.label); // display the selected text
@@ -410,9 +411,10 @@
 
                     if (cate_array.includes(ui.item.category_id)) {
                     } else {
-                        $('#toggleAccordion').append(`<input type='hidden' class="cate-toggle" value="` + ui.item.category_id + `"  >
+                        $('#toggleAccordion').append(`
 
-                            <div class="card card-` + ui.item.category_id + ` ">
+                            <div class="card card-appointment card-` + ui.item.category_id + ` ">
+                            <input type='hidden' class="cate-toggle" value="` + ui.item.category_id + `"  >
     <div class="card-header" id="bookingHeader">
         <section class="mb-0 mt-0">
             <div role="menu" class="collapsed" data-toggle="collapse" data-target="#defaultAccordion` + ui.item.category_id + `" aria-expanded="true" aria-controls="defaultAccordion` + ui.item.category_id + `">

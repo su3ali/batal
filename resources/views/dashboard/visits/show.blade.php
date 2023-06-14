@@ -335,7 +335,9 @@
 
 
 
-        setInterval(getLocation,30000)
+        setInterval(getLocation,60000)
+        setInterval(visitStatus,60000)
+
     </script>
 
     <script type="text/javascript" async defer
