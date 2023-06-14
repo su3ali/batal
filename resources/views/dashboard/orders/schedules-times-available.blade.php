@@ -1,6 +1,6 @@
-@if($times)
+@if($finalAvailTimes)
 
-    @foreach($times as $time)
+    @foreach($finalAvailTimes as $time)
 
 
 @if($notAvailable->isNotEmpty())
@@ -13,7 +13,7 @@
             for="timeselect-{{$itr}}-{{$time->timestamp}}">
             <input name="start_time[{{$itr}}]" type="radio" class="btn-check time"
                                                          id="timeselect-{{$itr}}-{{$time->timestamp}}"
-                                                         value="{{$time->timestamp}}" {{array_sum($notAvailable->pluck('quantity')->toArray()) === $service->count_group && in_array($time->timestamp,$notAvailable->pluck('time')->toArray()) ? 'disabled' : ''}}>
+                                                         value="{{$time->timestamp}}" {{array_sum($notAvailable->pluck('quantity')->toArray()) === array_sum($service->pluck('count_group')->toArray()) && in_array($time->timestamp,$notAvailable->pluck('time')->toArray()) ? 'disabled' : ''}}>
            <span> {{$time->format('g:i A')}} </span>
         </label>
     </div>

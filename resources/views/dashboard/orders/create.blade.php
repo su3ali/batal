@@ -89,7 +89,6 @@
                                 @include('dashboard.orders.time')
 
 
-
                                 <div class="widget-content widget-content-area m-3 mt-0">
                                     <div class="form-row  card bg-light-dark m-3">
                                         <div class="form-group col-md-12 mt-2">
@@ -122,11 +121,13 @@
                                                 {!! Form::label('payment_method_visa', 'طريقة الدفع') !!}
                                                 <div class="mt-2">
                                                     <label class="radio-inline">
-                                                        <input class="mx-2" value="visa" type="radio" name="payment_method"
+                                                        <input class="mx-2" value="visa" type="radio"
+                                                               name="payment_method"
                                                                id="payment_method_visa" checked>دفع إلكتروني
                                                     </label>
                                                     <label class="radio-inline">
-                                                        <input class="mx-2" value="cache" type="radio" name="payment_method"
+                                                        <input class="mx-2" value="cache" type="radio"
+                                                               name="payment_method"
                                                                id="payment_method_cache">دفع نقدي
                                                     </label>
                                                 </div>
@@ -225,24 +226,34 @@
             var Data = $(this).val();
             var itr = $(this).data('itr');
 
+            var ser_array = [];
+            $('.service-each').each(function () {
+                    var ser_id = $(this).val();
+                    var cate_id = $(this).data('cate_id');
+                    if(itr == cate_id){
+                        ser_array.push(Number(ser_id))
+                    }
+            })
+
+
             $.ajax({
                 url: "{{route('dashboard.order.getAvailableTime')}}",
                 data: {
                     'date': Data,
-                    'id': $('.service_id-'+itr).val(),
+                    'service_ids':ser_array,
                     'itr': itr,
                 },
                 cache: false,
                 success: function (html) {
-                    if(html === 'error'){
+                    if (html === 'error') {
                         swal({
                             title: "{{__('dash.successful_operation')}}",
                             text: "{{__('dash.request_executed_successfully')}}",
                             type: 'error',
                             padding: '2em'
                         })
-                    }else{
-                        $('#select-time-available_'+itr).html(html);
+                    } else {
+                        $('#select-time-available_' + itr).html(html);
                     }
                 }
             });
@@ -265,7 +276,7 @@
 
 
                         <input type='text' class="form-control name-` + itr + `" data-itr="` + itr + `" >
-                        <input type='hidden' class="service_id-` + itr + `" name="service_id[` + itr + `]"  >
+                        <input type='hidden' class="service-each service_id-` + itr + `" name="service_id[` + itr + `]"  >
 
                     </td>
 
@@ -273,8 +284,8 @@
 
 
 
-                        <input type='text' class="form-control category_name-` + itr + `" data-itr="` + itr + `" >
-                        <input type='hidden' class="category_id-` + itr + `" name="category_id[` + itr + `]"  >
+                        <input type='text' readonly class="form-control category_name-` + itr + `" >
+                        <input type='hidden' class="cate-each category_id-` + itr + `" name="category_id[` + itr + `]"  >
 
                     </td>
 
@@ -292,7 +303,7 @@
                     </td>
 
                     <td>
-                        <input type="hidden" name="price[`+itr+`]" id="total-` + itr + `" class="form-control pos_line_total" value="0">
+                        <input type="hidden" name="price[` + itr + `]" id="total-` + itr + `" class="form-control pos_line_total" value="0">
                         <div id="rowTotal-` + itr + `">0</div> ريال
                     </td>
 
@@ -309,10 +320,27 @@
 
         $("body").on('click', '.minus-service', function () {
             var itr = $('.plus-service').attr('data-itr');
+            var category_id = $('.category_id-' + itr).val();
+            var cate_array = [];
+            $('.cate-each').each(function () {
+                var cate_each = $(this).val();
+                cate_array.push(Number(cate_each))
+            })
+
+
+            var lenght = cate_array.filter(function (value) {
+                return value === category_id;
+            }).length
+
+            console.log(lenght)
+
             itr--
             $('.plus-service').attr('data-itr', itr)
             $('#itr').val(itr);
             $(this).parent().parent().remove();
+            if (lenght == 1) {
+                $('.card-' + category_id).remove();
+            }
             pos_total_row()
         })
     </script>
@@ -343,10 +371,10 @@
                                     label: key.title_ar,
                                     value: key.id,
                                     price: key.price,
-                                    count_group : key.count_group ?? 1,
-                                    is_quantity : key.is_quantity,
-                                    category_name : key.category.title_ar,
-                                    category_id : key.category.id,
+                                    count_group: key.count_group ?? 1,
+                                    is_quantity: key.is_quantity,
+                                    category_name: key.category.title_ar,
+                                    category_id: key.category.id,
 
                                 };
                             }));
@@ -359,29 +387,41 @@
                     // $('.quantity-' + hidden_itr).attr("data-max", ui.item.count_group);
                     $('.name-' + hidden_itr).val(ui.item.label); // display the selected text
                     $('.service_id-' + hidden_itr).val(ui.item.value); // save selected id to input
+                    $('.service_id-' + hidden_itr).attr('data-cate_id', ui.item.category_id);
                     $('#unit_price-' + hidden_itr).val(ui.item.price);
                     $('.quantity-' + hidden_itr).val(ui.item.count_group);
                     $('.category_id-' + hidden_itr).val(ui.item.category_id);
                     $('.category_name-' + hidden_itr).val(ui.item.category_name);
-
-                    if(ui.item.is_quantity == 0){
+                    if (ui.item.is_quantity == 0) {
                         $('.quantity-down').prop('disabled', true);
                         $('.quantity-up').prop('disabled', true);
                         $('.quantity-' + hidden_itr).prop('disabled', true);
-
                     }
                     var i = $(this).attr('data-itr');
                     change(i)
-$('#toggleAccordion').append(`<div class="card">
+                    var cate_array = [];
+                    $('.cate-toggle').each(function () {
+                        var cate_each = $(this).val();
+                        if (cate_array.includes(cate_each)) {
+                        } else {
+                            cate_array.push(Number(cate_each))
+                        }
+                    })
+
+                    if (cate_array.includes(ui.item.category_id)) {
+                    } else {
+                        $('#toggleAccordion').append(`<input type='hidden' class="cate-toggle" value="` + ui.item.category_id + `"  >
+
+                            <div class="card card-` + ui.item.category_id + ` ">
     <div class="card-header" id="bookingHeader">
         <section class="mb-0 mt-0">
-            <div role="menu" class="collapsed" data-toggle="collapse" data-target="#defaultAccordion`+i+`" aria-expanded="true" aria-controls="defaultAccordion`+i+`">
-                         الحجز `+i+`
+            <div role="menu" class="collapsed" data-toggle="collapse" data-target="#defaultAccordion` + ui.item.category_id + `" aria-expanded="true" aria-controls="defaultAccordion` + ui.item.category_id + `">
+                         حجز قسم  ` + ui.item.category_name + `
 </div>
 </section>
 </div>
 
-<div id="defaultAccordion`+i+`" class="collapse" aria-labelledby="..." data-parent="#toggleAccordion">
+<div id="defaultAccordion` + ui.item.category_id + `" class="collapse" aria-labelledby="..." data-parent="#toggleAccordion">
                 <div class="card-body">
                     <div class="col-md-12 mb-3">
                         <div class="row ">
@@ -391,7 +431,7 @@ $('#toggleAccordion').append(`<div class="card">
                                         اختر تاريخ حجزك
                                     </h5>
 
-                                    <input type="text" class="reservatoinData" data-itr="`+i+`" required id="getData" name="day[`+i+`]" hidden>
+                                    <input type="text" class="reservatoinData" data-itr="` + ui.item.category_id + `" required id="getData" name="day[` + ui.item.category_id + `]" hidden>
                                 </section>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-sm-6  layout-spacing">
@@ -400,7 +440,7 @@ $('#toggleAccordion').append(`<div class="card">
                                         اختر الوقت المناسب
                                     </h5>
 
-                                    <div class="d-flex gap-5 select-time-list flex-wrap" id="select-time-available_`+i+`">
+                                    <div class="d-flex gap-5 select-time-list flex-wrap" id="select-time-available_` + ui.item.category_id + `">
                                         <div class="text-center">
                                             <img width="40%" src="{{asset('images/time.png')}}">
                                         </div>
@@ -414,6 +454,8 @@ $('#toggleAccordion').append(`<div class="card">
                 </div>
             </div>
         </div>`)
+                    }
+
 
                     $(".reservatoinData").flatpickr({
                         inline: true,

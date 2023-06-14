@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Service;
 
+use App\Http\Resources\Core\MeasurementResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ServiceDetailsResource extends JsonResource
@@ -27,6 +28,7 @@ class ServiceDetailsResource extends JsonResource
             'images' => $images,
             'price' => $this->price,
             'type' => $this->type,
+            'measurement' => MeasurementResource::make($this->measurement),
             'duration' => $this->duration,
             'terms_and_conditions' => $this->ter_cond,
         ];
