@@ -68,14 +68,14 @@ class DashboardRolesSeeder extends Seeder
         DB::table('model_has_permissions')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $permissions = collect([
-            ['name'=>'view_admins', 'name_en' => 'view admins', 'name_ar' => 'عرض المدراء'],
-            ['name'=>'create_admins', 'name_en' => 'create admins', 'name_ar' => 'إنشاء مدراء'],
-            ['name'=>'update_admins', 'name_en' => 'update admins', 'name_ar' => 'تعديل المدراء'],
-            ['name'=>'delete_admins', 'name_en' => 'delete admins', 'name_ar' => 'حذف المدراء'],
-            ['name'=>'view_roles', 'name_en' => 'view roles', 'name_ar' => 'عرض الأدوار'],
-            ['name'=>'create_roles', 'name_en' => 'create roles', 'name_ar' => 'إنشاء أدوار'],
-            ['name'=>'update_roles', 'name_en' => 'update roles', 'name_ar' => 'تعديل الأدوار'],
-            ['name'=>'delete_roles', 'name_en' => 'delete roles', 'name_ar' => 'حذف الأدوار'],
+            ['name'=>'view_admins', 'name_en' => 'view admins', 'name_ar' => 'عرض المستخدمين'],
+            ['name'=>'create_admins', 'name_en' => 'create admins', 'name_ar' => 'إنشاء مستخدمين'],
+            ['name'=>'update_admins', 'name_en' => 'update admins', 'name_ar' => 'تعديل المستخدمين'],
+            ['name'=>'delete_admins', 'name_en' => 'delete admins', 'name_ar' => 'حذف المستخدمين'],
+            ['name'=>'view_roles', 'name_en' => 'view roles', 'name_ar' => 'عرض الصلاحيات'],
+            ['name'=>'create_roles', 'name_en' => 'create roles', 'name_ar' => 'إنشاء صلاحيات'],
+            ['name'=>'update_roles', 'name_en' => 'update roles', 'name_ar' => 'تعديل الصلاحيات'],
+            ['name'=>'delete_roles', 'name_en' => 'delete roles', 'name_ar' => 'حذف الصلاحيات'],
             ['name'=>'view_setting', 'name_en' => 'view setting', 'name_ar' => 'عرض الإعدادات'],
             ['name'=>'update_setting', 'name_en' => 'update setting', 'name_ar' => 'تغيير الإعدادات'],
             ['name'=>'admin_profile', 'name_en' => 'admin profile', 'name_ar' => 'صفحة الأدمن الشخصية'],

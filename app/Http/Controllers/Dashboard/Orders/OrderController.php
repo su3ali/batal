@@ -57,7 +57,13 @@ class OrderController extends Controller
                 })
                 ->addColumn('control', function ($row) {
 
-                    $html = '
+                    $html = '';
+                    if ($row->status_id == 2){
+                        $html .= '<a href="' . route('dashboard.order.confirmOrder','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-thumbs-up fa-2x mx-1"></i> تأكيد
+                        </a>';
+                    }
+                    $html .= '
                         <a href="' . route('dashboard.order.showService','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
                             <i class="far fa-eye fa-2x"></i>
                         </a>
@@ -364,6 +370,13 @@ class OrderController extends Controller
 
 
         return view('dashboard.orders.schedules-times-available', compact('finalAvailTimes','notAvailable','service','itr'));
+    }
+    protected function confirmOrder(){
+        Order::query()->findOrFail(\request()->id)->update([
+            'status_id' => 1
+        ]);
+        session()->flash('success');
+        return redirect()->back();
     }
 
 }

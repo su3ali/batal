@@ -13,4 +13,7 @@ class Cart extends Model
     {
         return $this->hasOne(Service::class, 'id', 'service_id');
     }
+    public function coupon(){
+        return $this->hasOne(Coupon::class, 'id', 'coupon_id');
+    }
 }

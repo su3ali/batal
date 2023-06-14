@@ -220,7 +220,7 @@ class CartController extends Controller
      */
     protected function handleCartResponse(): void
     {
-        $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
+        $carts = Cart::with('coupon')->where('user_id', auth()->user()->id)->get();
         $cat_ids = $carts->pluck('category_id');
         $this->body['carts'] = [];
         $cat_ids = array_unique($cat_ids->toArray());
@@ -236,5 +236,16 @@ class CartController extends Controller
         $total = number_format($this->calc_total($carts), 2, '.', '');
         $this->body['total'] = $total;
         $this->body['total_items_in_cart'] = auth()->user()->carts->count();
+        $this->body['coupon'] = [];
+        $coupon = $carts->first()->coupon;
+        if ($coupon){
+            $discount_value = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
+            $this->body['coupon'] = [
+                'code' => $coupon->code,
+                'total_before_discount' => $total,
+                'discount_value' => $discount_value,
+                'total_after_discount' => $total - $discount_value
+            ];
+        }
     }
 }
