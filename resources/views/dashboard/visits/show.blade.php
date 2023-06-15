@@ -368,7 +368,13 @@
                 .then((response) => {
                     directionsRenderer.setDirections(response);
                 })
-                .catch((e) => console.log("Directions request failed due to " + status));
+                .catch((e) => swal({
+                    title: "Directions request failed",
+                    text: "No route could be found between the origin and destination",
+                    type: 'error',
+                    padding: '2em'
+                })
+            );
         }
 
         window.initMap = initMap;
