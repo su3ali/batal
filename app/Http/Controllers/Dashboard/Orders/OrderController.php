@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\UserAddresses;
 use App\Traits\schedulesTrait;
 use Carbon\CarbonInterval;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -128,11 +129,7 @@ class OrderController extends Controller
         return view('dashboard.orders.create', compact('users','cities', 'categories', 'services'));
     }
 
-
-    /**
-     * @throws ValidationException
-     */
-    protected function store(Request $request): RedirectResponse
+    protected function store(Request $request): Factory|\Illuminate\Contracts\View\View|RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         $rules = [
             'user_id' => 'required|exists:users,id',
@@ -156,15 +153,14 @@ class OrderController extends Controller
         }
         $data = [
             'user_id' => $request->user_id,
-            'total' => $request->sub_total ?? 0,
+            'total' => $request->total,
             'sub_total' => $request->total,
             'discount' => 0,
-            'status_id' => 1,
+            'status_id' => 2,
             'payment_method' => $request->payment_method,
             'notes' => $request->notes,
             'quantity' => $request->all_quantity,
             'user_address_id' => UserAddresses::where('user_id',$request->user_id)->where('is_default',1)->first()->id ?? null,
-
         ];
 
         $order = Order::query()->create($data);
@@ -191,7 +187,6 @@ class OrderController extends Controller
                     * OrderService::where('service_id', $service->id)->where('order_id',$order->id)->first()->quantity;
                 $minutes += $serviceMinutes;
             }
-
             $orderService = OrderService::where('service_id', $service->id)->where('order_id',$order->id)->get()->pluck('quantity')->toArray();
             $quantity = array_sum($orderService);
             $booking = [
@@ -215,7 +210,7 @@ class OrderController extends Controller
         }
 
         session()->flash('success');
-        return redirect()->back();
+        return view('dashboard.orders.index');
     }
 
     public function edit($id)
@@ -244,7 +239,7 @@ class OrderController extends Controller
         $validated = $validated->validated();
         $order->update($validated);
         session()->flash('success');
-        return redirect()->back();
+        return view('dashboard.orders.index');
     }
 
     protected function destroy($id)
@@ -375,7 +370,8 @@ class OrderController extends Controller
         return view('dashboard.orders.schedules-times-available', compact('finalAvailTimes','notAvailable','service','itr'));
     }
     protected function confirmOrder(){
-        Order::query()->findOrFail(\request()->id)->update([
+        $order = Order::with('bookings')->findOrFail(\request()->id);
+        $order->update([
             'status_id' => 1
         ]);
         session()->flash('success');

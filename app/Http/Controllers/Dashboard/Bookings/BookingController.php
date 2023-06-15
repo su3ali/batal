@@ -32,7 +32,7 @@ class BookingController extends Controller
     {
 
         if (request()->ajax()) {
-            $bookings = Booking::query()->where('type', 'service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            $bookings = Booking::with('visit.group')->where('type', 'service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
 
             if (\request()->query('type') == 'package') {
                 $bookings = Booking::query()->where('type', 'contract')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
@@ -53,21 +53,22 @@ class BookingController extends Controller
                     return $row->customer?->phone;
                 })
                 ->addColumn('service', function ($row) {
-
-                    $service = $row->service?->title;
-
                     if (\request()->query('type') == 'package') {
                         $service = $row->package?->name;
+                        return $service;
                     }
-
-                    return $service;
-
+                    $services = $row->order->services->where('category_id', $row->category_id);
+                    $html = '';
+                    foreach ($services as $service) {
+                        $html .= '<button class="btn-sm btn-primary">' . $service->title . '</button>';
+                    }
+                    return $html;
                 })
                 ->addColumn('time', function ($row) {
                     return Carbon::createFromTimestamp($row->time)->toTimeString();
                 })
                 ->addColumn('group', function ($row) {
-                    return $row->group?->name;
+                    return $row->visit?->group?->name;
                 })
                 ->addColumn('status', function ($row) {
                     return $row->booking_status?->name;
@@ -80,11 +81,11 @@ class BookingController extends Controller
                     if (!in_array($row->id, Visit::query()->pluck('booking_id')->toArray())) {
                         $html = '
 
-                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '" data-category_id="'.$row->category_id.'"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
                                   data-toggle="modal" data-target="#addGroupModel">
                             اضافة فريق
                        </button>';
-                    }else{
+                    } else {
                         $html = '
 
                         <span class="btn btn-sm btn-primary card-tools edit" style="cursor:not-allowed">
