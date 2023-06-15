@@ -118,7 +118,7 @@
                                 @if($visits->visits_status_id == 5)
                                     <tr>
                                         <th>صوره اكتمال الطلب</th>
-                                        <td><img class="img-fluid" style="width: 85px;" src="{{asset($visits->image)}}"></td>
+                                        <td><img class="img-fluid" style="width: 40px;" src="{{asset($visits->image)}}"></td>
                                     </tr>
                                 @endif
 
