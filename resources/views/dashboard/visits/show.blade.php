@@ -369,8 +369,8 @@
                     directionsRenderer.setDirections(response);
                 })
                 .catch((e) => swal({
-                    title: "Directions request failed",
-                    text: "No route could be found between the origin and destination",
+                    title: "فشل طلب الاتجاهات",
+                    text: "لا يمكن العثور على طريق بين الأصل والوجهة",
                     type: 'error',
                     padding: '2em'
                 })
