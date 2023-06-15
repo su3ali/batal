@@ -180,7 +180,8 @@ class OrderController extends Controller
         $category_ids = array_unique($request->category_id);
         foreach ($category_ids as $key => $category_id) {
             $last = Booking::query()->latest()->first()?->id;
-            $booking_no = 'dash2023/' . $last ? $last + 1 : 1;
+            $num = $last ? $last + 1 : 1;
+            $booking_no = 'dash2023/' . $num;
             $minutes = 0;
             foreach (Service::with('BookingSetting')->whereIn('id', $request->service_id)->get() as $service){
                 $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)

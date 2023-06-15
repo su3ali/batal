@@ -97,7 +97,7 @@ class ContractOrderController extends Controller
             'user_id' => $request->user_id,
             'package_id' => $request->service_id,
             'price' => $request->price,
-            'status_id' => 1,
+            'status_id' => 2,
             'payment_method' => $request->payment_method,
             'notes' => $request->notes,
             'quantity' => $request->quantity,
@@ -106,12 +106,12 @@ class ContractOrderController extends Controller
 
         $order = Contract::query()->create($data);
         $last = Booking::query()->latest()->first()?->id;
-        $booking_no = 'dash2023/'.$last?$last+1: 1;
-
+        $num = $last ? $last + 1 : 1;
+        $booking_no = 'dash2023/' . $num;
 
         foreach ($request->day as $key => $item){
             $booking = [
-                'booking_no' => $booking_no+$key,
+                'booking_no' => $booking_no,
                 'user_id' => $request->user_id,
                 'package_id' => $request->service_id,
                 'contract_order_id' => $order->id,

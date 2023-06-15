@@ -108,6 +108,19 @@
                                     <th>الحاله</th>
                                     <td>{{$visits->status?->name}}</td>
                                 </tr>
+                            @if($visits->visits_status_id == 6)
+                                <tr>
+                                    <th>سبب الالغاء</th>
+                                    <td>{{$visits->cancelReason?->reason}}</td>
+                                </tr>
+                            @endif
+
+                                @if($visits->visits_status_id == 5)
+                                    <tr>
+                                        <th>صوره اكتمال الطلب</th>
+                                        <td><img class="img-fluid" style="width: 85px;" src="{{asset($visits->image)}}"></td>
+                                    </tr>
+                                @endif
 
                                 <tr>
                                     <th>الملاحظات</th>
@@ -250,12 +263,39 @@
 
                     $.each(steps,function(index, node){
                         var stepNum = node.getAttribute('data-id');
-                        if (stepNum == data) {
-                            node.setAttribute("id", "await");
+                        if(data != 5 && data != 6){
+                            console.log(stepNum)
+
+                            if (stepNum == data) {
+                                node.setAttribute("id", "await");
+                            }
+                            if (stepNum < data) {
+                                node.setAttribute("id", "done");
+                            }
+                        }else if(data == 5 || data == 6){
+
+
+                            if(stepNum == 5 && data == 5){
+                                node.querySelector('.step-bar-left').setAttribute("style", "display:none;")
+                            }
+
+                            if (stepNum == data) {
+                                node.setAttribute("id", "done");
+
+                            }
+                            if (stepNum < data) {
+                                node.setAttribute("id", "done");
+                            }
+
+                            if(stepNum == 6 && data == 5){
+                                node.setAttribute("style", "display:none;");
+                            }else if(stepNum == 5 && data == 6){
+                                node.setAttribute("style", "display:none;");
+                            }
+
+
                         }
-                        if (stepNum < data) {
-                            node.setAttribute("id", "done");
-                        }
+
 
                     })
                 }
@@ -335,8 +375,8 @@
 
 
 
-        setInterval(getLocation,60000)
-        setInterval(visitStatus,60000)
+        setInterval(getLocation,10000)
+        setInterval(visitStatus,10000)
 
     </script>
 

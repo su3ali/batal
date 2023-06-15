@@ -36,7 +36,7 @@ class TechnicianController extends Controller
                     return $row->specialization?->name;
                 })
                 ->addColumn('t_image', function ($row) {
-                    return '<img class="img-fluid" src="'.asset($row->image).'"/>';
+                    return '<img class="img-fluid" style="width: 85px;" src="'.asset($row->image).'"/>';
                 })
                 ->addColumn('status', function ($row) {
                     $checked = '';
