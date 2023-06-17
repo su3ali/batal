@@ -111,7 +111,7 @@ class VisitsController extends Controller
         $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
         Visit::query()->create($validated);
 
-        $allTechn = Technician::where('group_id')->whereNotNull('fcm_token')->get();
+        $allTechn = Technician::where('group_id',$request->assign_to_id)->whereNotNull('fcm_token')->get();
 
         if (count($allTechn) > 0){
 
@@ -128,7 +128,7 @@ class VisitsController extends Controller
             $FcmTokenArray = $allTechn->pluck('fcm_token');
 
             $notification = [
-                'device_token' => isset($FcmToken) ?[$FcmToken] : $FcmTokenArray,
+                'device_token' => $FcmTokenArray,
                 'title' => $title,
                 'message' => $message,
                 'type'=>'technician',
