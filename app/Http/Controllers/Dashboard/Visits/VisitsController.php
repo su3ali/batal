@@ -10,11 +10,14 @@ use App\Models\BookingSetting;
 use App\Models\ContractPackage;
 use App\Models\OrderService;
 use App\Models\Service;
+use App\Models\Technician;
 use App\Models\Visit;
 use App\Models\VisitsStatus;
+use App\Notifications\SendPushNotification;
 use App\Traits\imageTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
@@ -107,10 +110,34 @@ class VisitsController extends Controller
         $validated['duration'] = $end_time->diffInMinutes($start_time);
         $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
         Visit::query()->create($validated);
-//
-//        $booking->update([
-//            'booking_status_id'=> 2
-//        ]);
+
+        $allTechn = Technician::where('group_id')->whereNotNull('fcm_token')->get();
+
+        if (count($allTechn) > 0){
+
+            $title = 'موعد زيارة جديد';
+            $message = 'لديك موعد زياره جديد';
+
+            foreach ($allTechn as $tech){
+                Notification::send(
+                    $tech,
+                    new SendPushNotification($title,$message)
+                );
+            }
+
+            $FcmTokenArray = $allTechn->pluck('fcm_token');
+
+            $notification = [
+                'device_token' => isset($FcmToken) ?[$FcmToken] : $FcmTokenArray,
+                'title' => $title,
+                'message' => $message,
+                'type'=>'technician',
+                'code'=> 1,
+            ];
+
+            $this->pushNotification($notification);
+        }
+
 
         session()->flash('success');
         return redirect()->back();

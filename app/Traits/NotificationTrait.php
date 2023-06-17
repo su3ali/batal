@@ -17,6 +17,7 @@ trait NotificationTrait
           'title' => $notification['title'],
           'body' => $notification['message'],
           'type' => $notification['type'],
+          'code' => $notification['code'],
 
       ];
 
