@@ -37,7 +37,7 @@ class AuthController extends Controller
             $techn->update([
                 'fcm_token' => $request->fcm_token
             ]);
-            $this->message = t_('login successfully, but code is needed');
+            $this->message = t_('login successfully');
             $this->body['technician'] = TechnicianResource::make($techn);
             $this->body['accessToken'] = $techn->createToken('technician-token',['technician'])->plainTextToken;
             return self::apiResponse(200, $this->message, $this->body);
