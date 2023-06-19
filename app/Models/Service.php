@@ -61,4 +61,8 @@ class Service extends Model
         return $this->category->groups->count();
     }
 
+    public function icons(){
+        return $this->belongsToMany(Icon::class, 'service_icons');
+    }
+
 }

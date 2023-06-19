@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BookingSetting;
 use App\Models\Category;
 use App\Models\Group;
+use App\Models\Icon;
 use App\Models\Measurement;
 use App\Models\Service;
 use App\Models\ServiceGroup;
@@ -78,8 +79,9 @@ class ServiceController extends Controller
     {
         $categories = category::whereNull('parent_id')->where('active', 1)->get()->pluck('title', 'id');
         $groups = Group::query()->get();
+        $icons = Icon::query()->get();
         $measurements = Measurement::query()->get();
-        return view('dashboard.core.services.create', compact('categories', 'groups','measurements'));
+        return view('dashboard.core.services.create', compact('categories', 'groups','measurements','icons'));
     }
 
     public function store(Request $request)
@@ -97,13 +99,16 @@ class ServiceController extends Controller
             'type' => 'required|in:evaluative,fixed',
 //            'group_ids' => 'required|array',
 //            'group_ids.*' => 'required|exists:groups,id',
+
+            'icon_ids' => 'required|array',
+            'icon_ids.*' => 'required|exists:icons,id',
             'start_from' => 'nullable|Numeric',
             'is_quantity' => 'nullable|in:on,off',
             'best_seller' => 'nullable|in:on,off',
 
         ]);
 
-        $data = $request->except(['_token', 'group_ids','is_quantity','best_seller']);
+        $data = $request->except(['_token', 'group_ids','is_quantity','best_seller','icon_ids']);
 
         if ($request['is_quantity'] && $request['is_quantity'] == 'on'){
             $data['is_quantity'] = 1;
@@ -118,6 +123,8 @@ class ServiceController extends Controller
         }
 
         $service = Service::query()->create($data);
+
+        $service->icons()->sync($request->icon_ids);
 
 
         BookingSetting::create([
@@ -150,7 +157,9 @@ class ServiceController extends Controller
             ->orWhereIn('id', ServiceGroup::query()->where('service_id', $service->id)->pluck('group_id')->toArray())
             ->get();
         $measurements = Measurement::query()->get();
-        return view('dashboard.core.services.edit', compact('service', 'categories', 'groups','measurements'));
+        $icons = Icon::query()->get();
+
+        return view('dashboard.core.services.edit', compact('service', 'categories', 'groups','measurements','icons'));
     }
 
     public function update(Request $request, $id)
@@ -170,11 +179,13 @@ class ServiceController extends Controller
             'start_from' => 'nullable|Numeric',
 //            'group_ids' => 'required|array',
 //            'group_ids.*' => 'required|exists:groups,id',
+            'icon_ids' => 'required|array',
+            'icon_ids.*' => 'required|exists:icons,id',
             'is_quantity' => 'nullable|in:on,off',
             'best_seller' => 'nullable|in:on,off',
 
         ]);
-        $data = $request->except(['_token', 'group_ids','is_quantity','best_seller']);
+        $data = $request->except(['_token', 'group_ids','is_quantity','best_seller','icon_ids']);
 
         if ($request['is_quantity'] && $request['is_quantity'] == 'on'){
             $data['is_quantity'] = 1;
@@ -195,6 +206,8 @@ class ServiceController extends Controller
         $service = Service::find($id);
 
         $service->update($data);
+
+        $service->icons()->sync($request->icon_ids);
 
         ServiceGroup::query()->where('service_id', $service->id)->delete();
 //        foreach ($request->group_ids as $group_id) {

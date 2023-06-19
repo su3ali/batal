@@ -66,6 +66,9 @@ route_group('core', function () {
     Route::resource('measurements', 'MeasurementsController');
     Route::get('measurements/change_status/change', 'MeasurementsController@change_status')->name('measurements.change_status');
 
+    Route::get('icon/change_status', 'ServiceIconController@change_status')->name('icon.change_status');
+    Route::resource('icon', 'ServiceIconController');
+
 
 
 });

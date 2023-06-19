@@ -200,7 +200,40 @@
 
 {{--                                    </div>--}}
 
-                                    <div class="form-group col-md-3">
+                                        <div class="form-group col-md-6">
+
+                                            <label for="icon_ids">الايقونات</label>
+                                            <select id="icon_ids" multiple class="select2 form-control pt-1"
+                                                    name="icon_ids[]" required>
+                                                <option disabled>{{__('dash.choose')}}</option>
+                                                @foreach($icons as $icon)
+                                                    <option value="{{$icon->id}}">{{$icon->title}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('icon_ids')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+
+                                        </div>
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="measurement_id">وحدات القياس</label>
+                                        <select id="measurement_id" name="measurement_id" class="select2 form-control pt-1"
+                                                required>
+                                            <option disabled>{{__('dash.choose')}}</option>
+                                            @foreach($measurements as $measurement)
+                                                <option value="{{$measurement->id}}">{{$measurement->name}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('measurement_id')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+
+                                    <div class="form-group col-md-6">
                                         <label for="is_quantity"></label>
                                         <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
                                             <label class="mx-5" for="is_quantity">السماح بزياده الكميه</label>
@@ -214,7 +247,7 @@
                                     </div>
 
 
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-6">
                                         <label for="is_quantity"></label>
                                         <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
                                             <label class="mx-5" for="is_quantity">الاكثر مبيعا</label>
@@ -228,21 +261,6 @@
                                     </div>
 
 
-                                    <div class="form-group col-md-6">
-
-                                        <label for="measurement_id">وحدات القياس</label>
-                                        <select id="measurement_id" name="measurement_id" class="select2 form-control pt-1"
-                                                 required>
-                                            <option disabled>{{__('dash.choose')}}</option>
-                                            @foreach($measurements as $measurement)
-                                                <option value="{{$measurement->id}}">{{$measurement->name}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('measurement_id')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
                                 </div>
                                 <div class="form-row mb-2">
 

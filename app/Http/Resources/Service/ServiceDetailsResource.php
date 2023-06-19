@@ -29,6 +29,7 @@ class ServiceDetailsResource extends JsonResource
             'price' => $this->price,
             'type' => $this->type,
             'measurement' => MeasurementResource::make($this->measurement),
+            'icons' => IconResource::collection($this->icons),
             'duration' => $this->duration,
             'terms_and_conditions' => $this->ter_cond,
         ];

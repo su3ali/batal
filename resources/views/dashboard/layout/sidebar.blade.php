@@ -261,6 +261,10 @@
                         <li>
                             <a href="{{route('dashboard.core.service.index')}}"> {{__('dash.Services')}} </a>
                         </li>
+
+                        <li>
+                            <a href="{{route('dashboard.core.icon.index')}}"> الايقونات </a>
+                        </li>
                     </ul>
                 </li>
             @endcan
