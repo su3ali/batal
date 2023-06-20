@@ -26,7 +26,7 @@ class HomeController extends Controller
 
     public function __construct()
     {
-        $this->middleware('localize');
+        $this->middleware('localization');
     }
 
     protected function index(Request $request)
@@ -53,7 +53,7 @@ class HomeController extends Controller
             ->where('active',1)->take(9)
             ->get()->shuffle();
         $this->body['services_most_wanted'] = ServiceResource::collection($mostSellingServices);
-        $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->take(9)->get()->shuffle());
+        $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->get()->shuffle());
         $this->body['total_items_in_cart'] = auth()->user()->carts->count();
         $servicesCategories = Category::query()->where('active', 1)->get();
         $this->body['services_categories'] = ServiceCategoryResource::collection($servicesCategories);

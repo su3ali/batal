@@ -13,7 +13,7 @@ namespace App\Http\Controllers\Api\Core;
     use ApiResponse;
      public function __construct()
      {
-         $this->middleware('localize');
+         $this->middleware('localization');
      }
     public  function store(ContactRequest $request)
     {

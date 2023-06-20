@@ -2,7 +2,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
@@ -19,7 +22,8 @@
         "spatie/laravel-enum": "^3.0",
         "spatie/laravel-permission": "^5.9",
         "yajra/laravel-datatables": "^1.5",
-      "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-intl": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

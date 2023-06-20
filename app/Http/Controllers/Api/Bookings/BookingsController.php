@@ -19,7 +19,7 @@ class BookingsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('localize');
+        $this->middleware('localization');
     }
     protected function myBookings(){
         $user = User::with('bookings.booking_status', 'bookings.service.BookingSetting')->where('id', auth('sanctum')->user()->id)->first();

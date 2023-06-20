@@ -19,7 +19,7 @@ class CheckoutController extends Controller
 
     public function __construct()
     {
-        $this->middleware('localize');
+        $this->middleware('localization');
     }
 
     protected function checkout(Request $request)

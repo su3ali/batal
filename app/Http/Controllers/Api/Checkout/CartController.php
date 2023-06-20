@@ -26,7 +26,7 @@ class CartController extends Controller
 
     public function __construct()
     {
-        $this->middleware('localize');
+        $this->middleware('localization');
     }
 
     protected function add_to_cart(Request $request): JsonResponse
@@ -91,14 +91,14 @@ class CartController extends Controller
 
             foreach ($request->category_ids as $key => $category_id) {
 
-                $countGroup = CategoryGroup::where('category_id',$category_id)->count();
+                $countGroup = CategoryGroup::where('category_id', $category_id)->count();
 
-                $countInBooking = Booking::with(['visit'=>function($q){
-                    $q->whereNotIn('visits_status_id',[5,6]);
-                }])->where('category_id',$category_id)->where('date',$request->date[$key])
-                    ->where('time',Carbon::createFromFormat('H:i A',$request->time[$key])->format('H:i:s'))->count();
+                $countInBooking = Booking::with(['visit' => function ($q) {
+                    $q->whereNotIn('visits_status_id', [5, 6]);
+                }])->where('category_id', $category_id)->where('date', $request->date[$key])
+                    ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
 
-                if ($countInBooking == $countGroup){
+                if ($countInBooking == $countGroup) {
                     return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
                 }
 
@@ -171,47 +171,53 @@ class CartController extends Controller
     protected function getAvailableTimesFromDate(Request $request)
     {
         $rules = [
-            'date' => 'required|date',
             'service_ids' => 'required|array',
             'service_ids.*' => 'required|exists:services,id',
         ];
         $request->validate($rules, $request->all());
-        $day = Carbon::parse($request->date)->locale('en')->dayName;
-
         $times = [];
         foreach ($request->service_ids as $service_id) {
             $bookSetting = BookingSetting::where('service_id', $service_id)->first();
-            if ($bookSetting) {
-                $get_time = $this->getTime($day, $bookSetting);
-                if ($get_time == true) {
-                    $times[] = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
-                        ->toPeriod(
-                            \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
-                            Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
-                        );
+            $dayStartIndex = array_search($bookSetting->service_start_date, $this->days);
+            $dayEndIndex = array_search($bookSetting->service_end_date, $this->days);
+            $serviceDays = [];
+            for ($i = $dayStartIndex; $i <= $dayEndIndex; $i++) {
+                $serviceDays[] = $this->days[$i];
+            }
+            $dates = [];
+            for ($i = 0; $i < 14; $i++) {
+                $date = date('Y-m-d', strtotime('+' . $i . ' day'));
+                if (in_array(date('l', strtotime($date)), $serviceDays)) {
+                    $dates[] = $date;
                 }
-
+            }
+            if ($bookSetting) {
+                foreach ($dates as $day) {
+                    $dayName = Carbon::parse($day)->locale('en')->dayName;
+                    $get_time = $this->getTime($dayName, $bookSetting);
+                    if ($get_time == true) {
+                        $times[$service_id][$day] = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
+                            ->toPeriod(
+                                \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
+                                Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
+                            );
+                    }
+                }
             }
         }
-        $finalAvailTimes = [];
-        $oldMemory = [];
-        foreach ($times as $time) {
-            $allTimes = [];
-            foreach ($time as $t) {
-                $allTimes[] = $t->format('g:i A');
+        $collectionOfTimesOfServices = [];
+        foreach ($times as $service_id => $timesInDays) {
+            $collectionOfTimes = [];
+            foreach ($timesInDays as $day => $time) {
+                $times = $time->toArray();
+                $subTimes = collect($times)->map(function ($time) {
+                    return $time->format('g:i A');
+                });
+                $collectionOfTimes[$day] = $subTimes;
             }
-            if (isset($oldMemory[0])) {
-                $finalAvailTimes = array_intersect($allTimes, $oldMemory);
-            } else {
-                $oldMemory = $allTimes;
-                $finalAvailTimes = $allTimes;
-            }
+            $collectionOfTimesOfServices[$service_id] = $collectionOfTimes;
         }
-//        foreach ($finalAvailTimes as $finalAvailTime){
-//
-//        }
-        //check if groups available to be continued
-        $this->body['times'] = $finalAvailTimes;
+        $this->body['times'] = $collectionOfTimesOfServices;
         return self::apiResponse(200, null, $this->body);
     }
 
@@ -238,8 +244,8 @@ class CartController extends Controller
         $this->body['total_items_in_cart'] = auth()->user()->carts->count();
         $this->body['coupon'] = null;
         $coupon = $carts->first()?->coupon;
-        if ($coupon){
-            $discount_value = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
+        if ($coupon) {
+            $discount_value = $coupon->type == 'percentage' ? ($coupon->value / 100) * $total : $coupon->value;
             $this->body['coupon'] = [
                 'code' => $coupon->code,
                 'total_before_discount' => $total,
@@ -249,3 +255,6 @@ class CartController extends Controller
         }
     }
 }
+
+//                $formatter = new \IntlDateFormatter(app()->getLocale(), \IntlDateFormatter::FULL, \IntlDateFormatter::NONE);
+//                $collectionOfTimes[$formatter->format(strtotime($day))] = $subTimes;

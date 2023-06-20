@@ -18,7 +18,7 @@ class ServiceController extends Controller
 
     public function __construct()
     {
-        $this->middleware('localize');
+        $this->middleware('localization');
     }
 
     protected function orderedServices(){

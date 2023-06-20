@@ -27,7 +27,7 @@ class VisitsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('localize');
+        $this->middleware('localization');
     }
 
     protected function myCurrentOrders()
