@@ -14,4 +14,8 @@ class OrderService extends Model
         return $this->hasOne(Service::class, 'id', 'service_id');
     }
 
+    public function orders(){
+        return $this->hasMany(Order::class, 'id', 'order_id');
+    }
+
 }

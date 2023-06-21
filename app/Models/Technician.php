@@ -31,4 +31,8 @@ class Technician extends Authenticatable
         return $this->hasOne(Group::class, 'id', 'group_id');
     }
 
+    public function rates(){
+        return $this->hasMany(RateTechnician::class, 'technician_id', 'id');
+    }
+
 }

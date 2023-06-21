@@ -65,4 +65,8 @@ class Service extends Model
         return $this->belongsToMany(Icon::class, 'service_icons');
     }
 
+    public function rates(){
+        return $this->hasMany(RateService::class, 'service_id', 'id');
+    }
+
 }

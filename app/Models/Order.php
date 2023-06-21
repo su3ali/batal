@@ -19,6 +19,9 @@ class Order extends Model
     public function service(){
         return $this->hasOne(Service::class, 'id', 'service_id');
     }
+    public function contract(){
+        return $this->hasOne(Contract::class, 'id', 'service_id');
+    }
     public function status(){
         return $this->hasOne(OrderStatus::class, 'id', 'status_id');
     }
@@ -28,4 +31,10 @@ class Order extends Model
     public function services(){
         return $this->belongsToMany(Service::class, 'order_services')->withPivot(['price', 'quantity']);
     }
+
+    public function transaction(){
+        return $this->hasOne(Transaction::class, 'id', 'order_id');
+    }
+
+
 }
