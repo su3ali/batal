@@ -506,6 +506,47 @@
             @endcan
 
 
+                <li class="menu">
+                    <a href="#reports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-flag"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+
+                            <span>تقارير</span>
+                        </div>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                 class="feather feather-chevron-right">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+                    <ul class="collapse submenu list-unstyled" id="reports" data-parent="#accordionExample">
+                        <li>
+                            <a href="{{route('dashboard.report.sales')}}"> تقرير المبيعات </a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('dashboard.report.contractSales')}}"> تقرير مبيعات تقاول </a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('dashboard.report.customers')}}"> تقرير العملاء </a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('dashboard.report.technicians')}}"> تقرير الفنيين </a>
+                        </li>
+
+                        <li>
+                            <a href="{{route('dashboard.report.services')}}"> تقرير الخدمات </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+
             {{--@can('view_setting')--}}
             {{--<li class="menu">--}}
             {{--<a href="{{route('dashboard.settings')}}" aria-expanded="false"--}}
