@@ -210,14 +210,15 @@ class CartController extends Controller
             $collectionOfTimes = [];
             foreach ($timesInDays as $day => $time) {
                 $times = $time->toArray();
-                $subTimes = collect($times)->map(function ($time) {
+                $subTimes['day'] = $day;
+                $subTimes['times'] = collect($times)->map(function ($time) {
                     return $time->format('g:i A');
                 });
-                $collectionOfTimes[$day] = $subTimes;
+                $collectionOfTimes[] = $subTimes;
             }
-            $collectionOfTimesOfServices[$service_id] = $collectionOfTimes;
+            $collectionOfTimesOfServices = $collectionOfTimes;
         }
-        $this->body['times'] = $collectionOfTimesOfServices;
+        $this->body['times']['available_days'] = $collectionOfTimesOfServices;
         return self::apiResponse(200, null, $this->body);
     }
 
