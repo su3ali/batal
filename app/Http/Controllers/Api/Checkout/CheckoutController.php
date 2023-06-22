@@ -28,6 +28,7 @@ class CheckoutController extends Controller
             'user_address_id' => 'required|exists:user_addresses,id',
             'payment_method' => 'required|in:cache,visa',
             'coupon' => 'nullable|numeric',
+            'transaction_id' => 'nullable',
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -120,41 +121,44 @@ class CheckoutController extends Controller
             Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
             $this->body['order_id'] = $order->id;
             return self::apiResponse(200, t_('order created successfully'), $this->body);
+        }else{
+            Transaction::create([
+                'order_id' => $order->id,
+                'transaction_number' => $request->transaction_id,
+                'payment_result' => 'success',
+            ]);
+            Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
+            $this->body['order_id'] = $order->id;
+            return self::apiResponse(200, t_('order created successfully'), $this->body);
         }
     }
 
 
     public function callbackPayment(Request $request)
     {
-        $result = app(Paypage::class)->queryTransaction($request->tranRef);
         $order = Order::findOrFail($request->order_id);
 
-        if ($result->success) {
+        if ($request->payment_result == 'successfully') {
             $carts = Cart::where('user_id', $order->user_id)->get();
-            foreach ($carts as $cart) {
-                $service = $cart->service;
-                $service->stock = $cart->service->stock - $cart->quantity;
-                $service->save();
-            }
+
             Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
 
             Transaction::create([
                 'order_id' => $request->order_id,
-                'transaction_number' => $result->transaction_id,
+                'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
             ]);
-            $order->status = 'paid';
-            $order->save();
 
-            $image = 'dashboard/img/media/success.png';
+            $this->body['order_id'] = $order->id;
+            return self::apiResponse(200, t_('order and transaction created successfully'), $this->body);
+
         } else {
             Transaction::create([
                 'order_id' => $request->order_id,
-                'transaction_number' => $result->transaction_id,
+                'transaction_number' => $request->transaction_id,
                 'payment_result' => 'fail',
             ]);
-            $image = 'dashboard/img/media/error.jpg';
+            return self::apiResponse(200, t_('transaction created failed'));
         }
-        return view('frontend.payment_back', compact('image'));
     }
 }
