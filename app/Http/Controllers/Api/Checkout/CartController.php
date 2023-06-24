@@ -10,6 +10,7 @@ use App\Models\BookingSetting;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\CategoryGroup;
+use App\Models\ContractPackage;
 use App\Models\Group;
 use App\Models\Service;
 use App\Models\Visit;
@@ -31,26 +32,57 @@ class CartController extends Controller
 
     protected function add_to_cart(Request $request): JsonResponse
     {
-        $service = Service::with('category')->find($request->service_id);
-
-        if ($service && $service->active === 1) {
-            $cart = Cart::query()->where('user_id', auth()->user()->id)->where('service_id', $service->id)
-                ->first();
-            if ($cart) {
-                return self::apiResponse(400, t_('Already In Your Cart!'), $this->body);
+        if ($request->type == 'package') {
+            $package = ContractPackage::with('service.category')->find($request->package_id);
+            if ($package && $package->active === 1) {
+                $cart = Cart::query()->where('user_id', auth()->user()->id)
+                    ->first();
+                if ($cart) {
+                    return self::apiResponse(400, t_('finish current order first or clear the cart'), $this->body);
+                }
+                for ($i = 0; $i < $package->visit_number; $i++) {
+                    Cart::query()->create([
+                        'user_id' => auth()->user()->id,
+                        'contract_package_id' => $package->id,
+                        'service_id' => $package->service_id,
+                        'category_id' => $package->service->category_id,
+                        'price' => $package->price,
+                        'quantity' => $package->visit_number,
+                        'type' => 'package'
+                    ]);
+                }
+//                $carts = Cart::query()->where('user_id', auth()->user()->id)->count();
+//                $this->body['total_items_in_cart'] = $carts;
+                $this->body['total_items_in_cart'] = 1;
+                return self::apiResponse(200, t_('Added To Cart Successfully'), $this->body);
             }
 
-            Cart::query()->create([
-                'user_id' => auth()->user()->id,
-                'service_id' => $service->id,
-                'category_id' => $service->category->id,
-                'price' => $service->price,
-                'quantity' => $request->quantity
-            ]);
-            $carts = Cart::query()->where('user_id', auth()->user()->id)->count();
-            $this->body['total_items_in_cart'] = $carts;
-            return self::apiResponse(200, t_('Added To Cart Successfully'), $this->body);
+        } else {
+            $service = Service::with('category')->find($request->service_id);
+            if ($service && $service->active === 1) {
+                $cart = Cart::query()->where('user_id', auth()->user()->id)->where('service_id', $service->id)
+                    ->first();
+                if ($cart) {
+                    return self::apiResponse(400, t_('Already In Your Cart!'), $this->body);
+                }
+                if (auth()->user()->carts->where('type', 'package')->first()) {
+                    return self::apiResponse(400, t_('finish current order first or clear the cart'), $this->body);
+                }
+                Cart::query()->create([
+                    'user_id' => auth()->user()->id,
+                    'service_id' => $service->id,
+                    'category_id' => $service->category->id,
+                    'price' => $service->price,
+                    'quantity' => $request->quantity,
+                    'type' => 'service'
+                ]);
+                $carts = Cart::query()->where('user_id', auth()->user()->id)->count();
+                $this->body['total_items_in_cart'] = $carts;
+                return self::apiResponse(200, t_('Added To Cart Successfully'), $this->body);
+            }
+
         }
+
         return self::apiResponse(400, t_('service not found or an error happened.'), $this->body);
 
     }
@@ -64,8 +96,8 @@ class CartController extends Controller
 
     protected function updateCart(Request $request)
     {
-
-        if (auth()->user()->carts->first()) {
+        $cart = auth()->user()->carts->first();
+        if ($cart) {
             $rules = [
                 'category_ids' => 'required|array',
                 'category_ids.*' => 'required|exists:categories,id',
@@ -76,41 +108,74 @@ class CartController extends Controller
                 'notes' => 'nullable|array',
                 'notes.*' => 'nullable|string|max:191',
             ];
-
             $request->validate($rules, $request->all());
-            $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
-            if (
-                count($request->category_ids) < $cartCategoryCount
-                ||
-                count($request->time) < $cartCategoryCount
-                ||
-                count($request->date) < $cartCategoryCount
-            ) {
-                return self::apiResponse(400, t_('date or time is missed'), $this->body);
-            }
-
-            foreach ($request->category_ids as $key => $category_id) {
-
-                $countGroup = CategoryGroup::where('category_id', $category_id)->count();
-
-                $countInBooking = Booking::with(['visit' => function ($q) {
-                    $q->whereNotIn('visits_status_id', [5, 6]);
-                }])->where('category_id', $category_id)->where('date', $request->date[$key])
-                    ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
-
-                if ($countInBooking == $countGroup) {
-                    return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
+            if ($cart->type == 'service' || !$cart->type) {
+                $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
+                if (
+                    count($request->category_ids) < $cartCategoryCount
+                    ||
+                    count($request->time) < $cartCategoryCount
+                    ||
+                    count($request->date) < $cartCategoryCount
+                ) {
+                    return self::apiResponse(400, t_('date or time is missed'), $this->body);
                 }
 
+                foreach ($request->category_ids as $key => $category_id) {
 
-                Cart::query()->where('user_id', auth('sanctum')->user()->id)
-                    ->where('category_id', $category_id)->update([
-                        'date' => $request->date[$key],
-                        'time' => Carbon::parse($request->time[$key])->toTimeString(),
-                        'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : ''
-                    ]);
+                    $countGroup = CategoryGroup::where('category_id', $category_id)->count();
+
+                    $countInBooking = Booking::with(['visit' => function ($q) {
+                        $q->whereNotIn('visits_status_id', [5, 6]);
+                    }])->where('category_id', $category_id)->where('date', $request->date[$key])
+                        ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
+
+                    if ($countInBooking == $countGroup) {
+                        return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
+                    }
+
+
+                    Cart::query()->where('user_id', auth('sanctum')->user()->id)
+                        ->where('category_id', $category_id)->update([
+                            'date' => $request->date[$key],
+                            'time' => Carbon::parse($request->time[$key])->toTimeString(),
+                            'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : ''
+                        ]);
+                }
+                return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
+            } else {
+                $cartCategoryCount = auth()->user()->carts->first()->quantity;
+                if (
+                    count($request->category_ids) < $cartCategoryCount
+                    ||
+                    count($request->time) < $cartCategoryCount
+                    ||
+                    count($request->date) < $cartCategoryCount
+                ) {
+                    return self::apiResponse(400, t_('date or time is missed'), $this->body);
+                }
+                foreach (auth()->user()->carts as $key => $cart) {
+
+                    $countGroup = CategoryGroup::where('category_id', $cart->category_id)->count();
+
+                    $countInBooking = Booking::with(['visit' => function ($q) {
+                        $q->whereNotIn('visits_status_id', [5, 6]);
+                    }])->where('category_id', $cart->category_id)->where('date', $request->date[$key])
+                        ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
+
+                    if ($countInBooking == $countGroup) {
+                        return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
+                    }
+
+                    $cart->update([
+                            'date' => $request->date[$key],
+                            'time' => Carbon::parse($request->time[$key])->toTimeString(),
+                            'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : ''
+                        ]);
+                }
+                return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
+
             }
-            return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
         }
         return self::apiResponse(400, t_('cart empty'), $this->body);
     }
@@ -227,8 +292,9 @@ class CartController extends Controller
      */
     protected function handleCartResponse(): void
     {
-        $carts = Cart::with('coupon')->where('user_id', auth()->user()->id)->get();
+        $carts = Cart::with('coupon')->where('user_id', auth()->user()->id)->where('type', 'service')->orWhereNull('type')->get();
         $cat_ids = $carts->pluck('category_id');
+        $this->body['cart_type'] = auth()->user()->carts->first()?->type;
         $this->body['carts'] = [];
         $cat_ids = array_unique($cat_ids->toArray());
         foreach ($cat_ids as $cat_id) {
@@ -243,6 +309,21 @@ class CartController extends Controller
         $total = number_format($this->calc_total($carts), 2, '.', '');
         $this->body['total'] = $total;
         $this->body['total_items_in_cart'] = auth()->user()->carts->count();
+
+        //packages
+        $cart_package = Cart::with('coupon')->where('user_id', auth()->user()->id)->where('type', 'package')->first();
+        if ($cart_package) {
+            $this->body['total'] = $cart_package->price;
+
+            $cat_id = $cart_package->category_id;
+            $this->body['cart_package'][] = [
+                'category_id' => $cat_id,
+                'category_title' => Category::query()->find($cat_id)?->title,
+                'cart-services' => CartResource::make($cart_package)
+            ];
+        } else {
+            $this->body['cart_package'] = null;
+        }
         $this->body['coupon'] = null;
         $coupon = $carts->first()?->coupon;
         if ($coupon) {

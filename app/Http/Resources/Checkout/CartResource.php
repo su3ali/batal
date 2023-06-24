@@ -17,8 +17,8 @@ class CartResource extends JsonResource
     public function toArray($request)
     {
         $images = [];
-        foreach ($this->service->serviceImages as $serviceImage){
-            if ($serviceImage->image){
+        foreach ($this->service->serviceImages as $serviceImage) {
+            if ($serviceImage->image) {
                 $images[] = asset($serviceImage->image);
             }
         }
@@ -30,7 +30,9 @@ class CartResource extends JsonResource
             'service_title' => $this->service?->title,
             'quantity' => $this->quantity,
             'service_image' => $images,
-            'price' => ($this->price * $this->quantity),
+            'price' => $this->contract_package_id ? $this->price : ($this->price * $this->quantity),
+            'package_id' => $this->contract_package_id,
+            'type' => $this->type,
         ];
     }
 }
