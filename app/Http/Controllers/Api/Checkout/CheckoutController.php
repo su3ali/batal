@@ -120,7 +120,7 @@ class CheckoutController extends Controller
                 'payment_result' => 'success',
             ]);
         }
-//        Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
+        Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
         return self::apiResponse(200, t_('order created successfully'), $this->body);    }
 
@@ -174,7 +174,7 @@ class CheckoutController extends Controller
                 'payment_result' => 'success',
             ]);
         }
-//        Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
+        Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
         return self::apiResponse(200, t_('order created successfully'), $this->body);
     }
