@@ -185,7 +185,7 @@ class CheckoutController extends Controller
         }
 
         $user->update([
-            'point' => $user->point - $request->wallet_discounts
+            'point' => $user->point - $request->wallet_discounts ?? 0
         ]);
 
         $this->wallet($user,$total);
