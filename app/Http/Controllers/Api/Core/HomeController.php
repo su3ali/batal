@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Core;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Checkout\UserAddressResource;
+use App\Http\Resources\Contract\ContractResource;
 use App\Http\Resources\MainCategory\MainCategoryResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Service\ServiceCategoryResource;
@@ -11,6 +12,7 @@ use App\Http\Resources\Service\ServiceResource;
 use App\Http\Resources\Store\StoreResource;
 use App\Models\Banner;
 use App\Models\Category;
+use App\Models\ContractPackage;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\UserAddresses;
@@ -54,6 +56,7 @@ class HomeController extends Controller
             ->get()->shuffle();
         $this->body['services_most_wanted'] = ServiceResource::collection($mostSellingServices);
         $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->get()->shuffle());
+        $this->body['contracts'] = ContractResource::collection(ContractPackage::query()->where('active', 1)->take(9)->get()->shuffle());
         $this->body['total_items_in_cart'] = auth()->user()->carts->count();
         $servicesCategories = Category::query()->where('active', 1)->get();
         $this->body['services_categories'] = ServiceCategoryResource::collection($servicesCategories);
