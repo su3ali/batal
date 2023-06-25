@@ -185,7 +185,11 @@ class CartController extends Controller
         $cart = Cart::query()->find($request->cart_id);
         if ($cart) {
             if (request()->action == 'delete') {
-                $cart->delete();
+                if ($cart->type == 'package'){
+                    auth()->user()->carts->delete();
+                }else{
+                    $cart->delete();
+                }
                 $response = ['success' => 'deleted successfully'];
                 $this->handleCartResponse();
                 return self::apiResponse(200, $response['success'], $this->body);
@@ -276,6 +280,7 @@ class CartController extends Controller
             foreach ($timesInDays as $day => $time) {
                 $times = $time->toArray();
                 $subTimes['day'] = $day;
+                $subTimes['dayName'] = Carbon::parse($day)->locale(app()->getLocale())->dayName;
                 $subTimes['times'] = collect($times)->map(function ($time) {
                     return $time->format('g:i A');
                 });

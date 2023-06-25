@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Api\Checkout;
+
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Cart;
+use App\Models\Contract;
 use App\Models\Order;
 use App\Models\OrderService;
 use App\Models\Service;
@@ -36,8 +38,13 @@ class CheckoutController extends Controller
         if (!$carts->first()) {
             return self::apiResponse(400, t_('Cart is empty'), []);
         }
-        $total = $this->calc_total($carts);
-        return $this->saveOrder($user, $request, $total, $carts);
+        if ($carts->first()->type == 'package') {
+            $total = $carts->first()->price;
+            return $this->saveContract($user, $request, $total, $carts);
+        } else {
+            $total = $this->calc_total($carts);
+            return $this->saveOrder($user, $request, $total, $carts);
+        }
     }
 
     private function calc_total($carts)
@@ -78,20 +85,16 @@ class CheckoutController extends Controller
 
             $cart = Cart::query()->where('user_id', auth('sanctum')->user()->id)
                 ->where('category_id', $category_id)->first();
-
-            $last = Booking::query()->latest()->first()?Booking::query()->latest()->first()->id : 0;
-            $num = $last ? $last + 1 : 1;
-            $booking_no = 'dash2023/' . $num;
+            $booking_no = 'dash2023/' . $cart->id;
             $minutes = 0;
-            foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service){
+            foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
                 $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
-                        * $carts->where('service_id', $service->id)->first()->quantity;
+                    * $carts->where('service_id', $service->id)->first()->quantity;
                 $minutes += $serviceMinutes;
             }
             Booking::query()->create([
                 'booking_no' => $booking_no,
                 'user_id' => auth('sanctum')->user()->id,
-//                'service_id' => $cart->service_id,
                 'category_id' => $category_id,
                 'order_id' => $order->id,
                 'user_address_id' => $order->user_address_id,
@@ -104,61 +107,76 @@ class CheckoutController extends Controller
                 'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
             ]);
         }
-//        if ($request->payment_type != 1) {
-//            $address = $user_address->address;
-//            $city = $user_address->shipping->area->title;
-//            $country = Area::query()->find($user_address->shipping->area->parent_id)?->title;
-//            $total = $total + $order->shipping?->price;
-//            $payment = new Payment($total, $user, $order, $address, $city, $country);
-//            return $payment->payment();
-//        }
         if ($request->payment_method == 'cache') {
             $transaction = Transaction::create([
                 'order_id' => $order->id,
-                'transaction_number' => 'cache/'.rand(1111111111, 9999999999),
+                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
                 'payment_result' => 'success',
             ]);
-            Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
-            $this->body['order_id'] = $order->id;
-            return self::apiResponse(200, t_('order created successfully'), $this->body);
-        }else{
+        } else {
             Transaction::create([
                 'order_id' => $order->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
             ]);
-            Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
-            $this->body['order_id'] = $order->id;
-            return self::apiResponse(200, t_('order created successfully'), $this->body);
         }
-    }
+//        Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
+        $this->body['order_id'] = $order->id;
+        return self::apiResponse(200, t_('order created successfully'), $this->body);    }
 
-
-    public function callbackPayment(Request $request)
+    private function saveContract($user, $request, $total, $carts)
     {
-        $order = Order::findOrFail($request->order_id);
-
-        if ($request->payment_result == 'successfully') {
-            $carts = Cart::where('user_id', $order->user_id)->get();
-
-            Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
-
+        $order = Contract::create([
+            'user_id' => $user->id,
+            'discount' => $request->coupon,
+            'user_address_id' => $request->user_address_id,
+            'sub_total' => $total,
+            'total' => ($total - $request->coupon),
+            'payment_method' => $request->payment_method,
+            'status_id' => 2,
+            'package_id' => $carts->first()->contract_package_id,
+            'price' => ($total - $request->coupon),
+            'quantity' => $carts->count(),
+        ]);
+        foreach ($carts as $key => $cart) {
+            $booking_no = 'dash2023/' . $cart->id;
+            $minutes = 0;
+            foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
+                $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration);
+                $minutes += $serviceMinutes;
+            }
+            Booking::query()->create([
+                'booking_no' => $booking_no,
+                'user_id' => auth('sanctum')->user()->id,
+                'category_id' => $cart->category_id,
+                'contract_order_id' => $order->id,
+                'user_address_id' => $order->user_address_id,
+                'booking_status_id' => 1,
+                'notes' => $cart->notes,
+                'quantity' => 1,
+                'package_id' => $cart->contract_package_id,
+                'date' => $cart->date,
+                'type' => 'contract',
+                'time' => Carbon::parse($cart->time)->toTimeString(),
+                'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
+            ]);
+        }
+        if ($request->payment_method == 'cache') {
+            $transaction = Transaction::create([
+                'contract_order_id' => $order->id,
+                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+                'payment_result' => 'success',
+            ]);
+        } else {
             Transaction::create([
-                'order_id' => $request->order_id,
+                'contract_order_id' => $order->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
             ]);
-
-            $this->body['order_id'] = $order->id;
-            return self::apiResponse(200, t_('order and transaction created successfully'), $this->body);
-
-        } else {
-            Transaction::create([
-                'order_id' => $request->order_id,
-                'transaction_number' => $request->transaction_id,
-                'payment_result' => 'fail',
-            ]);
-            return self::apiResponse(200, t_('transaction created failed'));
         }
+//        Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
+        $this->body['order_id'] = $order->id;
+        return self::apiResponse(200, t_('order created successfully'), $this->body);
     }
+
 }
