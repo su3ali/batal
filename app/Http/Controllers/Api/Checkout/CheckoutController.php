@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Cart;
 use App\Models\Contract;
+use App\Models\CustomerWallet;
 use App\Models\Order;
 use App\Models\OrderService;
 use App\Models\Service;
@@ -31,6 +32,7 @@ class CheckoutController extends Controller
             'payment_method' => 'required|in:cache,visa',
             'coupon' => 'nullable|numeric',
             'transaction_id' => 'nullable',
+            'wallet_discounts' => 'nullable|numeric',
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -120,6 +122,13 @@ class CheckoutController extends Controller
                 'payment_result' => 'success',
             ]);
         }
+
+        $user->update([
+            'point' => $user->point - $request->wallet_discounts
+        ]);
+
+        $this->wallet($user,$total);
+
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
         return self::apiResponse(200, t_('order created successfully'), $this->body);    }
@@ -174,9 +183,33 @@ class CheckoutController extends Controller
                 'payment_result' => 'success',
             ]);
         }
+
+        $user->update([
+            'point' => $user->point - $request->wallet_discounts
+        ]);
+
+        $this->wallet($user,$total);
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
         return self::apiResponse(200, t_('order created successfully'), $this->body);
     }
+
+    private function wallet($user, $total){
+
+        $walletSetting = CustomerWallet::query()->first();
+
+        $wallet = ($total*$walletSetting->order_percentage)/100;
+
+        if ($wallet > $walletSetting->refund_amount){
+            $point = $walletSetting->refund_amount;
+        }else{
+            $point = $wallet;
+        }
+        $user->update([
+            'point' =>$point
+        ]);
+
+    }
+
 
 }
