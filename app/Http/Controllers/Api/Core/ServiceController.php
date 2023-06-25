@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\Core;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Contract\ContractResource;
 use App\Http\Resources\Service\ServiceDetailsResource;
 use App\Http\Resources\Service\ServiceResource;
 use App\Models\Category;
+use App\Models\ContractPackage;
 use App\Models\Order;
 use App\Models\Service;
 use App\Support\Api\ApiResponse;
@@ -50,5 +52,14 @@ class ServiceController extends Controller
             return self::apiResponse(200, null, $this->body);
         }
         return self::apiResponse(400, 'service not found', $this->body);
+    }
+
+    protected function PackageDetails($id){
+        $package = ContractPackage::query()->where('id', $id)->first();
+        if ($package){
+            $this->body['package'] = ContractResource::make($package);
+            return self::apiResponse(200, null, $this->body);
+        }
+        return self::apiResponse(400, 'package not found', $this->body);
     }
 }
