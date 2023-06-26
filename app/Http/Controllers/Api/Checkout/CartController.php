@@ -186,7 +186,7 @@ class CartController extends Controller
         if ($cart) {
             if (request()->action == 'delete') {
                 if ($cart->type == 'package'){
-                    auth()->user()->carts->delete();
+                    Cart::query()->where('user_id', auth()->user()->id)->delete();
                 }else{
                     $cart->delete();
                 }
