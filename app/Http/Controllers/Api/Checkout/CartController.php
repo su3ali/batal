@@ -247,6 +247,9 @@ class CartController extends Controller
         $times = [];
         foreach ($request->service_ids as $service_id) {
             $bookSetting = BookingSetting::where('service_id', $service_id)->first();
+            if (!$bookSetting){
+                return self::apiResponse(400, 'عفوا الخدمة غير متاحة حاليا', []);
+            }
             $dayStartIndex = array_search($bookSetting->service_start_date, $this->days);
             $dayEndIndex = array_search($bookSetting->service_end_date, $this->days);
             $serviceDays = [];
