@@ -33,6 +33,7 @@ class CartResource extends JsonResource
             'price' => $this->contract_package_id ? $this->price : ($this->price * $this->quantity),
             'package_id' => $this->contract_package_id,
             'type' => $this->type,
+            'package_name' => $this->type == 'package'? $this->package->name : null
         ];
     }
 }

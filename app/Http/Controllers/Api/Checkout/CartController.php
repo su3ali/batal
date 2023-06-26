@@ -322,7 +322,7 @@ class CartController extends Controller
         $cart_package = Cart::with('coupon')->where('user_id', auth()->user()->id)->where('type', 'package')->first();
         if ($cart_package) {
             $this->body['total'] = $cart_package->price;
-
+            $this->body['total_items_in_cart'] = 1;
             $cat_id = $cart_package->category_id;
             $this->body['cart_package'][] = [
                 'category_id' => $cat_id,
