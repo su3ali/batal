@@ -18,7 +18,7 @@ class TechnicianWalletController extends Controller
         $request->validate([
             'name_ar' => 'required|String|min:3',
             'name_en' => 'required|String|min:3',
-            'point_type' => 'nullable|in:perc,fixed',
+            'point_type' => 'nullable|in:rate,fixed',
             'price' => 'required|numeric',
             'calculation_method' => 'nullable|in:bill,service',
         ]);
@@ -34,7 +34,7 @@ class TechnicianWalletController extends Controller
         $request->validate([
             'name_ar' => 'required|String|min:3',
             'name_en' => 'required|String|min:3',
-            'point_type' => 'nullable|in:perc,fixed',
+            'point_type' => 'nullable|in:rate,fixed',
             'price' => 'required|numeric',
             'calculation_method' => 'nullable|in:bill,service',
         ]);

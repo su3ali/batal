@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\Group;
 use App\Models\Order;
 use App\Models\Technician;
+use App\Models\TechnicianWallet;
 use App\Models\User;
 use App\Models\Visit;
 use App\Support\Api\ApiResponse;
@@ -132,6 +133,20 @@ class VisitsController extends Controller
 
             if ($request->status_id == 5){
                 $data['end_date'] = Carbon::now();
+                $techWallet = TechnicianWallet::query()->first();
+                $serviceCost = $model->booking->service->price;
+                if ($techWallet->point_type == 'rate'){
+                    $money = $serviceCost * ($techWallet->price/100);
+                }else{
+                    $money = $techWallet->price;
+                }
+                $techs = Technician::query()
+                    ->whereIn('id', $model->group->technicians->pluck('id')->toArray())
+                    ->get();
+                foreach ($techs as $tech){
+                    $tech->point += $money;
+                    $tech->save();
+                }
             }
 
             $model->update($data);

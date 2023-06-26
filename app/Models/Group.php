@@ -22,4 +22,7 @@ class Group extends Model
     protected function leader(){
         return $this->hasOne(Technician::class, 'id','technician_id');
     }
+    public function technicians(){
+        return $this->hasMany(Technician::class);
+    }
 }
