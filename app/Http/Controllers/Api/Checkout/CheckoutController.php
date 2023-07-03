@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Checkout;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingSetting;
 use App\Models\Cart;
 use App\Models\Contract;
 use App\Models\CustomerWallet;
@@ -90,6 +91,10 @@ class CheckoutController extends Controller
             $booking_no = 'dash2023/' . $cart->id;
             $minutes = 0;
             foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
+                $bookSetting = BookingSetting::where('service_id', $service->id)->first();
+                if (!$bookSetting){
+                    return self::apiResponse(400, 'عفوا الخدمة غير متاحة حاليا', []);
+                }
                 $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
                     * $carts->where('service_id', $service->id)->first()->quantity;
                 $minutes += $serviceMinutes;
