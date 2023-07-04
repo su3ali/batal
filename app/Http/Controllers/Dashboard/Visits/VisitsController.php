@@ -15,6 +15,7 @@ use App\Models\Visit;
 use App\Models\VisitsStatus;
 use App\Notifications\SendPushNotification;
 use App\Traits\imageTrait;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
@@ -23,6 +24,8 @@ use Yajra\DataTables\DataTables;
 
 class VisitsController extends Controller
 {
+    use NotificationTrait;
+
     protected function index()
     {
         if (request()->ajax()) {
