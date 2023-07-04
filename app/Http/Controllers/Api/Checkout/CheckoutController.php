@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Checkout;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingSetting;
 use App\Models\Cart;
 use App\Models\Contract;
 use App\Models\CustomerWallet;
@@ -89,10 +90,13 @@ class CheckoutController extends Controller
                 ->where('category_id', $category_id)->first();
             $booking_no = 'dash2023/' . $cart->id;
             $minutes = 0;
-            foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
-                $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
-                    * $carts->where('service_id', $service->id)->first()->quantity;
-                $minutes += $serviceMinutes;
+            $bookSetting = BookingSetting::where('service_id', $service->id)->first();
+            if ($bookSetting) {
+                foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
+                    $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
+                        * $carts->where('service_id', $service->id)->first()->quantity;
+                    $minutes += $serviceMinutes;
+                }
             }
             Booking::query()->create([
                 'booking_no' => $booking_no,
@@ -106,7 +110,7 @@ class CheckoutController extends Controller
                 'date' => $cart->date,
                 'type' => 'service',
                 'time' => Carbon::parse($cart->time)->toTimeString(),
-                'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
+                'end_time' => $minutes? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
             ]);
         }
         if ($request->payment_method == 'cache') {
@@ -127,11 +131,12 @@ class CheckoutController extends Controller
             'point' => $user->point - $request->wallet_discounts ?? 0
         ]);
 
-        $this->wallet($user,$total);
+        $this->wallet($user, $total);
 
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
-        return self::apiResponse(200, t_('order created successfully'), $this->body);    }
+        return self::apiResponse(200, t_('order created successfully'), $this->body);
+    }
 
     private function saveContract($user, $request, $total, $carts)
     {
@@ -188,25 +193,26 @@ class CheckoutController extends Controller
             'point' => $user->point - $request->wallet_discounts ?? 0
         ]);
 
-        $this->wallet($user,$total);
+        $this->wallet($user, $total);
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
         return self::apiResponse(200, t_('order created successfully'), $this->body);
     }
 
-    private function wallet($user, $total){
+    private function wallet($user, $total)
+    {
 
         $walletSetting = CustomerWallet::query()->first();
 
-        $wallet = ($total*$walletSetting->order_percentage)/100;
+        $wallet = ($total * $walletSetting->order_percentage) / 100;
 
-        if ($wallet > $walletSetting->refund_amount){
+        if ($wallet > $walletSetting->refund_amount) {
             $point = $walletSetting->refund_amount;
-        }else{
+        } else {
             $point = $wallet;
         }
         $user->update([
-            'point' =>$user->point + $point ?? 0
+            'point' => $user->point + $point ?? 0
         ]);
 
     }
