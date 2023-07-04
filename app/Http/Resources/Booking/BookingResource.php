@@ -20,7 +20,7 @@ class BookingResource extends JsonResource
             'booking_no' => $this->booking_no,
             'status' => $this->visit? StatusResource::make($this->visit->status) : null,
             'category' => CategoryBasicResource::make($this->category),
-            'services' => $this->order->services->isNotEmpty() ? ServiceResource::collection($services) : null,
+            'services' => $services ? ServiceResource::collection($services) : null,
             'image' => $this->category->slug? asset($this->category->slug) : '',
             'date' => Carbon::parse($this->date)->format('d M'),
             'time_start' => Carbon::parse($this->time)->format('g:i A'),
