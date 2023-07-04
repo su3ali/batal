@@ -13,8 +13,8 @@ class BookingResource extends JsonResource
 {
     public function toArray($request)
     {
-        $services = $this->order->services->where('category_id', $this->category->id);
-dd($this->order->services);
+        $services = $this->order->services->where('category_id', $this->category->id)->get();
+
         return [
             'id' => $this->id,
             'booking_no' => $this->booking_no,
