@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Booking;
 
+use App\Http\Resources\Contract\ContractResource;
 use App\Http\Resources\Order\StatusResource;
 use App\Http\Resources\Service\CategoryBasicResource;
 use App\Http\Resources\Service\ServiceResource;
@@ -21,6 +22,7 @@ class BookingResource extends JsonResource
             'status' => $this->visit? StatusResource::make($this->visit->status) : null,
             'category' => CategoryBasicResource::make($this->category),
             'services' => $services != [] ? ServiceResource::collection($services) : [],
+            'contract' => ContractResource::make($this->contract),
             'image' => $this->category->slug? asset($this->category->slug) : '',
             'date' => Carbon::parse($this->date)->format('d M'),
             'time_start' => Carbon::parse($this->time)->format('g:i A'),
