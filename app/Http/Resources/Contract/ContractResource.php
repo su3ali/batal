@@ -25,7 +25,7 @@ class ContractResource extends JsonResource
             'price' => $this->price,
             'visit_number' => $this->visit_number,
             'image' => asset($this->image),
-            'service_icons' => IconResource::collection($this->service->icons),
+            'service_icons' => $this->service->icons ?IconResource::collection($this->service->icons) : [],
             'service' => ServiceResource::make($this->service),
         ];
     }
