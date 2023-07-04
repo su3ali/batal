@@ -27,10 +27,18 @@ use Yajra\DataTables\DataTables;
 
 class ReportsController extends Controller
 {
-    protected function sales()
+    protected function sales(Request $request)
     {
+
         if (request()->ajax()) {
-            $order = Order::all();
+            $date = $request->date;
+            $order = Order::query();
+            if($date) {
+                $carbonDate = \Carbon\Carbon::parse($date);
+                $formattedDate = $carbonDate->format('Y-m-d H:i:s');
+                $order = $order->where('created_at','=', $formattedDate);
+            }
+            $order = $order->get();
             return DataTables::of($order)
                 ->addColumn('order_number', function ($row) {
                     return $row->id;
@@ -74,10 +82,19 @@ class ReportsController extends Controller
         return view('dashboard.reports.sales');
     }
 
-    protected function contractSales()
+    protected function contractSales(Request $request)
     {
         if (request()->ajax()) {
-            $order = Contract::all();
+            $order = Contract::query();
+            $date = $request->date;
+
+            if($date) {
+                $carbonDate = \Carbon\Carbon::parse($date);
+                $formattedDate = $carbonDate->format('Y-m-d H:i:s');
+                $order = $order->where('created_at','=', $formattedDate);
+            }
+
+            $order = $order->get();
             return DataTables::of($order)
                 ->addColumn('contract_number', function ($row) {
                     return $row->id;
@@ -177,12 +194,26 @@ class ReportsController extends Controller
 
                     return number_format($row->rates->pluck('rate')->avg(),'2');
                 })
-//                ->addColumn('late', function ($row) {
-//                    $visit = Visit::where('assign_to_id',$row->group_id)->where('visits_status_id',5);
-//
-//
-//                    return $services_count;
-//                })
+                ->addColumn('late', function ($row) {
+                    $visits = Visit::where('assign_to_id',$row->group_id)->where('visits_status_id',5)->get();
+                    $booking_ids = $visits->pluck('booking_id')->toArray();
+                    $order_ids = Booking::where('id',$booking_ids)->pluck('order_id')->toArray();
+                    $service_ids = OrderService::whereIn('order_id',$order_ids)->pluck('service_id')->toArray();
+                    if ($service_ids != []){
+                        $service = BookingSetting::whereIn('service_id',$service_ids)->pluck('service_duration')->toArray();
+                        $SumServiceDuration = array_sum($service);
+                        $duration = 0;
+                        foreach ($visits as $visit){
+                            $start_time = Carbon::parse($visit->start_time)->format('H:i:s');
+                            $end_time = Carbon::parse($visit->end_time)->format('H:i:s');
+                            $duration += Carbon::parse($end_time)->diffInMinutes(Carbon::parse($start_time));
+                        }
+                        $sum = $SumServiceDuration - $duration;
+                        $total = $sum/count($service_ids);
+                    }
+
+                    return $total ?? 0;
+                })
 
                 ->rawColumns([
                     'user_name',
@@ -192,6 +223,7 @@ class ReportsController extends Controller
                     'service_count',
                     'point',
                     'rate',
+                    'late',
 
                 ])
                 ->make(true);

@@ -57,6 +57,7 @@
                             <th>عدد الخدمات المنفذه</th>
                             <th>عدد نقاط المحفظه</th>
                             <th>التقييم العام</th>
+                            <th>متوسط تنفيذ الخدمات</th>
                         </tr>
                         </thead>
                     </table>
@@ -101,6 +102,7 @@
                     {data: 'service_count', name: 'service_count',orderable: true, searchable: true},
                     {data: 'point', name: 'point',orderable: true, searchable: true},
                     {data: 'rate', name: 'rate',orderable: true, searchable: true},
+                    {data: 'late', name: 'late',orderable: true, searchable: true},
 
 
                 ]

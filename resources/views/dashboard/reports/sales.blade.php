@@ -43,8 +43,18 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <div class="col-md-12 text-right mb-3">
+                    <div class="col-md-12  mb-3">
 
+                        <div class="row">
+                            <div class="col-md-1">
+                            <label for="inputEmail4">{{__('dash.date')}}</label>
+                            </div>
+                        <div class="col-md-4">
+                            <input type="datetime-local" name="date" class="form-control date" step="1"
+                                   id="inputEmail4">
+                        </div>
+
+                        </div>
 
                     </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -70,10 +80,9 @@
 @endsection
 
 @push('script')
-
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#html5-extension').DataTable({
+            var table = $('#html5-extension').DataTable({
                 dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
                     "<'table-responsive'tr>" +
                     "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -103,7 +112,14 @@
 
                 ]
             });
+
+            $('.date').change(function(){
+                var date = $('.date').val();
+                table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date ).load();
+            })
+
         });
+
 
     </script>
 
