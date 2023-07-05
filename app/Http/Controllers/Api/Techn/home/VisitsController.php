@@ -138,10 +138,12 @@ class VisitsController extends Controller
             if ($request->status_id == 5){
                 $data['end_date'] = Carbon::now();
                 $techWallet = TechnicianWallet::query()->first();
-                $serviceCost = $model->booking?->order?->services->pluck('price')->toArray();
-                $serviceCost = array_sum($serviceCost);
+
                 if($model->booking->type =='package'){
                     $serviceCost = $model->booking->package?->price;
+                }else{
+                    $serviceCost1 = $model->booking?->order?->services->pluck('price')->toArray();
+                    $serviceCost = array_sum($serviceCost1);
                 }
                 if ($techWallet->point_type == 'rate'){
                     $money = $serviceCost * ($techWallet->price/100);
