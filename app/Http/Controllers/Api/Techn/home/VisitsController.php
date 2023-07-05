@@ -167,10 +167,9 @@ class VisitsController extends Controller
                 }else{
                     $order = $model->booking->contract;
                 }
-
                 $visits_ids = [];
                 foreach ($order->bookings as $booking){
-                    $visits_ids[] = $booking->visit->id;
+                    $visits_ids[] = $booking->visit?->id;
                 }
                 $difference = array_diff($visits_ids, [1,2,3,4]);
                 if (count($difference) == count($visits_ids)) {
