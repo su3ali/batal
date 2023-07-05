@@ -62,6 +62,16 @@
                                 <thead>
 
                                 <tr>
+                                    <th>اسم العميل</th>
+                                    <td>{{$visits->booking->customer?->first_name . '' .$visits->booking->customer?->last_name}}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>رقم الحجز</th>
+                                    <td>{{$visits->booking?->booking_no}}</td>
+                                </tr>
+
+                                <tr>
                                     <th>رقم الزياره</th>
                                     <td>{{$visits->visite_id}}</td>
                                 </tr>
@@ -144,15 +154,15 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="card">
                         <div class="card-body p-0">
-                            <div id="floating-panel">
-                                <b>Mode of Travel: </b>
-                                <select id="mode">
-                                    <option value="DRIVING">Driving</option>
-                                    <option value="WALKING">Walking</option>
-                                    <option value="BICYCLING">Bicycling</option>
-                                    <option value="TRANSIT">Transit</option>
-                                </select>
-                            </div>
+{{--                            <div id="floating-panel">--}}
+{{--                                <b>Mode of Travel: </b>--}}
+{{--                                <select id="mode">--}}
+{{--                                    <option value="DRIVING">Driving</option>--}}
+{{--                                    <option value="WALKING">Walking</option>--}}
+{{--                                    <option value="BICYCLING">Bicycling</option>--}}
+{{--                                    <option value="TRANSIT">Transit</option>--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
                             <div id="map">
 
                             </div>
@@ -306,6 +316,33 @@
 
     <script type="text/javascript">
 
+        var map, directionsService, directionsRenderer,currentZoomLevel,currentMapCenter;
+
+        function initMap() {
+            // Create a new map centered on the starting point
+            const locations = <?php echo json_encode($locations) ?>;
+            const myLatLng = { lat: locations[0].lat , lng: locations[0].lng };
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 16,
+                center: myLatLng
+            });
+
+            const marker = new google.maps.Marker({
+                position: myLatLng,
+                map,
+            });
+            
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                map: map
+            });
+            currentZoomLevel = map.getZoom();
+            currentMapCenter = map.getCenter();
+
+            setInterval(getLocation,10000)
+        }
+
+
         function getLocation(){
             var id = "{{$visits->id}}";
             $.ajax({
@@ -313,75 +350,49 @@
                 type: 'post',
                 data: {id: id,_token: "{{csrf_token()}}"},
                 success: function (data) {
-                    updatePosition(data)
+                    if(data[1].lat != 0 && data[1].lng != 0 && data[0].lat != 0 && data[0].lng != 0) {
+                        updateRoute(data)
+                    }else{
+                        const myLatLng = { lat: data[0].lat , lng: data[0].lng };
+                        const marker = new google.maps.Marker({
+                            position: myLatLng,
+                            map,
+                        });
+                    }
                 }
             });
         }
-        let map;
-        let directionsRenderer;
-        function initMap() {
-            const locations = <?php echo json_encode($locations) ?>;
-            map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 16,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-                // center: myLatLng,
+
+
+        function updateRoute(locations) {
+            var startingPoint = new google.maps.LatLng(locations[0].lat, locations[0].lng);
+            var destination = new google.maps.LatLng(locations[1].lat, locations[1].lng);
+
+            currentZoomLevel = map.getZoom();
+            currentMapCenter = map.getCenter();
+
+
+            var request = {
+                origin: startingPoint,
+                destination: destination,
+                travelMode: 'DRIVING'
+            };
+
+            directionsService.route(request, function(result, status) {
+                if (status == 'OK') {
+                    // Display the updated route on the map
+                    directionsRenderer.setDirections(result);
+                    map.setZoom(currentZoomLevel);
+                    map.setCenter(currentMapCenter);
+
+                }
             });
-
-
-
-            updatePosition(locations);
-            document.getElementById("mode").addEventListener("change", () => {
-                updatePosition(locations);
-            });
-
-            directionsRenderer.setMap(map);
-
-
         }
 
 
-
-        function updatePosition(locations)
-        {
-
-            directionsRenderer = new google.maps.DirectionsRenderer();
-            var directionsService = new google.maps.DirectionsService();
-
-            calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
-            document.getElementById("mode").addEventListener("change", () => {
-                calculateAndDisplayRoute(directionsService, directionsRenderer,locations);
-            });
-
-
-        }
-
-        function calculateAndDisplayRoute(directionsService, directionsRenderer,locations) {
-            const selectedMode = document.getElementById("mode").value;
-
-            directionsService
-                .route({
-                    origin: { lat: locations[1].lat , lng: locations[1].lng },
-                    destination: { lat: locations[0].lat , lng: locations[0].lng },
-
-                    travelMode: google.maps.TravelMode[selectedMode],
-                })
-                .then((response) => {
-                    directionsRenderer.setDirections(response);
-                })
-                .catch((e) => swal({
-                    title: "فشل طلب الاتجاهات",
-                    text: "لا يمكن العثور على طريق بين الأصل والوجهة",
-                    type: 'error',
-                    padding: '2em'
-                })
-            );
-        }
 
         window.initMap = initMap;
 
-
-
-        setInterval(getLocation,10000)
         setInterval(visitStatus,10000)
 
     </script>
