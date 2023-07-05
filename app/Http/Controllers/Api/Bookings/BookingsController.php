@@ -29,8 +29,9 @@ class BookingsController extends Controller
         return self::apiResponse(200, null, $this->body);
     }
     protected function bookingDetails($id){
-        $visit_id = Booking::query()->with('visit')->find($id)->visit->id;
+        $visit_id = Booking::query()->with('visit')->find($id);
         if ($visit_id){
+            $visit_id = $visit_id->visit->id;
             $order = Visit::whereHas('booking', function ($q) {
                 $q->whereHas('customer')->whereHas('address');
 
