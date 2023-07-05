@@ -1,6 +1,7 @@
 <table id="dataTable-package" class="table table-hover non-hover">
     <thead>
     <tr>
+        <th>رقم اتسلسلي</th>
         <th>رقم الحجز</th>
         <th>رقم الطلب</th>
         <th>اسم العميل</th>

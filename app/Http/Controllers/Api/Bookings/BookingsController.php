@@ -46,7 +46,7 @@ class BookingsController extends Controller
 
         }else{
             $msg = t_('visit not found');
-            return self::apiResponse(200, $msg, null);
+            return self::apiResponse(404, $msg, null);
         }
 
     }

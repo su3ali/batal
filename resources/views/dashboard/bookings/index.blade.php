@@ -132,6 +132,7 @@
                 serverSide: true,
                 ajax: '{{ url('admin/bookings?type='.$type) }}',
                 columns: [
+                    {data: 'id', name: 'id'},
                     {data: 'booking_no', name: 'booking_no'},
                     {data: 'order', name: 'order'},
                     {data: 'customer', name: 'customer'},
