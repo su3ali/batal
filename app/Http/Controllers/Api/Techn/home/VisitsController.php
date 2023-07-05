@@ -162,7 +162,12 @@ class VisitsController extends Controller
             $model->update($data);
 
             if (in_array($request->status_id, [5,6])){
-                $order = $model->booking->order;
+                if($model->booking->type =='service') {
+                    $order = $model->booking->order;
+                }else{
+                    $order = $model->booking->contract;
+                }
+
                 $visits_ids = [];
                 foreach ($order->bookings as $booking){
                     $visits_ids[] = $booking->visit->id;
