@@ -126,7 +126,7 @@ class VisitsController extends Controller
                 }
                     $visits_ids = [];
                     foreach ($order->bookings as $booking){
-                        $visits_ids[] = $booking->visit->id;
+                        $visits_ids[] = $booking->visit?->id;
                     }
                     $status_ids = Visit::whereIn('id',$visits_ids)->pluck('visits_status_id')->toArray();
                     if (!in_array(3, $status_ids)){
