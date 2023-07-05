@@ -139,7 +139,7 @@ class VisitsController extends Controller
                 $data['end_date'] = Carbon::now();
                 $techWallet = TechnicianWallet::query()->first();
 
-                if($model->booking->type =='package'){
+                if($model->booking->type =='contract'){
                     $serviceCost = $model->booking->package?->price;
                 }else{
                     $serviceCost1 = $model->booking?->order?->services->pluck('price')->toArray();
