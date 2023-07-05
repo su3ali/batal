@@ -11,6 +11,4 @@ Route::prefix('user')->group(function (){
         Route::get('/{id}/delete', [AddressController::class, 'deleteAddress']);
         Route::get('/{id}/make_default', [AddressController::class, 'makeAddressDefault']);
     });
-    Route::get('favourites', [FavouriteController::class, 'favourites']);
-    Route::post('add_to_fav', [FavouriteController::class, 'add_to_fav']);
 });

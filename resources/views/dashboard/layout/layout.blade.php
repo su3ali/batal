@@ -360,6 +360,8 @@
 </script>
 {{--<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>--}}
 
+<script src="https://js.pusher.com/8.0.1/pusher.min.js"></script>
+
 @stack('script')
 
 </body>
