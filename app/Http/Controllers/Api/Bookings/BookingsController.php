@@ -12,6 +12,7 @@ use App\Models\Visit;
 use App\Models\VisitsStatus;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
+use function Symfony\Component\Translation\t;
 
 class BookingsController extends Controller
 {
@@ -29,16 +30,23 @@ class BookingsController extends Controller
     }
     protected function bookingDetails($id){
         $visit_id = Booking::query()->with('visit')->find($id)->visit->id;
-        $order = Visit::whereHas('booking', function ($q) {
-            $q->whereHas('customer')->whereHas('address');
+        if ($visit_id){
+            $order = Visit::whereHas('booking', function ($q) {
+                $q->whereHas('customer')->whereHas('address');
 
-        })->with('booking', function ($q) {
-            $q->with(['service' => function ($q) {
-                $q->with('category');
-            },'customer','address']);
+            })->with('booking', function ($q) {
+                $q->with(['service' => function ($q) {
+                    $q->with('category');
+                },'customer','address']);
 
-        })->with('status')->where('id', $visit_id)->first();
-        $this->body['visit'] = VisitsResource::make($order);
-        return self::apiResponse(200, null, $this->body);
+            })->with('status')->where('id', $visit_id)->first();
+            $this->body['visit'] = VisitsResource::make($order);
+            return self::apiResponse(200, null, $this->body);
+
+        }else{
+            $msg = t_('visit not found');
+            return self::apiResponse(200, $msg, null);
+        }
+
     }
 }
