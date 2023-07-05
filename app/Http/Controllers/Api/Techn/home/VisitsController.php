@@ -134,7 +134,10 @@ class VisitsController extends Controller
             if ($request->status_id == 5){
                 $data['end_date'] = Carbon::now();
                 $techWallet = TechnicianWallet::query()->first();
-                $serviceCost = $model->booking->service->price;
+                $serviceCost = $model->booking->service?->price;
+                if($model->booking->type =='package'){
+                    $serviceCost = $model->booking->package?->price;
+                }
                 if ($techWallet->point_type == 'rate'){
                     $money = $serviceCost * ($techWallet->price/100);
                 }else{
@@ -187,7 +190,8 @@ class VisitsController extends Controller
             $this->pushNotificationBackground($notify);
 
             $this->body['visits'] = $visit;
-            return self::apiResponse(200, null, $this->body);        }
+            return self::apiResponse(200, null, $this->body);
+        }
 
     }
     protected function sendLatLong(Request $request)
