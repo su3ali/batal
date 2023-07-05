@@ -30,7 +30,7 @@ class BookingsController extends Controller
     }
     protected function bookingDetails($id){
         $visit_id = Booking::query()->with('visit')->find($id);
-        if ($visit_id){
+        if ($visit_id->visit){
             $visit_id = $visit_id->visit->id;
             $order = Visit::whereHas('booking', function ($q) {
                 $q->whereHas('customer')->whereHas('address');
