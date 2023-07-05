@@ -119,17 +119,21 @@ class VisitsController extends Controller
 
             if ($request->status_id == 3){
                 $data['start_date'] = Carbon::now();
-                $order = $model->booking->order;
-                $visits_ids = [];
-                foreach ($order->bookings as $booking){
-                    $visits_ids[] = $booking->visit->id;
+                if($model->booking->type =='service') {
+                    $order = $model->booking->order;
+                }else{
+                    $order = $model->booking->contract;
                 }
-                if (!in_array(3, $visits_ids)){
-                    $order->status_id = 3;
-                    $order->save();
-                }
+                    $visits_ids = [];
+                    foreach ($order->bookings as $booking){
+                        $visits_ids[] = $booking->visit->id;
+                    }
+                    $status_ids = Visit::whereIn('id',$visits_ids)->pluck('visits_status_id')->toArray();
+                    if (!in_array(3, $status_ids)){
+                        $order->status_id = 3;
+                        $order->save();
+                    }
             }
-
 
             if ($request->status_id == 5){
                 $data['end_date'] = Carbon::now();
