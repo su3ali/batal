@@ -25,4 +25,8 @@ class Contract extends Model
     public function user(){
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public function bookings(){
+        return $this->hasMany(Booking::class, 'contract_order_id');
+    }
 }
