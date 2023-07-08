@@ -36,4 +36,5 @@ Route::prefix('bookings')->group(function () {
 });
 Route::prefix('rate')->group(function (){
     Route::post('technicians', [OrdersController::class, 'rateTechnicians']);
+    Route::post('service', [OrdersController::class, 'rateService']);
 });
