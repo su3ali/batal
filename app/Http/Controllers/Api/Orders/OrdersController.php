@@ -8,6 +8,7 @@ use App\Http\Resources\Service\ServiceResource;
 use App\Models\Booking;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\OrderService;
 use App\Models\RateService;
 use App\Models\RateTechnician;
 use App\Models\Technician;
@@ -46,6 +47,7 @@ class OrdersController extends Controller
         $rules = [
             'group_id' => 'required|exists:groups,id',
             'booking_id' => 'required|exists:bookings,id',
+            'visit_id' => 'required|exists:visits,id',
             'rate' => 'required|integer',
             'note' => 'nullable|string|max:255',
         ];
@@ -56,6 +58,7 @@ class OrdersController extends Controller
             RateTechnician::query()->create([
                'user_id' => auth()->user()->id,
                'technician_id' => $technician->id,
+                'visit_id' => $request->visit_id,
                'order_id' => $order_id,
                'rate' => $request->rate,
                'note' => $request->note,
@@ -68,21 +71,24 @@ class OrdersController extends Controller
 
     protected function rateService(Request $request){
         $rules = [
-            'service_id' => 'required|exists:services,id',
             'booking_id' => 'required|exists:bookings,id',
+            'visit_id' => 'required|exists:visits,id',
             'rate' => 'required|integer',
             'note' => 'nullable|string|max:255',
         ];
         $request->validate($rules, $request->all());
         $order_id = Booking::query()->find($request->booking_id)->order_id;
+        $services = OrderService::where('order_id',$order_id)->get();
+        foreach ($services as $service) {
             RateService::query()->create([
                 'user_id' => auth()->user()->id,
-                'service_id' => $request->service_id,
+                'service_id' => $service->service_id,
+                'visit_id' => $request->visit_id,
                 'order_id' => $order_id,
                 'rate' => $request->rate,
                 'note' => $request->note,
             ]);
-
+        }
         return self::apiResponse(200, 'rated successfully', $this->body);
 
     }
