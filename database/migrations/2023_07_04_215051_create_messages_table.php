@@ -15,10 +15,7 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sender');
-            $table->string('sender_type');
-            $table->unsignedBigInteger('receiver');
-            $table->string('receiver_type');
+            $table->boolean('sent_by_admin')->default(0);
             $table->text('message');
             $table->foreignId('room_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

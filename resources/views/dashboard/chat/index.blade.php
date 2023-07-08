@@ -49,49 +49,26 @@
                             <div class="col-md-3 message-threads px-1">
                                 <ul class="list-group">
                                     @foreach($rooms as $room)
-                                        @if($room->sender_one_type == 'admin')
-                                            @if($room->sender_two_type == 'user')
-                                                    <?php
-                                                    $user = \App\Models\User::query()->find($room->sender_two)
-                                                    ?>
-                                                <li class="list-group-item" data-thread-id="{{$room->id}}">
-                                                    {{$user->phone .' - '.  'عميل  '}}<br>{{$user->first_name.' '.$user->last_name}}
-                                                </li>
-
-                                            @else
-                                                    <?php
-                                                    $tech = \App\Models\Technician::query()->find($room->sender_two)
-                                                    ?>
-                                                <li class="list-group-item" data-thread-id="{{$room->id}}">
-                                                    <img class="img-fluid mx-1"
-                                                         style="border-radius: 50%; width: 20px; height: 20px"
-                                                         src="{{asset($tech->image)}}" alt="">{{$tech->phone.' - '.'فني  '}}
-                                                    <br>{{$tech->name}}
-                                                </li>
-
-                                            @endif
+                                        @if(class_basename(get_class($room->sender)) == 'User')
+                                                <?php
+                                                $user = $room->sender;
+                                                ?>
+                                            <li class="list-group-item" data-thread-id="{{$room->id}}">
+                                                {{$user->phone .' - '.  'عميل  '}}
+                                                <br>{{$user->first_name.' '.$user->last_name}}
+                                            </li>
 
                                         @else
-                                            @if($room->sender_one_type == 'user')
-                                                    <?php
-                                                    $user = \App\Models\User::query()->find($room->sender_one)
-                                                    ?>
-                                                <li class="list-group-item" data-thread-id="{{$room->id}}">
-                                                    {{$user->phone .' - '.  'عميل  '}}<br>{{$user->first_name.' '.$user->last_name}}
-                                                </li>
+                                                <?php
+                                                $tech = $room->sender;
+                                                ?>
+                                            <li class="list-group-item" data-thread-id="{{$room->id}}">
+                                                <img class="img-fluid mx-1"
+                                                     style="border-radius: 50%; width: 20px; height: 20px"
+                                                     src="{{asset($tech->image)}}" alt="">{{$tech->phone.' - '.'فني  '}}
+                                                <br>{{$tech->name}}
+                                            </li>
 
-                                            @else
-                                                    <?php
-                                                    $tech = \App\Models\Technician::query()->find($room->sender_one)
-                                                    ?>
-                                                <li class="list-group-item" data-thread-id="{{$room->id}}">
-                                                    <img class="img-fluid mx-1"
-                                                         style="border-radius: 50%; width: 10px; height: 10px"
-                                                         src="{{asset($tech->image)}}" alt="">{{$tech->phone.' - '.'فني  '}}
-                                                    <br>{{$tech->name}}
-                                                </li>
-
-                                            @endif
                                         @endif
                                     @endforeach
                                 </ul>
@@ -99,7 +76,7 @@
                             <div class="col-md-9 messages px-1" id="big-box" data-room="{{$rooms->first()?->id}}">
                                 <div class="message-box" id="message-box" style="overflow-y: scroll; max-height: 300px">
                                     @foreach($rooms->first()->messages as $message)
-                                        @if($message->sender_type == 'admin')
+                                        @if($message->sent_by_admin)
                                             <div class="message sent">
                                                 <div class="message-content">
                                                     <p class="text-white">{{$message->message}}</p>
@@ -117,7 +94,8 @@
                                 <div class="form-group row">
                                     <form class="col-md-12 message-form" id="message-form">
                                         <div class="col-md-8 p-0">
-                                            <textarea id="sent-message" class="form-control m-0" placeholder="اكتب رسالتك"></textarea>
+                                            <textarea id="sent-message" class="form-control m-0"
+                                                      placeholder="اكتب رسالتك"></textarea>
                                         </div>
                                         <div class="col-md-4 text-center">
                                             <button type="submit" class="btn btn-primary">Send</button>
@@ -152,13 +130,12 @@
                     data: {room_id: threadId},
                     success: function (response) {
                         $('.message-box').empty();
-                        $.each(response.messages, function(index, message) {
-                            var messageClass = message.sender_type === 'admin' ? 'sent' : 'received';
-                            var color = message.sender_type === 'admin' ? 'text-white' : '';
-                            var messageContent = '<div class="message ' + messageClass + '"><div class="message-content"><p class="'+color+'">' + message.message + '</p></div></div>';
+                        $.each(response.messages, function (index, message) {
+                            var messageClass = message.sent_by_admin ? 'sent' : 'received';
+                            var color = message.sent_by_admin ? 'text-white' : '';
+                            var messageContent = '<div class="message ' + messageClass + '"><div class="message-content"><p class="' + color + '">' + message.message + '</p></div></div>';
                             $('.message-box').append(messageContent);
                         });
-                        $('.message-box').scrollTop($('.message-box')[0].scrollHeight);
                     }
                 })
             });

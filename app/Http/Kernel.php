@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             Localize::class,
+            \App\Http\Middleware\AddCorsHeaders::class,
         ],
 
         'api' => [

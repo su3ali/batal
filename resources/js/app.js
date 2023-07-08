@@ -19,6 +19,7 @@ chatForm.addEventListener('submit', (e) => {
     axios.post('/admin/chat/broadcast', {
         message: messageInputValue,
         room: roomId,
+        sent_by_admin: 1
     })
         .catch((error) => {
             console.log(error);
@@ -27,30 +28,42 @@ chatForm.addEventListener('submit', (e) => {
 
 const echo = new Echo({
     broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    forceTLS: true
+    key: '87ed15aef6ced76b1507',
+    cluster: 'us2',
+    forceTLS: false,
+    authorizer: (channel, options) => {
+        return {
+            authorize: (socketId, callback) => {
+                axios.post('/admin/chat/auth', {
+                    socket_id: socketId,
+                    channel_name: channel.name
+                }, {
+                    progress: false,
+                })
+                    .then(response => {
+                        callback(false, response.data);
+                    })
+                    .catch(error => {
+                        callback(true, error);
+                    });
+            }
+        };
+    },
 });
-let pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    encrypted: true
-});
-let channel = pusher.subscribe('chat-room' + roomId);
-channel.bind('message-sent', function (data) {
-    console.log(data)
-    var message = data.message;
-    var user = data.user;
-
-    var messageHtml = '<div class="message">' +
-        '<strong>' + user.name + ':</strong> ' + message +
-        '</div>';
-
-    chatMessages.innerHTML += messageHtml;
-});
-echo.channel('chat-room')
-    .listen('.App\\Events\\MessageSent', (data) => {
+// const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
+//     cluster: process.env.MIX_PUSHER_APP_CLUSTER
+// });
+//
+// const channel = pusher.subscribe('chat_message.1');
+// alert(222223)
+// channel.bind('MessageSentEvent', function(data) {
+//     console.log('Received event with data:', data);
+// });
+// echo.channel('chat_message.'+roomId)
+echo.join('chat_message.1')
+    .listen('chat.message', (data) => {
         const message = `
-            <div class="message received"><div class="message-content"><p>${data.message}</p></div></div>
+            <div class="message"><div class="message-content"><p>${data.message}</p></div></div>
         `;
         console.log(data)
         chatMessages.innerHTML += message;

@@ -34,5 +34,8 @@ class Technician extends Authenticatable
     public function rates(){
         return $this->hasMany(RateTechnician::class, 'technician_id', 'id');
     }
+    public function rooms(){
+        return $this->morphMany(Room::class, 'sender');
+    }
 
 }

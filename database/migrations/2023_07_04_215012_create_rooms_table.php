@@ -15,10 +15,9 @@ class CreateRoomsTable extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('sender_one');
-            $table->string('sender_one_type');
-            $table->unsignedBigInteger('sender_two');
-            $table->string('sender_two_type');
+            $table->foreignId('admin_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('sender_id');
+            $table->string('sender_type');
 
             $table->timestamps();
         });

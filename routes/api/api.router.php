@@ -27,6 +27,7 @@ Route::post('/verify', [AuthController::class, 'verify']);
 Route::middleware(['auth:sanctum','abilities:user'])->group(function () {
     require __DIR__ . '/core.router.php';
     require __DIR__ . '/auth.router.php';
+    require __DIR__ . '/chat.router.php';
     require __DIR__ . '/users.router.php';
     require __DIR__ . '/checkout.router.php';
     require __DIR__ . '/order.router.php';

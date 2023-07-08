@@ -17,3 +17,12 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('fire', function () {
+    $messageObj = [
+        'room_id' => 1,
+        'message' => 'asasas',
+        'sent_by_admin' => 0
+    ];
+    broadcast(new \App\Events\MessageSentEvent($messageObj));
+});

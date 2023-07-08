@@ -2078,31 +2078,46 @@ chatForm.addEventListener('submit', function (e) {
   messageInput.value = '';
   axios.post('/admin/chat/broadcast', {
     message: messageInputValue,
-    room: roomId
+    room: roomId,
+    sent_by_admin: 1
   })["catch"](function (error) {
     console.log(error);
   });
 });
 var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "87ed15aef6ced76b1507",
-  cluster: "us2",
-  forceTLS: true
+  key: '87ed15aef6ced76b1507',
+  cluster: 'us2',
+  forceTLS: false,
+  authorizer: function authorizer(channel, options) {
+    return {
+      authorize: function authorize(socketId, callback) {
+        axios.post('/admin/chat/auth', {
+          socket_id: socketId,
+          channel_name: channel.name
+        }, {
+          progress: false
+        }).then(function (response) {
+          callback(false, response.data);
+        })["catch"](function (error) {
+          callback(true, error);
+        });
+      }
+    };
+  }
 });
-var pusher = new Pusher("87ed15aef6ced76b1507", {
-  cluster: "us2",
-  encrypted: true
-});
-var channel = pusher.subscribe('chat-room' + roomId);
-channel.bind('message-sent', function (data) {
-  console.log(data);
-  var message = data.message;
-  var user = data.user;
-  var messageHtml = '<div class="message">' + '<strong>' + user.name + ':</strong> ' + message + '</div>';
-  chatMessages.innerHTML += messageHtml;
-});
-echo.channel('chat-room').listen('.App\\Events\\MessageSent', function (data) {
-  var message = "\n            <div class=\"message received\"><div class=\"message-content\"><p>".concat(data.message, "</p></div></div>\n        ");
+// const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
+//     cluster: process.env.MIX_PUSHER_APP_CLUSTER
+// });
+//
+// const channel = pusher.subscribe('chat_message.1');
+// alert(222223)
+// channel.bind('MessageSentEvent', function(data) {
+//     console.log('Received event with data:', data);
+// });
+// echo.channel('chat_message.'+roomId)
+echo.join('chat_message.1').listen('chat.message', function (data) {
+  var message = "\n            <div class=\"message\"><div class=\"message-content\"><p>".concat(data.message, "</p></div></div>\n        ");
   console.log(data);
   chatMessages.innerHTML += message;
 });
