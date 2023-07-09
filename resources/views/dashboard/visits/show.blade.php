@@ -220,8 +220,8 @@
     $longTechn = $visits->long??0;
 
     $locations = [
-        ['lat'=>(int)$latUser,'lng'=>(int)$longUser],
-        ['lat'=>(int)$latTechn,'lng'=>(int)$longTechn],
+        ['lat'=>$latUser,'lng'=>$longUser],
+        ['lat'=>$latTechn,'lng'=>$longTechn],
     ];
 @endphp
 @push('script')
@@ -274,7 +274,6 @@
                     $.each(steps,function(index, node){
                         var stepNum = node.getAttribute('data-id');
                         if(data != 5 && data != 6){
-                            console.log(stepNum)
 
                             if (stepNum == data) {
                                 node.setAttribute("id", "await");
@@ -321,7 +320,7 @@
         function initMap() {
             // Create a new map centered on the starting point
             const locations = <?php echo json_encode($locations) ?>;
-            const myLatLng = { lat: locations[0].lat , lng: locations[0].lng };
+            const myLatLng = { lat: Number(locations[0].lat) , lng: Number(locations[0].lng) };
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16,
                 center: myLatLng
@@ -331,7 +330,7 @@
                 position: myLatLng,
                 map,
             });
-            
+
             directionsService = new google.maps.DirectionsService();
             directionsRenderer = new google.maps.DirectionsRenderer({
                 map: map

@@ -168,8 +168,8 @@ class VisitsController extends Controller
         $longTechn = $visits->long??0;
 
         $locations = [
-            ['lat'=>(int)$latUser,'lng'=>(int)$longUser],
-            ['lat'=>(int)$latTechn,'lng'=>(int)$longTechn],
+            ['lat'=>$latUser,'lng'=>$longUser],
+            ['lat'=>$latTechn,'lng'=>$longTechn],
         ];
 
         return response()->json($locations);
