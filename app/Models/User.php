@@ -44,9 +44,6 @@ class User extends Authenticatable
         return $this->hasMany(UserAddresses::class, 'user_id')->where('is_default',1);
     }
     public function rooms(){
-        return $this->morphMany(Room::class, 'sender');
-    }
-    public function room(){
         return $this->morphOne(Room::class, 'sender');
     }
 

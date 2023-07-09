@@ -9,7 +9,8 @@ const chatThreads = document.getElementById('message-threads');
 const chatThread = document.getElementById('message-thread');
 const roomId = document.getElementById('big-box').getAttribute('data-room')
 const adminId = chatThreads.getAttribute('data-admin');
-chatForm.addEventListener('submit', (e) => {
+
+document.getElementById('message-form').addEventListener('submit', (e) => {
     e.preventDefault();
 
     const messageInput = document.getElementById('sent-message');
@@ -51,28 +52,34 @@ const echo = new Echo({
 });
 echo.join('chat_message.' + roomId)
     .listen('.chat-message', (data) => {
-        const message = `
+        if (data.message.sent_by_admin === 0){
+            const message = `
             <div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
-        chatMessages.innerHTML += message;
+            chatMessages.innerHTML += message;
+        }
     });
 echo.private('chat_room.' + adminId)
     .listen('.room-create', (data) => {
         console.log(data)
+        let str = data.message.message;
+        if (str.length > 20) {
+            str = str.substring(0, 20) + "...";
+        }
         let room = ''
         if (data.room.sender_type === 'App\\Models\\Technician') {
             room = `
-                <li class="list-group-item" style="cursor: pointer">
+                <li class="list-group-item " style="cursor: pointer; background-color: #DDD">
                     <img class="img-fluid mx-1"
                          style="border-radius: 50%; width: 20px; height: 20px"
-                         src="http://127.0.0.1:8000/${data.sender.image}" alt="">${data.sender.phone}فني -
-                    <br>${data.sender.name}
+                         src="http://127.0.0.1:8000/${data.sender.image}" alt="">${data.sender.name}
+                    <br>${str}
                 </li>`
         }else {
              room = `
-                <li class="list-group-item" style="cursor: pointer"
+                <li class="list-group-item " style="cursor: pointer; background-color: #DDD"
                     >
-                    ${data.sender.phone}عميل  -
-                    <br>${data.sender.first_name}  -  ${data.sender.last_name}
+                    عميل - ${data.sender.first_name}  ${data.sender.last_name}
+                    <br>${str}
                 </li>`
         }
         chatThread.innerHTML += room;

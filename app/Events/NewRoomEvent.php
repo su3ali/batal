@@ -14,12 +14,13 @@ class NewRoomEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $room, $admin;
+    public $room, $admin, $message;
 
-    public function __construct($room, $admin)
+    public function __construct($room, $admin, $message)
     {
         $this->room = $room;
         $this->admin = $admin;
+        $this->message = $message;
     }
 
     public function broadcastOn()
@@ -30,7 +31,7 @@ class NewRoomEvent implements ShouldBroadcast
     public function broadcastWith()
     {
         return [
-            'room' => $this->room, 'sender' => $this->room->sender
+            'room' => $this->room, 'sender' => $this->room->sender, 'message' => $this->message
         ];
     }
     public function broadcastAs()

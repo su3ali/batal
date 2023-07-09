@@ -2072,7 +2072,7 @@ var chatThreads = document.getElementById('message-threads');
 var chatThread = document.getElementById('message-thread');
 var roomId = document.getElementById('big-box').getAttribute('data-room');
 var adminId = chatThreads.getAttribute('data-admin');
-chatForm.addEventListener('submit', function (e) {
+document.getElementById('message-form').addEventListener('submit', function (e) {
   e.preventDefault();
   var messageInput = document.getElementById('sent-message');
   var messageInputValue = messageInput.value;
@@ -2110,16 +2110,22 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   }
 });
 echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
-  var message = "\n            <div class=\"message received\"><div class=\"message-content\"><p>".concat(data.message.message, "</p></div></div>");
-  chatMessages.innerHTML += message;
+  if (data.message.sent_by_admin === 0) {
+    var message = "\n            <div class=\"message received\"><div class=\"message-content\"><p>".concat(data.message.message, "</p></div></div>");
+    chatMessages.innerHTML += message;
+  }
 });
 echo["private"]('chat_room.' + adminId).listen('.room-create', function (data) {
   console.log(data);
+  var str = data.message.message;
+  if (str.length > 20) {
+    str = str.substring(0, 20) + "...";
+  }
   var room = '';
   if (data.room.sender_type === 'App\\Models\\Technician') {
-    room = "\n                <li class=\"list-group-item\" style=\"cursor: pointer\">\n                    <img class=\"img-fluid mx-1\"\n                         style=\"border-radius: 50%; width: 20px; height: 20px\"\n                         src=\"http://127.0.0.1:8000/".concat(data.sender.image, "\" alt=\"\">").concat(data.sender.phone, "\u0641\u0646\u064A -\n                    <br>").concat(data.sender.name, "\n                </li>");
+    room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\">\n                    <img class=\"img-fluid mx-1\"\n                         style=\"border-radius: 50%; width: 20px; height: 20px\"\n                         src=\"http://127.0.0.1:8000/".concat(data.sender.image, "\" alt=\"\">").concat(data.sender.name, "\n                    <br>").concat(str, "\n                </li>");
   } else {
-    room = "\n                <li class=\"list-group-item\" style=\"cursor: pointer\"\n                    >\n                    ".concat(data.sender.phone, "\u0639\u0645\u064A\u0644  -\n                    <br>").concat(data.sender.first_name, "  -  ").concat(data.sender.last_name, "\n                </li>");
+    room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\"\n                    >\n                    \u0639\u0645\u064A\u0644 - ".concat(data.sender.first_name, "  ").concat(data.sender.last_name, "\n                    <br>").concat(str, "\n                </li>");
   }
   chatThread.innerHTML += room;
 });

@@ -1,10 +1,5 @@
 
-$('.widget-content .message').on('click', function () {
-  swal({
-      title: 'Saved succesfully',
-      padding: '2em'
-    })
-})
+
 
 $('.widget-content .success').on('click', function () {
   swal({
@@ -194,7 +189,7 @@ $('.widget-content .dynamic-queue').on('click', function () {
     showLoaderOnConfirm: true,
     preConfirm: function() {
       return fetch(ipAPI)
-        .then(function (response) { 
+        .then(function (response) {
             return response.json();
         })
         .then(function(data) {
