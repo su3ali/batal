@@ -2068,7 +2068,10 @@ window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/d
 
 var chatForm = document.getElementById('message-form');
 var chatMessages = document.getElementById('message-box');
+var chatThreads = document.getElementById('message-threads');
+var chatThread = document.getElementById('message-thread');
 var roomId = document.getElementById('big-box').getAttribute('data-room');
+var adminId = chatThreads.getAttribute('data-admin');
 chatForm.addEventListener('submit', function (e) {
   e.preventDefault();
   var messageInput = document.getElementById('sent-message');
@@ -2092,7 +2095,7 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   authorizer: function authorizer(channel, options) {
     return {
       authorize: function authorize(socketId, callback) {
-        axios.post('/admin/chat/auth', {
+        axios.post('broadcasting/auth', {
           socket_id: socketId,
           channel_name: channel.name
         }, {
@@ -2106,20 +2109,19 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
     };
   }
 });
-// const pusher = new Pusher(process.env.MIX_PUSHER_APP_KEY, {
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER
-// });
-//
-// const channel = pusher.subscribe('chat_message.1');
-// alert(222223)
-// channel.bind('MessageSentEvent', function(data) {
-//     console.log('Received event with data:', data);
-// });
-// echo.channel('chat_message.'+roomId)
-echo.join('chat_message.1').listen('chat.message', function (data) {
-  var message = "\n            <div class=\"message\"><div class=\"message-content\"><p>".concat(data.message, "</p></div></div>\n        ");
-  console.log(data);
+echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
+  var message = "\n            <div class=\"message received\"><div class=\"message-content\"><p>".concat(data.message.message, "</p></div></div>");
   chatMessages.innerHTML += message;
+});
+echo["private"]('chat_room.' + adminId).listen('.room-create', function (data) {
+  console.log(data);
+  var room = '';
+  if (data.room.sender_type === 'App\\Models\\Technician') {
+    room = "\n                <li class=\"list-group-item\" style=\"cursor: pointer\">\n                    <img class=\"img-fluid mx-1\"\n                         style=\"border-radius: 50%; width: 20px; height: 20px\"\n                         src=\"http://127.0.0.1:8000/".concat(data.sender.image, "\" alt=\"\">").concat(data.sender.phone, "\u0641\u0646\u064A -\n                    <br>").concat(data.sender.name, "\n                </li>");
+  } else {
+    room = "\n                <li class=\"list-group-item\" style=\"cursor: pointer\"\n                    >\n                    ".concat(data.sender.phone, "\u0639\u0645\u064A\u0644  -\n                    <br>").concat(data.sender.first_name, "  -  ").concat(data.sender.last_name, "\n                </li>");
+  }
+  chatThread.innerHTML += room;
 });
 
 /***/ }),

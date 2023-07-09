@@ -46,14 +46,15 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-3 message-threads px-1">
-                                <ul class="list-group">
+                            <div id="message-threads" class="col-md-3 message-threads px-1"
+                                 data-admin="{{\Illuminate\Support\Facades\Auth::user()->id}}">
+                                <ul class="list-group" id="message-thread">
                                     @foreach($rooms as $room)
                                         @if(class_basename(get_class($room->sender)) == 'User')
                                                 <?php
                                                 $user = $room->sender;
                                                 ?>
-                                            <li class="list-group-item" data-thread-id="{{$room->id}}">
+                                            <li class="list-group-item" style="cursor: pointer" data-thread-id="{{$room->id}}">
                                                 {{$user->phone .' - '.  'عميل  '}}
                                                 <br>{{$user->first_name.' '.$user->last_name}}
                                             </li>
@@ -62,7 +63,7 @@
                                                 <?php
                                                 $tech = $room->sender;
                                                 ?>
-                                            <li class="list-group-item" data-thread-id="{{$room->id}}">
+                                            <li class="list-group-item" style="cursor: pointer" data-thread-id="{{$room->id}}">
                                                 <img class="img-fluid mx-1"
                                                      style="border-radius: 50%; width: 20px; height: 20px"
                                                      src="{{asset($tech->image)}}" alt="">{{$tech->phone.' - '.'فني  '}}
@@ -75,32 +76,36 @@
                             </div>
                             <div class="col-md-9 messages px-1" id="big-box" data-room="{{$rooms->first()?->id}}">
                                 <div class="message-box" id="message-box" style="overflow-y: scroll; max-height: 300px">
-                                    @foreach($rooms->first()->messages as $message)
-                                        @if($message->sent_by_admin)
-                                            <div class="message sent">
-                                                <div class="message-content">
-                                                    <p class="text-white">{{$message->message}}</p>
+                                    @if($rooms->first())
+                                        @foreach($rooms->first()->messages as $message)
+                                            @if($message->sent_by_admin)
+                                                <div class="message sent">
+                                                    <div class="message-content">
+                                                        <p class="text-white">{{$message->message}}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        @else
-                                            <div class="message received">
-                                                <div class="message-content">
-                                                    <p>{{$message->message}}</p>
+                                            @else
+                                                <div class="message received">
+                                                    <div class="message-content">
+                                                        <p>{{$message->message}}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        @endif
-                                    @endforeach
+                                            @endif
+                                        @endforeach
+                                    @endif
                                 </div>
                                 <div class="form-group row">
-                                    <form class="col-md-12 message-form" id="message-form">
-                                        <div class="col-md-8 p-0">
+                                    @if($rooms->first())
+                                        <form class="col-md-12 message-form" id="message-form">
+                                            <div class="col-md-8 p-0">
                                             <textarea id="sent-message" class="form-control m-0"
                                                       placeholder="اكتب رسالتك"></textarea>
-                                        </div>
-                                        <div class="col-md-4 text-center">
-                                            <button type="submit" class="btn btn-primary">Send</button>
-                                        </div>
-                                    </form>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <button type="submit" class="btn btn-primary">Send</button>
+                                            </div>
+                                        </form>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -123,6 +128,7 @@
                 $('.message-threads li').removeClass('active');
                 $(this).addClass('active');
                 let threadId = $(this).data('thread-id');
+                let senderId = $(this).data('sender-id');
                 $('#big-box').attr('data-room', threadId)
                 $.ajax({
                     url: '{{route('dashboard.chat.loadChat')}}',

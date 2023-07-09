@@ -9,6 +9,7 @@ use App\Models\Room;
 use App\Models\Technician;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Pusher\Pusher;
 
 class ChatController extends Controller
 {

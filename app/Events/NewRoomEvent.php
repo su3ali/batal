@@ -14,22 +14,27 @@ class NewRoomEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $room;
+    public $room, $admin;
 
-    public function __construct($room)
+    public function __construct($room, $admin)
     {
         $this->room = $room;
+        $this->admin = $admin;
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel("chat_room.{$this->room->sender->id}");
+        return new PrivateChannel("chat_room.{$this->admin->id}");
     }
 
     public function broadcastWith()
     {
         return [
-            'room' => $this->room
+            'room' => $this->room, 'sender' => $this->room->sender
         ];
+    }
+    public function broadcastAs()
+    {
+        return 'room-create';
     }
 }
