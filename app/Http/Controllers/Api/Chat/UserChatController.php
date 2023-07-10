@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
 
 class UserChatController extends Controller
 {
-    protected function myRooms($id)
+    protected function myRooms()
     {
         if (auth()->user()->room) {
             return response()->json(['messages' => auth()->user()->room->messages]);
