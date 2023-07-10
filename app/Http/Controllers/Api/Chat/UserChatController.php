@@ -17,7 +17,7 @@ class UserChatController extends Controller
     protected function myRooms()
     {
         if (auth()->user()->room) {
-            return response()->json(['messages' => auth()->user()->room->messages, 'room' => auth()->user()->room]);
+            return response()->json(['messages' => auth()->user()->room->messages->take(50), 'room' => auth()->user()->room]);
         } else {
             return response()->json([]);
         }
