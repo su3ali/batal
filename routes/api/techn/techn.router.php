@@ -27,6 +27,7 @@ Route::get('/getLang', [LangController::class, 'getLang']);
 Route::middleware(['auth:sanctum','abilities:technician'])->group(function () {
     require __DIR__ . '/auth.router.php';
     require __DIR__ . '/home.router.php';
+    require __DIR__ . '/chat.router.php';
     require __DIR__ . '/visits.router.php';
     require __DIR__ . '/settings.router.php';
 
