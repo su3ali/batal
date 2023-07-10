@@ -43,7 +43,7 @@ class User extends Authenticatable
     public function address(){
         return $this->hasMany(UserAddresses::class, 'user_id')->where('is_default',1);
     }
-    public function rooms(){
+    public function room(){
         return $this->morphOne(Room::class, 'sender');
     }
 

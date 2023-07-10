@@ -25,12 +25,21 @@ class UserChatController extends Controller
 
     protected function saveMessage(Request $request)
     {
-        $user = User::query()->find(auth()->user()->id);
+        $user = auth()->user();
         if (!$request->room_id) {
-            $room = Room::query()->create([
-                'sender_id' => $user->id,
-                'sender_type' => 'App\\Models\\' . class_basename(get_class($user))
-            ]);
+            if (class_basename(get_class($user)) == 'User') {
+                $room = Room::query()->where('sender_id', $user->id)
+                    ->where('sender_type', 'App\\Models\\User')->first();
+            } else {
+                $room = Room::query()->where('sender_id', $user->id)
+                    ->where('sender_type', 'App\\Models\\Technician')->first();
+            }
+            if (!$room) {
+                $room = Room::query()->create([
+                    'sender_id' => $user->id,
+                    'sender_type' => 'App\\Models\\' . class_basename(get_class($user))
+                ]);
+            }
             $message = $request->input('message');
             $messageObj = Message::query()->create([
                 'room_id' => $room->id,

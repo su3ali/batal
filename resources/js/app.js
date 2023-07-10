@@ -66,12 +66,13 @@ echo.private('chat_room.' + adminId)
             str = str.substring(0, 20) + "...";
         }
         let room = ''
+        const url = process.env.APP_URL;
         if (data.room.sender_type === 'App\\Models\\Technician') {
             room = `
                 <li class="list-group-item " style="cursor: pointer; background-color: #DDD">
                     <img class="img-fluid mx-1"
                          style="border-radius: 50%; width: 20px; height: 20px"
-                         src="http://127.0.0.1:8000/${data.sender.image}" alt="">${data.sender.name}
+                         src="${url}/${data.sender.image}" alt="">${data.sender.name}
                     <br>${str}
                 </li>`
         }else {

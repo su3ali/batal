@@ -134,7 +134,7 @@ class VisitsController extends Controller
             if ($request->status_id == 5){
                 $data['end_date'] = Carbon::now();
                 $techWallet = TechnicianWallet::query()->first();
-                $serviceCost = $model->booking->service->price;
+                $serviceCost = $model->booking->order->services->where('category_id', $model->booking->category_id)->sum('price');
                 if ($techWallet->point_type == 'rate'){
                     $money = $serviceCost * ($techWallet->price/100);
                 }else{
