@@ -27,7 +27,7 @@ class MessageSentEvent implements ShouldBroadcast
     }
     public function broadcastWith()
     {
-        return ['message' => $this->message];
+        return ['message' => $this->message, 'room_id' => $this->message->room->id];
     }
     public function broadcastAs()
     {
