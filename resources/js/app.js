@@ -31,7 +31,7 @@ const echo = new Echo({
     broadcaster: 'pusher',
     key: '87ed15aef6ced76b1507',
     cluster: 'us2',
-    forceTLS: false,
+    forceTLS: true,
     authorizer: (channel, options) => {
         return {
             authorize: (socketId, callback) => {
