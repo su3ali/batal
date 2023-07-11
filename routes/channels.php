@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Broadcast;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-Broadcast::channel('chat_message.{chat}', function (\App\Models\Admin $admin, $roomId) {
+Broadcast::channel('chat_message.{chat}', function ($user, $roomId) {
 //    return  $room->admin_id == $admin->id;
-    return ['id' => $admin->id, 'name' => $admin->first_name];
+    return ['id' => $user->id, 'name' => $user->first_name, 'type' => class_basename(get_class($user))];
 });
-Broadcast::channel('chat_room.{room_id}', function (\App\Models\Admin $admin, $room) {
+Broadcast::channel('chat_room.{room_id}', function ($user, $room) {
 //    return  $room->admin_id == $admin->id;
-    return ['id' => $admin->id, 'name' => $admin->first_name, 'room' => $room];
+    return ['id' => $user->id, 'name' => $user->first_name, 'type' => class_basename(get_class($user)), 'room' => $room];
 });
