@@ -16,7 +16,7 @@ Broadcast::channel('chat_message.{chat}', function (\App\Models\Admin $admin, $r
 //    return  $room->admin_id == $admin->id;
     return ['id' => $admin->id, 'name' => $admin->first_name];
 });
-Broadcast::channel('chat_room.{admin_id}', function (\App\Models\Admin $admin, $room) {
+Broadcast::channel('chat_room.{room_id}', function (\App\Models\Admin $admin, $room) {
 //    return  $room->admin_id == $admin->id;
     return ['id' => $admin->id, 'name' => $admin->first_name, 'room' => $room];
 });

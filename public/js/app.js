@@ -2063,6 +2063,7 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
+/* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 
@@ -2091,7 +2092,7 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: '87ed15aef6ced76b1507',
   cluster: 'us2',
-  forceTLS: false,
+  forceTLS: true,
   authorizer: function authorizer(channel, options) {
     return {
       authorize: function authorize(socketId, callback) {
@@ -2115,15 +2116,16 @@ echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
     chatMessages.innerHTML += message;
   }
 });
-echo["private"]('chat_room.' + adminId).listen('.room-create', function (data) {
+echo["private"]('chat_room.' + roomId).listen('.room-create', function (data) {
   console.log(data);
   var str = data.message.message;
   if (str.length > 20) {
     str = str.substring(0, 20) + "...";
   }
   var room = '';
+  var url = process.env.APP_URL;
   if (data.room.sender_type === 'App\\Models\\Technician') {
-    room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\">\n                    <img class=\"img-fluid mx-1\"\n                         style=\"border-radius: 50%; width: 20px; height: 20px\"\n                         src=\"http://127.0.0.1:8000/".concat(data.sender.image, "\" alt=\"\">").concat(data.sender.name, "\n                    <br>").concat(str, "\n                </li>");
+    room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\">\n                    <img class=\"img-fluid mx-1\"\n                         style=\"border-radius: 50%; width: 20px; height: 20px\"\n                         src=\"".concat(url, "/").concat(data.sender.image, "\" alt=\"\">").concat(data.sender.name, "\n                    <br>").concat(str, "\n                </li>");
   } else {
     room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\"\n                    >\n                    \u0639\u0645\u064A\u0644 - ".concat(data.sender.first_name, "  ").concat(data.sender.last_name, "\n                    <br>").concat(str, "\n                </li>");
   }
