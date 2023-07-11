@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Broadcast;
 */
 Broadcast::channel('chat_message.{chat}', function ($user, $roomId) {
 //    return  $room->admin_id == $admin->id;
-    return ['id' => $user->id, 'name' => $user->first_name, 'type' => class_basename(get_class($user))];
+    if ($user){
+        return ['id' => $user->id, 'name' => $user->first_name, 'type' => class_basename(get_class($user))];
+    }else
+        return false;
 });
 Broadcast::channel('chat_room.{room_id}', function ($user, $room) {
 //    return  $room->admin_id == $admin->id;
