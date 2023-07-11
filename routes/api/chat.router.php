@@ -10,7 +10,8 @@ Route::group(['prefix' => 'chat'], function () {
             $socketId = $request->input('socket_id');
             $channelName = $request->input('channel_name');
             $channelData = ['user_id' => $user->id, 'name' => $user->name];
-            $authData = Broadcast::auth($request);
+            $authDatas = $pusher->socket_auth($request->get('channel_name'), $request->get('socket_id'));
+            $authData['auth'] = json_decode($authDatas)->auth;
             $authData['channel_data'] = json_encode($channelData);
 
             return $authData;
