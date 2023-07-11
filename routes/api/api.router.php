@@ -25,7 +25,6 @@ Route::post('/verify', [AuthController::class, 'verify']);
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
 
 Route::middleware(['auth:sanctum','abilities:user'])->group(function () {
-    Broadcast::routes(['auth:sanctum','abilities:user']);
     require __DIR__ . '/core.router.php';
     require __DIR__ . '/auth.router.php';
     require __DIR__ . '/chat.router.php';
