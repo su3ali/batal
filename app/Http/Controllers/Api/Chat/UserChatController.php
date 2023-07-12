@@ -63,7 +63,7 @@ class UserChatController extends Controller
 
     protected function loadChat(Request $request)
     {
-        $messages = Message::query()->where('room_id', auth()->user()->room)->paginate(50);
-        return response()->json(['messages' => $messages, 'room_id' => auth()->user()->room->id]);
+        $messages = Message::query()->where('room_id', auth()->user()->room->id)->paginate(50);
+        return response()->json(['messages' => $messages, 'room_id' => auth()->user()->room->id ?? null]);
     }
 }
