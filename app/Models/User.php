@@ -15,7 +15,7 @@ class User extends Authenticatable
     use HasApiTokens,WithBoot,HasPassword, HasFactory,HasRoles, Notifiable;
     protected $guard = 'user';
     protected $guarded = [];
-
+    protected $appends = ['model_name'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -25,6 +25,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
     ];
+
+    public function getModelNameAttribute(){
+        return "User";
+    }
 
     public function city(){
         return $this->hasOne(City::class, 'id', 'city_id');

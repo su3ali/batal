@@ -15,8 +15,10 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
 
     const messageInput = document.getElementById('sent-message');
     const messageInputValue = messageInput.value;
-    const messages = chatMessages.querySelectorAll('.message')
-    chatMessages.innerHTML += '<div class="message sent"><div class="message-content"><p class="text-white">' + messageInputValue + '</p></div></div>';
+    const messages = chatMessages.querySelectorAll('.message');
+
+    // chatMessages.innerHTML += '<div class="message sent"><div class="message-content"><p class="text-white">' + messageInputValue + '</p></div></div>';
+    chatMessages.innerHTML += '<li class="message sent"><img src="/images/user.jpg" alt=""/> <p>' + messageInputValue + '</p></li>';
     messageInput.value = ''
 
 
@@ -53,8 +55,8 @@ const echo = new Echo({
 echo.join('chat_message.' + roomId)
     .listen('.chat-message', (data) => {
         if (data.message.sent_by_admin === 0){
-            const message = `
-            <div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
+            // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
+            const message = `<li class="message received"><img src="/images/techn.png" alt=""/> <p>${data.message.message}</p></li>`;
             chatMessages.innerHTML += message;
         }
     });

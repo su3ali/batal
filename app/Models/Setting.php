@@ -12,6 +12,13 @@ class Setting extends Model
         'value' => 'array',
     ];
 
+    public function getNameAttribute(){
+        if (app()->getLocale()=='ar'){
+            return $this->site_name_ar;
+        }else{
+            return $this->site_name_en;
+        }
+    }
 
     public function getimageAttribute(){
 

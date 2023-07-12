@@ -10,4 +10,7 @@ Route::group(['prefix' => 'chat'], function () {
     Route::get('loadChat', [ChatController::class, 'loadChat'])->name('chat.loadChat');
 //    Route::post('auth', [ChatController::class, 'auth'])->name('chat.auth');
 
+
+    Route::get('test_view', [ChatController::class, 'testView']);
+
 });

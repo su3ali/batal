@@ -2063,6 +2063,7 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
+/* provided dependency */ var process = __webpack_require__(/*! process/browser.js */ "./node_modules/process/browser.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 
@@ -2077,7 +2078,9 @@ document.getElementById('message-form').addEventListener('submit', function (e) 
   var messageInput = document.getElementById('sent-message');
   var messageInputValue = messageInput.value;
   var messages = chatMessages.querySelectorAll('.message');
-  chatMessages.innerHTML += '<div class="message sent"><div class="message-content"><p class="text-white">' + messageInputValue + '</p></div></div>';
+
+  // chatMessages.innerHTML += '<div class="message sent"><div class="message-content"><p class="text-white">' + messageInputValue + '</p></div></div>';
+  chatMessages.innerHTML += '<li class="message sent"><img src="/images/user.jpg" alt=""/> <p>' + messageInputValue + '</p></li>';
   messageInput.value = '';
   axios.post('/admin/chat/broadcast', {
     message: messageInputValue,
@@ -2091,7 +2094,7 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: '87ed15aef6ced76b1507',
   cluster: 'us2',
-  forceTLS: false,
+  forceTLS: true,
   authorizer: function authorizer(channel, options) {
     return {
       authorize: function authorize(socketId, callback) {
@@ -2111,7 +2114,8 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 });
 echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
   if (data.message.sent_by_admin === 0) {
-    var message = "\n            <div class=\"message received\"><div class=\"message-content\"><p>".concat(data.message.message, "</p></div></div>");
+    // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
+    var message = "<li class=\"message received\"><img src=\"/images/techn.png\" alt=\"\"/> <p>".concat(data.message.message, "</p></li>");
     chatMessages.innerHTML += message;
   }
 });
@@ -2122,8 +2126,9 @@ echo["private"]('chat_room.' + adminId).listen('.room-create', function (data) {
     str = str.substring(0, 20) + "...";
   }
   var room = '';
+  var url = process.env.APP_URL;
   if (data.room.sender_type === 'App\\Models\\Technician') {
-    room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\">\n                    <img class=\"img-fluid mx-1\"\n                         style=\"border-radius: 50%; width: 20px; height: 20px\"\n                         src=\"http://127.0.0.1:8000/".concat(data.sender.image, "\" alt=\"\">").concat(data.sender.name, "\n                    <br>").concat(str, "\n                </li>");
+    room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\">\n                    <img class=\"img-fluid mx-1\"\n                         style=\"border-radius: 50%; width: 20px; height: 20px\"\n                         src=\"".concat(url, "/").concat(data.sender.image, "\" alt=\"\">").concat(data.sender.name, "\n                    <br>").concat(str, "\n                </li>");
   } else {
     room = "\n                <li class=\"list-group-item \" style=\"cursor: pointer; background-color: #DDD\"\n                    >\n                    \u0639\u0645\u064A\u0644 - ".concat(data.sender.first_name, "  ").concat(data.sender.last_name, "\n                    <br>").concat(str, "\n                </li>");
   }

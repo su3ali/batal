@@ -16,11 +16,16 @@ class Technician extends Authenticatable
     use HasApiTokens,HasPassword, HasFactory,HasRoles, Notifiable;
     protected $guard = 'technician';
     protected $guarded = [];
+    protected $appends = ['model_name'];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    public function getModelNameAttribute(){
+        return "Technician";
+    }
 
     public function specialization(){
         return $this->hasOne(Specialization::class, 'id', 'spec_id');

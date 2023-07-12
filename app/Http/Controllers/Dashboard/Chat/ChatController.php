@@ -36,7 +36,17 @@ class ChatController extends Controller
 
     protected function loadChat(Request $request)
     {
-        $room = Room::query()->with('messages')->where('id', $request->room_id)->first();
+        $room = Room::query()->with('messages')->with('sender')->where('id', $request->room_id)->first();
         return response()->json($room);
     }
+
+
+    protected function testView(Request $request)
+    {
+        $rooms = Room::with('messages')->get();
+        $users = User::select(['id', 'first_name', 'last_name', 'phone'])->get();
+        $techs = Technician::select(['id', 'name', 'phone', 'image'])->get();
+        return view('dashboard.chat.test', compact('rooms', 'users', 'techs'));
+    }
+
 }
