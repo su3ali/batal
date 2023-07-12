@@ -58,12 +58,12 @@ class UserChatController extends Controller
 
         }
         event(new MessageSentEvent($messageObj));
-        return response()->json(['status' => 'Message sent!']);
+        return response()->json(['status' => 'Message sent!', 'room_id' => $room->id]);
     }
 
     protected function loadChat(Request $request)
     {
-        $messages = Message::query()->where('room_id', $request->room_id)->paginate(50);
-        return response()->json(['messages' => $messages]);
+        $messages = Message::query()->where('room_id', auth()->user()->room)->paginate(50);
+        return response()->json(['messages' => $messages, 'room_id' => auth()->user()->room->id]);
     }
 }

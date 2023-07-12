@@ -2119,7 +2119,7 @@ echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
     chatMessages.innerHTML += message;
   }
 });
-echo["private"]('chat_room.' + adminId).listen('.room-create', function (data) {
+echo["private"]('chat_room.' + roomId).listen('.room-create', function (data) {
   console.log(data);
   var str = data.message.message;
   if (str.length > 20) {

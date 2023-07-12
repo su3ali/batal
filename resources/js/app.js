@@ -60,7 +60,7 @@ echo.join('chat_message.' + roomId)
             chatMessages.innerHTML += message;
         }
     });
-echo.private('chat_room.' + adminId)
+echo.private('chat_room.' + roomId)
     .listen('.room-create', (data) => {
         console.log(data)
         let str = data.message.message;

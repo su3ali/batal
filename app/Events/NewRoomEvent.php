@@ -25,7 +25,7 @@ class NewRoomEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new PrivateChannel("chat_room.{$this->admin->id}");
+        return new PrivateChannel("chat_room.{$this->room->id}");
     }
 
     public function broadcastWith()
