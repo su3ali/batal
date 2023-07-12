@@ -49,4 +49,35 @@ class ChatController extends Controller
         return view('dashboard.chat.test', compact('rooms', 'users', 'techs'));
     }
 
+
+    protected function searchChat(Request $request)
+    {
+        $customers = [];
+        $technicians = [];
+        if ($request->search != '') {
+
+            $search = $request->search;
+            $customers = User::where('email', 'LIKE', "%$search%")
+                ->orWhere('last_name', 'LIKE', "%$search%")
+                ->orWhere('first_name', 'LIKE', "%$search%")
+                ->orWhere('phone', 'LIKE', "%$search%")
+                ->get();
+
+            $technicians = Technician::where('email', 'LIKE', "%$search%")
+                ->orWhere('name', 'LIKE', "%$search%")
+                ->orWhere('phone', 'LIKE', "%$search%")
+                ->get();
+
+        }else{
+            $customers = User::get();
+            $technicians = Technician::get();
+        }
+        $data = [
+            'users' => $customers,
+            'technicians' => $technicians,
+        ];
+
+        return response()->json($data);
+    }
+
 }

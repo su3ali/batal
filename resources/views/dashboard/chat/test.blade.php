@@ -49,7 +49,7 @@
                             <p> {{\App\Models\Setting::query()->first()?\App\Models\Setting::query()->first()->name : 'site name'}} </p>
                         </div>
                         <div id="search">
-                            <input type="text" name="search" placeholder="بحث"/>
+                            <input type="text" id="searchText" name="search" placeholder="بحث"/>
                             <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
                         </div>
                         <div id="message-threads" class="message-threads"
@@ -218,6 +218,67 @@
                         });
                         let messages = document.getElementById("big-box")
                             messages.scrollTo(0, messages.scrollHeight);
+                    }
+                })
+            });
+
+            $('#searchText').keyup(function () {
+                let search = $(this).val();
+                var url = '{{asset('/')}}';
+
+                $.ajax({
+                    url: '{{route('dashboard.chat.searchChat')}}',
+                    type: 'get',
+                    data: {search: search},
+                    success: function (response) {
+                        $('#message-thread').empty();
+                        if(response.users.length > 0){
+                            var text = '- عميل';
+                            $.each(response.users, function (index, user) {
+                                if(user.image){
+                                    var img = user.image
+                                }else {
+                                    var img = 'images/user.jpg'
+                                }
+                                var messageContent = `<li class="contact" data-thread-id="`+user['id']+`">
+                                            <div class="wrap">
+                                                <span class="contact-status online"></span>
+                                                    <img src="`+url+``+img+`" alt=""/>
+                                <div class="meta">
+                                    <p class="name">`+user.phone+` `+text+`
+                                <br> `+user.first_name+` `+user.first_name+` </p>
+
+                                </div>
+                            </div>
+                        </li>`;
+                                $('#message-thread').append(messageContent);
+                            });
+                        }
+
+                        if(response.technicians.length > 0){
+                            var text = '- فني';
+                            $.each(response.technicians, function (index, technician) {
+                                if(technician.image){
+                                    var img = technician.image
+                                }else {
+                                    var img = 'images/user.jpg'
+                                }
+                                var messageContent = `<li class="contact" data-thread-id="`+technician['id']+`">
+                                            <div class="wrap">
+                                                <span class="contact-status online"></span>
+                                                    <img src="`+url+``+img+`" alt=""/>
+                                <div class="meta">
+                                    <p class="name">`+technician.phone+` `+text+`
+                                <br> `+technician.name+` </p>
+
+                                </div>
+                            </div>
+                        </li>`;
+                                $('#message-thread').append(messageContent);
+                            });
+                        }
+
+
                     }
                 })
             });
