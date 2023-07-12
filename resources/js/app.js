@@ -28,6 +28,10 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
         .catch((error) => {
             console.log(error);
         });
+
+    let BoxMessages = document.getElementById("big-box")
+    BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
+
 });
 const echo = new Echo({
     broadcaster: 'pusher',
@@ -58,7 +62,11 @@ echo.join('chat_message.' + roomId)
             // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
             const message = `<li class="message received"><img src="/images/techn.png" alt=""/> <p>${data.message.message}</p></li>`;
             chatMessages.innerHTML += message;
+
+            let BoxMessages = document.getElementById("big-box")
+            BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
         }
+
     });
 echo.private('chat_room.' + roomId)
     .listen('.room-create', (data) => {

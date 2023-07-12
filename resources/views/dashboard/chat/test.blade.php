@@ -180,8 +180,11 @@
 @push('script')
     <script>
         $(document).ready(function () {
+
 // Select the first thread by default
             $('.message-threads li:first-child').addClass('active');
+            let messages = document.getElementById("big-box")
+            messages.scrollTo(0, messages.scrollHeight);
             //load messages
 
 // Handle thread selection
@@ -213,6 +216,8 @@
                             var messageContent = '<li class="message ' + messageClass + '"><img src="'+img+'" alt=""/> <p>' + message.message + '</p></li>';
                             $('.message-box').append(messageContent);
                         });
+                        let messages = document.getElementById("big-box")
+                            messages.scrollTo(0, messages.scrollHeight);
                     }
                 })
             });

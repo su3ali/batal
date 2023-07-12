@@ -2089,6 +2089,8 @@ document.getElementById('message-form').addEventListener('submit', function (e) 
   })["catch"](function (error) {
     console.log(error);
   });
+  var BoxMessages = document.getElementById("big-box");
+  BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 });
 var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
@@ -2117,6 +2119,8 @@ echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
     // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
     var message = "<li class=\"message received\"><img src=\"/images/techn.png\" alt=\"\"/> <p>".concat(data.message.message, "</p></li>");
     chatMessages.innerHTML += message;
+    var BoxMessages = document.getElementById("big-box");
+    BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
   }
 });
 echo["private"]('chat_room.' + roomId).listen('.room-create', function (data) {
