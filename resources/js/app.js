@@ -7,7 +7,7 @@ const chatForm = document.getElementById('message-form');
 const chatMessages = document.getElementById('message-box');
 const chatThreads = document.getElementById('message-threads');
 const chatThread = document.getElementById('message-thread');
-const roomId = document.getElementById('big-box').getAttribute('data-room')
+const roomId = document.getElementById('big-box').find('.active').getAttribute('data-room')
 const adminId = chatThreads.getAttribute('data-admin');
 
 document.getElementById('message-form').addEventListener('submit', (e) => {
