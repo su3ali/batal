@@ -2067,6 +2067,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 
+alert('welcomechat');
 var chatForm = document.getElementById('message-form');
 var chatMessages = document.getElementById('message-box');
 var chatThreads = document.getElementById('message-threads');
