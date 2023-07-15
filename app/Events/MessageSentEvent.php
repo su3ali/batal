@@ -24,7 +24,7 @@ class MessageSentEvent implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return new PresenceChannel("chat_message.{$this->message['room_id']}");
+        return new PrivateChannel("chat_message.{$this->message['room_id']}");
     }
     public function broadcastWith()
     {
