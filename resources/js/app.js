@@ -34,7 +34,7 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
     BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 
 });
-const echo = new Echo({
+window.Echo = new Echo({
     broadcaster: 'pusher',
     key: '87ed15aef6ced76b1507',
     cluster: 'us2',
@@ -48,30 +48,32 @@ const echo = new Echo({
                     progress: false,
                 })
                     .then(response => {
+                        console.log(response)
                         callback(false, response.data);
                     })
                     .catch(error => {
+                        console.log(error)
                         callback(true, error);
                     });
             }
         };
     },
 });
-echo.private('chat_message.2')
+window.Echo.private('chat_message.'+document.getElementById('big-box').getAttribute('data-room'))
     .listen('.chat-message', (data) => {
         console.log(document.getElementById('big-box').getAttribute('data-room'))
 
         if (data.message.sent_by_admin === 0){
             // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
             const message = `<li class="message received"><img src="/images/techn.png" alt=""/> <p>${data.message.message}</p></li>`;
-            chatMessages.innerHTML += message;
+            document.getElementById('message-box').innerHTML += message;
 
             let BoxMessages = document.getElementById("big-box")
             BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
         }
 
     });
-echo.private('chat_room.'+roomId)
+window.Echo.private('chat_room.' + document.getElementById('big-box').getAttribute('data-room'))
     .listen('.room-create', (data) => {
 
         console.log(1111111111)
