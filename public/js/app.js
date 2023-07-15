@@ -2104,9 +2104,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
         axios.post('broadcasting/auth', {
           socket_id: socketId,
           channel_name: channel.name,
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
+          csrf_token: $('meta[name="csrf-token"]').attr('content')
         }, {
           progress: false
         }).then(function (response) {

@@ -45,9 +45,7 @@ window.Echo = new Echo({
         return {
             authorize: (socketId, callback) => {
                 axios.post('broadcasting/auth', {
-                    socket_id: socketId, channel_name: channel.name, headers: {
-                            'X-CSRF-TOKEN' :$('meta[name="csrf-token"]').attr('content'),
-                        },
+                    socket_id: socketId, channel_name: channel.name,csrf_token: $('meta[name="csrf-token"]').attr('content')
                 },
                     {
 
