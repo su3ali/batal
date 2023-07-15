@@ -2078,6 +2078,7 @@ document.getElementById('message-form').addEventListener('submit', function (e) 
   var messageInput = document.getElementById('sent-message');
   var messageInputValue = messageInput.value;
   var messages = chatMessages.querySelectorAll('.message');
+  var roomId = document.getElementById('big-box').getAttribute('data-room');
 
   // chatMessages.innerHTML += '<div class="message sent"><div class="message-content"><p class="text-white">' + messageInputValue + '</p></div></div>';
   chatMessages.innerHTML += '<li class="message sent"><img src="/images/user.jpg" alt=""/> <p>' + messageInputValue + '</p></li>';
@@ -2106,10 +2107,8 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
         }, {
           progress: false
         }).then(function (response) {
-          console.log(response);
           callback(false, response.data);
         })["catch"](function (error) {
-          console.log(error);
           callback(true, error);
         });
       }
