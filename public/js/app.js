@@ -2106,7 +2106,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
           channel_name: channel.name
         }, {
           headers: {
-            'Authorization': "Basic " + $('meta[name="csrf-token"]').attr('content')
+            'Authorization': "Basic 94|ReHYK1j9eU9OrN3KM4KjojGlZKUNXnIabEWPduMm\n"
           },
           progress: false
         }).then(function (response) {

@@ -49,7 +49,8 @@ window.Echo = new Echo({
                 },
                     {
                         headers: {
-                            'Authorization': `Basic `+$('meta[name="csrf-token"]').attr('content')
+                            'Authorization': `Basic 94|ReHYK1j9eU9OrN3KM4KjojGlZKUNXnIabEWPduMm
+`
                         },
                     progress: false,
                 })
