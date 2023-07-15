@@ -2114,7 +2114,7 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
     };
   }
 });
-echo["private"]('chat_message.' + roomId).listen('.chat-message', function (data) {
+echo["private"]('chat_message.2').listen('.chat-message', function (data) {
   console.log(document.getElementById('big-box').getAttribute('data-room'));
   if (data.message.sent_by_admin === 0) {
     // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;

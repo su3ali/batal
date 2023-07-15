@@ -57,7 +57,7 @@ const echo = new Echo({
         };
     },
 });
-echo.private('chat_message.'+roomId)
+echo.private('chat_message.2')
     .listen('.chat-message', (data) => {
         console.log(document.getElementById('big-box').getAttribute('data-room'))
 
