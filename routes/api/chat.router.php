@@ -4,7 +4,8 @@ use App\Http\Controllers\Api\Chat\UserChatController;
 
 Route::group(['prefix' => 'chat'], function () {
     Route::post('/broadcasting/auth', function (\Illuminate\Http\Request $request){
-        if (Auth::check()) {
+
+
             $pusher = new \Pusher\Pusher('87ed15aef6ced76b1507', 'd8f21b90df201e227ad8', "1629640");
             $user = Auth::user();
             $socketId = $request->input('socket_id');
@@ -15,9 +16,7 @@ Route::group(['prefix' => 'chat'], function () {
             $authData['channel_data'] = json_encode($channelData);
 
             return $authData;
-        } else {
-            abort(403, 'Unauthorized');
-        }
+
     });
     Route::get('my_rooms', [UserChatController::class, 'myRooms']);
     Route::post('broadcast', [UserChatController::class, 'saveMessage']);
