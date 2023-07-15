@@ -23,7 +23,7 @@ class MessageSentEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new PresenceChannel("chat_message.{$this->message['room_id']}");
+        return new PresenceChannel("chat_message.{$this->message->sender->id}");
     }
     public function broadcastWith()
     {

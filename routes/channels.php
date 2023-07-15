@@ -12,10 +12,9 @@ use Illuminate\Support\Facades\Broadcast;
 | used to check if an authenticated user can listen to the channel.
 |
 */
-Broadcast::channel('chat_message.{chat}', function ($user, $roomId) {
+Broadcast::channel('chat_message.{sender_id}', function ($user, $roomId) {
 //    return  $room->admin_id == $admin->id;
-    return class_basename(get_class($user)) == 'Admin' ||
-    $user->id == \App\Models\Room::query()->find($roomId)->sender->id
+    return $user->id == \App\Models\Room::query()->find($roomId)->sender->id
         ? ['user_id' => $user->id, 'user_type' => class_basename(get_class($user)), 'room_id' => $roomId]
         : false;
 });
