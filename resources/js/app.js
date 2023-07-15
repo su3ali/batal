@@ -59,6 +59,7 @@ const echo = new Echo({
 });
 echo.join('chat_message.' + roomId)
     .listen('.chat-message', (data) => {
+        console.log(data)
         if (data.message.sent_by_admin === 0){
             // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
             const message = `<li class="message received"><img src="/images/techn.png" alt=""/> <p>${data.message.message}</p></li>`;

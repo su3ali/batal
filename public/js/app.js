@@ -2116,6 +2116,7 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   }
 });
 echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
+  console.log(data);
   if (data.message.sent_by_admin === 0) {
     // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
     var message = "<li class=\"message received\"><img src=\"/images/techn.png\" alt=\"\"/> <p>".concat(data.message.message, "</p></li>");
