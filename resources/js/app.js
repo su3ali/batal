@@ -48,11 +48,7 @@ window.Echo = new Echo({
                     socket_id: socketId, channel_name: channel.name
                 },
                     {
-                        headers: {
-                            'Authorization': `Basic 94|ReHYK1j9eU9OrN3KM4KjojGlZKUNXnIabEWPduMm
-`
-                        },
-                    progress: false,
+                    progress: true,
                 })
                     .then(response => {
                         callback(false, response.data);

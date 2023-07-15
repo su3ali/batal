@@ -2105,10 +2105,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
           socket_id: socketId,
           channel_name: channel.name
         }, {
-          headers: {
-            'Authorization': "Basic 94|ReHYK1j9eU9OrN3KM4KjojGlZKUNXnIabEWPduMm\n"
-          },
-          progress: false
+          progress: true
         }).then(function (response) {
           callback(false, response.data);
         })["catch"](function (error) {
