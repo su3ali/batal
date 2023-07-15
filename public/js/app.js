@@ -2093,12 +2093,6 @@ document.getElementById('message-form').addEventListener('submit', function (e) 
   var BoxMessages = document.getElementById("big-box");
   BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 });
-var options = {
-  headers: {
-    'Content-Type': 'application/json',
-    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
-  }
-};
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: '87ed15aef6ced76b1507',
@@ -2110,8 +2104,12 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
         axios.post('broadcasting/auth', {
           socket_id: socketId,
           channel_name: channel.name
-        }, options, {
-          // progress: false,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          progress: false
         }).then(function (response) {
           callback(false, response.data);
         })["catch"](function (error) {

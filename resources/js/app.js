@@ -35,12 +35,7 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
     BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 
 });
-const options = {
-    headers: {
-        'Content-Type': 'application/json',
-        "X-CSRF-TOKEN" :$('meta[name="csrf-token"]').attr('content'),
-    }
-};
+
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: '87ed15aef6ced76b1507',
@@ -50,10 +45,14 @@ window.Echo = new Echo({
         return {
             authorize: (socketId, callback) => {
                 axios.post('broadcasting/auth', {
-                    socket_id: socketId, channel_name: channel.name
-                },options,
+                    socket_id: socketId, channel_name: channel.name,
+                },
                     {
-                    // progress: false,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN' :$('meta[name="csrf-token"]').attr('content'),
+                        },
+                    progress: false,
                 })
                     .then(response => {
                         callback(false, response.data);
