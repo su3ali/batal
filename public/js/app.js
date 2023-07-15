@@ -2109,6 +2109,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           }
         }).then(function (response) {
+          console.log($('meta[name="csrf-token"]').attr('content'));
           callback(false, response.data);
         })["catch"](function (error) {
           console.log(error);

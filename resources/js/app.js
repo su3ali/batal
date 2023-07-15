@@ -54,6 +54,7 @@ window.Echo = new Echo({
 
                 })
                     .then(response => {
+                        console.log($('meta[name="csrf-token"]').attr('content'))
                         callback(false, response.data);
                     })
                     .catch(error => {
