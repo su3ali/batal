@@ -35,7 +35,6 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
     BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 
 });
-
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: '87ed15aef6ced76b1507',
@@ -46,9 +45,8 @@ window.Echo = new Echo({
             authorize: (socketId, callback) => {
                 axios.post('broadcasting/auth', {
                     socket_id: socketId, channel_name: channel.name
-                },
-                    {
-                    progress: true,
+                }, {
+                    progress: false,
                 })
                     .then(response => {
                         callback(false, response.data);
