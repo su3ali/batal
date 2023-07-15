@@ -194,7 +194,7 @@
                             <a href="{{route('dashboard.core.administration.admins.index')}}"> المستخدمين </a>
                         </li>
                     @endcan
-                    @can('view_roles')
+                        @can('view_roles')
                         <li>
                             <a href="{{route('dashboard.core.administration.roles.index')}}"> الصلاحيات </a>
                         </li>

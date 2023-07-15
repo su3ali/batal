@@ -2073,6 +2073,9 @@ var chatMessages = document.getElementById('message-box');
 var chatThreads = document.getElementById('message-threads');
 var chatThread = document.getElementById('message-thread');
 var roomId = document.getElementById('big-box').getAttribute('data-room');
+setInterval(function () {
+  roomId = document.getElementById('big-box').getAttribute('data-room');
+}, 1000);
 var adminId = chatThreads.getAttribute('data-admin');
 document.getElementById('message-form').addEventListener('submit', function (e) {
   e.preventDefault();
