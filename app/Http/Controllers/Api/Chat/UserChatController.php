@@ -27,7 +27,7 @@ class UserChatController extends Controller
     {
         $user = auth()->user();
         $room = Room::with('sender')->find($request->room_id);
-        if (!$request->room_id && !$room) {
+        if (!$request->room_id || !$room) {
             if (class_basename(get_class($user)) == 'User') {
                 $room = Room::query()->where('sender_id', $user->id)
                     ->where('sender_type', 'App\\Models\\User')->first();
