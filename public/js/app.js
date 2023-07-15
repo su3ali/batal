@@ -2098,7 +2098,6 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   key: '87ed15aef6ced76b1507',
   cluster: 'us2',
   forceTLS: true,
-  encrypted: true,
   authorizer: function authorizer(channel, options) {
     return {
       authorize: function authorize(socketId, callback) {
@@ -2106,7 +2105,11 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
           socket_id: socketId,
           channel_name: channel.name
         }, {
-          headers: $('meta[name="csrf-token"]').attr('content')
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          progress: false
         }).then(function (response) {
           callback(false, response.data);
         })["catch"](function (error) {
