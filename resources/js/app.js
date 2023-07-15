@@ -1,16 +1,13 @@
 require('./bootstrap');
 window.Pusher = require('pusher-js');
 import Echo from "laravel-echo";
-alert('welcomechat')
+
 const chatForm = document.getElementById('message-form');
 
 const chatMessages = document.getElementById('message-box');
 const chatThreads = document.getElementById('message-threads');
 const chatThread = document.getElementById('message-thread');
 var roomId = document.getElementById('big-box').getAttribute('data-room')
-setInterval(function () {
-    roomId = document.getElementById('big-box').getAttribute('data-room');
-}, 1000);
 
 const adminId = chatThreads.getAttribute('data-admin');
 
@@ -20,7 +17,6 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
     const messageInput = document.getElementById('sent-message');
     const messageInputValue = messageInput.value;
     const messages = chatMessages.querySelectorAll('.message');
-    const roomId = document.getElementById('big-box').getAttribute('data-room')
 
     // chatMessages.innerHTML += '<div class="message sent"><div class="message-content"><p class="text-white">' + messageInputValue + '</p></div></div>';
     chatMessages.innerHTML += '<li class="message sent"><img src="/images/user.jpg" alt=""/> <p>' + messageInputValue + '</p></li>';
@@ -38,7 +34,7 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
     BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 
 });
-const echo = new Echo({
+window.Echo = new Echo({
     broadcaster: 'pusher',
     key: '87ed15aef6ced76b1507',
     cluster: 'us2',
@@ -61,9 +57,10 @@ const echo = new Echo({
         };
     },
 });
-echo.join('chat_message.' + roomId)
+window.Echo.join('chat_message.' + document.getElementById('big-box').getAttribute('data-room'))
     .listen('.chat-message', (data) => {
         console.log(data)
+
         if (data.message.sent_by_admin === 0){
             // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
             const message = `<li class="message received"><img src="/images/techn.png" alt=""/> <p>${data.message.message}</p></li>`;
@@ -74,9 +71,10 @@ echo.join('chat_message.' + roomId)
         }
 
     });
-echo.private('chat_room.' + roomId)
+window.Echo.private('chat_room.' + document.getElementById('big-box').getAttribute('data-room'))
     .listen('.room-create', (data) => {
         console.log(data)
+        console.log(1111111111)
         let str = data.message.message;
         if (str.length > 20) {
             str = str.substring(0, 20) + "...";

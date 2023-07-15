@@ -146,7 +146,7 @@
                                             </li>
                                         @else
                                             <li class="message replies received">
-                                                <img src="{{asset('images/user.jpg')}}" alt=""/>
+                                                <img src="{{asset('images/tech.png')}}" alt=""/>
                                                 <p>{{$message->message}}</p>
                                             </li>
                                         @endif

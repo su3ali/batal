@@ -7,10 +7,11 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSentEvent implements ShouldBroadcast
+class MessageSentEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -23,11 +24,11 @@ class MessageSentEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new PresenceChannel("chat_message.{$this->message->sender->id}");
+        return new PresenceChannel("chat_message.{$this->message['room_id']}");
     }
     public function broadcastWith()
     {
-        return ['message' => $this->message, 'room_id' => $this->message->room->id];
+        return ['message' => $this->message, 'room_id' => $this->message['room_id']];
     }
     public function broadcastAs()
     {

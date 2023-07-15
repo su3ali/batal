@@ -2067,22 +2067,17 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 
-alert('welcomechat');
 var chatForm = document.getElementById('message-form');
 var chatMessages = document.getElementById('message-box');
 var chatThreads = document.getElementById('message-threads');
 var chatThread = document.getElementById('message-thread');
 var roomId = document.getElementById('big-box').getAttribute('data-room');
-setInterval(function () {
-  roomId = document.getElementById('big-box').getAttribute('data-room');
-}, 1000);
 var adminId = chatThreads.getAttribute('data-admin');
 document.getElementById('message-form').addEventListener('submit', function (e) {
   e.preventDefault();
   var messageInput = document.getElementById('sent-message');
   var messageInputValue = messageInput.value;
   var messages = chatMessages.querySelectorAll('.message');
-  var roomId = document.getElementById('big-box').getAttribute('data-room');
 
   // chatMessages.innerHTML += '<div class="message sent"><div class="message-content"><p class="text-white">' + messageInputValue + '</p></div></div>';
   chatMessages.innerHTML += '<li class="message sent"><img src="/images/user.jpg" alt=""/> <p>' + messageInputValue + '</p></li>';
@@ -2097,7 +2092,7 @@ document.getElementById('message-form').addEventListener('submit', function (e) 
   var BoxMessages = document.getElementById("big-box");
   BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 });
-var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
+window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: '87ed15aef6ced76b1507',
   cluster: 'us2',
@@ -2119,7 +2114,7 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
     };
   }
 });
-echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
+window.Echo.join('chat_message.' + document.getElementById('big-box').getAttribute('data-room')).listen('.chat-message', function (data) {
   console.log(data);
   if (data.message.sent_by_admin === 0) {
     // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
@@ -2129,8 +2124,9 @@ echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
     BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
   }
 });
-echo["private"]('chat_room.' + roomId).listen('.room-create', function (data) {
+window.Echo["private"]('chat_room.' + document.getElementById('big-box').getAttribute('data-room')).listen('.room-create', function (data) {
   console.log(data);
+  console.log(1111111111);
   var str = data.message.message;
   if (str.length > 20) {
     str = str.substring(0, 20) + "...";
