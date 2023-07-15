@@ -35,17 +35,25 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
     BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 
 });
+
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: '87ed15aef6ced76b1507',
     cluster: 'us2',
     forceTLS: true,
+    encrypted: true,
+    auth: {
+        headers: {
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        }
+    },
     authorizer: (channel, options) => {
         return {
             authorize: (socketId, callback) => {
                 axios.post('broadcasting/auth', {
                     socket_id: socketId, channel_name: channel.name,
-                }, {
+                },
+                    {
                     progress: false,
                 })
                     .then(response => {

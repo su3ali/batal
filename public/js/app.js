@@ -2098,6 +2098,12 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   key: '87ed15aef6ced76b1507',
   cluster: 'us2',
   forceTLS: true,
+  encrypted: true,
+  auth: {
+    headers: {
+      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+    }
+  },
   authorizer: function authorizer(channel, options) {
     return {
       authorize: function authorize(socketId, callback) {
