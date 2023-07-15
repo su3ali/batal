@@ -40,12 +40,15 @@ window.Echo = new Echo({
     broadcaster: 'pusher',
     key: '87ed15aef6ced76b1507',
     cluster: 'us2',
-    forceTLS: true,
+    forceTLS: false,
     authorizer: (channel, options) => {
         return {
             authorize: (socketId, callback) => {
                 axios.post('broadcasting/auth', {
-                    socket_id: socketId, channel_name: channel.name,csrf_token: $('meta[name="csrf-token"]').attr('content')
+                    socket_id: socketId, channel_name: channel.name, headers: {
+                            'Accept':'application/json',
+                            "X-CSRF-TOKEN" :$('meta[name="csrf-token"]').attr('content'),
+                        },
                 },
                     {
 
