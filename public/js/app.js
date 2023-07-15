@@ -2093,23 +2093,25 @@ document.getElementById('message-form').addEventListener('submit', function (e) 
   var BoxMessages = document.getElementById("big-box");
   BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 });
+var options = {
+  headers: {
+    'Content-Type': 'application/json',
+    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+  }
+};
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: '87ed15aef6ced76b1507',
   cluster: 'us2',
-  forceTLS: false,
+  forceTLS: true,
   authorizer: function authorizer(channel, options) {
     return {
       authorize: function authorize(socketId, callback) {
         axios.post('broadcasting/auth', {
           socket_id: socketId,
-          channel_name: channel.name,
-          headers: {
-            'Accept': 'application/json',
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
-          }
-        }, {
-          progress: false
+          channel_name: channel.name
+        }, options, {
+          // progress: false,
         }).then(function (response) {
           callback(false, response.data);
         })["catch"](function (error) {
