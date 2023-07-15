@@ -45,7 +45,6 @@ class CategoryController extends Controller
                 ->addColumn('controll', function ($category) {
 
                     $html = '
-
                                 <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'"
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
                                   data-parent_id="'.$category->parent_id.'" data-image="'.$category->image.'" data-group_id="'.$category->groups()->pluck('group_id').'" data-toggle="modal" data-target="#editModel">

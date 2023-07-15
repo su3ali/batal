@@ -2072,6 +2072,9 @@ var chatMessages = document.getElementById('message-box');
 var chatThreads = document.getElementById('message-threads');
 var chatThread = document.getElementById('message-thread');
 var roomId = document.getElementById('big-box').getAttribute('data-room');
+setInterval(function () {
+  roomId = document.getElementById('big-box').getAttribute('data-room');
+}, 1000);
 var adminId = chatThreads.getAttribute('data-admin');
 document.getElementById('message-form').addEventListener('submit', function (e) {
   e.preventDefault();
@@ -2116,6 +2119,7 @@ var echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   }
 });
 echo.join('chat_message.' + roomId).listen('.chat-message', function (data) {
+  console.log(data);
   if (data.message.sent_by_admin === 0) {
     // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
     var message = "<li class=\"message received\"><img src=\"/images/techn.png\" alt=\"\"/> <p>".concat(data.message.message, "</p></li>");
