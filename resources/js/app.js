@@ -50,7 +50,7 @@ window.Echo = new Echo({
                 },
                     {
                         headers: $('meta[name="csrf-token"]').attr('content'),
-                    progress: false,
+
                 })
                     .then(response => {
                         callback(false, response.data);
