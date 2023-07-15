@@ -2109,6 +2109,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
         }).then(function (response) {
           callback(false, response.data);
         })["catch"](function (error) {
+          console.log(error);
           callback(true, error);
         });
       }
