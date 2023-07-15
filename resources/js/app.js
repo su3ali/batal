@@ -42,11 +42,6 @@ window.Echo = new Echo({
     cluster: 'us2',
     forceTLS: true,
     encrypted: true,
-    auth: {
-        headers: {
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-        }
-    },
     authorizer: (channel, options) => {
         return {
             authorize: (socketId, callback) => {
@@ -54,6 +49,7 @@ window.Echo = new Echo({
                     socket_id: socketId, channel_name: channel.name,
                 },
                     {
+                        headers: $('meta[name="csrf-token"]').attr('content'),
                     progress: false,
                 })
                     .then(response => {
