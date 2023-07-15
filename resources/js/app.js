@@ -45,16 +45,15 @@ window.Echo = new Echo({
         return {
             authorize: (socketId, callback) => {
                 axios.post('broadcasting/auth', {
-                    socket_id: socketId, channel_name: channel.name,
-                },
-                    {
-                        headers: {
+                    socket_id: socketId, channel_name: channel.name, headers: {
                             'X-CSRF-TOKEN' :$('meta[name="csrf-token"]').attr('content'),
                         },
+                },
+                    {
 
+                    progress: false,
                 })
                     .then(response => {
-                        console.log($('meta[name="csrf-token"]').attr('content'))
                         callback(false, response.data);
                     })
                     .catch(error => {

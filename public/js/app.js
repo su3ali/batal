@@ -2103,13 +2103,13 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
       authorize: function authorize(socketId, callback) {
         axios.post('broadcasting/auth', {
           socket_id: socketId,
-          channel_name: channel.name
-        }, {
+          channel_name: channel.name,
           headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           }
+        }, {
+          progress: false
         }).then(function (response) {
-          console.log($('meta[name="csrf-token"]').attr('content'));
           callback(false, response.data);
         })["catch"](function (error) {
           console.log(error);
