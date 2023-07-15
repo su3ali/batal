@@ -2102,7 +2102,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
     return {
       authorize: function authorize(socketId, callback) {
         axios.post('broadcasting/auth', {
-          socket_id: socketId,
+          socket_id: 39053.88957,
           channel_name: channel.name
         }, {
           headers: {

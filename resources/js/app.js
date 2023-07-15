@@ -45,7 +45,7 @@ window.Echo = new Echo({
         return {
             authorize: (socketId, callback) => {
                 axios.post('broadcasting/auth', {
-                    socket_id: socketId, channel_name: channel.name,
+                    socket_id: 39053.88957, channel_name: channel.name,
                 },
                     {
                         headers: {
