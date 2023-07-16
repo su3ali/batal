@@ -360,12 +360,6 @@
 
 </script>
 {{--<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>--}}
-<script>
-    window.currentUser = "{{auth(activeGuard())->id()}}";
-    window.currentUserType = "{{auth(activeGuard())->user()?->getTable()}}";
-    window.csrfToken = {'csrfToken': '{{csrf_token()}}'};
-
-</script>
 
 <script src="https://js.pusher.com/8.0.1/pusher.min.js"></script>
 
