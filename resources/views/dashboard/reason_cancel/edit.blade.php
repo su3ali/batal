@@ -46,6 +46,24 @@
 
                         </div>
 
+                        <div class="form-group type-col col-md-12">
+
+                            <label for="inputEmail4">{{__('dash.type')}}</label>
+                            <select id="inputState" class="select2 type form-control"
+                                    name="type">
+                                <option
+                                    value="{{\App\Enums\Core\ReasonType::customer()->value}}">{{\App\Enums\Core\ReasonType::customer()->value}}</option>
+                                <option
+                                    value="{{\App\Enums\Core\ReasonType::technician()->value}}">{{\App\Enums\Core\ReasonType::technician()->value}}</option>
+
+                            </select>
+                            @error('type')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                            @enderror
+
+                        </div>
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">{{__('dash.save')}}</button>

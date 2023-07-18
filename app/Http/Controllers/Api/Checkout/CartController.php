@@ -15,6 +15,7 @@ use App\Models\Group;
 use App\Models\Service;
 use App\Models\Visit;
 use App\Support\Api\ApiResponse;
+use App\Traits\imageTrait;
 use App\Traits\schedulesTrait;
 use Carbon\CarbonInterval;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +24,7 @@ use Illuminate\Support\Carbon;
 
 class CartController extends Controller
 {
-    use ApiResponse, schedulesTrait;
+    use ApiResponse, schedulesTrait,imageTrait;
 
     public function __construct()
     {
@@ -107,7 +108,10 @@ class CartController extends Controller
                 'time.*' => 'required|date_format:h:i A',
                 'notes' => 'nullable|array',
                 'notes.*' => 'nullable|string|max:191',
+                'file' => 'nullable|array',
+                'file.*' => 'nullable',
             ];
+
             $request->validate($rules, $request->all());
             if ($cart->type == 'service' || !$cart->type) {
                 $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
@@ -134,12 +138,16 @@ class CartController extends Controller
                         return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
                     }
 
-
+                    if ($request->file&& array_key_exists($key, $request->file)){
+                        $file=$this->storeImages($request->file[$key],'cart');
+                        $upload= 'storage/cart'.'/'.$file;
+                    }
                     Cart::query()->where('user_id', auth('sanctum')->user()->id)
                         ->where('category_id', $category_id)->update([
                             'date' => $request->date[$key],
                             'time' => Carbon::parse($request->time[$key])->toTimeString(),
-                            'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : ''
+                            'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
+                            'files' => $upload,
                         ]);
                 }
                 return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
@@ -166,12 +174,17 @@ class CartController extends Controller
                     if ($countInBooking == $countGroup) {
                         return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
                     }
-
+                    if ($request->file && array_key_exists($key, $request->file)){
+                        $file=$this->storeImages($request->file[$key],'cart');
+                        $upload= 'storage/cart'.'/'.$file;
+                    }
                     $cart->update([
                             'date' => $request->date[$key],
                             'time' => Carbon::parse($request->time[$key])->toTimeString(),
-                            'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : ''
-                        ]);
+                            'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
+                            'files' => $upload,
+
+                    ]);
                 }
                 return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
 
@@ -310,6 +323,7 @@ class CartController extends Controller
                 $this->body['carts'][] = [
                     'category_id' => $cat_id,
                     'category_title' => Category::query()->find($cat_id)?->title,
+                    'category_minimum' => Category::query()->find($cat_id)?->minimum,
                     'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                 ];
             }
@@ -327,6 +341,7 @@ class CartController extends Controller
             $this->body['cart_package'][] = [
                 'category_id' => $cat_id,
                 'category_title' => Category::query()->find($cat_id)?->title,
+                'category_minimum' => Category::query()->find($cat_id)?->minimum,
                 'cart-services' => CartResource::make($cart_package)
             ];
         } else {

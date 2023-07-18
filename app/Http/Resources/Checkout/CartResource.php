@@ -29,6 +29,7 @@ class CartResource extends JsonResource
             'category_title' => $this->service->category->title,
             'service_title' => $this->service?->title,
             'quantity' => $this->quantity,
+            'file' => $this->files ? asset($this->files) : '',
             'service_image' => $images,
             'price' => $this->contract_package_id ? $this->price : ($this->price * $this->quantity),
             'package_id' => $this->contract_package_id,

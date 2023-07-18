@@ -57,6 +57,7 @@
                         <tr>
                             <th>#</th>
                             <th>سبب الالغاء</th>
+                            <th>النوع</th>
                             <th>حالة النشاط</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
@@ -99,6 +100,7 @@
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'reason', name: 'reason'},
+                    {data: 'type', name: 'type'},
                     {data: 'status', name: 'status'},
                     {data: 'control', name: 'control', orderable: false, searchable: false},
 
@@ -110,8 +112,10 @@
             let id = $(this).data('id');
             let reason_ar = $(this).data('reason_ar');
             let reason_en = $(this).data('reason_en');
+            let type = $(this).data('type');
             $('#edit_reason_ar').val(reason_ar)
             $('#edit_reason_en').val(reason_en)
+            $('.type').val(type).trigger('change')
 
 
             let action = "{{route('dashboard.reason_cancel.update', 'id')}}";

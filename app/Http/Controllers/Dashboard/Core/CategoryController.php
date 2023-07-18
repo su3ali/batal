@@ -32,6 +32,9 @@ class CategoryController extends Controller
                 ->addColumn('title', function ($category) {
                     return $category->title;
                 })
+                ->addColumn('minimum', function ($category) {
+                    return $category->minimum;
+                })
                 ->addColumn('status', function ($category) {
                     $checked = '';
                     if ($category->active == 1){
@@ -47,7 +50,7 @@ class CategoryController extends Controller
                     $html = '
                                 <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="'.$category->id.'"  data-title_ar="'.$category->title_ar.'"
                                  data-title_en="'.$category->title_en.'" data-des_ar="'.$category->description_ar.'" data-des_en="'.$category->description_en.'"
-                                  data-parent_id="'.$category->parent_id.'" data-image="'.$category->image.'" data-group_id="'.$category->groups()->pluck('group_id').'" data-toggle="modal" data-target="#editModel">
+                                  data-parent_id="'.$category->parent_id.'" data-image="'.$category->image.'" data-minimum="'.$category->minimum.'"  data-group_id="'.$category->groups()->pluck('group_id').'" data-toggle="modal" data-target="#editModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
 
@@ -61,6 +64,7 @@ class CategoryController extends Controller
 
                 ->rawColumns([
                     'title',
+                    'minimum',
                     'status',
                     'controll',
                 ])
@@ -89,6 +93,7 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
             'group_ids' => 'required|array',
             'group_ids.*' => 'required|exists:groups,id',
+            'minimum' => 'required|numeric',
         ]);
 
         $data=$request->except('_token','avatar','group_ids');
@@ -122,6 +127,7 @@ class CategoryController extends Controller
             'parent_id' => 'nullable|exists:categories,id',
             'group_ids' => 'required|array',
             'group_ids.*' => 'required|exists:groups,id',
+            'minimum' => 'required|numeric',
         ]);
         $data=$request->except('_token','avatar','group_ids');
 

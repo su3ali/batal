@@ -69,6 +69,7 @@
                         <tr>
                             <th>#</th>
                             <th>{{__('dash.category name')}}</th>
+                            <th>الحد الادني</th>
                             <th>{{__('dash.status')}}</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
@@ -115,6 +116,7 @@
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'title', name: 'title'},
+                    {data: 'minimum', name: 'minimum'},
                     {data: 'status', name: 'status'},
                     {data: 'controll', name: 'controll', orderable: false, searchable: false},
 
@@ -132,10 +134,12 @@
             var parent_id = $(this).attr('data-parent_id');
             var img = $(this).attr('data-image');
             var group_ids = $(this).attr('data-group_id');
+            var minimum = $(this).attr('data-minimum');
 
             $('#title_ar').val(title_ar)
             $('#title_en').val(title_en)
             $('#parent_id').val(parent_id)
+            $('.minimum').val(minimum)
             CKEDITOR.instances['description_ar'].setData(des_ar);
             CKEDITOR.instances['description_en'].setData(des_en);
                 $('.group_ids').val(JSON.parse(group_ids)).trigger('change')

@@ -39,7 +39,7 @@ class VisitsResource extends JsonResource
             'id' => $this->id,
             'group' => GroupResource::make($this->group),
             'all_statuses' => StatusResource::collection(VisitsStatus::all()),
-            'all_cancel_reasons' => CancelReasonsResource::collection(ReasonCancel::all()),
+            'all_cancel_reasons' => CancelReasonsResource::collection(ReasonCancel::where('type','customer')->get()),
             'booking_details' => BookingResource::make($this->booking),
             'user' => UserResource::make($this->booking->customer),
             'address' => UserAddressResource::make($this->booking->address),

@@ -65,7 +65,7 @@
 
 
                         <div class="form-row mb-2">
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
 
                                 <label for="group_ids">المجموعات</label>
                                 <select id="group_ids" multiple class="group_ids select2 form-control pt-1"
@@ -79,6 +79,17 @@
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
 
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">الحد الادني</label>
+                                <input type="number" min="0" name="minimum" class="form-control minimum"
+                                       id="inputEmail4"
+                                       placeholder="الحد الادني"
+                                >
+                                @error('minimum')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
                             </div>
 
                         </div>

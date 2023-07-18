@@ -18,6 +18,14 @@ class ReasonCancelController extends Controller
                 ->addColumn('reason', function ($row) {
                     return $row->reason;
                 })
+                ->addColumn('type', function ($row) {
+                    if($row->type =='customer'){
+                        $type = "عميل";
+                    }elseif ($row->type =='technician'){
+                        $type = "فني";
+                    }
+                    return $type ?? '';
+                })
                 ->addColumn('status', function ($row) {
                     $checked = '';
                     if ($row->active == 1) {
@@ -33,7 +41,7 @@ class ReasonCancelController extends Controller
                     $html = '
 
                                 <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '"  data-reason_ar="' . $row->reason_ar . '"
-                                 data-reason_en="' . $row->reason_en . '" data-toggle="modal" data-target="#editBookingStatusModel">
+                                 data-reason_en="' . $row->reason_en . '" data-type="' . $row->type . '" data-toggle="modal" data-target="#editBookingStatusModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
 
@@ -46,6 +54,7 @@ class ReasonCancelController extends Controller
                 })
                 ->rawColumns([
                     'title',
+                    'type',
                     'status',
                     'control',
                 ])
@@ -56,7 +65,8 @@ class ReasonCancelController extends Controller
     protected function store(Request $request){
         $rules = [
             'reason_ar' => 'required|String|min:3|max:100',
-            'reason_en' => 'required|String|min:3|max:100'
+            'reason_en' => 'required|String|min:3|max:100',
+            'type' => 'required',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
@@ -71,7 +81,9 @@ class ReasonCancelController extends Controller
         $banner = ReasonCancel::query()->where('id', $id)->first();
         $rules = [
             'reason_ar' => 'required|String|min:3|max:100',
-            'reason_en' => 'required|String|min:3|max:100'
+            'reason_en' => 'required|String|min:3|max:100',
+            'type' => 'required',
+
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
