@@ -22,7 +22,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">التقاول</li>
+                                <li class="breadcrumb-item active" aria-current="page">باقات</li>
                             </ol>
                         </nav>
 
@@ -54,8 +54,8 @@
                         <table id="html5-extension" class="table table-hover non-hover">
                             <thead>
                             <tr>
-                                <th>رقم التقاول</th>
-                                <th>اسم التقاول</th>
+                                <th>رقم الباقه</th>
+                                <th>اسم الباقه</th>
                                 <th>الباقه</th>
                                 <th>حالة الباقة</th>
                                 <th class="no-content">{{__('dash.actions')}}</th>

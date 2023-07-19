@@ -24,7 +24,7 @@
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
 
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.contract_packages.index')}}">باقات التقاول</a></li>
+                                        href="{{route('dashboard.contract_packages.index')}}">باقات </a></li>
                                 <li class="breadcrumb-item active" aria-current="page">إنشاء باقة</li>
                             </ol>
                         </nav>
@@ -59,7 +59,7 @@
                                 <div class="form-row mb-3">
                                     <div class="form-group col-md-4">
 
-                                        <label for="birth">اسم الباقة بالعربي</label>
+                                        <label for="birth">اسم الباقه بالعربي</label>
                                         <input required name="name_ar" placeholder="اسم الباقة بالعربي" type="text" class="form-control">
                                         @error('name_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>

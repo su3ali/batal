@@ -8,13 +8,19 @@ use App\Models\BookingSetting;
 use App\Models\Cart;
 use App\Models\Contract;
 use App\Models\CustomerWallet;
+use App\Models\Group;
 use App\Models\Order;
 use App\Models\OrderService;
 use App\Models\Service;
+use App\Models\Technician;
 use App\Models\Transaction;
+use App\Models\Visit;
+use App\Notifications\SendPushNotification;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 
 class CheckoutController extends Controller
@@ -98,7 +104,7 @@ class CheckoutController extends Controller
                     $minutes += $serviceMinutes;
                 }
             }
-            Booking::query()->create([
+            $bookingInsert = Booking::query()->create([
                 'booking_no' => $booking_no,
                 'user_id' => auth('sanctum')->user()->id,
                 'category_id' => $category_id,
@@ -112,6 +118,62 @@ class CheckoutController extends Controller
                 'time' => Carbon::parse($cart->time)->toTimeString(),
                 'end_time' => $minutes? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
             ]);
+
+            $booking_id = Booking::where('date',$cart->date)->pluck('id')->toArray();
+            $visit = DB::table('visits')
+                ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
+                ->whereIn('booking_id', $booking_id)
+                ->groupBy('assign_to_id')
+                ->orderBy('group_id', 'ASC')
+                ->first();
+
+            if ($visit == null){
+                $group = Group::first();
+                $assign_to_id = $group->id;
+            }else{
+                $assign_to_id = $visit->assign_to_id;
+            }
+
+            $start_time = Carbon::parse($cart->time)->toTimeString();
+            $end_time =  $minutes? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
+            $validated['start_time'] =  $start_time;
+            $validated['end_time'] = $end_time;
+            $validated['duration'] = $minutes;
+            $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
+            $validated['assign_to_id'] = $assign_to_id;
+            $validated['booking_id'] = $bookingInsert->id;
+            $validated['visits_status_id'] = 1;
+            $visitInsert = Visit::query()->create($validated);
+
+
+            $allTechn = Technician::where('group_id',$visitInsert->assign_to_id)->whereNotNull('fcm_token')->get();
+
+            if (count($allTechn) > 0){
+
+                $title = 'موعد زيارة جديد';
+                $message = 'لديك موعد زياره جديد';
+
+                foreach ($allTechn as $tech){
+                    Notification::send(
+                        $tech,
+                        new SendPushNotification($title,$message)
+                    );
+                }
+
+                $FcmTokenArray = $allTechn->pluck('fcm_token');
+
+                $notification = [
+                    'device_token' => $FcmTokenArray,
+                    'title' => $title,
+                    'message' => $message,
+                    'type'=>'technician',
+                    'code'=> 1,
+                ];
+
+                $this->pushNotification($notification);
+            }
+
+
         }
         if ($request->payment_method == 'cache') {
             $transaction = Transaction::create([

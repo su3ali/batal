@@ -87,10 +87,10 @@ class BookingController extends Controller
                        </button>';
                     } else {
                         $html = '
-
-                        <span class="btn btn-sm btn-primary card-tools edit" style="cursor:not-allowed">
-                            تمت إضافة فريق
-                       </span>';
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-visit_id="'.$row->visit?->id.'" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
+                                  data-toggle="modal" data-target="#changeGroupModel">
+                            تغيير الفريق
+                       </button>';
                     }
                     $html .= '<a data-table_id="html5-extension" data-href="' . route('dashboard.bookings.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
                             <i class="far fa-trash-alt fa-2x"></i>

@@ -74,7 +74,7 @@
                                 <line x1="12" y1="22.08" x2="12" y2="12"></line>
                             </svg>
 
-                            <span>إدارة التقاول</span>
+                            <span>إدارة الباقات</span>
                         </div>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -87,7 +87,7 @@
                     </a>
                     <ul class="collapse submenu list-unstyled" id="contract" data-parent="#accordionExample">
                         <li>
-                            <a href="{{route('dashboard.contract_packages.index')}}"> باقات التقاول </a>
+                            <a href="{{route('dashboard.contract_packages.index')}}"> الباقات </a>
                         </li>
 
                         {{--                    <li>--}}
@@ -95,7 +95,7 @@
                         {{--                    </li>--}}
 
                         <li>
-                            <a href="{{route('dashboard.contract_order.index')}}"> طلب التقاول </a>
+                            <a href="{{route('dashboard.contract_order.index')}}"> طلب باقه </a>
                         </li>
                     </ul>
                 </li>

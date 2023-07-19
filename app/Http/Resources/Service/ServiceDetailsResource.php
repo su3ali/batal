@@ -32,6 +32,10 @@ class ServiceDetailsResource extends JsonResource
             'icons' => IconResource::collection($this->icons),
             'duration' => $this->duration,
             'terms_and_conditions' => $this->ter_cond,
+            'deposit' => $this->deposit,
+            'deposit_price' => $this->deposit_price,
+            'preview' => $this->preview,
+            'preview_price' => $this->preview_price,
         ];
     }
 }

@@ -263,6 +263,66 @@
 
                                 </div>
                                 <div class="form-row mb-2">
+                                    <div class="form-group col-md-6">
+                                        <label for="preview"></label>
+                                        <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
+                                            <label class="mx-5" for="preview">خدمه المعاينه</label>
+                                            <input type="checkbox" name="preview" id="preview">
+                                            <span class="slider round"></span>
+                                        </label>
+                                        @error('preview')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+
+                                    <div class="form-group col-md-6">
+                                        <label for="deposit"></label>
+                                        <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
+                                            <label class="mx-5" for="deposit">مطلوب عربون</label>
+                                            <input type="checkbox" name="deposit" id="deposit" >
+                                            <span class="slider round"></span>
+                                        </label>
+                                        @error('deposit')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+                                </div>
+                                <div class="form-row mb-2">
+
+                                <div class="form-group preview-col col-md-6" style="display: none;">
+
+
+                                    <label for="inputEmail4">مبلغ المعاينه</label>
+                                    <input type="number" name="preview_price" class="form-control"
+                                           id="inputEmail4"
+                                           placeholder="مبلغ المعاينه"
+                                    >
+                                    @error('preview_price')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+
+                                <div class="form-group deposit-col col-md-6" style="display: none;">
+
+
+                                    <label for="inputEmail4">نسبه العربون</label>
+                                    <input type="number" name="deposit_price" class="form-control"
+                                           id="inputEmail4"
+                                           placeholder="نسبه العربون"
+                                    >
+                                    @error('deposit_price')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+
+                                </div>
+
+                                <div class="form-row mb-2">
 
 
                                     <div class="form-group col-md-6">
@@ -529,6 +589,26 @@
 
             }
 
+        })
+
+
+        $("body").on('change', '#preview', function () {
+            if ($(this).is(':checked')) {
+                $('.preview-col').show();
+            }else{
+                $('.preview-col').hide();
+            }
+
+
+        })
+
+        $("body").on('change', '#deposit', function () {
+            if ($(this).is(':checked')) {
+                $('.deposit-col').show();
+            }else {
+                $('.deposit-col').hide();
+
+            }
         })
 
     </script>

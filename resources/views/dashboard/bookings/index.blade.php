@@ -153,23 +153,35 @@
             let booking_id = $(this).data('id');
             let service_id = $(this).data('service_id');
             let category_id = $(this).data('category_id');
+            let visit_id = $(this).data('visit_id');
             let type = $(this).data('type');
             $.ajax({
                 url: '{{route('dashboard.getGroupByService')}}',
                 type: 'get',
-                data: {service_id: service_id,type:type, booking_id:booking_id, category_id:category_id, },
+                data: {service_id: service_id,type:type, booking_id:booking_id, category_id:category_id },
                 success: function (data) {
                     console.log(data)
 
                     if (data.length != 0){
                         $.each(data, function (i, item) {
 
-                            var newOption = new Option(item, i, true, true);
-                            $('#group_id').append(newOption);
+                            var newOption = new Option(item, i, true, true)
+                            if(visit_id) {
+                                $('#edit_group_id').append(newOption);
+                            }else{
+                                $('#group_id').append(newOption);
+
+                            }
 
                         });
                     }
                     $('#booking_id').val(booking_id);
+                    if(visit_id){
+                        $('.visit_Div').append(`<input type="hidden" value="`+visit_id+`" name="visit_id">`);
+                        $('#edit_booking_id').val(booking_id);
+                        var action = window.location.origin + '/admin/visits/' + visit_id;
+                        $('#edit_group_form').attr('action', action);
+                    }
 
                 }
             });

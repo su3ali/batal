@@ -24,8 +24,8 @@
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
 
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.contracts.index')}}">التقاول</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">تعديل التقاول</li>
+                                        href="{{route('dashboard.contracts.index')}}">الباقات</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">تعديل الباقه</li>
                             </ol>
                         </nav>
 
@@ -60,7 +60,7 @@
                                 <div class="form-row mb-3">
                                     <div class="form-group col-md-4">
 
-                                        <label for="birth">اسم التقاول بالعربي</label>
+                                        <label for="birth">اسم الباقه بالعربي</label>
                                         <input required name="name_ar" value="{{$contract->name_ar}}" type="text" class="form-control">
                                         @error('name_ar')
                                         <div class="alert alert-danger">{{ $message }}</div>
@@ -70,7 +70,7 @@
 
                                     <div class="form-group col-md-4">
 
-                                        <label for="birth">اسم التقاول بالانجليزي</label>
+                                        <label for="birth">اسم الباقه بالانجليزي</label>
                                         <input required name="name_en" value="{{$contract->name_en}}" type="text" class="form-control">
                                         @error('name_en')
                                         <div class="alert alert-danger">{{ $message }}</div>

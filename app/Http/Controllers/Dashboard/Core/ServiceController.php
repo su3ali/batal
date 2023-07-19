@@ -106,6 +106,11 @@ class ServiceController extends Controller
             'is_quantity' => 'nullable|in:on,off',
             'best_seller' => 'nullable|in:on,off',
 
+            'preview_price' => 'nullable|Numeric',
+            'preview' => 'nullable|in:on,off',
+            'deposit_price' => 'nullable|Numeric',
+            'deposit' => 'nullable|in:on,off',
+
         ]);
 
         $data = $request->except(['_token', 'group_ids','is_quantity','best_seller','icon_ids']);
@@ -120,6 +125,18 @@ class ServiceController extends Controller
             $data['best_seller'] = 1;
         }else{
             $data['best_seller'] = 0;
+        }
+
+        if ($request['preview'] && $request['preview'] == 'on'){
+            $data['preview'] = 1;
+        }else{
+            $data['preview'] = 0;
+        }
+
+        if ($request['deposit'] && $request['deposit'] == 'on'){
+            $data['deposit'] = 1;
+        }else{
+            $data['deposit'] = 0;
         }
 
         $service = Service::query()->create($data);
@@ -184,6 +201,11 @@ class ServiceController extends Controller
             'is_quantity' => 'nullable|in:on,off',
             'best_seller' => 'nullable|in:on,off',
 
+            'preview_price' => 'nullable|Numeric',
+            'preview' => 'nullable|in:on,off',
+            'deposit_price' => 'nullable|Numeric',
+            'deposit' => 'nullable|in:on,off',
+
         ]);
         $data = $request->except(['_token', 'group_ids','is_quantity','best_seller','icon_ids']);
 
@@ -197,6 +219,21 @@ class ServiceController extends Controller
             $data['best_seller'] = 1;
         }else{
             $data['best_seller'] = 0;
+        }
+
+        if ($request['preview'] && $request['preview'] == 'on'){
+            $data['preview'] = 1;
+        }else{
+            $data['preview'] = 0;
+            $data['preview_price'] = 0;
+        }
+
+        if ($request['deposit'] && $request['deposit'] == 'on'){
+            $data['deposit'] = 1;
+        }else{
+            $data['deposit'] = 0;
+            $data['deposit_price'] = 0;
+
         }
 
 

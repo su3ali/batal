@@ -32,7 +32,7 @@
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
 
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.contract_order.index')}}">طلب تقاول</a></li>
+                                        href="{{route('dashboard.contract_order.index')}}">طلب باقه</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">إنشاء طلب</li>
                             </ol>
                         </nav>

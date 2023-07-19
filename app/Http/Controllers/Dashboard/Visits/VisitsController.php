@@ -50,7 +50,7 @@ class VisitsController extends Controller
                     return $row->duration;
                 })
                 ->addColumn('status', function ($row) {
-                    return $row->status->name;
+                    return $row->status?->name;
                 })
                 ->addColumn('control', function ($row) {
 
@@ -112,6 +112,7 @@ class VisitsController extends Controller
         $validated['end_time'] = $end_time;
         $validated['duration'] = $end_time->diffInMinutes($start_time);
         $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
+        $validated['visits_status_id'] = 1;
         Visit::query()->create($validated);
 
         $allTechn = Technician::where('group_id',$request->assign_to_id)->whereNotNull('fcm_token')->get();
@@ -155,6 +156,34 @@ class VisitsController extends Controller
         $visit_status = VisitsStatus::where('active',1)->get();
 
         return view('dashboard.visits.show', compact('visits','services','visit_status'));
+    }
+
+    protected function update(Request $request, $id)
+    {
+        $visit = Visit::query()->where('id', $id)->first();
+        $rules = [
+            'booking_id' => 'required|exists:bookings,id',
+            'assign_to_id' => 'required|exists:groups,id',
+            'note' => 'nullable',
+            'visits_status_id' => 'required|exists:visits_statuses,id',
+        ];
+        $validated = Validator::make($request->all(), $rules);
+        if ($validated->fails()) {
+            return redirect()->back()->withErrors($validated->errors());
+        }
+
+        if ($visit->visits_status_id == 1) {
+            $visit->update([
+                'assign_to_id' => $request->assign_to_id
+            ]);
+        }else if ($visit->visits_status_id == 6){
+            $this->store($request);
+        }else{
+            return redirect()->back()->withErrors(['visits_status_id'=>'يجب عليك تغيير حاله الزياره اولا']);
+        }
+
+        session()->flash('success');
+        return redirect()->back();
     }
 
 
