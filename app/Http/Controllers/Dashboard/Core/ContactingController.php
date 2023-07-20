@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Contacting;
 use App\Models\Icon;
+use App\Models\OrderContract;
 use App\Models\Service;
 use App\Models\ServiceImages;
 use App\Traits\imageTrait;
@@ -138,6 +139,57 @@ class ContactingController extends Controller
         if (File::exists(public_path($contact->image))) {
             File::delete(public_path($contact->image));
         }
+        $contact->delete();
+        return [
+            'success' => true,
+            'msg' => __("dash.deleted_success")
+        ];
+    }
+
+    public function order_contract()
+    {
+
+        if (request()->ajax()) {
+
+            $contact = OrderContract::all();
+            return DataTables::of($contact)
+                ->addColumn('company_name', function ($row) {
+                    return $row->company_name;
+                })
+                ->addColumn('service_contract', function ($row) {
+                    return $row->contract?->title;
+                })
+                ->addColumn('user_name', function ($row) {
+                    return $row->user?->first_name .' '. $row->user?->last_name;
+                })
+
+                ->addColumn('controll', function ($row) {
+
+                    $html = '
+                                <a data-href="' . route('dashboard.core.order_contract.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
+                            <i class="far fa-trash-alt fa-2x"></i>
+                    </a>
+                                ';
+
+                    return $html;
+                })
+                ->rawColumns([
+                    'company_name',
+                    'service_contract',
+                    'user_name',
+                    'controll',
+                ])
+                ->make(true);
+        }
+
+        return view('dashboard.core.contact.order_contract');
+    }
+
+
+    public function order_contract_destroy($id)
+    {
+        $contact = OrderContract::find($id);
+
         $contact->delete();
         return [
             'success' => true,

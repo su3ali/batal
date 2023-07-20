@@ -69,6 +69,8 @@ route_group('core', function () {
     Route::get('icon/change_status', 'ServiceIconController@change_status')->name('icon.change_status');
     Route::resource('icon', 'ServiceIconController');
     Route::resource('contact', 'ContactingController');
+    Route::get('order_contract', 'ContactingController@order_contract')->name('order_contract.index');
+    Route::delete('order_contract/{id}/delete', 'ContactingController@order_contract_destroy')->name('order_contract.destroy');
 
 
 

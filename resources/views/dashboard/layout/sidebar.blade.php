@@ -290,6 +290,9 @@
                     <li>
                         <a href="{{route('dashboard.core.contact.index')}}"> التقاول والعقود </a>
                     </li>
+                    <li>
+                        <a href="{{route('dashboard.core.order_contract.index')}}"> طلبات التقاول </a>
+                    </li>
                 </ul>
             </li>
 
