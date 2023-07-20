@@ -177,6 +177,32 @@ class VisitsController extends Controller
                 'assign_to_id' => $request->assign_to_id
             ]);
         }else if ($visit->visits_status_id == 6){
+            $allTechn = Technician::where('group_id',$visit->assign_to_id)->whereNotNull('fcm_token')->get();
+
+            if (count($allTechn) > 0){
+
+                $title = 'تغيير الفريق';
+                $message = 'سيتم تغيير الفريق بسبب الغاء الطلب لاسباب فنيه';
+
+                foreach ($allTechn as $tech){
+                    Notification::send(
+                        $tech,
+                        new SendPushNotification($title,$message)
+                    );
+                }
+
+                $FcmTokenArray = $allTechn->pluck('fcm_token');
+
+                $notification = [
+                    'device_token' => $FcmTokenArray,
+                    'title' => $title,
+                    'message' => $message,
+                    'type'=>'technician',
+                    'code'=> 1,
+                ];
+
+                $this->pushNotification($notification);
+            }
             $this->store($request);
         }else{
             return redirect()->back()->withErrors(['visits_status_id'=>'يجب عليك تغيير حاله الزياره اولا']);
