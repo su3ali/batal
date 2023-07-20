@@ -17,6 +17,14 @@ class Contacting extends Model
         }
     }
 
+    public function getDescriptionAttribute(){
+        if (app()->getLocale()=='ar'){
+            return $this->desc_ar;
+        }else{
+            return $this->desc_en;
+        }
+    }
+
 
     public function getimagesAttribute(){
 
