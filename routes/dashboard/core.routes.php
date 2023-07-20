@@ -68,6 +68,7 @@ route_group('core', function () {
 
     Route::get('icon/change_status', 'ServiceIconController@change_status')->name('icon.change_status');
     Route::resource('icon', 'ServiceIconController');
+    Route::resource('contact', 'ContactingController');
 
 
 

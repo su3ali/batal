@@ -147,7 +147,7 @@ class CartController extends Controller
                             'date' => $request->date[$key],
                             'time' => Carbon::parse($request->time[$key])->toTimeString(),
                             'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
-                            'files' => $upload,
+                            'files' => $upload??null,
                         ]);
                 }
                 return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
@@ -182,7 +182,7 @@ class CartController extends Controller
                             'date' => $request->date[$key],
                             'time' => Carbon::parse($request->time[$key])->toTimeString(),
                             'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
-                            'files' => $upload,
+                            'files' => $upload ?? null,
 
                     ]);
                 }
@@ -328,9 +328,17 @@ class CartController extends Controller
                 ];
             }
         }
-        $total = number_format($this->calc_total($carts), 2, '.', '');
+        $deposit=0;
+        foreach ($carts as $cart) {
+            $service = Service::where('id',$cart->service_id)->first();
+            $deposit +=$service->deposit_price;
+        }
+
+            $total = number_format($this->calc_total($carts), 2, '.', '');
         $this->body['total'] = $total;
         $this->body['total_items_in_cart'] = auth()->user()->carts->count();
+        $this->body['deposit_price'] = $deposit;
+
 
         //packages
         $cart_package = Cart::with('coupon')->where('user_id', auth()->user()->id)->where('type', 'package')->first();

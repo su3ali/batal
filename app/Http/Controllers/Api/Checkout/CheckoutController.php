@@ -10,6 +10,7 @@ use App\Models\Contract;
 use App\Models\CustomerWallet;
 use App\Models\Group;
 use App\Models\Order;
+use App\Models\OrderPayment;
 use App\Models\OrderService;
 use App\Models\Service;
 use App\Models\Technician;
@@ -40,6 +41,8 @@ class CheckoutController extends Controller
             'coupon' => 'nullable|numeric',
             'transaction_id' => 'nullable',
             'wallet_discounts' => 'nullable|numeric',
+            'is_advance' => 'nullable',
+            'is_return' => 'nullable',
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -175,6 +178,18 @@ class CheckoutController extends Controller
 
 
         }
+
+        if($request->is_advance == 1 || $request->is_return ==1){
+            OrderPayment::create([
+                'order_id '=>$order->id,
+                'amount'=>($total - $request->coupon),
+                'payment_method'=>$request->payment_method,
+                'is_advance'=>$request->is_advance,
+                'is_return'=>$request->is_return,
+            ]);
+        }
+
+
         if ($request->payment_method == 'cache') {
             $transaction = Transaction::create([
                 'order_id' => $order->id,
