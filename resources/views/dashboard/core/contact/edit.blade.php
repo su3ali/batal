@@ -184,7 +184,7 @@
 
         let myImage = new FileUploadWithPreview('myImage')
 
-        var img = '{{$contact->images}}';
+        var img = '{{$contact->slug}}';
         if (img != ''){
             $('.editImage .custom-file-container__image-preview').css('background-image', 'url("'+img+'")');
         }

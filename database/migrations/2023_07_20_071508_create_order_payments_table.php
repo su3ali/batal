@@ -18,7 +18,7 @@ class CreateOrderPaymentsTable extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->double('amount');
-            $table->enum('payment_method', ['visa', 'mada','wallet']);
+            $table->enum('payment_method', ['cache', 'mada','wallet']);
             $table->boolean('is_advance')->default(0);
             $table->boolean('is_return')->default(0);
             $table->timestamps();

@@ -26,7 +26,7 @@ class Contacting extends Model
     }
 
 
-    public function getimagesAttribute(){
+    public function getSlugAttribute(){
 
         if ($this->image == null || \File::exists(public_path($this->image)) == false){
             return '';
