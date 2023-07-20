@@ -42,7 +42,6 @@ class CheckoutController extends Controller
             'transaction_id' => 'nullable',
             'wallet_discounts' => 'nullable|numeric',
             'is_advance' => 'nullable',
-            'is_return' => 'nullable',
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -185,7 +184,7 @@ class CheckoutController extends Controller
                 'amount'=>($total - $request->coupon),
                 'payment_method'=>$request->payment_method,
                 'is_advance'=>$request->is_advance,
-                'is_return'=>$request->is_return,
+                'is_return'=>0,
             ]);
         }
 
