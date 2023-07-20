@@ -19,7 +19,7 @@ class CategoryResource extends JsonResource
 
             'id'    => $this->id,
             'title' => $this->title,
-            'image' => $this->getImageAttribute(),
+            'image' => asset($this->slug),
             'products' => $this->products? ProductResource::collection($this->products) : ''
         ];
     }
