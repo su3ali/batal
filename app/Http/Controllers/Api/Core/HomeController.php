@@ -206,7 +206,7 @@ class HomeController extends Controller
 
 
 
-        return self::apiResponse(400, 'added successfully', $this->body);
+        return self::apiResponse(200, 'added successfully', $this->body);
 
     }
 
