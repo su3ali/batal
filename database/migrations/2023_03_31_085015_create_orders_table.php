@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('service_id');
             $table->unsignedBigInteger('status_id');
-            $table->enum('payment_method', ['visa', 'cache']);
+            $table->enum('payment_method', ['visa', 'cache','wallet']);
             $table->text('notes')->nullable();
             $table->timestamps();
         });
