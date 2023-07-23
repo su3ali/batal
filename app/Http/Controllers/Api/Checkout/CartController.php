@@ -234,7 +234,15 @@ class CartController extends Controller
                             ];
                         }
                     }
+
+                    $deposit=0;
+                    foreach ($carts as $cart) {
+                        $service = Service::where('id',$cart->service_id)->first();
+                        $deposit +=$service->deposit_price;
+                    }
                     $this->body['total_items_in_cart'] = auth()->user()->carts->count();
+                    $this->body['deposit_price'] = $deposit;
+
                     return self::apiResponse(200, $response['success'], $this->body);
                 } else {
                     return self::apiResponse(400, $response['error'], $this->body);

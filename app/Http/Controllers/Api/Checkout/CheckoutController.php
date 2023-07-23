@@ -18,6 +18,7 @@ use App\Models\Transaction;
 use App\Models\Visit;
 use App\Notifications\SendPushNotification;
 use App\Support\Api\ApiResponse;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,7 @@ use Illuminate\Support\Facades\Notification;
 
 class CheckoutController extends Controller
 {
-    use ApiResponse;
+    use ApiResponse , NotificationTrait;
 
     public function __construct()
     {
