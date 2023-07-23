@@ -230,6 +230,7 @@ class CartController extends Controller
                             $this->body['carts'][] = [
                                 'category_id' => $cat_id,
                                 'category_title' => Category::query()->find($cat_id)?->title,
+                                'category_minimum' => Category::query()->find($cat_id)?->minimum,
                                 'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                             ];
                         }
