@@ -184,6 +184,14 @@ class VisitsController extends Controller
                 ]
             ];
 
+
+            if ($request->status_id == 6){
+                $user = User::where('id',$model->booking->user_id)->first();
+                $user->update([
+                    'order_cancel' => 1
+                ]);
+            }
+
             $this->pushNotificationBackground($notify);
 
             $this->body['visits'] = $visit;

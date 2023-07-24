@@ -50,6 +50,7 @@ class VisitsResource extends JsonResource
             'cancel_reason' => $this->cancelReason ? CancelReasonsResource::make($this->cancelReason) : null,
             'is_service_rate' =>$is_service_rate,
             'is_technical_rate' =>$is_techn_rate,
+            'partial_amount' =>$this->order?->partial_amount ?? 0,
         ];
     }
 }
