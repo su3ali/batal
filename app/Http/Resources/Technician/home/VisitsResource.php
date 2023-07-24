@@ -51,6 +51,7 @@ class VisitsResource extends JsonResource
             'is_service_rate' =>$is_service_rate,
             'is_technical_rate' =>$is_techn_rate,
             'partial_amount' =>$this->booking?->order?->partial_amount ?? 0,
+            'order_id' =>$this->booking?->order?->id,
         ];
     }
 }
