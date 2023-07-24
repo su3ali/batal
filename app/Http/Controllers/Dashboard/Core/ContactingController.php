@@ -163,6 +163,13 @@ class ContactingController extends Controller
                     return $row->user?->first_name .' '. $row->user?->last_name;
                 })
 
+                ->addColumn('phone', function ($row) {
+                    return $row->user?->phone;
+                })
+                ->addColumn('notes', function ($row) {
+                    return $row->notes;
+                })
+
                 ->addColumn('controll', function ($row) {
 
                     $html = '
@@ -177,6 +184,8 @@ class ContactingController extends Controller
                     'company_name',
                     'service_contract',
                     'user_name',
+                    'phone',
+                    'notes',
                     'controll',
                 ])
                 ->make(true);

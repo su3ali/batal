@@ -39,10 +39,13 @@ class CheckoutController extends Controller
         $rules = [
             'user_address_id' => 'required|exists:user_addresses,id',
             'payment_method' => 'required|in:cache,visa,wallet',
+            'payment_status' => 'required|in:paid,due,partial',
             'coupon' => 'nullable|numeric',
             'transaction_id' => 'nullable',
             'wallet_discounts' => 'nullable|numeric',
             'is_advance' => 'nullable',
+            'is_return' => 'nullable',
+            'amount' => 'nullable|numeric',
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -50,10 +53,20 @@ class CheckoutController extends Controller
         if (!$carts->first()) {
             return self::apiResponse(400, t_('Cart is empty'), []);
         }
+
+
+
         if ($carts->first()->type == 'package') {
             $total = $carts->first()->price;
+            if ($request->payment_method == 'wallet' && $total > $user->point){
+                return self::apiResponse(400, t_('Your wallet balance is not enough to complete this process'), []);
+            }
             return $this->saveContract($user, $request, $total, $carts);
         } else {
+
+            if ($request->payment_method == 'wallet' && $request->amount > $user->point){
+                return self::apiResponse(400, t_('Your wallet balance is not enough to complete this process'), []);
+            }
             $total = $this->calc_total($carts);
             return $this->saveOrder($user, $request, $total, $carts);
         }
@@ -77,8 +90,11 @@ class CheckoutController extends Controller
             'user_address_id' => $request->user_address_id,
             'sub_total' => $total,
             'total' => ($total - $request->coupon),
-            'payment_method' => $request->payment_method,
+            'payment_status' => $request->payment_status,
+            'partial_amount' => ($total - $request->amount),
             'status_id' => 2,
+            'is_advance' => $request->is_advance,
+            'is_return' => $request->is_return,
         ]);
         foreach ($carts as $cart) {
             OrderService::create([
@@ -179,28 +195,21 @@ class CheckoutController extends Controller
 
         }
 
-        if($request->is_advance == 1 || $request->is_return ==1){
-            OrderPayment::create([
-                'order_id '=>$order->id,
-                'amount'=>($total - $request->coupon),
-                'payment_method'=>$request->payment_method,
-                'is_advance'=>$request->is_advance,
-                'is_return'=>0,
-            ]);
-        }
-
 
         if ($request->payment_method == 'cache') {
-            $transaction = Transaction::create([
-                'order_id' => $order->id,
-                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
-                'payment_result' => 'success',
-            ]);
+//            $transaction = Transaction::create([
+//                'order_id' => $order->id,
+//                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+//                'payment_result' => 'success',
+//                'payment_method' => $request->payment_method,
+//            ]);
         } else {
             Transaction::create([
                 'order_id' => $order->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
+                'payment_method' => $request->payment_method,
+                'amount' => $request->amount,
             ]);
         }
 
@@ -208,7 +217,7 @@ class CheckoutController extends Controller
             'point' => $user->point - $request->wallet_discounts ?? 0
         ]);
 
-        $this->wallet($user, $total);
+        $this->wallet($user, $request->amount);
 
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
@@ -253,16 +262,19 @@ class CheckoutController extends Controller
             ]);
         }
         if ($request->payment_method == 'cache') {
-            $transaction = Transaction::create([
-                'contract_order_id' => $order->id,
-                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
-                'payment_result' => 'success',
-            ]);
+//            $transaction = Transaction::create([
+//                'contract_order_id' => $order->id,
+//                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+//                'payment_result' => 'success',
+//                'payment_method' => $request->payment_method,
+//            ]);
         } else {
             Transaction::create([
                 'contract_order_id' => $order->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
+                'payment_method' => $request->payment_method,
+                'amount' => $total,
             ]);
         }
 

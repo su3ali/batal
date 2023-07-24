@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'fcm_token' => $this->fcm_token,
             'points' => $this->point,
+            'order_cancel' => $this->order_cancel,
         ];
     }
 }

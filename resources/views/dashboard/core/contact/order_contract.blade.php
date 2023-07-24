@@ -60,6 +60,8 @@
                             <th>اسم الشركه </th>
                             <th>خدمه التقاول</th>
                             <th>اسم المستخدم</th>
+                            <th>رقم الموبيل</th>
+                            <th>ملاحظات</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
                         </thead>
@@ -120,6 +122,8 @@
                     {data: 'company_name', name: 'company_name'},
                     {data: 'service_contract', name: 'service_contract'},
                     {data: 'user_name', name: 'user_name'},
+                    {data: 'phone', name: 'phone'},
+                    {data: 'notes', name: 'notes'},
                     {data: 'controll', name: 'controll', orderable: false, searchable: false},
 
                 ]
