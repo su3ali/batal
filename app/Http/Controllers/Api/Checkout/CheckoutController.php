@@ -345,9 +345,10 @@ class CheckoutController extends Controller
             'amount' => $request->amount,
         ]);
 
-        Order::where('id',$request->order_id)->update([
+        $order = Order::where('id',$request->order_id)->first();
+        $order->update([
             'payment_status' => $request->payment_status,
-            'partial_amount' => 0,
+            'partial_amount' => $order->partial_amount - $request->amount,
         ]);
 
         $user->update([
