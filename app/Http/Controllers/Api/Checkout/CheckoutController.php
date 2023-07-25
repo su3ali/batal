@@ -18,6 +18,7 @@ use App\Models\Transaction;
 use App\Models\Visit;
 use App\Notifications\SendPushNotification;
 use App\Support\Api\ApiResponse;
+use App\Traits\imageTrait;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -27,7 +28,7 @@ use Illuminate\Support\Facades\Notification;
 
 class CheckoutController extends Controller
 {
-    use ApiResponse , NotificationTrait;
+    use ApiResponse , NotificationTrait, imageTrait;
 
     public function __construct()
     {
@@ -46,6 +47,8 @@ class CheckoutController extends Controller
             'is_advance' => 'nullable',
             'is_return' => 'nullable',
             'amount' => 'nullable|numeric',
+            'file' => 'nullable',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -67,8 +70,18 @@ class CheckoutController extends Controller
             if ($request->payment_method == 'wallet' && $request->amount > $user->point){
                 return self::apiResponse(400, t_('Your wallet balance is not enough to complete this process'), []);
             }
+            $uploadImage =null;
+            $uploadFile =null;
+            if ($request->file && $request->file !=null){
+                $file=$this->storeImages($request->file,'order');
+                $uploadFile= 'storage/order'.'/'.$file;
+            }
+            if ($request->image && $request->image != null){
+                $image=$this->storeImages($request->image,'order');
+                $uploadImage= 'storage/order'.'/'.$image;
+            }
             $total = $this->calc_total($carts);
-            return $this->saveOrder($user, $request, $total, $carts);
+            return $this->saveOrder($user, $request, $total, $carts,$uploadImage,$uploadFile);
         }
     }
 
@@ -82,7 +95,7 @@ class CheckoutController extends Controller
         return array_sum($total);
     }
 
-    private function saveOrder($user, $request, $total, $carts)
+    private function saveOrder($user, $request, $total, $carts, $uploadFile,$uploadImage)
     {
         $order = Order::create([
             'user_id' => $user->id,
@@ -95,6 +108,8 @@ class CheckoutController extends Controller
             'status_id' => 2,
             'is_advance' => $request->is_advance,
             'is_return' => $request->is_return,
+            'file' => $uploadFile,
+            'image'=> $uploadImage
         ]);
         foreach ($carts as $cart) {
             OrderService::create([

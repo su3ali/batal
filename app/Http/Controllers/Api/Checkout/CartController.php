@@ -114,8 +114,6 @@ class CartController extends Controller
                 'time.*' => 'required|date_format:h:i A',
                 'notes' => 'nullable|array',
                 'notes.*' => 'nullable|string|max:191',
-                'file' => 'nullable|array',
-                'file.*' => 'nullable',
             ];
 
             $request->validate($rules, $request->all());
@@ -144,16 +142,12 @@ class CartController extends Controller
                         return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
                     }
 
-                    if ($request->file&& array_key_exists($key, $request->file)){
-                        $file=$this->storeImages($request->file[$key],'cart');
-                        $upload= 'storage/cart'.'/'.$file;
-                    }
+
                     Cart::query()->where('user_id', auth('sanctum')->user()->id)
                         ->where('category_id', $category_id)->update([
                             'date' => $request->date[$key],
                             'time' => Carbon::parse($request->time[$key])->toTimeString(),
                             'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
-                            'files' => $upload??null,
                         ]);
                 }
                 return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
@@ -180,15 +174,11 @@ class CartController extends Controller
                     if ($countInBooking == $countGroup) {
                         return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
                     }
-                    if ($request->file && array_key_exists($key, $request->file)){
-                        $file=$this->storeImages($request->file[$key],'cart');
-                        $upload= 'storage/cart'.'/'.$file;
-                    }
+
                     $cart->update([
                             'date' => $request->date[$key],
                             'time' => Carbon::parse($request->time[$key])->toTimeString(),
                             'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
-                            'files' => $upload ?? null,
 
                     ]);
                 }
