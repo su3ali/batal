@@ -25,5 +25,7 @@ Route::prefix('checkout')->group(function (){
 
     Route::post('/', [CheckoutController::class, 'checkout']);
 
+    Route::post('paid', [CheckoutController::class, 'paid']);
+
 });
 
