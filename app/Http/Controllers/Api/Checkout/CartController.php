@@ -69,11 +69,9 @@ class CartController extends Controller
                 if (auth()->user()->carts->where('type', 'package')->first()) {
                     return self::apiResponse(400, t_('finish current order first or clear the cart'), $this->body);
                 }
-
+                $price = $service->price;
                 if($request->is_advance == 1){
                     $price = $service->preview_price;
-                }else{
-                    $price = $service->price;
                 }
                 Cart::query()->create([
                     'user_id' => auth()->user()->id,
