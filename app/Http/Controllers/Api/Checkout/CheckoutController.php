@@ -329,8 +329,6 @@ class CheckoutController extends Controller
             'amount' => 'required|numeric',
             'transaction_id' => 'nullable',
             'wallet_discounts' => 'nullable|numeric',
-            'payment_status' => 'required|in:paid,due,partial',
-
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -346,9 +344,10 @@ class CheckoutController extends Controller
         ]);
 
         $order = Order::where('id',$request->order_id)->first();
+
         $order->update([
-            'payment_status' => $request->payment_status,
-            'partial_amount' => $order->partial_amount - $request->amount,
+            'payment_status' => 'paid',
+            'partial_amount' => 0,
         ]);
 
         $user->update([
