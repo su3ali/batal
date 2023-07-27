@@ -29,7 +29,7 @@ class OrdersController extends Controller
         $user = User::with('orders.status', 'orders.bookings')->where('id', auth('sanctum')->user()->id)->first();
         $orders = Order::with('bookings.service.category')
             ->where('user_id', $user->id)
-            ->orderBy('id')
+            ->orderBy('id','DESC')
             ->get();
         $this->body['orders'] = OrderResource::collection($orders);
         return self::apiResponse(200, null, $this->body);

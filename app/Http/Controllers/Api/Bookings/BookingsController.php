@@ -23,7 +23,7 @@ class BookingsController extends Controller
     }
     protected function myBookings(){
         $user = User::with('bookings.booking_status', 'bookings.service.BookingSetting')->where('id', auth('sanctum')->user()->id)->first();
-        $this->body['bookings'] = BookingResource::collection($user->bookings);
+        $this->body['bookings'] = BookingResource::collection($user->bookings()->orderBy('id','DESC')->get());
         $this->body['all_statuses'] = StatusResource::collection(VisitsStatus::all());
         return self::apiResponse(200, null, $this->body);
     }

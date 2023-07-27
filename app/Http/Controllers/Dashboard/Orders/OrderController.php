@@ -387,7 +387,7 @@ class OrderController extends Controller
     protected function orderDetail(){
         $order = Order::with('bookings')->findOrFail(\request()->id);
 
-        return view('dashboard.orders.orderDetail', compact('order'));
+        return view('dashboard.orders.show', compact('order'));
 
     }
 
