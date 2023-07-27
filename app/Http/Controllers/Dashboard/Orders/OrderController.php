@@ -66,6 +66,11 @@ class OrderController extends Controller
                         </a>';
                     }
                     $html .= '
+
+                     <a href="' . route('dashboard.order.orderDetail','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+
                         <a href="' . route('dashboard.order.showService','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
                             <i class="far fa-eye fa-2x"></i>
                         </a>
@@ -377,6 +382,13 @@ class OrderController extends Controller
         ]);
         session()->flash('success');
         return redirect()->back();
+    }
+
+    protected function orderDetail(){
+        $order = Order::with('bookings')->findOrFail(\request()->id);
+
+        return view('dashboard.orders.orderDetail', compact('order'));
+
     }
 
 }

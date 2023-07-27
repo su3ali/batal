@@ -65,7 +65,7 @@ class ServiceController extends Controller
 
     protected function getPackage(){
         $package = ContractPackage::query()->get();
-            $this->body['package'] = ContractResource::make($package);
+            $this->body['package'] = ContractResource::collection($package);
             return self::apiResponse(200, null, $this->body);
 
     }

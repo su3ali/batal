@@ -11,4 +11,5 @@ Route::get('order/service/getServiceById', 'Orders\OrderController@getServiceByI
 Route::get('order/service/getAvailableTime', 'Orders\OrderController@getAvailableTime')->name('order.getAvailableTime');
 Route::get('order/showService', 'Orders\OrderController@showService')->name('order.showService');
 Route::get('order/confirmOrder', 'Orders\OrderController@confirmOrder')->name('order.confirmOrder');
+Route::get('order/orderDetail', 'Orders\OrderController@orderDetail')->name('order.orderDetail');
 
