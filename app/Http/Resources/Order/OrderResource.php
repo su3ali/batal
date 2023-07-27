@@ -25,7 +25,8 @@ class OrderResource extends JsonResource
             'status' => $this->status->name,
             'categories' => BookingResource::collection($this->bookings),
             'notes' => $this->notes,
-            'total' => $this->total
+            'total' => $this->total,
+            'partial_amount' => $this->partial_amount,
         ];
     }
 }

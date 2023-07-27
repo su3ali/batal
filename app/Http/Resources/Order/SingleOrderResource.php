@@ -29,6 +29,7 @@ class SingleOrderResource extends JsonResource
             'value_added'       => number_format(($this->total * 0.15) / 1.15, 2),
             'delivery_cost'     => $this->delivery_cost,
             'total'             => $this->total + $this->delivery_cost,
+            'partial_amount' => $this->partial_amount ?? 0,
             'refundable'        => Carbon::parse($this->created_at)->addDays(14) > Carbon::now() && $this->status == 'complete'? 'true': 'false'
         ];
     }
