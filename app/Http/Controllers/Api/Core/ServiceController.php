@@ -62,4 +62,11 @@ class ServiceController extends Controller
         }
         return self::apiResponse(400, 'package not found', $this->body);
     }
+
+    protected function getPackage(){
+        $package = ContractPackage::query()->get();
+            $this->body['package'] = ContractResource::make($package);
+            return self::apiResponse(200, null, $this->body);
+
+    }
 }
