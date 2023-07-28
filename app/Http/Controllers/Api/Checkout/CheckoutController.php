@@ -95,7 +95,7 @@ class CheckoutController extends Controller
         return array_sum($total);
     }
 
-    private function saveOrder($user, $request, $total, $carts, $uploadFile,$uploadImage)
+    private function saveOrder($user, $request, $total, $carts, $uploadImage,$uploadFile)
     {
         $order = Order::create([
             'user_id' => $user->id,
