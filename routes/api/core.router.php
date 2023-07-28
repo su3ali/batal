@@ -22,5 +22,6 @@ Route::post('home_filter', [HomeController::class, 'filter']);
 
 Route::get('package/{id}', [ServiceController::class, 'PackageDetails']);
 Route::get('package', [ServiceController::class, 'getPackage']);
+Route::get('contact', [ServiceController::class, 'getContact']);
 Route::post('contract_contact', [HomeController::class, 'contract_contact']);
 
