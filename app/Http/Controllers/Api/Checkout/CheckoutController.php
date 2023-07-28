@@ -74,11 +74,11 @@ class CheckoutController extends Controller
             $uploadFile =null;
             if ($request->file && $request->file !=null){
                 $file=$this->storeImages($request->file,'order');
-                $uploadFile= 'storage/order'.'/'.$file;
+                $uploadFile= 'storage/images/order'.'/'.$file;
             }
             if ($request->image && $request->image != null){
                 $image=$this->storeImages($request->image,'order');
-                $uploadImage= 'storage/order'.'/'.$image;
+                $uploadImage= 'storage/images/order'.'/'.$image;
             }
             $total = $this->calc_total($carts);
             return $this->saveOrder($user, $request, $total, $carts,$uploadImage,$uploadFile);
