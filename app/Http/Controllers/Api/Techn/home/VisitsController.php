@@ -118,7 +118,7 @@ class VisitsController extends Controller
             }
 
             if ($request->status_id == 3){
-                $data['start_date'] = Carbon::now();
+                $data['start_date'] = Carbon::now('Asia/Riyadh');
                 $order = $model->booking->order;
                 $visits_ids = [];
                 foreach ($order->bookings as $booking){
@@ -132,7 +132,7 @@ class VisitsController extends Controller
 
 
             if ($request->status_id == 5){
-                $data['end_date'] = Carbon::now();
+                $data['end_date'] = Carbon::now('Asia/Riyadh');
                 $techWallet = TechnicianWallet::query()->first();
                 $serviceCost = $model->booking->order->services->where('category_id', $model->booking->category_id)->sum('price');
                 if ($techWallet->point_type == 'rate'){
