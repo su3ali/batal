@@ -1,7 +1,7 @@
 require('./bootstrap');
 window.Pusher = require('pusher-js');
 import Echo from "laravel-echo";
-
+console.log($('meta[name="_token"]').attr('content'));
 const chatForm = document.getElementById('message-form');
 
 const chatMessages = document.getElementById('message-box');
