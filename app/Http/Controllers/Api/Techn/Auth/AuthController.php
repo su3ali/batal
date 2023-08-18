@@ -57,4 +57,15 @@ class AuthController extends Controller
             return self::apiResponse(200, $this->message, $this->body);
 
         }
+
+    public function deleteAccount(Request $request)
+    {
+        $user =  auth('sanctum')->user();
+        $user->delete();
+        $this->message = t_('Delete technician successfully');
+
+        return self::apiResponse(200, $this->message, $this->body);
+
+    }
+
     }

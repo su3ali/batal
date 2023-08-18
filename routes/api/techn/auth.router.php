@@ -11,6 +11,7 @@ Route::post('/profile/editByCode', [TechProfileController::class, 'editByCode'])
 Route::get('/notification', [TechProfileController::class, 'getNotification']);
 Route::post('/notification/delete', [TechProfileController::class, 'deleteNotification']);
 Route::post('/notification/read', [TechProfileController::class, 'readNotification']);
+Route::post('/deleteAccount', [AuthController::class, 'deleteAccount']);
 
 
 
