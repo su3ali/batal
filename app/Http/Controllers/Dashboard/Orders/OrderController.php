@@ -141,7 +141,7 @@ class OrderController extends Controller
             'service_id' => 'array|required|exists:services,id',
             'service_id.*' => 'required',
             'price' => 'required',
-            'payment_method' => 'required|in:visa,cache',
+//            'payment_method' => 'required|in:visa,cache',
             'notes' => 'nullable|String',
             'quantity' => 'array|required',
             'quantity.*' => 'required',
@@ -162,9 +162,9 @@ class OrderController extends Controller
             'sub_total' => $request->total,
             'discount' => 0,
             'status_id' => 2,
-            'payment_method' => $request->payment_method,
+//            'payment_method' => $request->payment_method,
             'notes' => $request->notes,
-            'quantity' => $request->all_quantity,
+//            'quantity' => $request->all_quantity,
             'user_address_id' => UserAddresses::where('user_id',$request->user_id)->where('is_default',1)->first()->id ?? null,
         ];
 
