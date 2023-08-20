@@ -22,23 +22,23 @@ trait NotificationTrait
 
         ];
 
-//      $notification = [
-//          'title' => $notification['title'] ,
-//          'body' => $notification['message'],
-//          'sound' => 'default',
-//          "priority" => "high",
-//          "mutable-content"=> 1,
-//          'data' => $data
-//      ];
+      $notification = [
+          'title' => $notification['title'] ,
+          'body' => $notification['message'],
+          'sound' => 'default',
+          "priority" => "high",
+          "mutable-content"=> 1,
+          'data' => $data
+      ];
 
         $fields = [
             'registration_ids' => $device_token,
-//          'notification' => $notification,
+          'notification' => $notification,
             "content_available" => 1,
             "ios"=>[
                 "priority"=>"HIGH"
             ],
-            'data' => $data,
+//            'data' => $data,
             'sound' => 'default',
             "priority" => "HIGH",
             "mutable-content" => 1,
