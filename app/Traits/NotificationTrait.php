@@ -37,6 +37,7 @@ trait NotificationTrait
     'sound' => 'default',
     "priority" => "HIGH",
     "mutable-content"=> 1,
+    "content_available"=> true,
     ]);
 
     $ch = curl_init();
