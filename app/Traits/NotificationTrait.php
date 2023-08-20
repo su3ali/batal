@@ -34,7 +34,7 @@ trait NotificationTrait
         $fields = json_encode([
             'registration_ids' => $device_token,
 //          'notification' => $notification,
-            "content_available" => true,
+            "content_available" => 1,
             "ios"=>[
                 "priority"=>"HIGH"
             ],
