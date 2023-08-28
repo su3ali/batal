@@ -15,7 +15,7 @@ class RolesDatatable extends BaseDatatable
     public function query(): Builder
     {
         return Role::whereGuardName('dashboard')
-            ->whereNotIn('name', ['super', 'user', 'admin'])
+//            ->whereNotIn('name', ['super', 'user', 'admin'])
             ->withCount('permissions');
     }
 

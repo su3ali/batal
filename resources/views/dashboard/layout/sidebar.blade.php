@@ -532,7 +532,7 @@
                 </li>
             @endcan
 
-{{--            @can('report')--}}
+            @can('report')
                 <li class="menu">
                     <a href="#reports" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
@@ -572,7 +572,7 @@
 
                     </ul>
                 </li>
-{{--            @endcan--}}
+            @endcan
 
             {{--@can('view_setting')--}}
             {{--<li class="menu">--}}
