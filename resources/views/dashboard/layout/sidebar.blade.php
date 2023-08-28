@@ -189,16 +189,16 @@
                     </div>
                 </a>
                 <ul class="collapse submenu list-unstyled" id="app" data-parent="#accordionExample">
-                    @can('view_admins')
+{{--                    @can('view_admins')--}}
                         <li>
                             <a href="{{route('dashboard.core.administration.admins.index')}}"> المستخدمين </a>
                         </li>
-                    @endcan
-                        @can('view_roles')
+{{--                    @endcan--}}
+{{--                        @can('view_roles')--}}
                         <li>
                             <a href="{{route('dashboard.core.administration.roles.index')}}"> الصلاحيات </a>
                         </li>
-                    @endcan
+{{--                    @endcan--}}
                 </ul>
             </li>
 
