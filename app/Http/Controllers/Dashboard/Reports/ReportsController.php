@@ -60,7 +60,7 @@ class ReportsController extends Controller
                 ->addColumn('service_number', function ($row) {
                     $service_ids = OrderService::where('order_id',$row->id)->get()->pluck('service_id')->toArray();
 
-                    return array_sum($service_ids);
+                    return count($service_ids);
                 })
                 ->addColumn('price', function ($row) {
                     return $row->sub_total;
@@ -123,7 +123,6 @@ class ReportsController extends Controller
         }
         return view('dashboard.reports.contractSales');
     }
-
 
     protected function customers()
     {
