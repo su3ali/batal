@@ -1100,7 +1100,37 @@
                                                 </div>
                                             </div>
 
-
+                                            <div class="card component-card_2 col-md-12 px-0">
+                                                <div class="form-group h-50 mb-0 px-3 pt-2" style="background-color: #0072ff42;">
+                                                    <label
+                                                        class="new-control new-checkbox new-checkbox-text checkbox-success">
+                                                        <input
+                                                            type="checkbox"
+                                                            class="new-control-input check-all-report"
+                                                        >
+                                                        <span class="new-control-indicator"></span><span
+                                                            class="new-chk-content text-primary"><b>التقارير</b></span>
+                                                    </label>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="n-chk col-md-3 form-row">
+                                                            <label
+                                                                class="new-control new-checkbox new-checkbox-text checkbox-success">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    name="permissions[{{$permissions[64]->id}}]"
+                                                                    class="new-control-input perm-check perm-check-report"
+                                                                    {{isset($model)? in_array($permissions[64]->id, $model->permissions->pluck('id')->toArray())? 'checked' : '': ''}}
+                                                                >
+                                                                <span
+                                                                    class="new-control-indicator"></span><span
+                                                                    class="new-chk-content"><b>{{$permissions[64]->$name}}</b></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                         </div>
                                     </div>
@@ -1171,6 +1201,9 @@
                 $(".perm-check-profile").click(function () {
                     let matches = $("input.perm-check-profile:checkbox:not(:checked)");
                     checkViewType(matches, 'profile')
+                });$(".perm-check-report").click(function () {
+                    let matches = $("input.perm-check-report:checkbox:not(:checked)");
+                    checkViewType(matches, 'profile')
                 });
                 function checkViewAll(boxes) {
                     if (boxes.length > 0) {
@@ -1194,6 +1227,7 @@
                     let box_core = $('.check-all-core');
                     let box_homesections = $('.check-all-homesections');
                     let box_profile = $('.check-all-profile');
+                    let box_report = $('.check-all-report');
                     boxes.prop('checked', this.checked);
                     box_admins.prop('checked', this.checked);
                     box_roles.prop('checked', this.checked);
@@ -1201,6 +1235,7 @@
                     box_core.prop('checked', this.checked);
                     box_homesections.prop('checked', this.checked);
                     box_profile.prop('checked', this.checked);
+                    box_report.prop('checked', this.checked);
                 });
                 $(".check-all-admins").click(function () {
                     let boxes = $('.perm-check-admins');
@@ -1288,6 +1323,12 @@
                 });
                 $(".check-all-rates").click(function () {
                     let boxes = $('.perm-check-rates');
+                    boxes.prop('checked', this.checked);
+                    let matches = $("input.perm-check:checkbox:not(:checked)");
+                    checkViewAll(matches)
+                });
+                $(".check-all-report").click(function () {
+                    let boxes = $('.perm-check-report');
                     boxes.prop('checked', this.checked);
                     let matches = $("input.perm-check:checkbox:not(:checked)");
                     checkViewAll(matches)

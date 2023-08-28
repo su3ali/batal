@@ -35,6 +35,8 @@ class Order extends Model
     public function transaction(){
         return $this->hasOne(Transaction::class, 'id', 'order_id');
     }
-
+    public function order_payment(){
+        return $this->hasOne(OrderPayment::class, 'id', 'order_id');
+    }
 
 }

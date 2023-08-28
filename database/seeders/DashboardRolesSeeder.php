@@ -132,6 +132,7 @@ class DashboardRolesSeeder extends Seeder
             ['name'=>'update_notification', 'name_en' => 'update notification', 'name_ar' => 'تعديل الاشعارات'],
             ['name'=>'delete_notification', 'name_en' => 'delete notification', 'name_ar' => 'حذف الاشعارات'],
             ['name'=>'view_notification', 'name_en' => 'view notification', 'name_ar' => 'عرض الاشعارات'],
+            ['name'=>'report', 'name_en' => 'report', 'name_ar' => 'التقارير'],
         ]);
         Permission::insert($permissions->transform(fn ($i) => ['name' => $i['name'], 'name_ar' => $i['name_ar'], 'name_en' => $i['name_en'], 'guard_name' => 'dashboard'])
                                        ->toArray());

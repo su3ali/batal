@@ -66,7 +66,7 @@ class ReportsController extends Controller
                     return $row->sub_total;
                 })
                 ->addColumn('payment_method', function ($row) {
-                    return $row->payment_method;
+                    return $row->order_payment?->payment_method;
                 })
 
                 ->rawColumns([
