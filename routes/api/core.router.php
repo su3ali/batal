@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Core\ServiceController;
 Route::prefix('home')->group(function (){
     Route::get('/', [HomeController::class, 'index']);
     Route::get('/search', [HomeController::class, 'search']);
+    Route::get('/region', [HomeController::class, 'getRegion']);
 });
 
 Route::prefix('services')->group(function (){

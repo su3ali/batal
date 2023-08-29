@@ -57,6 +57,7 @@
                         </div>
                         <div class="card-body p-0">
 
+
                             <table class="table table-bordered nowrap">
 
                                 <thead>
@@ -69,9 +70,26 @@
                                         $date = Illuminate\Support\Carbon::parse($order->created_at);
                                     @endphp
                                     <th>تاريخ الطلب</th>
-                                    <td>{{ $date->format("Y-m-d H:i:s");}}</td>
+                                    <td>{{ $date->format("Y-m-d H:i:s")}}</td>
                                 </tr>
 
+                                <tr>
+
+                                    <th>القسم</th>
+                                    <td>
+                                        @foreach($categories as $item)
+                                            <button class="btn-sm btn-primary">{{$item->title}}</button>
+                                        @endforeach
+                                    </td>
+                                </tr>
+
+                                <tr>
+
+                                    <th>عدد الخدمات</th>
+                                    <td>
+                                        {{$order->services->count()}}
+                                    </td>
+                                </tr>
 
 
                                 <tr>
@@ -89,6 +107,24 @@
                                 <tr>
                                     <th>الاجمالي بعد الخصم</th>
                                     <td>{{$order->total}}</td>
+                                </tr>
+                                <tr>
+
+                                    <th>المبلغ المدفوع</th>
+                                    <td>
+                                        {{$order->transaction?->amount}}
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <th>المبلغ المتبقي</th>
+                                    <td>
+                                        {{$order->partial_amount}}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>طريقه الدفع</th>
+                                    <td>{{$order->transaction?->payment_method}}</td>
                                 </tr>
                                 <tr>
                                     <th>نوع الدفع</th>
@@ -115,6 +151,11 @@
                                 <tr>
                                     <th>صوره المرفقه</th>
                                     <td><img class="img-fluid" style="width: 40px;" src="{{asset($order->image)}}"></td>
+                                </tr>
+
+                                <tr>
+                                    <th>ملاحظات العميل</th>
+                                    <td>{{$order->notes}}</td>
                                 </tr>
 
                                 </thead>

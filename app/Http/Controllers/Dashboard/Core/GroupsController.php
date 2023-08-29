@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Dashboard\Core;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
+use App\Models\Country;
 use App\Models\Group;
+use App\Models\GroupRegion;
 use App\Models\GroupTechnician;
+use App\Models\Region;
 use App\Models\Technician;
 use App\Traits\imageTrait;
 use Illuminate\Http\RedirectResponse;
@@ -35,7 +39,7 @@ class GroupsController extends Controller
 
                     $html = '
                                 <button type="button" id="edit-techGroup" class="btn btn-primary btn-sm card-tools edit" data-id="'.$row->id.'"  data-name_ar="'.$row->name_ar.'" data-name_en="'.$row->name_en.'"
-                                 data-technician_id="'.$row->technician_id.'" data-technician_group_id="'.$row->technician_groups->pluck('technician_id').'"
+                                 data-technician_id="'.$row->technician_id.'" data-technician_group_id="'.$row->technician_groups->pluck('technician_id').'" data-region_id="'.$row->regions->pluck('region_id').'" data-country_id="'.$row->country_id.'" data-city_id="'.$row->city_id.'"
                                   data-toggle="modal" data-target="#editGroupTechModel">
                             <i class="far fa-edit fa-2x"></i>
                        </button>
@@ -53,7 +57,11 @@ class GroupsController extends Controller
                 ])
                 ->make(true);
         }
-        return view('dashboard.core.groups.index', compact('technicians'));
+        $countries = Country::where('active',1)->get()->pluck('title','id');
+        $cities = City::where('active',1)->get()->pluck('title','id');
+        $regions = Region::where('active',1)->get()->pluck('title','id');
+
+        return view('dashboard.core.groups.index', compact('technicians','countries','cities','regions'));
     }
 
     /**
@@ -67,13 +75,17 @@ class GroupsController extends Controller
             'technician_id' => 'nullable|exists:technicians,id',
             'technician_group_id' => 'required|array|exists:technicians,id',
             'technician_group_id.*' => 'required',
+            'country_id' => 'required|exists:countries,id',
+            'city_id' => 'required|exists:cities,id',
+            'region_id' => 'required|array|exists:regions,id',
+            'region_id.*' => 'required',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }
         $validated = $validated->validated();
-        $data = $request->except('_token', 'technician_group_id');
+        $data = $request->except('_token', 'technician_group_id','region_id');
         $group = Group::query()->create($data);
         foreach ($request->technician_group_id as $tehcn){
             GroupTechnician::create([
@@ -81,6 +93,15 @@ class GroupsController extends Controller
                 'technician_id' => $tehcn,
             ]);
         }
+
+
+        foreach ($request->region_id as $region){
+            GroupRegion::create([
+                'group_id' => $group->id,
+                'region_id' => $region,
+            ]);
+        }
+
         session()->flash('success');
         return redirect()->back();
     }
@@ -92,13 +113,17 @@ class GroupsController extends Controller
             'technician_id' => 'nullable|exists:technicians,id',
             'technician_group_id' => 'required|array|exists:technicians,id',
             'technician_group_id.*' => 'required',
+            'country_id' => 'required|exists:countries,id',
+            'city_id' => 'required|exists:cities,id',
+            'region_id' => 'required|array|exists:regions,id',
+            'region_id.*' => 'required',
         ];
         $validated = Validator::make($request->all(), $rules);
         if ($validated->fails()) {
             return redirect()->back()->with('errors', $validated->errors());
         }
         $validated = $validated->validated();
-        $data = $request->except('_token', 'technician_group_id');
+        $data = $request->except('_token', 'technician_group_id','region_id');
 
         $group->update($data);
         GroupTechnician::where('group_id',$id)->delete();
@@ -106,6 +131,15 @@ class GroupsController extends Controller
             GroupTechnician::create([
                 'group_id' => $group->id,
                 'technician_id' => $tehcn,
+            ]);
+        }
+
+        GroupRegion::where('group_id',$id)->delete();
+
+        foreach ($request->region_id as $region){
+            GroupRegion::create([
+                'group_id' => $group->id,
+                'region_id' => $region,
             ]);
         }
         session()->flash('success');

@@ -40,11 +40,12 @@ class RegionController extends Controller
                 ->addColumn('controll', function ($region) {
 
                     $html = '
-                    
-                                <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="'.$region->id.'"  data-title_ar="'.$region->title_ar.'"
-                                 data-title_en="'.$region->title_en.'" data-city_id="'.$region->city_id.'" data-toggle="modal" data-target="#editModel">
+
+                    <a href="'.route('dashboard.region.edit', $region->id).'"  class="mr-2 btn btn-sm btn-primary">
                             <i class="far fa-edit fa-2x"></i>
-                       </button>
+                    </a>
+
+
 
                                 <a data-href="'.route('dashboard.region.destroy', $region->id).'" data-id="'.$region->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
@@ -62,13 +63,14 @@ class RegionController extends Controller
                 ])
                 ->make(true);
         }
-        $cities = City::where('active',1)->get()->pluck('title','id');
-        return view('dashboard.settings.regions.index',compact('cities'));
+        return view('dashboard.settings.regions.index');
     }
 
     public function create()
     {
-        return view('dashboard.settings.regions.create');
+        $cities = City::where('active',1)->get()->pluck('title','id');
+
+        return view('dashboard.settings.regions.create',compact('cities'));
     }
 
     public function store(Request $request)
@@ -77,6 +79,9 @@ class RegionController extends Controller
             'title_ar' => 'required|String|min:3',
             'title_en' => 'required|String|min:3',
             'city_id' => 'required|exists:cities,id',
+            'space_km' => 'required|numeric',
+            'lat' => 'required',
+            'lon' => 'required',
 
         ]);
 
@@ -85,13 +90,14 @@ class RegionController extends Controller
         Region::updateOrCreate($data);
 
         session()->flash('success');
-        return redirect()->back();
+        return redirect()->route('dashboard.region.index');
     }
 
     public function edit($id)
     {
         $region = Region::where('id',$id)->first();
-        return view('dashboard.setting.regions.edit', compact( 'region'));
+        $cities = City::where('active',1)->get()->pluck('title','id');
+        return view('dashboard.settings.regions.edit', compact( 'region','cities'));
     }
 
     public function update(Request $request, $id)
@@ -101,7 +107,9 @@ class RegionController extends Controller
             'title_ar' => 'required',
             'title_en' => 'required',
             'city_id' => 'required|exists:cities,id',
-
+            'space_km' => 'required|numeric',
+            'lat' => 'required',
+            'lon' => 'required',
         ]);
         $data=$request->except('_token');
 
@@ -110,7 +118,8 @@ class RegionController extends Controller
 
         $region->update($data);
         session()->flash('success');
-        return redirect()->back();
+        return redirect()->route('dashboard.region.index');
+
     }
 
     public function destroy($id)

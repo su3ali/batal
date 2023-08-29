@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Checkout\UserAddressResource;
 use App\Http\Resources\Contract\ContractResource;
 use App\Http\Resources\Core\ContactResource;
+use App\Http\Resources\Core\RegionResource;
 use App\Http\Resources\MainCategory\MainCategoryResource;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Service\ServiceCategoryResource;
@@ -17,6 +18,7 @@ use App\Models\Contacting;
 use App\Models\ContractPackage;
 use App\Models\Order;
 use App\Models\OrderContract;
+use App\Models\Region;
 use App\Models\Service;
 use App\Models\UserAddresses;
 use App\Support\Api\ApiResponse;
@@ -184,6 +186,13 @@ class HomeController extends Controller
         }
         $this->body['stores'] = StoreResource::collection($stores);
         return self::apiResponse(200, t_(''), $this->body);
+    }
+
+    protected function getRegion()
+    {
+        $regions = Region::where('active',1)->get();
+        $this->body['regions'] = RegionResource::collection($regions);
+        return self::apiResponse(200, t_('successfully'), $this->body);
     }
 
 

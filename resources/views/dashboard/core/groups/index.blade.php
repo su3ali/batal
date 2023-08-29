@@ -72,6 +72,57 @@
     </div>
     @include('dashboard.core.groups.edit')
 @endsection
+@push('script')
+    <script>
+        $(document).ready(function (){
+            $('.country_id').on('change',function (){
+                var country_id=$(this).val();
+                $.ajax({
+                    url: '{{route('dashboard.core.address.getCity')}}',
+                    data:{country_id:country_id},
+                    success: function(response) {
+                        $('.city_id').empty()
+                        $('.city_id').append('<option disabled selected>{{__('dash.choose')}}</option>')
+                        $.each(response, function (i, item) {
+
+                            $('.city_id').append($('<option>', {
+                                value: i,
+                                text : item
+                            }));
+                        });
+
+                    }
+                });
+
+            });
+
+        });
+
+        $(document).ready(function (){
+            $('.city_id').on('change',function (){
+                var city_id=$(this).val();
+                $.ajax({
+                    url: '{{route('dashboard.core.address.getRegion')}}',
+                    data:{city_id:city_id},
+                    success: function(response) {
+                        $('.region_id').empty()
+                        $('.region_id').append('<option disabled>{{__('dash.choose')}}</option>')
+                        $.each(response, function (i, item) {
+
+                            $('.region_id').append($('<option>', {
+                                value: i,
+                                text : item
+                            }));
+                        });
+
+                    }
+                });
+
+            });
+
+        });
+    </script>
+@endpush
 
 @push('script')
 
@@ -112,10 +163,17 @@
             let name_ar = $(this).data('name_ar');
             let technician_id = $(this).data('technician_id');
             let technician_group_id = $(this).data('technician_group_id');
+            let country_id = $(this).data('country_id');
+
+            let city_id = $(this).data('city_id');
+            let region_id = $(this).data('region_id');
             $('#edit_name_en').val(name_en)
             $('#edit_name_ar').val(name_ar)
             $('#edit_technician_id').val(technician_id).trigger('change')
             $('#technician_group_id').val(technician_group_id).trigger('change')
+            $('#country_id').val(country_id)
+            $('#city_id').val(city_id)
+            $('#region_id').val(region_id).trigger('change')
             let action = "{{route('dashboard.core.group.update', 'id')}}";
             action = action.replace('id', id)
             $('#edit_grouptech_form').attr('action', action);

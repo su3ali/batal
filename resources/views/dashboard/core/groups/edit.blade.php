@@ -79,6 +79,58 @@
 
                         </div>
 
+                        <div class="form-row mb-3">
+                            <div class="form-group col-md-4">
+
+                                <label for="country_id">{{__('dash.country')}}</label>
+                                <select id="country_id"  class="select2 country_id form-control pt-1"
+                                        name="country_id">
+                                    <option disabled >{{__('dash.choose')}}</option>
+                                    @foreach($countries as $key => $country)
+                                        <option value="{{$key}}">{{$country}}</option>
+                                    @endforeach
+                                </select>
+                                @error('country_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-4">
+
+                                <label for="city_id">{{__('dash.city')}}</label>
+                                <select id="city_id" class="select2 city_id form-control pt-1"
+                                        name="city_id">
+                                    <option disabled>{{__('dash.choose')}}</option>
+                                    @foreach($cities as $key => $city)
+                                        <option value="{{$key}}">{{$city}}</option>
+                                    @endforeach
+                                </select>
+                                @error('city_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-4">
+
+                                <label for="region_id">{{__('dash.region')}}</label>
+                                <select id="region_id"  multiple class="select2 region_id form-control pt-1"
+                                        name="region_id[]">
+                                    <option disabled>{{__('dash.choose')}}</option>
+                                    @foreach($regions as $key => $region)
+                                        <option value="{{$key}}">{{$region}}</option>
+                                    @endforeach
+                                </select>
+                                @error('region_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                        </div>
+
+
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">{{__('dash.save')}}</button>
@@ -93,9 +145,3 @@
 </div>
 
 
-@push('script')
-    <script>
-        let myImage = new FileUploadWithPreview('myImage')
-
-    </script>
-@endpush

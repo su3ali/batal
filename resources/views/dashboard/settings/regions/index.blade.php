@@ -6,6 +6,7 @@
         {{--$url = route('dashboard.core.category.index');--}}
     {{--}--}}
 {{--@endphp--}}
+
 @section('sub-header')
     <div class="sub-header-container">
         <header class="header navbar navbar-expand-sm">
@@ -40,7 +41,7 @@
         </header>
     </div>
 
-    @include('dashboard.settings.regions.create')
+{{--    @include('dashboard.settings.regions.create')--}}
 @endsection
 
 
@@ -55,10 +56,8 @@
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-md-12 text-right mb-3">
 
-                        <button type="button" id="add-work-exp" class="btn btn-primary card-tools" data-toggle="modal"
-                                data-target="#exampleModal">
-                            {{__('dash.add_new')}}
-                        </button>
+                        <a href="{{route('dashboard.region.create')}}" class="btn btn-primary">{{__('dash.add_new')}}</a>
+
 
                     </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -80,7 +79,7 @@
         </div>
 
     </div>
-    @include('dashboard.settings.regions.edit')
+{{--    @include('dashboard.settings.regions.edit')--}}
 
 @endsection
 
@@ -165,3 +164,5 @@
 
 
 @endpush
+
+

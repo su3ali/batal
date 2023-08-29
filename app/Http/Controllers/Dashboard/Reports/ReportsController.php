@@ -32,12 +32,28 @@ class ReportsController extends Controller
 
         if (request()->ajax()) {
             $date = $request->date;
+            $payment_method = $request->payment_method;
+//            $service_id = $request->service_id;
             $order = Order::query();
             if($date) {
                 $carbonDate = \Carbon\Carbon::parse($date);
                 $formattedDate = $carbonDate->format('Y-m-d H:i:s');
                 $order = $order->where('created_at','=', $formattedDate);
             }
+            if($payment_method) {
+
+                $order = $order->whereHas('transaction',function ($q) use($payment_method) {
+                    $q->where('payment_method',$payment_method);
+                });
+            }
+
+//            if($service_id) {
+//
+//                $order = $order->whereHas('services',function ($q) use($service_id) {
+//                    $q->where('service_id',$service_id);
+//                });
+//            }
+
             $order = $order->get();
             return DataTables::of($order)
                 ->addColumn('order_number', function ($row) {
@@ -66,7 +82,7 @@ class ReportsController extends Controller
                     return $row->sub_total;
                 })
                 ->addColumn('payment_method', function ($row) {
-                    return $row->order_payment?->payment_method;
+                    return $row->transaction?->payment_method;
                 })
 
                 ->rawColumns([
@@ -79,7 +95,10 @@ class ReportsController extends Controller
                 ])
                 ->make(true);
         }
-        return view('dashboard.reports.sales');
+
+        $services = Service::where('active',1)->get();
+
+        return view('dashboard.reports.sales',compact('services'));
     }
 
     protected function contractSales(Request $request)

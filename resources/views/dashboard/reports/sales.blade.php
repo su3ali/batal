@@ -54,7 +54,18 @@
                                    id="inputEmail4">
                         </div>
 
+                            <div class="col-md-1">
+                            <label for="inputEmail4">طريقه الدفع</label>
                         </div>
+                        <div class="col-md-4">
+                            <select class="select2 payment_method form-control" name="payment_method">
+                                <option value="cache">كاش</option>
+                                <option value="wallet">محفظة</option>
+                                <option value="mada">مدي</option>
+                            </select>
+                        </div>
+
+
 
                     </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -116,6 +127,11 @@
             $('.date').change(function(){
                 var date = $('.date').val();
                 table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date ).load();
+            })
+
+            $('.payment_method').change(function(){
+                var payment_method = $('.payment_method').val();
+                table.ajax.url( '{{ route('dashboard.report.sales') }}?payment_method='+payment_method ).load();
             })
 
         });

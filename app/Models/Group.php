@@ -29,4 +29,7 @@ class Group extends Model
     public function technician_groups(){
         return $this->hasMany(GroupTechnician::class);
     }
+    public function regions(){
+        return $this->hasMany(GroupRegion::class);
+    }
 }

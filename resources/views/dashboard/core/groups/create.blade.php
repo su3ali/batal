@@ -76,7 +76,52 @@
 
                             </div>
                         </div>
+                        <div class="form-row mb-3">
+                            <div class="form-group col-md-4">
 
+                                <label for="inputEmail4">{{__('dash.country')}}</label>
+                                <select id="inputState"  class="select2 country_id form-control pt-1"
+                                        name="country_id">
+                                    <option disabled selected>{{__('dash.choose')}}</option>
+                                    @foreach($countries as $key => $country)
+                                        <option value="{{$key}}">{{$country}}</option>
+                                    @endforeach
+                                </select>
+                                @error('country_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-4">
+
+                                <label for="inputEmail4">{{__('dash.city')}}</label>
+                                <select id="inputState" class="select2 city_id form-control pt-1"
+                                        name="city_id">
+                                    <option disabled>{{__('dash.choose')}}</option>
+
+                                </select>
+                                @error('city_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-4">
+
+                                <label for="inputEmail4">{{__('dash.region')}}</label>
+                                <select id="inputState"  multiple class="select2 region_id form-control pt-1"
+                                        name="region_id[]">
+                                    <option disabled>{{__('dash.choose')}}</option>
+
+                                </select>
+                                @error('region_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">{{__('dash.save')}}</button>
@@ -91,9 +136,4 @@
 </div>
 
 
-@push('script')
-    <script>
-        let secondUpload = new FileUploadWithPreview('mySecondImage')
 
-    </script>
-@endpush
