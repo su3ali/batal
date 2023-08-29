@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Core;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Checkout\UserAddressResource;
 use App\Http\Resources\Contract\ContractResource;
+use App\Http\Resources\Core\CityResource;
 use App\Http\Resources\Core\ContactResource;
 use App\Http\Resources\Core\RegionResource;
 use App\Http\Resources\MainCategory\MainCategoryResource;
@@ -14,6 +15,7 @@ use App\Http\Resources\Service\ServiceResource;
 use App\Http\Resources\Store\StoreResource;
 use App\Models\Banner;
 use App\Models\Category;
+use App\Models\City;
 use App\Models\Contacting;
 use App\Models\ContractPackage;
 use App\Models\Order;
@@ -188,13 +190,20 @@ class HomeController extends Controller
         return self::apiResponse(200, t_(''), $this->body);
     }
 
-    protected function getRegion()
+    protected function getCity()
     {
-        $regions = Region::where('active',1)->get();
-        $this->body['regions'] = RegionResource::collection($regions);
+        $cities = City::where('active',1)->get();
+        $this->body['cities'] = CityResource::collection($cities);
         return self::apiResponse(200, t_('successfully'), $this->body);
     }
 
+
+    protected function getRegions($id)
+    {
+        $regions = Region::where('active',1)->where('city_id',$id)->get();
+        $this->body['regions'] = RegionResource::collection($regions);
+        return self::apiResponse(200, t_('successfully'), $this->body);
+    }
 
     protected function contract_contact(Request $request): JsonResponse
     {
