@@ -44,7 +44,7 @@
 
                         </div>
                         <div class="form-row mb-3">
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
 
                                 <label for="tech">مشرف المجموعة</label>
                                 <select  id="tech" class="select2 form-control pt-1"
@@ -60,6 +60,21 @@
 
                             </div>
 
+                            <div class="form-group col-md-6">
+
+                                <label for="tech">الفنيين</label>
+                                <select  id="tech" multiple class="select2 form-control pt-1"
+                                         name="technician_group_id[]">
+                                    <option disabled value="">{{__('dash.choose')}}</option>
+                                    @foreach($technicians as $technician)
+                                        <option value="{{$technician->id}}">{{$technician->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('technician_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
                         </div>
 
                     </div>

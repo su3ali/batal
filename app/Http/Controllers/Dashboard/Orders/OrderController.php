@@ -57,6 +57,11 @@ class OrderController extends Controller
                 ->addColumn('status', function ($row) {
                     return $row->status?->name;
                 })
+                ->addColumn('created_at', function ($row) {
+                     $date = Carbon::parse($row->created_at);
+
+                    return $date->format("Y-m-d H:i:s");
+                })
                 ->addColumn('control', function ($row) {
 
                     $html = '';
@@ -86,6 +91,7 @@ class OrderController extends Controller
                     'category',
                     'quantity',
                     'status',
+                    'created_at',
                     'control',
                 ])
                 ->make(true);

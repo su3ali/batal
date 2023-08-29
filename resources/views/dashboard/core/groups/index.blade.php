@@ -111,9 +111,11 @@
             let name_en = $(this).data('name_en');
             let name_ar = $(this).data('name_ar');
             let technician_id = $(this).data('technician_id');
+            let technician_group_id = $(this).data('technician_group_id');
             $('#edit_name_en').val(name_en)
             $('#edit_name_ar').val(name_ar)
             $('#edit_technician_id').val(technician_id).trigger('change')
+            $('#technician_group_id').val(technician_group_id).trigger('change')
             let action = "{{route('dashboard.core.group.update', 'id')}}";
             action = action.replace('id', id)
             $('#edit_grouptech_form').attr('action', action);

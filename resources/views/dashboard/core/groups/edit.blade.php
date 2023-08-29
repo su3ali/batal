@@ -45,12 +45,28 @@
 
                         </div>
                         <div class="form-row mb-3">
-                            <div class="form-group col-md-12">
+                            <div class="form-group col-md-6">
 
                                 <label for="edit_technician_id">مشرف المجموعة</label>
                                 <select  id="edit_technician_id" class="select2 form-control pt-1"
                                         name="technician_id">
                                     <option value="">{{__('dash.choose')}}</option>
+                                    @foreach($technicians as $technician)
+                                        <option value="{{$technician->id}}">{{$technician->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('technician_id')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-6">
+
+                                <label for="technician_group_id">الفنيين</label>
+                                <select  id="technician_group_id" multiple class="select2 form-control pt-1"
+                                         name="technician_group_id[]">
+                                    <option selected disabled value="">{{__('dash.choose')}}</option>
                                     @foreach($technicians as $technician)
                                         <option value="{{$technician->id}}">{{$technician->name}}</option>
                                     @endforeach

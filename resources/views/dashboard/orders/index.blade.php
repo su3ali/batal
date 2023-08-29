@@ -65,6 +65,7 @@
                             <th>{{__('dash.quantity')}}</th>
                             <th>{{__('dash.price_value')}}</th>
                             <th>{{__('dash.status')}}</th>
+                            <th>تاريخ الطلب</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
                         </thead>
@@ -110,6 +111,7 @@
                     {data: 'quantity', name: 'quantity'},
                     {data: 'total', name: 'total'},
                     {data: 'status', name: 'status'},
+                    {data: 'created_at', name: 'created_at'},
                     {data: 'control', name: 'control', orderable: false, searchable: false},
 
                 ]

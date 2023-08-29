@@ -25,4 +25,8 @@ class Group extends Model
     public function technicians(){
         return $this->hasMany(Technician::class);
     }
+
+    public function technician_groups(){
+        return $this->hasMany(GroupTechnician::class);
+    }
 }

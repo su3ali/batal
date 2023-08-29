@@ -60,6 +60,19 @@
                             <table class="table table-bordered nowrap">
 
                                 <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <td>{{$order->id}}</td>
+                                </tr>
+                                <tr>
+                                    @php
+                                        $date = Illuminate\Support\Carbon::parse($order->created_at);
+                                    @endphp
+                                    <th>تاريخ الطلب</th>
+                                    <td>{{ $date->format("Y-m-d H:i:s");}}</td>
+                                </tr>
+
+
 
                                 <tr>
                                     <th>اسم العميل</th>
