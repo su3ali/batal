@@ -12,6 +12,7 @@ use App\Models\Group;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\UserAddresses;
 use App\Models\Visit;
 use App\Models\VisitsStatus;
 use Carbon\Carbon;
@@ -81,13 +82,13 @@ class BookingController extends Controller
                     if (!in_array($row->id, Visit::query()->pluck('booking_id')->toArray())) {
                         $html = '
 
-                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-address_id = "'.$row->user_address_id.'" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
                                   data-toggle="modal" data-target="#addGroupModel">
                             اضافة فريق
                        </button>';
                     } else {
                         $html = '
-                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-visit_id="'.$row->visit?->id.'" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-address_id = "'.$row->user_address_id.'" data-visit_id="'.$row->visit?->id.'" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
                                   data-toggle="modal" data-target="#changeGroupModel">
                             تغيير الفريق
                        </button>';
@@ -220,10 +221,17 @@ class BookingController extends Controller
 
             $groupIds = CategoryGroup::where('category_id', $service->category_id)->pluck('group_id')->toArray();
 
-            $group = Group::whereIn('id', $groupIds)->get()->pluck('name', 'id')->toArray();
+            $region_id = UserAddresses::where('id',$request->address_id)->first();
+
+            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($region_id) {
+                $qu->where('region_id',$region_id);
+            })->get()->pluck('name', 'id')->toArray();
         } else {
             $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
-            $group = Group::whereIn('id', $groupIds)->get()->pluck('name', 'id')->toArray();
+            $region_id = UserAddresses::where('id',$request->address_id)->first();
+            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($region_id) {
+                $qu->where('region_id',$region_id);
+            })->get()->pluck('name', 'id')->toArray();
         }
 
         return response($group);
