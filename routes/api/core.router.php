@@ -9,6 +9,7 @@ Route::prefix('home')->group(function (){
     Route::get('/search', [HomeController::class, 'search']);
     Route::get('/city', [HomeController::class, 'getCity']);
     Route::get('/region/{id}', [HomeController::class, 'getRegions']);
+    Route::get('/regions', [HomeController::class, 'getAllRegions']);
 });
 
 Route::prefix('services')->group(function (){

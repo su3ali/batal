@@ -15,6 +15,7 @@ use App\Models\OrderService;
 use App\Models\Service;
 use App\Models\Technician;
 use App\Models\Transaction;
+use App\Models\UserAddresses;
 use App\Models\Visit;
 use App\Notifications\SendPushNotification;
 use App\Support\Api\ApiResponse;
@@ -152,8 +153,10 @@ class CheckoutController extends Controller
                 'time' => Carbon::parse($cart->time)->toTimeString(),
                 'end_time' => $minutes? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
             ]);
-
-            $booking_id = Booking::where('date',$cart->date)->pluck('id')->toArray();
+            $address = UserAddresses::where('id',$order->user_address_id)->first();
+            $booking_id = Booking::whereHas('address',function ($qu) use($address){
+                $qu->where('region_id',$address->region_id);
+            })->where('date',$cart->date)->pluck('id')->toArray();
             $visit = DB::table('visits')
                 ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
                 ->whereIn('booking_id', $booking_id)
@@ -161,8 +164,12 @@ class CheckoutController extends Controller
                 ->orderBy('group_id', 'ASC')
                 ->first();
 
+
+
             if ($visit == null){
-                $group = Group::first();
+                $group = Group::whereHas('regions',function($qu) use($address) {
+                    $qu->where('region_id',$address->region_id);
+                })->get()->pluck('name', 'id')->toArray();
                 $assign_to_id = $group->id;
             }else{
                 $assign_to_id = $visit->assign_to_id;

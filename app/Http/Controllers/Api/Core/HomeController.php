@@ -205,6 +205,13 @@ class HomeController extends Controller
         return self::apiResponse(200, t_('successfully'), $this->body);
     }
 
+    protected function getAllRegions()
+    {
+        $regions = Region::where('active',1)->get();
+        $this->body['regions'] = RegionResource::collection($regions);
+        return self::apiResponse(200, t_('successfully'), $this->body);
+    }
+
     protected function contract_contact(Request $request): JsonResponse
     {
         $request->validate([

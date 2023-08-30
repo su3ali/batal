@@ -261,6 +261,8 @@ class CartController extends Controller
         ];
         $request->validate($rules, $request->all());
         $times = [];
+        $bookingTimes = [];
+        $bookingDates = [];
         foreach ($request->service_ids as $service_id) {
             $bookSetting = BookingSetting::where('service_id', $service_id)->first();
             if (!$bookSetting){
@@ -273,7 +275,7 @@ class CartController extends Controller
                 $serviceDays[] = $this->days[$i];
             }
             $dates = [];
-            for ($i = 0; $i < 14; $i++) {
+            for ($i = 0; $i < 30; $i++) {
                 $date = date('Y-m-d', strtotime('+' . $i . ' day'));
                 if (in_array(date('l', strtotime($date)), $serviceDays)) {
                     $dates[] = $date;
@@ -286,22 +288,45 @@ class CartController extends Controller
                     if ($get_time == true) {
                         $times[$service_id][$day] = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
                             ->toPeriod(
-                                \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
-                                Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
+                                \Carbon\Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_start_time ?? Carbon::now('Asia/Riyadh')->startOfDay()),
+                                Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_end_time ?? Carbon::now('Asia/Riyadh')->endOfDay())
                             );
                     }
                 }
             }
+
+            $bookings = Booking::whereHas('order',function($qu) use($service_id) {
+                $qu->whereHas('services',function($q) use($service_id){
+                    $q->where('service_id',$service_id);
+                });
+            })->where('booking_status_id',1)->get();
+
+
+            foreach ($bookings as $booking){
+                array_push($bookingTimes,$booking->time);
+                array_push($bookingDates,$booking->date);
+
+            }
         }
+
         $collectionOfTimesOfServices = [];
         foreach ($times as $service_id => $timesInDays) {
             $collectionOfTimes = [];
             foreach ($timesInDays as $day => $time) {
                 $times = $time->toArray();
+
                 $subTimes['day'] = $day;
                 $subTimes['dayName'] = Carbon::parse($day)->locale(app()->getLocale())->dayName;
-                $subTimes['times'] = collect($times)->map(function ($time) {
-                    return $time->format('g:i A');
+                $subTimes['times'] = collect($times)->map(function ($time) use($subTimes,$bookingTimes,$bookingDates,$day) {
+                    //realtime
+                    $realTime = $time->format('H:i:s');
+                    $converTimestamp = Carbon::parse($realTime)->timestamp;
+
+                    if (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes)){
+                        //..........
+                    }else{
+                        return $time->format('g:i A');
+                    }
                 });
                 $collectionOfTimes[] = $subTimes;
             }

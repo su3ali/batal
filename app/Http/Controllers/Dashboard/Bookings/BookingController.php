@@ -221,16 +221,17 @@ class BookingController extends Controller
 
             $groupIds = CategoryGroup::where('category_id', $service->category_id)->pluck('group_id')->toArray();
 
-            $region_id = UserAddresses::where('id',$request->address_id)->first();
+            $address = UserAddresses::where('id',$request->address_id)->first();
 
-            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($region_id) {
-                $qu->where('region_id',$region_id);
+            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
+                $qu->where('region_id',$address->region_id);
             })->get()->pluck('name', 'id')->toArray();
+
         } else {
             $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
-            $region_id = UserAddresses::where('id',$request->address_id)->first();
-            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($region_id) {
-                $qu->where('region_id',$region_id);
+            $address = UserAddresses::where('id',$request->address_id)->first();
+            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
+                $qu->where('region_id',$address->region_id);
             })->get()->pluck('name', 'id')->toArray();
         }
 
