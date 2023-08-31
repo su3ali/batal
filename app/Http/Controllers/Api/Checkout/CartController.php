@@ -318,15 +318,20 @@ class CartController extends Controller
                 $subTimes['day'] = $day;
                 $subTimes['dayName'] = Carbon::parse($day)->locale(app()->getLocale())->dayName;
                 $subTimes['times'] = collect($times)->map(function ($time) use($subTimes,$bookingTimes,$bookingDates,$day) {
+
+                    $now = Carbon::now('Asia/Riyadh')->format('H:i:s');
+                    $convertNowTimestamp = Carbon::parse($now)->timestamp;
+
                     //realtime
                     $realTime = $time->format('H:i:s');
                     $converTimestamp = Carbon::parse($realTime)->timestamp;
 
-                    if (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes)){
+                    if ($converTimestamp < $convertNowTimestamp || (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes))){
                         //..........
                     }else{
                         return $time->format('g:i A');
                     }
+
                 });
                 $collectionOfTimes[] = $subTimes;
             }
