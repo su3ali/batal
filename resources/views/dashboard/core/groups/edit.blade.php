@@ -83,7 +83,7 @@
                             <div class="form-group col-md-4">
 
                                 <label for="country_id">{{__('dash.country')}}</label>
-                                <select id="country_id"  class="select2 country_id form-control pt-1"
+                                <select id="country_id"  class=" country_id form-control pt-1"
                                         name="country_id">
                                     <option disabled >{{__('dash.choose')}}</option>
                                     @foreach($countries as $key => $country)
@@ -99,7 +99,7 @@
                             <div class="form-group col-md-4">
 
                                 <label for="city_id">{{__('dash.city')}}</label>
-                                <select id="city_id" class="select2 city_id form-control pt-1"
+                                <select id="city_id" class=" city_id form-control pt-1"
                                         name="city_id">
                                     <option disabled>{{__('dash.choose')}}</option>
                                     @foreach($cities as $key => $city)
