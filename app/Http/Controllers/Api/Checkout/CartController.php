@@ -275,7 +275,7 @@ class CartController extends Controller
                 $serviceDays[] = $this->days[$i];
             }
             $dates = [];
-            for ($i = 0; $i < 30; $i++) {
+            for ($i = 0; $i < 90; $i++) {
                 $date = date('Y-m-d', strtotime('+' . $i . ' day'));
                 if (in_array(date('l', strtotime($date)), $serviceDays)) {
                     $dates[] = $date;
@@ -321,12 +321,13 @@ class CartController extends Controller
 
                     $now = Carbon::now('Asia/Riyadh')->format('H:i:s');
                     $convertNowTimestamp = Carbon::parse($now)->timestamp;
+                    $dayNow = Carbon::now('Asia/Riyadh')->format('Y-m-d');
 
                     //realtime
                     $realTime = $time->format('H:i:s');
                     $converTimestamp = Carbon::parse($realTime)->timestamp;
 
-                    if ($converTimestamp < $convertNowTimestamp || (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes))){
+                    if (($day == $dayNow && $converTimestamp < $convertNowTimestamp) || (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes))){
                         //..........
                     }else{
                         return $time->format('g:i A');
