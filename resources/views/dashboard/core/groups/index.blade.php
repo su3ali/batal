@@ -171,8 +171,8 @@
             $('#edit_name_ar').val(name_ar)
             $('#edit_technician_id').val(technician_id).trigger('change')
             $('#technician_group_id').val(technician_group_id).trigger('change')
-            $("#country_id option[value='" + country_id + "']").prop("selected","selected");
-            $("#city_id option[value='" + city_id + "']").prop("selected","selected");
+            $("#country_id option[value='" + country_id + "']").attr("selected","selected");
+            $("#city_id option[value='" + city_id + "']").attr("selected","selected");
             $('#region_id').val(region_id).trigger('change')
             let action = "{{route('dashboard.core.group.update', 'id')}}";
             action = action.replace('id', id)
