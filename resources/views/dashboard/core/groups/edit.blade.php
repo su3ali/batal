@@ -26,8 +26,8 @@
                                        id="edit_name_ar"
                                        placeholder="الاسم باللغة العربية"
                                 >
-                                @error('title_ar')
-                                <div class="alert alert-danger">{{ $message }}</div>
+                                @error('name_ar')
+                                <div class=name_ar>{{ $message }}</div>
                                 @enderror
                             </div>
 
@@ -37,7 +37,7 @@
                                        id="edit_name_en"
                                        placeholder="الاسم باللغة الانجليزية"
                                 >
-                                @error('title_en')
+                                @error('name_en')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>

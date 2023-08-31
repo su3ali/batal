@@ -69,7 +69,8 @@ class GroupsController extends Controller
      */
     protected function store(Request $request): RedirectResponse
     {
-        $rules = [
+
+        $request->validate([
             'name_en' => 'required|String|min:3|unique:groups,name_en',
             'name_ar' => 'required|String|min:3|unique:groups,name_ar',
             'technician_id' => 'nullable|exists:technicians,id',
@@ -79,12 +80,8 @@ class GroupsController extends Controller
             'city_id' => 'required|exists:cities,id',
             'region_id' => 'required|array|exists:regions,id',
             'region_id.*' => 'required',
-        ];
-        $validated = Validator::make($request->all(), $rules);
-        if ($validated->fails()) {
-            return redirect()->back()->withErrors($validated->errors());
-        }
-        $validated = $validated->validated();
+        ]);
+
         $data = $request->except('_token', 'technician_group_id','region_id');
         $group = Group::query()->create($data);
         foreach ($request->technician_group_id as $tehcn){
@@ -106,8 +103,11 @@ class GroupsController extends Controller
         return redirect()->back();
     }
     protected function update(Request $request, $id){
+//        dd($request->all());
         $group = Group::query()->where('id', $id)->first();
-        $rules = [
+
+
+        $request->validate([
             'name_en' => 'required|String|min:3|unique:groups,name_en,'.$id,
             'name_ar' => 'required|String|min:3|unique:groups,name_ar,'.$id,
             'technician_id' => 'nullable|exists:technicians,id',
@@ -117,12 +117,9 @@ class GroupsController extends Controller
             'city_id' => 'required|exists:cities,id',
             'region_id' => 'required|array|exists:regions,id',
             'region_id.*' => 'required',
-        ];
-        $validated = Validator::make($request->all(), $rules);
-        if ($validated->fails()) {
-            return redirect()->back()->with('errors', $validated->errors());
-        }
-        $validated = $validated->validated();
+        ]);
+
+
         $data = $request->except('_token', 'technician_group_id','region_id');
 
         $group->update($data);

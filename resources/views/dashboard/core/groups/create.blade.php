@@ -25,7 +25,7 @@
                                        id="inputEmail4"
                                        placeholder="الاسم باللغة العربية"
                                 >
-                                @error('title_ar')
+                                @error('name_ar')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -36,7 +36,7 @@
                                        id="inputEmail4"
                                        placeholder="الاسم باللغة الانجليزية"
                                 >
-                                @error('title_en')
+                                @error('name_en')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
