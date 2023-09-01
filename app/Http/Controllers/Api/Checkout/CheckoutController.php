@@ -157,6 +157,7 @@ class CheckoutController extends Controller
             $booking_id = Booking::whereHas('address',function ($qu) use($address){
                 $qu->where('region_id',$address->region_id);
             })->where('date',$cart->date)->pluck('id')->toArray();
+
             $visit = DB::table('visits')
                 ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
                 ->whereIn('booking_id', $booking_id)
@@ -169,7 +170,7 @@ class CheckoutController extends Controller
             if ($visit == null){
                 $group = Group::whereHas('regions',function($qu) use($address) {
                     $qu->where('region_id',$address->region_id);
-                })->get()->pluck('name', 'id')->toArray();
+                })->first();
                 $assign_to_id = $group->id;
             }else{
                 $assign_to_id = $visit->assign_to_id;
