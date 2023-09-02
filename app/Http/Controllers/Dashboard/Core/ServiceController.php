@@ -143,17 +143,21 @@ class ServiceController extends Controller
 
 //        $service->icons()->sync($request->icon_ids);
 
+        $bookingByservice = BookingSetting::query()->where('service_id',$service->id)->first();
+        if ($bookingByservice == null){
+            BookingSetting::create([
+                'service_id' => $service->id,
+                'service_start_date' => 'Saturday',
+                'service_end_date' => 'Thursday',
+                'available_service' => 4,
+                'service_start_time' => '12:34:00',
+                'service_end_time' => '18:34:00',
+                'service_duration' => 30,
+                'buffering_time' => 10,
+            ]);
+        }
 
-        BookingSetting::create([
-            'service_id' => $service->id,
-            'service_start_date' => 'Saturday',
-            'service_end_date' => 'Thursday',
-            'available_service' => 4,
-            'service_start_time' => '12:34:00',
-            'service_end_time' => '18:34:00',
-            'service_duration' => 30,
-            'buffering_time' => 10,
-        ]);
+
 //        foreach ($request->group_ids as $group_id) {
 //            ServiceGroup::query()->create([
 //                'service_id' => $service->id,
