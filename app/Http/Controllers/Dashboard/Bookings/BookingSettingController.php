@@ -177,7 +177,7 @@ class BookingSettingController extends Controller
         ]);
 
 
-        $data=$request->except('_token');
+        $data=$request->except('_token','_method');
 
 
         BookingSetting::query()->where('id',$id)->update($data);
