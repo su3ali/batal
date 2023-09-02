@@ -162,7 +162,7 @@ class BookingSettingController extends Controller
 
     }
 
-    protected function update(Request $request){
+    protected function update(Request $request,$id){
         $request->validate([
             'service_id' => 'required|exists:services,id',
             'city_id' => 'required|exists:cities,id',
@@ -180,7 +180,7 @@ class BookingSettingController extends Controller
         $data=$request->except('_token');
 
 
-        BookingSetting::query()->first()->update($data);
+        BookingSetting::query()->where('id',$id)->update($data);
         session()->flash('success');
         return redirect()->route('dashboard.booking_setting.index');
     }
