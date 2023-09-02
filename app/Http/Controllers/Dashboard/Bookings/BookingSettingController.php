@@ -132,7 +132,7 @@ class BookingSettingController extends Controller
 
     protected function store(Request $request){
         $request->validate([
-            'service_id' => 'required|exists:services,id',
+            'service_id' => 'required|exists:services,id|unique:booking_settings,service_id',
             'city_id' => 'required|exists:cities,id',
             'region_id' => 'required|exists:regions,id',
             'service_start_date' => 'required|String',
