@@ -14,7 +14,7 @@ class AddDurationColumnToServicesTable extends Migration
     public function up()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->integer('duration')->default(0);
+            $table->integer('duration')->nullable()->default(0);
         });
     }
 

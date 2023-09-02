@@ -98,16 +98,16 @@
                                     </div>
 
 
-                                    <div class="form-group col-md-3">
-                                        <label for="inputEmail4">المدة</label>
-                                        <input type="text" name="duration" class="form-control"
-                                               id="inputEmail4" value="{{$service->duration}}"
-                                               placeholder="المدة"
-                                        >
-                                        @error('duration')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+{{--                                    <div class="form-group col-md-3">--}}
+{{--                                        <label for="inputEmail4">المدة</label>--}}
+{{--                                        <input type="text" name="duration" class="form-control"--}}
+{{--                                               id="inputEmail4" value="{{$service->duration}}"--}}
+{{--                                               placeholder="المدة"--}}
+{{--                                        >--}}
+{{--                                        @error('duration')--}}
+{{--                                        <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                        @enderror--}}
+{{--                                    </div>--}}
 
                                 </div>
 
@@ -223,23 +223,23 @@
                                 </div>
 
                                 <div class="form-row mb-2">
-                                    <div class="form-group col-md-6">
+{{--                                    <div class="form-group col-md-6">--}}
 
-                                        <label for="icon_ids">الايقونات</label>
-                                        <select id="icon_ids" multiple class="select2 form-control pt-1"
-                                                name="icon_ids[]" required>
-                                            <option disabled>{{__('dash.choose')}}</option>
-                                            @foreach($icons as $icon)
-                                                <option value="{{$icon->id}}"  @if(in_array($icon->id,$service->icons()->pluck('icon_id')->toArray())) selected @endif>{{$icon->title}}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('icon_ids')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
+{{--                                        <label for="icon_ids">الايقونات</label>--}}
+{{--                                        <select id="icon_ids" multiple class="select2 form-control pt-1"--}}
+{{--                                                name="icon_ids[]" required>--}}
+{{--                                            <option disabled>{{__('dash.choose')}}</option>--}}
+{{--                                            @foreach($icons as $icon)--}}
+{{--                                                <option value="{{$icon->id}}"  @if(in_array($icon->id,$service->icons()->pluck('icon_id')->toArray())) selected @endif>{{$icon->title}}</option>--}}
+{{--                                            @endforeach--}}
+{{--                                        </select>--}}
+{{--                                        @error('icon_ids')--}}
+{{--                                        <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                        @enderror--}}
 
-                                    </div>
+{{--                                    </div>--}}
 
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-12">
 
                                         <label for="measurement_id">وحدات القياس</label>
                                         <select id="measurement_id"  class="select2 form-control pt-1"

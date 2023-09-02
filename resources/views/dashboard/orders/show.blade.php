@@ -68,7 +68,7 @@
                                 <tr>
                                     @php
                                         $date = Illuminate\Support\Carbon::parse($order->created_at);
-                                    @endphp
+//                                    @endphp
                                     <th>تاريخ الطلب</th>
                                     <td>{{ $date->format("Y-m-d H:i:s")}}</td>
                                 </tr>
@@ -150,7 +150,14 @@
 
                                 <tr>
                                     <th>صوره المرفقه</th>
-                                    <td><img class="img-fluid" style="width: 40px;" src="{{asset($order->image)}}"></td>
+                                    <td>
+                                        <div class="container__img-holder">
+{{--                                            <img src="https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260" alt="Image">--}}
+                                                                                    <img class="img-fluid"  src="{{asset($order->image)}}">
+
+                                        </div>
+{{--                                        <img class="img-fluid" style="width: 40px;" src="{{asset($order->image)}}">--}}
+                                    </td>
                                 </tr>
 
                                 <tr>
@@ -197,4 +204,43 @@
         </div>
 
     </div>
+
+    <div class="img-popup">
+        <img src="" alt="Popup Image">
+        <div class="close-btn">
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </div>
 @endsection
+
+
+@push('script')
+    <script>
+        $(document).ready(function() {
+
+            // required elements
+            var imgPopup = $('.img-popup');
+            var imgCont  = $('.container__img-holder');
+            var popupImage = $('.img-popup img');
+            var closeBtn = $('.close-btn');
+
+            // handle events
+            imgCont.on('click', function() {
+                var img_src = $(this).children('img').attr('src');
+                imgPopup.children('img').attr('src', img_src);
+                imgPopup.addClass('opened');
+            });
+
+            $(imgPopup, closeBtn).on('click', function() {
+                imgPopup.removeClass('opened');
+                imgPopup.children('img').attr('src', '');
+            });
+
+            popupImage.on('click', function(e) {
+                e.stopPropagation();
+            });
+
+        });
+    </script>
+@endpush

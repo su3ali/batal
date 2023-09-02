@@ -117,11 +117,43 @@
 
                                 <div class="form-row mb-3">
 
+{{--                                    <div class="form-group col-md-4">--}}
+
+{{--                                        <label for="birth">عدد الحجوزات المتوفره</label>--}}
+{{--                                        <input required name="available_service" type="number" class="form-control">--}}
+{{--                                        @error('available_service')--}}
+{{--                                        <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                        @enderror--}}
+
+{{--                                    </div>--}}
+
                                     <div class="form-group col-md-4">
 
-                                        <label for="birth">عدد الحجوزات المتوفره</label>
-                                        <input required name="available_service" type="number" class="form-control">
-                                        @error('available_service')
+                                        <label for="inputEmail4">{{__('dash.city')}}</label>
+                                        <select id="inputState" class="select2 city_id form-control pt-1"
+                                                name="city_id">
+                                            <option selected disabled>{{__('dash.choose')}}</option>
+                                            @foreach($cities as $key => $city)
+                                                <option value="{{$key}}" >{{$city}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('city_id')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+
+                                        <label for="region_id">المناطق</label>
+                                        <select required class="region_id select2 form-control pt-1"
+                                                name="region_id">
+                                            <option disabled>{{__('dash.choose')}}</option>
+{{--                                            @foreach($regions as $region)--}}
+{{--                                                <option value="{{$region->id}}" >{{$region->title}}</option>--}}
+{{--                                            @endforeach--}}
+                                        </select>
+                                        @error('region_id')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
@@ -138,6 +170,12 @@
 
                                     </div>
 
+
+
+
+                                </div>
+
+                                <div class="form-row mb-3">
                                     <div class="form-group col-md-4">
 
                                         <label for="birth">وقت انتهاء الخدمة</label>
@@ -148,11 +186,6 @@
                                         @enderror
 
                                     </div>
-
-
-                                </div>
-
-                                <div class="form-row mb-3">
 
                                     <div class="form-group col-md-4">
 
@@ -171,6 +204,7 @@
                                         <select required class="select2 form-control pt-1"
                                                 name="buffering_time">
                                             <option selected disabled>{{__('dash.choose')}}</option>
+                                            <option value="0">0 minutes</option>
                                             <option value="10">10 minutes</option>
                                             <option value="20">20 minutes</option>
                                             <option value="30">30 minutes</option>
@@ -210,3 +244,37 @@
     </div>
 @endsection
 
+@push('script')
+    <script>
+
+        $('.select2').select2({
+            tags: true,
+            dir: '{{app()->getLocale() == "ar"? "rtl" : "ltr"}}'
+        })
+
+        $(document).ready(function (){
+            $('.city_id').on('change',function (){
+                var city_id=$(this).val();
+                $.ajax({
+                    url: '{{route('dashboard.core.address.getRegion')}}',
+                    data:{city_id:city_id},
+                    success: function(response) {
+                        $('.region_id').empty()
+                        $('.region_id').append('<option disabled selected>{{__('dash.choose')}}</option>')
+                        $.each(response, function (i, item) {
+
+                            $('.region_id').append($('<option>', {
+                                value: i,
+                                text : item
+                            }));
+                        });
+
+                    }
+                });
+
+            });
+
+        });
+
+    </script>
+@endpush

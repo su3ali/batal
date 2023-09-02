@@ -258,13 +258,14 @@ class CartController extends Controller
         $rules = [
             'service_ids' => 'required|array',
             'service_ids.*' => 'required|exists:services,id',
+            'region_id' =>'required|exists:regions,id',
         ];
         $request->validate($rules, $request->all());
         $times = [];
         $bookingTimes = [];
         $bookingDates = [];
         foreach ($request->service_ids as $service_id) {
-            $bookSetting = BookingSetting::where('service_id', $service_id)->first();
+            $bookSetting = BookingSetting::where('service_id', $service_id)->where('region_id',$request->region_id)->first();
             if (!$bookSetting){
                 return self::apiResponse(400, 'عفوا الخدمة غير متاحة حاليا', []);
             }

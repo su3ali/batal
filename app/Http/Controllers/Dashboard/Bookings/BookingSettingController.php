@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Dashboard\Bookings;
 
 use App\Http\Controllers\Controller;
 use App\Models\BookingSetting;
+use App\Models\City;
 use App\Models\CustomerWallet;
+use App\Models\Region;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use function Symfony\Component\String\title;
@@ -75,9 +77,9 @@ class BookingSettingController extends Controller
 
                     return $day??'';
                 })
-                ->addColumn('available_service', function ($row) {
-                    return $row->available_service;
-                })
+//                ->addColumn('available_service', function ($row) {
+//                    return $row->available_service;
+//                })
                 ->addColumn('service_start_time', function ($row) {
                     return $row->service_start_time;
                 })
@@ -106,7 +108,7 @@ class BookingSettingController extends Controller
                     'service_name',
                     'service_start_date',
                     'service_end_date',
-                    'available_service',
+//                    'available_service',
                     'service_start_time',
                     'service_end_time',
                     'service_duration',
@@ -122,16 +124,20 @@ class BookingSettingController extends Controller
     {
 
         $services = Service::where('active',1)->get();
+        $cities = City::where('active',1)->get()->pluck('title','id');
+//        $regions = Region::where('active',1)->get();
 
-        return view('dashboard.booking_settings.create', compact('services'));
+        return view('dashboard.booking_settings.create', compact('services','cities'));
     }
 
     protected function store(Request $request){
         $request->validate([
             'service_id' => 'required|exists:services,id',
+            'city_id' => 'required|exists:cities,id',
+            'region_id' => 'required|exists:regions,id',
             'service_start_date' => 'required|String',
             'service_end_date' => 'required|String',
-            'available_service' => 'required|numeric',
+//            'available_service' => 'required|numeric',
             'service_start_time' => 'required',
             'service_end_time' => 'required',
             'service_duration' => 'required|String',
@@ -149,17 +155,21 @@ class BookingSettingController extends Controller
     protected function edit($id){
         $bookingSetting = BookingSetting::query()->where('id', $id)->first();
         $services = Service::where('active',1)->get();
+        $cities = City::where('active',1)->get()->pluck('title','id');
+        $regions = Region::where('active',1)->get();
 
-        return view('dashboard.booking_settings.edit', compact('bookingSetting','services'));
+        return view('dashboard.booking_settings.edit', compact('bookingSetting','services','regions','cities'));
 
     }
 
     protected function update(Request $request){
         $request->validate([
             'service_id' => 'required|exists:services,id',
+            'city_id' => 'required|exists:cities,id',
+            'region_id' => 'required|exists:regions,id',
             'service_start_date' => 'required|String',
             'service_end_date' => 'required|String',
-            'available_service' => 'required|numeric',
+//            'available_service' => 'required|numeric',
             'service_start_time' => 'required',
             'service_end_time' => 'required',
             'service_duration' => 'required|String',

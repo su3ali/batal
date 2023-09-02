@@ -118,15 +118,49 @@
 
                                 <div class="form-row mb-3">
 
+{{--                                    <div class="form-group col-md-4">--}}
+
+{{--                                        <label for="birth">عدد الحجوزات المتوفره</label>--}}
+{{--                                        <input required name="available_service" type="number" value="{{$bookingSetting->available_service}}" class="form-control">--}}
+{{--                                        @error('available_service')--}}
+{{--                                        <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                        @enderror--}}
+
+{{--                                    </div>--}}
+
+
                                     <div class="form-group col-md-4">
 
-                                        <label for="birth">عدد الحجوزات المتوفره</label>
-                                        <input required name="available_service" type="number" value="{{$bookingSetting->available_service}}" class="form-control">
-                                        @error('available_service')
+                                        <label for="inputEmail4">{{__('dash.city')}}</label>
+                                        <select id="inputState" class="select2 city_id form-control pt-1"
+                                                name="city_id">
+                                            <option disabled>{{__('dash.choose')}}</option>
+                                            @foreach($cities as $key => $city)
+                                                <option value="{{$key}}" @if($key == $bookingSetting->city_id) selected @endif>{{$city}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('city_id')
                                         <div class="alert alert-danger">{{ $message }}</div>
                                         @enderror
 
                                     </div>
+
+                                    <div class="form-group col-md-4">
+
+                                        <label for="region_id">المناطق</label>
+                                        <select required class="region_id select2 form-control pt-1"
+                                                name="region_id">
+                                            <option @if($bookingSetting->region_id == null) selected @endif disabled>{{__('dash.choose')}}</option>
+                                            @foreach($regions as $region)
+                                                <option value="{{$region->id}}" @if($bookingSetting->region_id == $region->id) selected @endif>{{$region->title}}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('region_id')
+                                        <div class="alert alert-danger">{{ $message }}</div>
+                                        @enderror
+
+                                    </div>
+
 
                                     <div class="form-group col-md-4">
 
@@ -139,6 +173,13 @@
 
                                     </div>
 
+
+
+
+                                </div>
+
+                                <div class="form-row mb-3">
+
                                     <div class="form-group col-md-4">
 
                                         <label for="birth">وقت انتهاء الخدمة</label>
@@ -149,11 +190,6 @@
                                         @enderror
 
                                     </div>
-
-
-                                </div>
-
-                                <div class="form-row mb-3">
 
                                     <div class="form-group col-md-4">
 
@@ -172,6 +208,7 @@
                                         <select required class="select2 form-control pt-1"
                                                 name="buffering_time">
                                             <option @if($bookingSetting->buffering_time == null) selected @endif disabled>{{__('dash.choose')}}</option>
+                                            <option value="10" @if($bookingSetting->buffering_time == 0) selected @endif>0 minutes</option>
                                             <option value="10" @if($bookingSetting->buffering_time == 10) selected @endif>10 minutes</option>
                                             <option value="20" @if($bookingSetting->buffering_time == 20) selected @endif>20 minutes</option>
                                             <option value="30" @if($bookingSetting->buffering_time == 30) selected @endif>30 minutes</option>
@@ -212,3 +249,37 @@
     </div>
 @endsection
 
+@push('script')
+    <script>
+
+        $('.select2').select2({
+            tags: true,
+            dir: '{{app()->getLocale() == "ar"? "rtl" : "ltr"}}'
+        })
+
+        $(document).ready(function (){
+            $('.city_id').on('change',function (){
+                var city_id=$(this).val();
+                $.ajax({
+                    url: '{{route('dashboard.core.address.getRegion')}}',
+                    data:{city_id:city_id},
+                    success: function(response) {
+                        $('.region_id').empty()
+                        $('.region_id').append('<option disabled selected>{{__('dash.choose')}}</option>')
+                        $.each(response, function (i, item) {
+
+                            $('.region_id').append($('<option>', {
+                                value: i,
+                                text : item
+                            }));
+                        });
+
+                    }
+                });
+
+            });
+
+        });
+
+    </script>
+@endpush

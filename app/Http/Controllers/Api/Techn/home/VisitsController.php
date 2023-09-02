@@ -43,7 +43,7 @@ class VisitsController extends Controller
             },'customer','address']);
 
         })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id', auth('sanctum')->user()->group_id)
-            ->get();
+            ->orderBy('created_at','desc')->get();
 
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
@@ -60,7 +60,8 @@ class VisitsController extends Controller
                 $q->with('category');
             },'customer','address']);
 
-        })->with('status')->whereIn('visits_status_id', [5, 6])->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
+        })->with('status')->whereIn('visits_status_id', [5, 6])
+            ->where('assign_to_id', auth('sanctum')->user()->group_id)->orderBy('created_at','desc')->get();
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }

@@ -55,7 +55,7 @@
                             @csrf
                             <div class="box-body">
                                 <div class="form-row mb-3">
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label for="inputEmail4">{{__('dash.title_ar')}}</label>
                                         <input type="text" name="title_ar" class="form-control"
                                                id="inputEmail4"
@@ -66,7 +66,7 @@
                                         @enderror
                                     </div>
 
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <label for="inputEmail4">{{__('dash.title_en')}}</label>
                                         <input type="text" name="title_en" class="form-control"
                                                id="inputEmail4"
@@ -94,16 +94,16 @@
 
                                     </div>
 
-                                    <div class="form-group col-md-3">
-                                        <label for="inputEmail4">المدة</label>
-                                        <input type="text" name="duration" class="form-control"
-                                               id="inputEmail4"
-                                               placeholder="المدة"
-                                        >
-                                        @error('duration')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+{{--                                    <div class="form-group col-md-3">--}}
+{{--                                        <label for="inputEmail4">المدة</label>--}}
+{{--                                        <input type="text" name="duration" class="form-control"--}}
+{{--                                               id="inputEmail4"--}}
+{{--                                               placeholder="المدة"--}}
+{{--                                        >--}}
+{{--                                        @error('duration')--}}
+{{--                                        <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                        @enderror--}}
+{{--                                    </div>--}}
 
                                 </div>
 
@@ -200,23 +200,23 @@
 
 {{--                                    </div>--}}
 
-                                        <div class="form-group col-md-6">
+{{--                                        <div class="form-group col-md-6">--}}
 
-                                            <label for="icon_ids">الايقونات</label>
-                                            <select id="icon_ids" multiple class="select2 form-control pt-1"
-                                                    name="icon_ids[]" required>
-                                                <option disabled>{{__('dash.choose')}}</option>
-                                                @foreach($icons as $icon)
-                                                    <option value="{{$icon->id}}">{{$icon->title}}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('icon_ids')
-                                            <div class="alert alert-danger">{{ $message }}</div>
-                                            @enderror
+{{--                                            <label for="icon_ids">الايقونات</label>--}}
+{{--                                            <select id="icon_ids" multiple class="select2 form-control pt-1"--}}
+{{--                                                    name="icon_ids[]" required>--}}
+{{--                                                <option disabled>{{__('dash.choose')}}</option>--}}
+{{--                                                @foreach($icons as $icon)--}}
+{{--                                                    <option value="{{$icon->id}}">{{$icon->title}}</option>--}}
+{{--                                                @endforeach--}}
+{{--                                            </select>--}}
+{{--                                            @error('icon_ids')--}}
+{{--                                            <div class="alert alert-danger">{{ $message }}</div>--}}
+{{--                                            @enderror--}}
 
-                                        </div>
+{{--                                        </div>--}}
 
-                                    <div class="form-group col-md-6">
+                                    <div class="form-group col-md-12">
 
                                         <label for="measurement_id">وحدات القياس</label>
                                         <select id="measurement_id" name="measurement_id" class="select2 form-control pt-1"

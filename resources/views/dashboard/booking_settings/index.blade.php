@@ -63,7 +63,7 @@
                             <th>اسم الخدمه</th>
                             <th>تاريخ بداية الخدمه</th>
                             <th>تاريخ انتهاء الخدمه</th>
-                            <th>عدد الحجوزات المتوفره</th>
+{{--                            <th>عدد الحجوزات المتوفره</th>--}}
                             <th>وقت بدايه الخدمه</th>
                             <th>وقت انتهاء الخدمه</th>
                             <th>مده الخدمه</th>
@@ -111,7 +111,7 @@
                     {data: 'service_name', name: 'service_name'},
                     {data: 'service_start_date', name: 'service_start_date'},
                     {data: 'service_end_date', name: 'service_end_date'},
-                    {data: 'available_service', name: 'available_service'},
+                    // {data: 'available_service', name: 'available_service'},
                     {data: 'service_start_time', name: 'service_start_time'},
                     {data: 'service_end_time', name: 'service_end_time'},
                     {data: 'service_duration', name: 'service_duration'},

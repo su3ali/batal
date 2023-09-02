@@ -100,8 +100,8 @@ class ServiceController extends Controller
 //            'group_ids' => 'required|array',
 //            'group_ids.*' => 'required|exists:groups,id',
 
-            'icon_ids' => 'required|array',
-            'icon_ids.*' => 'required|exists:icons,id',
+//            'icon_ids' => 'required|array',
+//            'icon_ids.*' => 'required|exists:icons,id',
             'start_from' => 'nullable|Numeric',
             'is_quantity' => 'nullable|in:on,off',
             'best_seller' => 'nullable|in:on,off',
@@ -141,7 +141,7 @@ class ServiceController extends Controller
 
         $service = Service::query()->create($data);
 
-        $service->icons()->sync($request->icon_ids);
+//        $service->icons()->sync($request->icon_ids);
 
 
         BookingSetting::create([
@@ -196,8 +196,8 @@ class ServiceController extends Controller
             'start_from' => 'nullable|Numeric',
 //            'group_ids' => 'required|array',
 //            'group_ids.*' => 'required|exists:groups,id',
-            'icon_ids' => 'required|array',
-            'icon_ids.*' => 'required|exists:icons,id',
+//            'icon_ids' => 'required|array',
+//            'icon_ids.*' => 'required|exists:icons,id',
             'is_quantity' => 'nullable|in:on,off',
             'best_seller' => 'nullable|in:on,off',
 
@@ -244,9 +244,9 @@ class ServiceController extends Controller
 
         $service->update($data);
 
-        $service->icons()->sync($request->icon_ids);
+//        $service->icons()->sync($request->icon_ids);
 
-        ServiceGroup::query()->where('service_id', $service->id)->delete();
+//        ServiceGroup::query()->where('service_id', $service->id)->delete();
 //        foreach ($request->group_ids as $group_id) {
 //            ServiceGroup::query()->create([
 //                'service_id' => $service->id,
