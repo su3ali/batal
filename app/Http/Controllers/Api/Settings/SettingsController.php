@@ -26,7 +26,7 @@ class SettingsController extends Controller
     }
 
     protected function getFaqs(){
-        $this->body['faqs'] = FaqResource::collection(Faq::query()->get());
+        $this->body['faqs'] = FaqResource::collection(Faq::query()->where('active',1)->get());
         return self::apiResponse(200, '', $this->body);
     }
 
