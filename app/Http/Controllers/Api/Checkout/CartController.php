@@ -265,7 +265,9 @@ class CartController extends Controller
         $bookingTimes = [];
         $bookingDates = [];
         foreach ($request->service_ids as $service_id) {
-            $bookSetting = BookingSetting::where('service_id', $service_id)->where('region_id',$request->region_id)->first();
+            $bookSetting = BookingSetting::whereHas('regions',function ($q) use ($request){
+                $q->where('region_id',$request->region_id);
+            })->where('service_id', $service_id)->first();
             if (!$bookSetting){
                 return self::apiResponse(400, 'عفوا الخدمة غير متاحة حاليا', []);
             }

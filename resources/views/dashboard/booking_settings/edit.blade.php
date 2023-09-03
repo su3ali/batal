@@ -148,11 +148,11 @@
                                     <div class="form-group col-md-4">
 
                                         <label for="region_id">المناطق</label>
-                                        <select required class="region_id select2 form-control pt-1"
-                                                name="region_id">
-                                            <option @if($bookingSetting->region_id == null) selected @endif disabled>{{__('dash.choose')}}</option>
+                                        <select required multiple class="region_id select2 form-control pt-1"
+                                                name="region_id[]">
+                                            <option disabled>{{__('dash.choose')}}</option>
                                             @foreach($regions as $region)
-                                                <option value="{{$region->id}}" @if($bookingSetting->region_id == $region->id) selected @endif>{{$region->title}}</option>
+                                                <option value="{{$region->id}}" @if(in_array($region->id, $bookingSetting->regions->pluck('region_id')->toArray())) selected @endif>{{$region->title}}</option>
                                             @endforeach
                                         </select>
                                         @error('region_id')

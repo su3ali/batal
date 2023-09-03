@@ -146,8 +146,8 @@
                                     <div class="form-group col-md-4">
 
                                         <label for="region_id">المناطق</label>
-                                        <select required class="region_id select2 form-control pt-1"
-                                                name="region_id">
+                                        <select required multiple class="region_id select2 form-control pt-1"
+                                                name="region_id[]">
                                             <option disabled>{{__('dash.choose')}}</option>
 {{--                                            @foreach($regions as $region)--}}
 {{--                                                <option value="{{$region->id}}" >{{$region->title}}</option>--}}

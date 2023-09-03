@@ -15,4 +15,8 @@ class BookingSetting extends Model
     public function service(){
         return $this->hasOne(Service::class, 'id','service_id');
     }
+
+    public function regions(){
+        return $this->hasMany(BookingSettingRegion::class);
+    }
 }

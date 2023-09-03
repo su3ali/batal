@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard\Bookings;
 
 use App\Http\Controllers\Controller;
 use App\Models\BookingSetting;
+use App\Models\BookingSettingRegion;
 use App\Models\City;
 use App\Models\CustomerWallet;
 use App\Models\Region;
@@ -134,7 +135,6 @@ class BookingSettingController extends Controller
         $request->validate([
             'service_id' => 'required|exists:services,id|unique:booking_settings,service_id',
             'city_id' => 'required|exists:cities,id',
-            'region_id' => 'required|exists:regions,id',
             'service_start_date' => 'required|String',
             'service_end_date' => 'required|String',
 //            'available_service' => 'required|numeric',
@@ -142,12 +142,22 @@ class BookingSettingController extends Controller
             'service_end_time' => 'required',
             'service_duration' => 'required|String',
             'buffering_time' => 'required',
+            'region_id' => 'required|array|exists:regions,id',
+            'region_id.*' => 'required',
         ]);
 
-        $data=$request->except('_token');
+        $data=$request->except('_token','region_id');
 
 
-        BookingSetting::query()->create($data);
+        $setting = BookingSetting::query()->create($data);
+
+        foreach ($request->region_id as $region){
+            BookingSettingRegion::create([
+                'booking_setting_id' => $setting->id,
+                'region_id' => $region,
+            ]);
+        }
+
         session()->flash('success');
         return redirect()->route('dashboard.booking_setting.index');
     }
@@ -166,7 +176,6 @@ class BookingSettingController extends Controller
         $request->validate([
             'service_id' => 'required|exists:services,id',
             'city_id' => 'required|exists:cities,id',
-            'region_id' => 'required|exists:regions,id',
             'service_start_date' => 'required|String',
             'service_end_date' => 'required|String',
 //            'available_service' => 'required|numeric',
@@ -174,13 +183,23 @@ class BookingSettingController extends Controller
             'service_end_time' => 'required',
             'service_duration' => 'required|String',
             'buffering_time' => 'required',
+            'region_id' => 'required|array|exists:regions,id',
+            'region_id.*' => 'required',
         ]);
 
 
-        $data=$request->except('_token','_method');
+        $data=$request->except('_token','_method','region_id');
 
 
-        BookingSetting::query()->where('id',$id)->update($data);
+        $setting = BookingSetting::query()->where('id',$id)->update($data);
+        BookingSettingRegion::where('booking_setting_id',$id)->delete();
+
+        foreach ($request->region_id as $region){
+            BookingSettingRegion::create([
+                'booking_setting_id' => $id,
+                'region_id' => $region,
+            ]);
+        }
         session()->flash('success');
         return redirect()->route('dashboard.booking_setting.index');
     }
