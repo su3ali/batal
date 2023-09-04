@@ -35,6 +35,9 @@ class GeneralSettingRequest extends FormRequest
             'term_en'=>'nullable|string|min:3',
             'privacy_ar'=>'nullable|string|min:3',
             'privacy_en'=>'nullable|string|min:3',
+            'resting_start_time'=>'nullable',
+            'resting_end_time'=>'nullable',
+            'is_resting'=>'nullable|in:on,off',
             //            'reports_logo'=>'mimes:png|dimensions:max_width=100,max_height=100',
         ];
     }

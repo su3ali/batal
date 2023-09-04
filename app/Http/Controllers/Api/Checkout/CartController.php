@@ -13,6 +13,7 @@ use App\Models\CategoryGroup;
 use App\Models\ContractPackage;
 use App\Models\Group;
 use App\Models\Service;
+use App\Models\Setting;
 use App\Models\Visit;
 use App\Support\Api\ApiResponse;
 use App\Traits\imageTrait;
@@ -312,6 +313,7 @@ class CartController extends Controller
             }
         }
 
+
         $collectionOfTimesOfServices = [];
         foreach ($times as $service_id => $timesInDays) {
             $collectionOfTimes = [];
@@ -330,8 +332,16 @@ class CartController extends Controller
                     $realTime = $time->format('H:i:s');
                     $converTimestamp = Carbon::parse($realTime)->timestamp;
 
-                    if (($day == $dayNow && $converTimestamp < $convertNowTimestamp) || (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes))){
+                    //check time between two times
+                    $setting = Setting::query()->first();
+                    $startDate = $setting->resting_start_time;
+                    $endDate = $setting->resting_end_time;
+
+
+                    if ($day == $dayNow && $converTimestamp < $convertNowTimestamp || (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes))){
                         //..........
+                    }else if($setting->is_resting == 1 && $time->between($startDate, $endDate, true)){
+
                     }else{
                         return $time->format('g:i A');
                     }

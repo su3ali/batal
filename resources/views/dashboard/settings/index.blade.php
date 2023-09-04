@@ -64,7 +64,7 @@
                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
                                 <x-forms.input :type="'text'" :value="$settings->email" :name="'email'" :class="'form-control'" :label="__('dash.email')"/>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 layout-top-spacing">
+                            <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12 layout-top-spacing">
                                 <div class="col-md-12 custom-file-container form-group"
                                      data-upload-id="mySecondImage">
                                     <label>{{__('dash.upload')}}<a href="javascript:void(0)"
@@ -86,6 +86,40 @@
                                 </div>
                             </div>
 
+                            <div class="form-group col-md-3">
+
+                                <label for="birth">وقت بدء الراحه</label>
+                                <input required name="resting_start_time" value="{{$settings->resting_start_time}}" type="time" class="form-control "
+                                       data-date-format="h:i">
+                                @error('resting_start_time')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-3">
+
+                                <label for="birth">وقت انتهاء الراحه</label>
+                                <input required name="resting_end_time" value="{{$settings->resting_end_time}}" type="time" class="form-control "
+                                       data-date-format="h:i">
+                                @error('resting_end_time')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="is_quantity"></label>
+                                <label class="switch s-outline s-outline-info  mb-4 mx-4 mt-3 d-block w-50">
+                                    <label class="mx-5" for="is_resting">تفعيل وقت الراحه</label>
+                                    <input type="checkbox" @if($settings->is_resting == 1) checked @endif name="is_resting" id="is_resting">
+                                    <span class="slider round"></span>
+                                </label>
+                                @error('is_resting')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+
+                        </div>
                         </div>
 
                         <div class="row">

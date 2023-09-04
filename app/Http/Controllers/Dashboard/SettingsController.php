@@ -29,6 +29,12 @@ class SettingsController extends Controller
             $validated['logo'] = 'storage/images/setting'.'/'. $filename;
         }
 
+        if ($request['is_resting'] && $request['is_resting'] == 'on') {
+            $validated['is_resting'] = 1;
+        } else {
+            $validated['is_resting'] = 0;
+        }
+
         $setting->update($validated);
         return redirect()->back()->with('success', __('dash.successful_operation'));
     }
