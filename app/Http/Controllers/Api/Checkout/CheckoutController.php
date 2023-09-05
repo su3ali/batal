@@ -50,6 +50,7 @@ class CheckoutController extends Controller
             'amount' => 'nullable|numeric',
             'file' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,gif',
+            'notes' => 'nullable',
         ];
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
@@ -110,7 +111,8 @@ class CheckoutController extends Controller
             'is_advance' => $request->is_advance,
             'is_return' => $request->is_return,
             'file' => $uploadFile,
-            'image'=> $uploadImage
+            'image'=> $uploadImage,
+            'notes'=> $request->notes,
         ]);
         foreach ($carts as $cart) {
             OrderService::create([

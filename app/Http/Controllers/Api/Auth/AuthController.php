@@ -65,7 +65,7 @@ class AuthController extends Controller
         ]);
         $m = "رمز التحقق: ".$code;
         $msg = $this->sendMessage($validated['phone'], $m);
-        $this->message = t_('login successfully, but code is needed');
+        $this->message = __('api.login successfully, but code is needed');
         $this->body['user'] = UserResource::make($user);
         return self::apiResponse(200, $this->message, $this->body);
     }
@@ -79,19 +79,19 @@ class AuthController extends Controller
                     'fcm_token' => $request->fcm_token
                 ]);
                 Auth::loginUsingId($user->id);
-                $this->message = t_('login successfully');
+                $this->message = __('api.login successfully');
                 $this->body['user'] = UserResource::make($user);
                 $this->body['accessToken'] = $user->createToken('user-token',['user'])->plainTextToken;
                 return self::apiResponse(200, $this->message, $this->body);
             }
-            $this->message = t_('auth failed');
+            $this->message = __('api.auth failed');
             return self::apiResponse(400, $this->message, $this->body);
         }
 
         public function logout(Request $request)
         {
             auth()->user('sanctum')->tokens()->delete();
-            $this->message = t_('Logged out');
+            $this->message = __('api.Logged out');
 
             return self::apiResponse(200, $this->message, $this->body);
 
@@ -102,7 +102,7 @@ class AuthController extends Controller
     {
         $user =  auth('sanctum')->user();
         $user->delete();
-        $this->message = t_('Delete user successfully');
+        $this->message = __('api.Delete user successfully');
 
         return self::apiResponse(200, $this->message, $this->body);
 

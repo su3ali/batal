@@ -40,7 +40,7 @@ class CartController extends Controller
                 $cart = Cart::query()->where('user_id', auth()->user()->id)
                     ->first();
                 if ($cart) {
-                    return self::apiResponse(400, t_('finish current order first or clear the cart'), $this->body);
+                    return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
                 }
                 for ($i = 0; $i < $package->visit_number; $i++) {
                     Cart::query()->create([
@@ -56,7 +56,7 @@ class CartController extends Controller
 //                $carts = Cart::query()->where('user_id', auth()->user()->id)->count();
 //                $this->body['total_items_in_cart'] = $carts;
                 $this->body['total_items_in_cart'] = 1;
-                return self::apiResponse(200, t_('Added To Cart Successfully'), $this->body);
+                return self::apiResponse(200, __('api.Added To Cart Successfully'), $this->body);
             }
 
         } else {
@@ -65,10 +65,10 @@ class CartController extends Controller
                 $cart = Cart::query()->where('user_id', auth()->user()->id)->where('service_id', $service->id)
                     ->first();
                 if ($cart) {
-                    return self::apiResponse(400, t_('Already In Your Cart!'), $this->body);
+                    return self::apiResponse(400, __('api.Already In Your Cart!'), $this->body);
                 }
                 if (auth()->user()->carts->where('type', 'package')->first()) {
-                    return self::apiResponse(400, t_('finish current order first or clear the cart'), $this->body);
+                    return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
                 }
                 $price = $service->price;
                 if($request->is_advance == 1){
@@ -84,12 +84,12 @@ class CartController extends Controller
                 ]);
                 $carts = Cart::query()->where('user_id', auth()->user()->id)->count();
                 $this->body['total_items_in_cart'] = $carts;
-                return self::apiResponse(200, t_('Added To Cart Successfully'), $this->body);
+                return self::apiResponse(200, __('api.Added To Cart Successfully'), $this->body);
             }
 
         }
 
-        return self::apiResponse(400, t_('service not found or an error happened.'), $this->body);
+        return self::apiResponse(400, __('api.service not found or an error happened.'), $this->body);
 
     }
 
