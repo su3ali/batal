@@ -147,7 +147,7 @@
                                         </td>
 
                                 </tr>
-
+                            @if($order->image == null || $order->image == '')
                                 <tr>
                                     <th>صوره المرفقه</th>
                                     <td>
@@ -159,7 +159,7 @@
 {{--                                        <img class="img-fluid" style="width: 40px;" src="{{asset($order->image)}}">--}}
                                     </td>
                                 </tr>
-
+                            @endif
                                 <tr>
                                     <th>ملاحظات العميل</th>
                                     <td>{{$order->notes}}</td>
