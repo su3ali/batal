@@ -262,6 +262,16 @@ class CartController extends Controller
             'region_id' =>'required|exists:regions,id',
         ];
         $request->validate($rules, $request->all());
+
+        $group = Group::whereHas('regions',function($qu) use($request) {
+            $qu->where('region_id',$request->region_id);
+        })->get();
+
+        if ($group->isEmpty()){
+            return self::apiResponse(400, 'عفوا الخدمة غير متاحة حاليا', []);
+        }
+
+
         $times = [];
         $bookingTimes = [];
         $bookingDates = [];
