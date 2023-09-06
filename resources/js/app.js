@@ -38,9 +38,8 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: "aa1d69b7957fdc45dc35",
-    cluster: 'mt1',
-    encrypted: true,
+    key: 'aa1d69b7957fdc45dc35',
+    cluster: 'us2',
     forceTLS: true,
     authorizer: (channel, options) => {
         return {
