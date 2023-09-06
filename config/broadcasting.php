@@ -32,8 +32,8 @@ return [
 
         'pusher' => [
             'driver' => 'pusher',
-            'key' => "aa1d69b7957fdc45dc35",
-            'secret' => "7062f0787d29b544d648",
+            'key' => "7062f0787d29b544d648",
+            'secret' => "aa1d69b7957fdc45dc35",
             'app_id' => "1648899",
             'options' => [
                 'cluster' => "mt1",
