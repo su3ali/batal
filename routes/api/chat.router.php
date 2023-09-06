@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\Chat\UserChatController;
 Route::group(['prefix' => 'chat'], function () {
     Route::post('/broadcasting/auth', function (\Illuminate\Http\Request $request){
         if (Auth::check()) {
-            $pusher = new \Pusher\Pusher('87ed15aef6ced76b1507', 'd8f21b90df201e227ad8', "1629640");
+            $pusher = new \Pusher\Pusher('aa1d69b7957fdc45dc35', '7062f0787d29b544d648', "1648899");
             $user = Auth::user();
             $socketId = $request->input('socket_id');
             $channelName = $request->input('channel_name');
