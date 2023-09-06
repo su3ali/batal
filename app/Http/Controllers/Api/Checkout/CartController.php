@@ -125,7 +125,7 @@ class CartController extends Controller
                     ||
                     count($request->date) < $cartCategoryCount
                 ) {
-                    return self::apiResponse(400, t_('date or time is missed'), $this->body);
+                    return self::apiResponse(400, __('api.date or time is missed'), $this->body);
                 }
 
                 foreach ($request->category_ids as $key => $category_id) {
@@ -138,7 +138,7 @@ class CartController extends Controller
                         ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
 
                     if ($countInBooking == $countGroup) {
-                        return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
+                        return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
                     }
 
 
@@ -149,7 +149,7 @@ class CartController extends Controller
                             'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
                         ]);
                 }
-                return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
+                return self::apiResponse(200, __('api.date and time for reservations updated successfully'), $this->body);
             } else {
                 $cartCategoryCount = auth()->user()->carts->first()->quantity;
                 if (
@@ -159,7 +159,7 @@ class CartController extends Controller
                     ||
                     count($request->date) < $cartCategoryCount
                 ) {
-                    return self::apiResponse(400, t_('date or time is missed'), $this->body);
+                    return self::apiResponse(400, __('api.date or time is missed'), $this->body);
                 }
                 foreach (auth()->user()->carts as $key => $cart) {
 
@@ -171,7 +171,7 @@ class CartController extends Controller
                         ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
 
                     if ($countInBooking == $countGroup) {
-                        return self::apiResponse(400, t_('There is a category for which there are currently no technical groups available'), $this->body);
+                        return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
                     }
 
                     $cart->update([
@@ -181,11 +181,11 @@ class CartController extends Controller
 
                     ]);
                 }
-                return self::apiResponse(200, t_('date and time for reservations updated successfully'), $this->body);
+                return self::apiResponse(200, __('api.date and time for reservations updated successfully'), $this->body);
 
             }
         }
-        return self::apiResponse(400, t_('cart empty'), $this->body);
+        return self::apiResponse(400, __('api.cart empty'), $this->body);
     }
 
     protected function controlItem(Request $request): JsonResponse
@@ -239,7 +239,7 @@ class CartController extends Controller
                 }
             }
         }
-        return self::apiResponse(400, t_('Cart Not Found'), $this->body);
+        return self::apiResponse(400, __('api.Cart Not Found'), $this->body);
 
     }
 
@@ -268,7 +268,7 @@ class CartController extends Controller
         })->get();
 
         if ($group->isEmpty()){
-            return self::apiResponse(400, 'عفوا الخدمة غير متاحة حاليا', []);
+            return self::apiResponse(400, __('api.Sorry, the service is currently unavailable'), []);
         }
 
 
@@ -280,7 +280,7 @@ class CartController extends Controller
                 $q->where('region_id',$request->region_id);
             })->where('service_id', $service_id)->first();
             if (!$bookSetting){
-                return self::apiResponse(400, 'عفوا الخدمة غير متاحة حاليا', []);
+                return self::apiResponse(400, __('api.Sorry, the service is currently unavailable'), []);
             }
             $dayStartIndex = array_search($bookSetting->service_start_date, $this->days);
             $dayEndIndex = array_search($bookSetting->service_end_date, $this->days);

@@ -94,7 +94,7 @@ class HomeController extends Controller
             $this->body['services'] = ServiceResource::collection($services);
             return self::apiResponse(200, '', $this->body);
         } else {
-            return self::apiResponse(200, t_('No Services was founded.'), null);
+            return self::apiResponse(200, __('api.No Services was founded.'), null);
         }
     }
 
@@ -140,7 +140,7 @@ class HomeController extends Controller
         if ($products->isNotEmpty() || $stores->get()->isNotEmpty()) {
             return self::apiResponse(200, t_(''), $this->body);
         } else {
-            return self::apiResponse(400, t_('No products or stores was founded.'), $this->body);
+            return self::apiResponse(400, __('api.No products or stores was founded.'), $this->body);
         }
     }
 

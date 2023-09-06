@@ -56,7 +56,7 @@ class CheckoutController extends Controller
         $user = auth()->user('sanctum');
         $carts = Cart::query()->where('user_id', $user->id)->get();
         if (!$carts->first()) {
-            return self::apiResponse(400, t_('Cart is empty'), []);
+            return self::apiResponse(400, __('api.Cart is empty'), []);
         }
 
 
@@ -64,13 +64,13 @@ class CheckoutController extends Controller
         if ($carts->first()->type == 'package') {
             $total = $carts->first()->price;
             if ($request->payment_method == 'wallet' && $total > $user->point){
-                return self::apiResponse(400, t_('Your wallet balance is not enough to complete this process'), []);
+                return self::apiResponse(400, __('api.Your wallet balance is not enough to complete this process'), []);
             }
             return $this->saveContract($user, $request, $total, $carts);
         } else {
 
             if ($request->payment_method == 'wallet' && $request->amount > $user->point){
-                return self::apiResponse(400, t_('Your wallet balance is not enough to complete this process'), []);
+                return self::apiResponse(400, __('api.Your wallet balance is not enough to complete this process'), []);
             }
             $uploadImage =null;
             $uploadFile =null;
@@ -246,7 +246,7 @@ class CheckoutController extends Controller
 
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
-        return self::apiResponse(200, t_('order created successfully'), $this->body);
+        return self::apiResponse(200, __('api.order created successfully'), $this->body);
     }
 
     private function saveContract($user, $request, $total, $carts)
@@ -310,7 +310,7 @@ class CheckoutController extends Controller
         $this->wallet($user, $total);
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
-        return self::apiResponse(200, t_('order created successfully'), $this->body);
+        return self::apiResponse(200, __('api.order created successfully'), $this->body);
     }
 
     private function wallet($user, $total)
@@ -364,7 +364,7 @@ class CheckoutController extends Controller
             'point' => $user->point - $request->wallet_discounts ?? 0
         ]);
 
-        return self::apiResponse(200, t_('paid successfully'), $this->body);
+        return self::apiResponse(200, __('api.paid successfully'), $this->body);
 
 
     }

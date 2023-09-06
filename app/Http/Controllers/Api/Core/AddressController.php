@@ -101,7 +101,7 @@ class AddressController extends Controller
             $this->body['addresses'] = UserAddressResource::collection($addresses);
             return self::apiResponse(200, null, $this->body);
         } else {
-            return self::apiResponse(400, 'not found', $this->body);
+            return self::apiResponse(400, __('api.not found'), $this->body);
         }
 
     }
@@ -114,7 +114,7 @@ class AddressController extends Controller
             $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
             $this->body['addresses'] = UserAddressResource::collection($addresses);
             return self::apiResponse(200, null, $this->body);        } else {
-            return self::apiResponse(200, 'not found or already deleted', $this->body);
+            return self::apiResponse(200, __('api.not found or already deleted'), $this->body);
         }
 
     }
@@ -129,9 +129,9 @@ class AddressController extends Controller
             $address->update([
                 'is_default' => 1
             ]);
-            return self::apiResponse(200, 'been default successfully', $this->body);
+            return self::apiResponse(200, __('api.been default successfully'), $this->body);
         } else {
-            return self::apiResponse(400, 'not found', $this->body);
+            return self::apiResponse(400, __('api.not found'), $this->body);
         }
 
     }
