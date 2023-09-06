@@ -35,12 +35,13 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
     BoxMessages.scrollTo(0, BoxMessages.scrollHeight);
 
 });
-
+Pusher.logToConsole = true;
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: 'aa1d69b7957fdc45dc35',
     cluster: 'mt1',
     forceTLS: true,
+
     authorizer: (channel, options) => {
         return {
             authorize: (socketId, callback) => {
