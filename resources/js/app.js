@@ -40,6 +40,7 @@ window.Echo = new Echo({
     broadcaster: 'pusher',
     key: "aa1d69b7957fdc45dc35",
     cluster: 'mt1',
+    encrypted: true,
     forceTLS: true,
     authorizer: (channel, options) => {
         return {
