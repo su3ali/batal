@@ -42,28 +42,8 @@ window.Echo = new Echo({
     cluster: 'us2',
     forceTLS: true,
     authorizer: (channel, options) => {
-        return {
-            authorize: (socketId, callback) => {
-                axios.post('broadcasting/auth', {
-                    socket_id: socketId, channel_name: channel.name,
-                },
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN' :$('meta[name="_token"]').attr('content'),
-                        },
-                    progress: false,
-                })
-                    .then(response => {
-                        console.log(options)
-                        callback(false, response.data);
-                    })
-                    .catch(error => {
-console.log(error)
-                        callback(true, error);
-                    });
-            }
-        };
+        console.log(channel)
+        console.log(options)
     },
 });
 window.Echo.private('chat_message.'+document.getElementById('big-box').getAttribute('data-room'))
