@@ -3,7 +3,7 @@ window.Pusher = require('pusher-js');
 import Echo from "laravel-echo";
 console.log($('meta[name="_token"]').attr('content'));
 const chatForm = document.getElementById('message-form');
-
+Pusher.logToConsole = true;
 const chatMessages = document.getElementById('message-box');
 const chatThreads = document.getElementById('message-threads');
 const chatThread = document.getElementById('message-thread');
@@ -39,7 +39,7 @@ document.getElementById('message-form').addEventListener('submit', (e) => {
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: 'aa1d69b7957fdc45dc35',
-    cluster: 'us2',
+    cluster: 'mt1',
     forceTLS: true,
     authorizer: (channel, options) => {
         return {
