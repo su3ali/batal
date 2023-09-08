@@ -37,9 +37,10 @@ class SettingsController extends Controller
         $data = [
             'wallet' => $user->point,
             'order_amount' => $walletSetting->order_amount,
-            'wallet_amount' => $walletSetting->wallet_amount	,
+            'wallet_amount' => $walletSetting->wallet_amount,
         ];
         $this->body['walletDetail'] = $data;
         return self::apiResponse(200, '', $this->body);
     }
 }
+

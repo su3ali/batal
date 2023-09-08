@@ -99,14 +99,15 @@ class CheckoutController extends Controller
 
     private function saveOrder($user, $request, $total, $carts, $uploadImage,$uploadFile)
     {
+        $totalAfterDiscount = ($total - $request->coupon);
         $order = Order::create([
             'user_id' => $user->id,
             'discount' => $request->coupon,
             'user_address_id' => $request->user_address_id,
             'sub_total' => $total,
-            'total' => ($total - $request->coupon),
+            'total' => $totalAfterDiscount,
             'payment_status' => $request->payment_status,
-            'partial_amount' => ($total - $request->amount),
+            'partial_amount' => ($totalAfterDiscount - $request->amount),
             'status_id' => 2,
             'is_advance' => $request->is_advance,
             'is_return' => $request->is_return,
@@ -251,6 +252,7 @@ class CheckoutController extends Controller
 
     private function saveContract($user, $request, $total, $carts)
     {
+
         $order = Contract::create([
             'user_id' => $user->id,
             'discount' => $request->coupon,
