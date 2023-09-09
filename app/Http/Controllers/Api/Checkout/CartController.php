@@ -353,9 +353,12 @@ class CartController extends Controller
                     $endDate = $setting->resting_end_time;
 
 
-                    if ($day == $dayNow && $converTimestamp < $convertNowTimestamp || in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes)){
+                    if ($day == $dayNow && $converTimestamp < $convertNowTimestamp){
                         //..........
                     }else if($setting->is_resting == 1 && $time->between($startDate, $endDate, true)){
+
+
+                    }else if (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes)){
 
                     }else{
                         return $time->format('g:i A');
