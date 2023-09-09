@@ -320,7 +320,7 @@ class CartController extends Controller
                     $q->where('service_id',$service_id);
                 });
             })->where('booking_status_id',2)->get();
-
+dd($bookings);
             foreach ($bookings as $booking){
                 array_push($bookingTimes,$booking->time);
                 array_push($bookingDates,$booking->date);
