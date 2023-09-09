@@ -260,6 +260,7 @@ class CartController extends Controller
             'service_ids' => 'required|array',
             'service_ids.*' => 'required|exists:services,id',
             'region_id' =>'required|exists:regions,id',
+            'package_id' =>'nullable|exists:contract_packages,id',
         ];
         $request->validate($rules, $request->all());
 
@@ -271,6 +272,11 @@ class CartController extends Controller
             return self::apiResponse(400, __('api.Sorry, the service is currently unavailable'), []);
         }
 
+        $timeDuration = 90;
+        if ($request->package_id != null){
+            $contract = ContractPackage::where('id',$request->package_id)->first()->time;
+            $timeDuration = $contract * 30;
+        }
 
         $times = [];
         $bookingTimes = [];
@@ -289,7 +295,7 @@ class CartController extends Controller
                 $serviceDays[] = $this->days[$i];
             }
             $dates = [];
-            for ($i = 0; $i < 90; $i++) {
+            for ($i = 0; $i < $timeDuration; $i++) {
                 $date = date('Y-m-d', strtotime('+' . $i . ' day'));
                 if (in_array(date('l', strtotime($date)), $serviceDays)) {
                     $dates[] = $date;
