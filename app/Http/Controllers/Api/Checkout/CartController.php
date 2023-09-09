@@ -321,6 +321,7 @@ class CartController extends Controller
                 });
             })->where('booking_status_id',1)->get();
 
+            dd($bookings);
 
             foreach ($bookings as $booking){
                 array_push($bookingTimes,$booking->time);
