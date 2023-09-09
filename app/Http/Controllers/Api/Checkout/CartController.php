@@ -260,7 +260,7 @@ class CartController extends Controller
             'service_ids' => 'required|array',
             'service_ids.*' => 'required|exists:services,id',
             'region_id' =>'required|exists:regions,id',
-            'package_id' =>'nullable',
+            'package_id' =>'required',
         ];
         $request->validate($rules, $request->all());
 
@@ -272,8 +272,8 @@ class CartController extends Controller
             return self::apiResponse(400, __('api.Sorry, the service is currently unavailable'), []);
         }
 
-        $timeDuration = 90;
-        if ($request->package_id != null){
+        $timeDuration = 60;
+        if ($request->package_id != 0){
             $contract = ContractPackage::where('id',$request->package_id)->first();
             $timeDuration = $contract->time * 30;
         }
