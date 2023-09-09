@@ -321,8 +321,6 @@ class CartController extends Controller
                 });
             })->where('booking_status_id',1)->get();
 
-            dd($bookings);
-
             foreach ($bookings as $booking){
                 array_push($bookingTimes,$booking->time);
                 array_push($bookingDates,$booking->date);
@@ -355,7 +353,7 @@ class CartController extends Controller
                     $endDate = $setting->resting_end_time;
 
 
-                    if ($day == $dayNow && $converTimestamp < $convertNowTimestamp || (in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes))){
+                    if ($day == $dayNow && $converTimestamp < $convertNowTimestamp || in_array($day,$bookingDates) && in_array($converTimestamp,$bookingTimes)){
                         //..........
                     }else if($setting->is_resting == 1 && $time->between($startDate, $endDate, true)){
 
