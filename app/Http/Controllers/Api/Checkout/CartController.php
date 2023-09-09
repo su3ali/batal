@@ -274,8 +274,8 @@ class CartController extends Controller
 
         $timeDuration = 90;
         if ($request->package_id != null){
-            $contract = ContractPackage::where('id',$request->package_id)->first()->time;
-            $timeDuration = $contract * 30;
+            $contract = ContractPackage::where('id',$request->package_id)->first();
+            $timeDuration = $contract->time * 30;
         }
 
         $times = [];
