@@ -320,7 +320,7 @@ class CartController extends Controller
                     $q->where('service_id',$service_id);
                 });
             })->whereHas('visit',function ($qq){
-                $qq->whereIn('visits_status_id',[1,2,3,4,5]);
+                $qq->whereIn('visits_status_id',[1,2,3,4]);
             })->get();
 
             foreach ($bookings as $booking){
