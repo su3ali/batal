@@ -322,7 +322,7 @@ class CartController extends Controller
             })->whereHas('visit',function ($qq){
                 $qq->where('visits_status_id',5);
             })->get();
-dd($bookings);
+
             foreach ($bookings as $booking){
                 array_push($bookingTimes,$booking->time);
                 array_push($bookingDates,$booking->date);
