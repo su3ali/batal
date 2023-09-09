@@ -161,12 +161,12 @@ class HomeController extends Controller
             $rate = new Rating(['rate' => $request->rate]);
             if (isset($rated_object)) {
                 $rated_object->rate()->save($rate);
-                return self::apiResponse(200, 'Thanks for rating!', $this->body);
+                return self::apiResponse(200, __('api.Thanks for rating!'), $this->body);
             } else {
-                return self::apiResponse(400, 'Oops! An Error Occurred, please try again.', $this->body);
+                return self::apiResponse(400, __('api.Oops! An Error Occurred, please try again.'), $this->body);
             }
         } else {
-            return self::apiResponse(400, 'Oops! An Error Occurred, please try again.', $this->body);
+            return self::apiResponse(400, __('api.Oops! An Error Occurred, please try again.'), $this->body);
         }
     }
 
@@ -194,7 +194,7 @@ class HomeController extends Controller
     {
         $cities = City::where('active',1)->get();
         $this->body['cities'] = CityResource::collection($cities);
-        return self::apiResponse(200, t_('successfully'), $this->body);
+        return self::apiResponse(200, __('api.successfully'), $this->body);
     }
 
 
@@ -202,14 +202,14 @@ class HomeController extends Controller
     {
         $regions = Region::where('active',1)->where('city_id',$id)->get();
         $this->body['regions'] = RegionResource::collection($regions);
-        return self::apiResponse(200, t_('successfully'), $this->body);
+        return self::apiResponse(200, __('api.successfully'), $this->body);
     }
 
     protected function getAllRegions()
     {
         $regions = Region::where('active',1)->get();
         $this->body['regions'] = RegionResource::collection($regions);
-        return self::apiResponse(200, t_('successfully'), $this->body);
+        return self::apiResponse(200, __('api.successfully'), $this->body);
     }
 
     protected function contract_contact(Request $request): JsonResponse
@@ -231,7 +231,7 @@ class HomeController extends Controller
 
 
 
-        return self::apiResponse(200, 'added successfully', $this->body);
+        return self::apiResponse(200, __('api.added successfully'), $this->body);
 
     }
 

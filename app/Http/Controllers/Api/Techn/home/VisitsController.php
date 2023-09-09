@@ -196,7 +196,8 @@ class VisitsController extends Controller
             $this->pushNotificationBackground($notify);
 
             $this->body['visits'] = $visit;
-            return self::apiResponse(200, null, $this->body);        }
+            return self::apiResponse(200, null, $this->body);
+        }
 
     }
     protected function sendLatLong(Request $request)
@@ -214,7 +215,7 @@ class VisitsController extends Controller
         $model = Visit::query()->where('assign_to_id', $techn->group_id)->where('visits_status_id',2)->first();
 
         if (!$model){
-            return self::apiResponse(400, t_('visit not found'), $this->body);
+            return self::apiResponse(400, __('api.visit not found'), $this->body);
 
         }
 
@@ -239,7 +240,7 @@ class VisitsController extends Controller
 
         $this->pushNotificationBackground($notify);
 
-        return self::apiResponse(200, t_('Update Location successfully'), $this->body);
+        return self::apiResponse(200, __('api.Update Location successfully'), $this->body);
 
     }
 

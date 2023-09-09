@@ -45,7 +45,7 @@ class ServiceController extends Controller
             $this->body['category_services'] = ServiceResource::collection($services);
             return self::apiResponse(200, null, $this->body);
         }
-        return self::apiResponse(400, 'category not found', $this->body);
+        return self::apiResponse(400, __('api.category not found'), $this->body);
     }
     protected function serviceDetails($id){
         $service = Service::query()->where('id', $id)->first();
@@ -53,7 +53,7 @@ class ServiceController extends Controller
             $this->body['service'] = ServiceDetailsResource::make($service);
             return self::apiResponse(200, null, $this->body);
         }
-        return self::apiResponse(400, 'service not found', $this->body);
+        return self::apiResponse(400, __('api.service not found'), $this->body);
     }
 
     protected function PackageDetails($id){
@@ -62,7 +62,7 @@ class ServiceController extends Controller
             $this->body['package'] = ContractResource::make($package);
             return self::apiResponse(200, null, $this->body);
         }
-        return self::apiResponse(400, 'package not found', $this->body);
+        return self::apiResponse(400, __('api.package not found'), $this->body);
     }
 
     protected function getPackage(){

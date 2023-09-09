@@ -64,7 +64,7 @@ class OrdersController extends Controller
                'note' => $request->note,
             ]);
         }
-        return self::apiResponse(200, 'rated successfully', $this->body);
+        return self::apiResponse(200, __('api.rated successfully'), $this->body);
 
     }
 
@@ -89,7 +89,7 @@ class OrdersController extends Controller
                 'note' => $request->note,
             ]);
         }
-        return self::apiResponse(200, 'rated successfully', $this->body);
+        return self::apiResponse(200, __('api.rated successfully'), $this->body);
 
     }
 }

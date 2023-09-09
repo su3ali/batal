@@ -37,7 +37,7 @@ class CouponsController extends Controller
 
         $carts = Cart::query()->where('user_id', $user->id)->get();
         if (!$carts->first()) {
-            return self::apiResponse(400, t_('Cart is empty'), []);
+            return self::apiResponse(400, __('api.cart empty'), []);
         }
         $total = $this->calc_total($carts);
         $coupon = Coupon::query()->where('code', $code)->first();
@@ -70,7 +70,7 @@ class CouponsController extends Controller
             }
 
         }
-        return self::apiResponse(400, t_('invalid code!'), $this->body);
+        return self::apiResponse(400, __('api.invalid code!'), $this->body);
 
     }
     protected function cancel(Request $request){
@@ -79,7 +79,7 @@ class CouponsController extends Controller
 
         $carts = Cart::query()->where('user_id', $user->id)->get();
         if (!$carts->first()) {
-            return self::apiResponse(400, t_('Cart is empty'), []);
+            return self::apiResponse(400, __('api.cart empty'), []);
         }
         $total = $this->calc_total($carts);
 
@@ -102,7 +102,7 @@ class CouponsController extends Controller
             $this->body['sub_total'] = $sub_total;
             return self::apiResponse(200, null, $this->body);
         }else{
-            return self::apiResponse(400, t_('invalid code!'), $this->body);
+            return self::apiResponse(400, __('api.invalid code!'), $this->body);
         }
 
     }

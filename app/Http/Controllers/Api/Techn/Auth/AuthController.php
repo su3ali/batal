@@ -37,12 +37,12 @@ class AuthController extends Controller
             $techn->update([
                 'fcm_token' => $request->fcm_token
             ]);
-            $this->message = t_('login successfully');
+            $this->message = __('api.login successfully');
             $this->body['technician'] = TechnicianResource::make($techn);
             $this->body['accessToken'] = $techn->createToken('technician-token',['technician'])->plainTextToken;
             return self::apiResponse(200, $this->message, $this->body);
         }else{
-            $this->message = t_('auth failed');
+            $this->message = __('api.auth failed');
             return self::apiResponse(400, $this->message, $this->body);
         }
 
@@ -52,7 +52,7 @@ class AuthController extends Controller
         public function logout(Request $request)
         {
             auth()->user('sanctum')->tokens()->delete();
-            $this->message = t_('Logged out');
+            $this->message = __('api.Logged out');
 
             return self::apiResponse(200, $this->message, $this->body);
 
@@ -62,7 +62,7 @@ class AuthController extends Controller
     {
         $user =  auth('sanctum')->user();
         $user->delete();
-        $this->message = t_('Delete technician successfully');
+        $this->message = __('api.Delete technician successfully');
 
         return self::apiResponse(200, $this->message, $this->body);
 

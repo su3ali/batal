@@ -147,7 +147,7 @@
                                         </td>
 
                                 </tr>
-                            @if($order->image == null || $order->image == '')
+                            @if($order->image != null || $order->image != '')
                                 <tr>
                                     <th>صوره المرفقه</th>
                                     <td>

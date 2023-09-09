@@ -131,7 +131,7 @@ class TechProfileController extends Controller
     protected function deleteNotification(Request $request)
     {
         \DB::table('notifications')->where('id',$request->id)->delete();
-        $this->message = t_('Delete successfully');
+        $this->message = __('api.Delete successfully');
         return self::apiResponse(200, $this->message, $this->body);
     }
 
@@ -143,7 +143,7 @@ class TechProfileController extends Controller
              $notification->update(['read_at' => now()]);
          }
 
-        $this->message = t_('Read Notification Successfully');
+        $this->message = __('api.Read Notification Successfully');
         return self::apiResponse(200, $this->message, $this->body);
     }
 
