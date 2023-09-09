@@ -153,7 +153,7 @@ class CheckoutController extends Controller
                 'quantity' => $cart->quantity,
                 'date' => $cart->date,
                 'type' => 'service',
-                'time' => Carbon::parse($cart->time)->format('h:i:s'),
+                'time' => Carbon::parse($cart->time)->toTimeString(),
                 'end_time' => $minutes? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
             ]);
             $address = UserAddresses::where('id',$order->user_address_id)->first();
