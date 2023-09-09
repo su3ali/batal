@@ -260,7 +260,7 @@ class CartController extends Controller
             'service_ids' => 'required|array',
             'service_ids.*' => 'required|exists:services,id',
             'region_id' =>'required|exists:regions,id',
-            'package_id' =>'nullable|exists:contract_packages,id',
+            'package_id' =>'nullable',
         ];
         $request->validate($rules, $request->all());
 
