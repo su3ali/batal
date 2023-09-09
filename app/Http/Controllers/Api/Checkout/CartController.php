@@ -319,7 +319,7 @@ class CartController extends Controller
                 $qu->whereHas('services',function($q) use($service_id){
                     $q->where('service_id',$service_id);
                 });
-            })->where('booking_status_id',1)->get();
+            })->where('booking_status_id',2)->get();
 
             foreach ($bookings as $booking){
                 array_push($bookingTimes,$booking->time);
