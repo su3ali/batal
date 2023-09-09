@@ -319,10 +319,8 @@ class CartController extends Controller
                 $qu->whereHas('services',function($q) use($service_id){
                     $q->where('service_id',$service_id);
                 });
-
-                $qu->whereHas('visit',function ($qq){
-                    $qq->where('visits_status_id',5);
-                });
+            })->whereHas('visit',function ($qq){
+                $qq->where('visits_status_id',5);
             })->get();
 dd($bookings);
             foreach ($bookings as $booking){
