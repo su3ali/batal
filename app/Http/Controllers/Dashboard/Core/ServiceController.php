@@ -78,7 +78,7 @@ class ServiceController extends Controller
     public function create()
     {
         $categories = category::whereNull('parent_id')->where('active', 1)->get()->pluck('title', 'id');
-        $groups = Group::query()->get();
+        $groups = Group::query()->where('active',1)->get();
         $icons = Icon::query()->get();
         $measurements = Measurement::query()->get();
         return view('dashboard.core.services.create', compact('categories', 'groups','measurements','icons'));
@@ -173,7 +173,7 @@ class ServiceController extends Controller
     {
         $service = Service::where('id', $id)->first();
         $categories = category::whereNull('parent_id')->where('active', 1)->get()->pluck('title', 'id');
-        $groups = Group::query()
+        $groups = Group::query()->where('active',1)
             ->whereNotIn('id', ServiceGroup::query()->pluck('group_id')->toArray())
             ->orWhereIn('id', ServiceGroup::query()->where('service_id', $service->id)->pluck('group_id')->toArray())
             ->get();

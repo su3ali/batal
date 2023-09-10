@@ -58,6 +58,7 @@
                             <th>#</th>
                             <th>{{__('dash.name')}}</th>
                             <th>مشرف المجموعة</th>
+                            <th>الحاله</th>
                             <th class="no-content">{{__('dash.actions')}}</th>
                         </tr>
                         </thead>
@@ -151,6 +152,7 @@
                     {data: 'id', name: 'id'},
                     {data: 'g_name', name: 'g_name'},
                     {data: 'technician', name: 'technician'},
+                    {data: 'status', name: 'status'},
                     {data: 'control', name: 'control', orderable: false, searchable: false},
 
                 ]
@@ -178,6 +180,26 @@
             action = action.replace('id', id)
             $('#edit_grouptech_form').attr('action', action);
 
+        })
+
+
+        $("body").on('change', '#customSwitch4', function () {
+            let active = $(this).is(':checked');
+            let id = $(this).attr('data-id');
+
+            $.ajax({
+                url: '{{route('dashboard.core.group.change_status')}}',
+                type: 'get',
+                data: {id: id, active: active},
+                success: function (data) {
+                    swal({
+                        title: "{{__('dash.successful_operation')}}",
+                        text: "{{__('dash.request_executed_successfully')}}",
+                        type: 'success',
+                        padding: '2em'
+                    })
+                }
+            });
         })
 
 

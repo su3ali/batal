@@ -264,7 +264,7 @@ class CartController extends Controller
         ];
         $request->validate($rules, $request->all());
 
-        $group = Group::whereHas('regions',function($qu) use($request) {
+        $group = Group::where('active',1)->whereHas('regions',function($qu) use($request) {
             $qu->where('region_id',$request->region_id);
         })->get();
 

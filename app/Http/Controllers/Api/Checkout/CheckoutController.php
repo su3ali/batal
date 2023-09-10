@@ -171,7 +171,7 @@ class CheckoutController extends Controller
 
 
             if ($visit == null){
-                $group = Group::whereHas('regions',function($qu) use($address) {
+                $group = Group::where('active',1)->whereHas('regions',function($qu) use($address) {
                     $qu->where('region_id',$address->region_id);
                 })->first();
                 $assign_to_id = $group->id;

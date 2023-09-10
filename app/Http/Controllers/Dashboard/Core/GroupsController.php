@@ -27,13 +27,23 @@ class GroupsController extends Controller
     {
         $technicians = Technician::all();
         if (request()->ajax()) {
-            $groups = Group::all();
+            $groups = Group::where('active',1)->get();
             return DataTables::of($groups)
                 ->addColumn('technician', function ($row) {
                     return $row->technician_id ? Technician::query()->find($row->technician_id)?Technician::query()->find($row->technician_id)->name : 'لا يوجد': 'لا يوجد' ;
                 })
                 ->addColumn('g_name', function ($row){
                     return $row->name;
+                })
+                ->addColumn('status', function ($row) {
+                    $checked = '';
+                    if ($row->active == 1) {
+                        $checked = 'checked';
+                    }
+                    return '<label class="switch s-outline s-outline-info  mb-4 mr-2">
+                        <input type="checkbox" id="customSwitch4" data-id="' . $row->id . '" ' . $checked . '>
+                        <span class="slider round"></span>
+                        </label>';
                 })
                 ->addColumn('control', function ($row) {
 
@@ -53,6 +63,7 @@ class GroupsController extends Controller
                 ->rawColumns([
                     'technician',
                     'g_name',
+                    'status',
                     'control',
                 ])
                 ->make(true);
@@ -151,6 +162,21 @@ class GroupsController extends Controller
             'success' => true,
             'msg' => __("dash.deleted_success")
         ];
+    }
+
+
+    public function change_status(Request $request)
+    {
+        $admin = Group::where('id', $request->id)->first();
+        if ($request->active == 'true') {
+            $active = 1;
+        } else {
+            $active = 0;
+        }
+
+        $admin->active = $active;
+        $admin->save();
+        return response()->json(['sucess' => true]);
     }
 
 }

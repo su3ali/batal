@@ -66,6 +66,24 @@ class VisitsController extends Controller
         return self::apiResponse(200, null, $this->body);
     }
 
+    protected function myOrdersByDateNow()
+    {
+
+        $orders = Visit::whereHas('booking', function ($q) {
+
+            $q->where('date',Carbon::now()->format('Y-m-d'))->whereHas('customer')->whereHas('address');
+
+        })->with('booking', function ($q) {
+            $q->with(['service' => function ($q) {
+                $q->with('category');
+            },'customer','address']);
+
+        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])
+            ->where('assign_to_id', auth('sanctum')->user()->group_id)->get();
+        $this->body['visits'] = VisitsResource::collection($orders);
+        return self::apiResponse(200, null, $this->body);
+    }
+
 
     protected function orderDetails($id)
     {
@@ -241,6 +259,24 @@ class VisitsController extends Controller
         $this->pushNotificationBackground($notify);
 
         return self::apiResponse(200, __('api.Update Location successfully'), $this->body);
+
+    }
+
+    protected function paid(Request $request)
+    {
+        $rules = [
+            'order_id' => 'required',
+        ];
+
+        $request->validate($rules, $request->all());
+
+        $order = Order::query()->where('id',$request->order_id)->first();
+
+        $order->update([
+            'partial_amount'=> 0
+        ]);
+
+        return self::apiResponse(200, __('api.successfully'), $this->body);
 
     }
 

@@ -42,6 +42,7 @@ route_group('core', function () {
     Route::post('service/image', 'ServiceController@uploadImage')->name('service.uploadImage');
     Route::post('service/delete/image', 'ServiceController@deleteImage')->name('service.deleteImage');
 
+    Route::get('group/change_status', 'GroupsController@change_status')->name('group.change_status');
     Route::resource('group', 'GroupsController');
 
     Route::get('customer_wallet',  'CustomerWalletController@index')->name('customer_wallet.index');

@@ -26,7 +26,7 @@ class BookingResource extends JsonResource
             'image' => $this->category->slug? asset($this->category->slug) : '',
             'date' => Carbon::parse($this->date)->format('d M'),
             'time_start' => Carbon::parse($this->time)->format('g:i A'),
-            'time_end' => $this->end_time
+            'time_end' => Carbon::parse($this->end_time)->format('g:i A')
         ];
     }
 }

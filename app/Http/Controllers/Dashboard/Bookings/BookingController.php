@@ -119,7 +119,7 @@ class BookingController extends Controller
         $orders = Order::all();
         $customers = User::all();
         $services = Service::all();
-        $groups = Group::all();
+        $groups = Group::where('active',1)->get();
         $statuses = BookingStatus::all();
         return view('dashboard.bookings.create', compact('orders', 'customers', 'services', 'groups', 'statuses'));
     }
@@ -157,7 +157,7 @@ class BookingController extends Controller
         $orders = Order::all();
         $customers = User::all();
         $services = Service::all();
-        $groups = Group::all();
+        $groups = Group::where('active',1)->get();
         $statuses = BookingStatus::all();
         return view('dashboard.bookings.edit', compact('booking', 'orders', 'customers', 'services', 'groups', 'statuses'));
 
@@ -223,14 +223,14 @@ class BookingController extends Controller
 
             $address = UserAddresses::where('id',$request->address_id)->first();
 
-            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
+            $group = Group::where('active',1)->whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
                 $qu->where('region_id',$address->region_id);
             })->get()->pluck('name', 'id')->toArray();
 
         } else {
             $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
             $address = UserAddresses::where('id',$request->address_id)->first();
-            $group = Group::whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
+            $group = Group::where('active',1)->whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
                 $qu->where('region_id',$address->region_id);
             })->get()->pluck('name', 'id')->toArray();
         }

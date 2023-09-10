@@ -24,7 +24,7 @@ class TechnicianController extends Controller
 
     public function index()
     {
-        $groups = Group::all();
+        $groups = Group::where('active',1)->get();
         $specs = Specialization::all();
         if (request()->ajax()) {
             $technician = Technician::all();

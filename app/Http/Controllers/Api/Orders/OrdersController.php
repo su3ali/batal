@@ -13,6 +13,7 @@ use App\Models\RateService;
 use App\Models\RateTechnician;
 use App\Models\Technician;
 use App\Models\User;
+use App\Models\Visit;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
 
@@ -71,24 +72,24 @@ class OrdersController extends Controller
 
     protected function rateService(Request $request){
         $rules = [
-            'booking_id' => 'required|exists:bookings,id',
             'visit_id' => 'required|exists:visits,id',
             'rate' => 'required|integer',
             'note' => 'nullable|string|max:255',
         ];
         $request->validate($rules, $request->all());
-        $order_id = Booking::query()->find($request->booking_id)->order_id;
-        $services = OrderService::where('order_id',$order_id)->get();
-        foreach ($services as $service) {
+
+        $visit = Visit::where('id',$request->visit_id)->first();
+        $booking = Booking::where('id',$visit->booking_id)->first();
+
             RateService::query()->create([
                 'user_id' => auth()->user()->id,
-                'service_id' => $service->service_id,
+                'service_id' => null,
                 'visit_id' => $request->visit_id,
-                'order_id' => $order_id,
+                'order_id' => $booking->order_id,
                 'rate' => $request->rate,
                 'note' => $request->note,
             ]);
-        }
+
         return self::apiResponse(200, __('api.rated successfully'), $this->body);
 
     }
