@@ -280,4 +280,23 @@ class VisitsController extends Controller
 
     }
 
+    protected function change_order_cancel(Request $request)
+    {
+        $rules = [
+            'visit_id' => 'required|exists:visits,id',
+        ];
+
+        $request->validate($rules, $request->all());
+
+        $visit = Visit::query()->where('id',$request->visit_id)->first();
+
+        $user = User::where('id',$visit->user_id)->first();
+        $user->update([
+            'order_cancel' => 1
+        ]);
+
+        return self::apiResponse(200, __('api.successfully'), $this->body);
+
+    }
+
 }

@@ -14,6 +14,9 @@ Route::prefix('home')->group(function () {
 
 
 
-Route::prefix('paid')->group(function () {
-    Route::get('/', [VisitsController::class, 'paid']);
+Route::prefix('visit')->group(function () {
+    Route::post('/paid', [VisitsController::class, 'paid']);
+    Route::post('/change_order_cancel', [VisitsController::class, 'change_order_cancel']);
 });
+
+
