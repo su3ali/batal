@@ -283,14 +283,13 @@ class VisitsController extends Controller
     protected function change_order_cancel(Request $request)
     {
         $rules = [
-            'visit_id' => 'required|exists:visits,id',
+            'user_id' => 'required|exists:users,id',
         ];
 
         $request->validate($rules, $request->all());
 
-        $visit = Visit::query()->where('id',$request->visit_id)->first();
 
-        $user = User::where('id',$visit->user_id)->first();
+        $user = User::where('id',$request->user_id)->first();
         $user->update([
             'order_cancel' => 1
         ]);
