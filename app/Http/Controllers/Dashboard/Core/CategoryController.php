@@ -72,7 +72,7 @@ class CategoryController extends Controller
         }
 
         $categories = Category::whereNull('parent_id')->get();
-        $groups = Group::query()->where('active',1)->get();
+        $groups = Group::where('active',1)->get();
 
         return view('dashboard.core.categories.index',compact('categories','groups'));
     }

@@ -17,11 +17,11 @@ class CouponCheck
             ||
             Carbon::parse($coupon->start)->format('y-m-d') > Carbon::now()->format('y-m-d')
         ) {
-            $response = ['error' => "Invalid Code !"];
+            $response = ['error' => __("api.Invalid Code !")];
             return $response;
         }
         if ($coupon->min_price && $coupon->min_price > $total){
-            $response = ['error' => "Your order price didn't reach the minimum value for the coupon !"];
+            $response = ['error' => __("api.Your order price didn't reach the minimum value for the coupon !")];
             return $response;
         }
         if (
@@ -29,14 +29,14 @@ class CouponCheck
             ||
             Carbon::now()->format('y-m-d') >= Carbon::parse($coupon->end)->format('y-m-d')
         ) {
-            $response = ['error' => "Expired Code !"];
+            $response = ['error' => __("api.Expired Code !")];
             return $response;
         }
         if ($coupon->user_times <= $coupon_user->count()) {
-            $response = ['error' => "You can't use this code anymore !"];
+            $response = ['error' => __("api.You cant use this code anymore !")];
             return $response;
         }
-        $response = ['success' => 'coupon applied !'];
+        $response = ['success' => __('api.coupon applied !')];
         return $response;
     }
 }

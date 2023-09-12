@@ -9,6 +9,7 @@ use App\Models\City;
 use App\Models\CustomerWallet;
 use App\Models\Region;
 use App\Models\Service;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use function Symfony\Component\String\title;
 use Yajra\DataTables\Facades\DataTables;
@@ -82,10 +83,10 @@ class BookingSettingController extends Controller
 //                    return $row->available_service;
 //                })
                 ->addColumn('service_start_time', function ($row) {
-                    return $row->service_start_time;
+                    return Carbon::parse($row->service_start_time)->format('g:i A');
                 })
                 ->addColumn('service_end_time', function ($row) {
-                    return $row->service_end_time;
+                    return Carbon::parse($row->service_end_time)->format('g:i A');
                 })
                 ->addColumn('service_duration', function ($row) {
                     return $row->service_duration;

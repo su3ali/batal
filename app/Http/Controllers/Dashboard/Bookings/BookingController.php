@@ -66,7 +66,7 @@ class BookingController extends Controller
                     return $html;
                 })
                 ->addColumn('time', function ($row) {
-                    return Carbon::createFromTimestamp($row->time)->toTimeString();
+                    return Carbon::parse($row->time)->format('g:i A');
                 })
                 ->addColumn('group', function ($row) {
                     return $row->visit?->group?->name;

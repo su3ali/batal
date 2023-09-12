@@ -41,10 +41,10 @@ class VisitsController extends Controller
                     return $row->group?->name;
                 })
                 ->addColumn('start_time', function ($row) {
-                    return $row->start_time;
+                    return \Carbon\Carbon::parse($row->start_time)->format('g:i A');
                 })
                 ->addColumn('end_time', function ($row) {
-                    return $row->end_time;
+                    return \Carbon\Carbon::parse($row->end_time)->format('g:i A');
                 })
                 ->addColumn('duration', function ($row) {
                     return $row->duration;

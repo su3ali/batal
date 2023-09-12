@@ -36,5 +36,10 @@ return [
     'Delete successfully' => 'تم الحذف بنجاح',
     'Read Notification Successfully' => 'تمت قراءة الاشعارات بنجاح',
     'visit not found' => 'لم يتم العثور على الزيارة',
-    'Update Location successfully' => '',
+    'Update Location successfully' => 'تم تحديث الموقع بنجاح',
+    'You cant use this code anymore !' => 'لا يمكنك استخدام هذا الرمز بعد الآن!',
+    'coupon applied !' => 'تم تطبيق كوبون الخصم!',
+    'Expired Code !' => 'الكود منتهي الصلاحية!',
+    'Your order price didnt reach the minimum value for the coupon !' => 'سعر طلبك لم يصل إلى الحد الأدنى لقيمة القسيمة!',
+    'Invalid Code !' => 'الرمز غير صحيح !',
 ];

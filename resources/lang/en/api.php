@@ -36,5 +36,10 @@ return [
     'Delete successfully' => 'Delete successfully',
     'Read Notification Successfully' => 'Read Notification Successfully',
     'visit not found' => 'visit not found',
-    'Update Location successfully' => 'Update Location successfully',
+    'You cant use this code anymore !' => 'You cant use this code anymore !',
+    'coupon applied !' => 'coupon applied !',
+    'Expired Code !' => 'Expired Code !',
+    'Your order price didnt reach the minimum value for the coupon !' => 'Your order price didnt reach the minimum value for the coupon !',
+    'Invalid Code !' => 'Invalid Code !',
+
 ];
