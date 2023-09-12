@@ -22,7 +22,7 @@ class AddColsToContracts extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('status_id');
             $table->bigInteger('quantity')->default(0)->after('price');
-            $table->enum('payment_method', ['visa', 'cache']);
+            $table->enum('payment_method', ['visa', 'cache','wallet']);
             $table->text('notes')->nullable();
         });
     }

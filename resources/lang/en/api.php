@@ -36,6 +36,7 @@ return [
     'Delete successfully' => 'Delete successfully',
     'Read Notification Successfully' => 'Read Notification Successfully',
     'visit not found' => 'visit not found',
+    'Update Location successfully' => 'Update Location successfully',
     'You cant use this code anymore !' => 'You cant use this code anymore !',
     'coupon applied !' => 'coupon applied !',
     'Expired Code !' => 'Expired Code !',

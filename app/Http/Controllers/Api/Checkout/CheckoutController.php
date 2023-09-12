@@ -222,13 +222,13 @@ class CheckoutController extends Controller
         }
 
 
-        if ($request->payment_method == 'cache') {
-//            $transaction = Transaction::create([
-//                'order_id' => $order->id,
-//                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
-//                'payment_result' => 'success',
-//                'payment_method' => $request->payment_method,
-//            ]);
+        if ($request->payment_method == 'wallet') {
+            $transaction = Transaction::create([
+                'order_id' => $order->id,
+                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+                'payment_result' => 'success',
+                'payment_method' => $request->payment_method,
+            ]);
         } else {
             Transaction::create([
                 'order_id' => $order->id,
@@ -288,13 +288,13 @@ class CheckoutController extends Controller
                 'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
             ]);
         }
-        if ($request->payment_method == 'cache') {
-//            $transaction = Transaction::create([
-//                'contract_order_id' => $order->id,
-//                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
-//                'payment_result' => 'success',
-//                'payment_method' => $request->payment_method,
-//            ]);
+        if ($request->payment_method == 'wallet') {
+            $transaction = Transaction::create([
+                'contract_order_id' => $order->id,
+                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+                'payment_result' => 'success',
+                'payment_method' => $request->payment_method,
+            ]);
         } else {
             Transaction::create([
                 'contract_order_id' => $order->id,
