@@ -265,7 +265,7 @@
                     data:{city_id:city_id},
                     success: function(response) {
                         $('.region_id').empty()
-                        $('.region_id').append('<option disabled selected>{{__('dash.choose')}}</option>')
+                        $('.region_id').append('<option disabled>{{__('dash.choose')}}</option>')
                         $.each(response, function (i, item) {
 
                             $('.region_id').append($('<option>', {
