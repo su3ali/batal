@@ -98,7 +98,11 @@ class ReportsController extends Controller
 
         $services = Service::where('active',1)->get();
 
-        return view('dashboard.reports.sales',compact('services'));
+        $sub_total = Order::query()->sum('sub_total');
+
+        $tax = ($sub_total * 15)/100 ?? 0;
+
+        return view('dashboard.reports.sales',compact('services','sub_total','tax'));
     }
 
     protected function contractSales(Request $request)
