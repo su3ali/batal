@@ -177,6 +177,9 @@ class CheckoutController extends Controller
                 $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
                     $qu->where('region_id', $address->region_id);
                 })->whereIn('id', $groupIds)->first();
+                if( $group==null){
+                    return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
+                }
                 $assign_to_id = $group->id;
             } else {
                 $assign_to_id = $visit->assign_to_id;
