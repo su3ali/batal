@@ -135,6 +135,7 @@ class CartController extends Controller
                     })->where('category_id', $category_id)->where('date', $request->date[$key])
                         ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
                    
+                        
                    
                     if ($countInBooking == $countGroup) {
                         return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
