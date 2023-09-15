@@ -162,7 +162,11 @@
                 data: {service_id: service_id,type:type, booking_id:booking_id, category_id:category_id,address_id:address_id },
                 success: function (data) {
                     console.log(data)
-
+                    var select = document.getElementById("edit_group_id");
+                    var length = select.options.length;
+                    for (i = length-1; i >= 0; i--) {
+                      select.options[i] = null;
+                    }
                     if (data.length != 0){
                         $.each(data, function (i, item) {
 
