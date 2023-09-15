@@ -59,9 +59,10 @@
                         </div>
                         <div class="col-md-4">
                             <select class="select2 payment_method form-control" name="payment_method">
+                                <option selected disabled>اختر</option>
                                 <option value="cache">كاش</option>
                                 <option value="wallet">محفظة</option>
-                                <option value="mada">مدي</option>
+                                <option value="visa">مدي</option>
                             </select>
                         </div>
 
@@ -83,6 +84,29 @@
 
 
                 </div>
+
+                    <table class="table table-bordered nowrap">
+
+                        <thead>
+
+                        <tr>
+                            <th width="50%">إجمالي المبيعات بدون ضريبة</th>
+                            <td>{{$sub_total ?? 0}}</td>
+                        </tr>
+
+                        <tr>
+                            <th>إجمالي الضريبة %15</th>
+                            <td>{{$tax}}</td>
+                        </tr>
+
+                        <tr>
+                            <th>إجمالي المبيعات</th>
+                            <td>{{$tax + $sub_total}}</td>
+                        </tr>
+
+                        </thead>
+
+                    </table><!-- end of table -->
             </div>
 
         </div>
