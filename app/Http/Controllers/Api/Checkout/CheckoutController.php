@@ -16,6 +16,7 @@ use App\Models\Service;
 use App\Models\Technician;
 use App\Models\Transaction;
 use App\Models\UserAddresses;
+use App\Models\CategoryGroup;
 use App\Models\Visit;
 use App\Notifications\SendPushNotification;
 use App\Support\Api\ApiResponse;
@@ -29,7 +30,7 @@ use Illuminate\Support\Facades\Notification;
 
 class CheckoutController extends Controller
 {
-    use ApiResponse , NotificationTrait, imageTrait;
+    use ApiResponse, NotificationTrait, imageTrait;
 
     public function __construct()
     {
@@ -63,27 +64,27 @@ class CheckoutController extends Controller
 
         if ($carts->first()->type == 'package') {
             $total = $carts->first()->price;
-            if ($request->payment_method == 'wallet' && $total > $user->point){
+            if ($request->payment_method == 'wallet' && $total > $user->point) {
                 return self::apiResponse(400, __('api.Your wallet balance is not enough to complete this process'), []);
             }
             return $this->saveContract($user, $request, $total, $carts);
         } else {
 
-            if ($request->payment_method == 'wallet' && $request->amount > $user->point){
+            if ($request->payment_method == 'wallet' && $request->amount > $user->point) {
                 return self::apiResponse(400, __('api.Your wallet balance is not enough to complete this process'), []);
             }
-            $uploadImage =null;
-            $uploadFile =null;
-            if ($request->file && $request->file !=null){
-                $file=$this->storeImages($request->file,'order');
-                $uploadFile= 'storage/images/order'.'/'.$file;
+            $uploadImage = null;
+            $uploadFile = null;
+            if ($request->file && $request->file != null) {
+                $file = $this->storeImages($request->file, 'order');
+                $uploadFile = 'storage/images/order' . '/' . $file;
             }
-            if ($request->image && $request->image != null){
-                $image=$this->storeImages($request->image,'order');
-                $uploadImage= 'storage/images/order'.'/'.$image;
+            if ($request->image && $request->image != null) {
+                $image = $this->storeImages($request->image, 'order');
+                $uploadImage = 'storage/images/order' . '/' . $image;
             }
             $total = $this->calc_total($carts);
-            return $this->saveOrder($user, $request, $total, $carts,$uploadImage,$uploadFile);
+            return $this->saveOrder($user, $request, $total, $carts, $uploadImage, $uploadFile);
         }
     }
 
@@ -97,7 +98,7 @@ class CheckoutController extends Controller
         return array_sum($total);
     }
 
-    private function saveOrder($user, $request, $total, $carts, $uploadImage,$uploadFile)
+    private function saveOrder($user, $request, $total, $carts, $uploadImage, $uploadFile)
     {
         $totalAfterDiscount = ($total - $request->coupon);
         $order = Order::create([
@@ -112,8 +113,8 @@ class CheckoutController extends Controller
             'is_advance' => $request->is_advance,
             'is_return' => $request->is_return,
             'file' => $uploadFile,
-            'image'=> $uploadImage,
-            'notes'=> $request->notes,
+            'image' => $uploadImage,
+            'notes' => $request->notes,
         ]);
         foreach ($carts as $cart) {
             OrderService::create([
@@ -154,12 +155,15 @@ class CheckoutController extends Controller
                 'date' => $cart->date,
                 'type' => 'service',
                 'time' => Carbon::parse($cart->time)->toTimeString(),
-                'end_time' => $minutes? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
+                'end_time' => $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
             ]);
-            $address = UserAddresses::where('id',$order->user_address_id)->first();
-            $booking_id = Booking::whereHas('address',function ($qu) use($address){
-                $qu->where('region_id',$address->region_id);
-            })->where('date',$cart->date)->pluck('id')->toArray();
+            $address = UserAddresses::where('id', $order->user_address_id)->first();
+
+            $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
+                $qu->where('region_id', $address->region_id);
+            })->whereHas('category', function ($qu) use ($category_id) {
+                $qu->where('category_id', $category_id);
+            })->where('date', $cart->date)->pluck('id')->toArray();
 
             $visit = DB::table('visits')
                 ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
@@ -168,19 +172,18 @@ class CheckoutController extends Controller
                 ->orderBy('group_id', 'ASC')
                 ->first();
 
-
-
-            if ($visit == null){
-                $group = Group::where('active',1)->whereHas('regions',function($qu) use($address) {
-                    $qu->where('region_id',$address->region_id);
-                })->first();
+            if ($visit == null) {
+                $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
+                $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
+                    $qu->where('region_id', $address->region_id);
+                })->whereIn('id', $groupIds)->first();
                 $assign_to_id = $group->id;
-            }else{
+            } else {
                 $assign_to_id = $visit->assign_to_id;
             }
 
             $start_time = Carbon::parse($cart->time)->toTimeString();
-            $end_time =  $minutes? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
+            $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
             $validated['start_time'] =  $start_time;
             $validated['end_time'] = $end_time;
             $validated['duration'] = $minutes;
@@ -191,17 +194,17 @@ class CheckoutController extends Controller
             $visitInsert = Visit::query()->create($validated);
 
 
-            $allTechn = Technician::where('group_id',$visitInsert->assign_to_id)->whereNotNull('fcm_token')->get();
+            $allTechn = Technician::where('group_id', $visitInsert->assign_to_id)->whereNotNull('fcm_token')->get();
 
-            if (count($allTechn) > 0){
+            if (count($allTechn) > 0) {
 
                 $title = 'موعد زيارة جديد';
                 $message = 'لديك موعد زياره جديد';
 
-                foreach ($allTechn as $tech){
+                foreach ($allTechn as $tech) {
                     Notification::send(
                         $tech,
-                        new SendPushNotification($title,$message)
+                        new SendPushNotification($title, $message)
                     );
                 }
 
@@ -211,14 +214,12 @@ class CheckoutController extends Controller
                     'device_token' => $FcmTokenArray,
                     'title' => $title,
                     'message' => $message,
-                    'type'=>'technician',
-                    'code'=> 1,
+                    'type' => 'technician',
+                    'code' => 1,
                 ];
 
                 $this->pushNotification($notification);
             }
-
-
         }
 
 
@@ -330,7 +331,6 @@ class CheckoutController extends Controller
         $user->update([
             'point' => $user->point + $point ?? 0
         ]);
-
     }
 
     protected function paid(Request $request)
@@ -355,7 +355,7 @@ class CheckoutController extends Controller
             'amount' => $request->amount,
         ]);
 
-        $order = Order::where('id',$request->order_id)->first();
+        $order = Order::where('id', $request->order_id)->first();
 
         $order->update([
             'payment_status' => 'paid',
@@ -367,10 +367,5 @@ class CheckoutController extends Controller
         ]);
 
         return self::apiResponse(200, __('api.paid successfully'), $this->body);
-
-
     }
-
-
-
 }

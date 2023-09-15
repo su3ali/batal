@@ -226,15 +226,20 @@ class BookingController extends Controller
             $group = Group::where('active',1)->whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
                 $qu->where('region_id',$address->region_id);
             })->get()->pluck('name', 'id')->toArray();
-
         } else {
             $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
             $address = UserAddresses::where('id',$request->address_id)->first();
             $group = Group::where('active',1)->whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
                 $qu->where('region_id',$address->region_id);
             })->get()->pluck('name', 'id')->toArray();
+            $groups = Group::where('active',1)->whereIn('id', $groupIds)->get();
+            // error_log("BBBBBBB");
+            // error_log(sizeof($groups));
+            // foreach ($groups as $key => $value){
+            //     error_log($value);
+            // }
         }
-
+      
         return response($group);
 
     }

@@ -122,6 +122,7 @@
                             <div class="form-group col-md-6">
 
                                 <label for="group_ids">المجموعات</label>
+                               
                                 <select id="edit_group_id"  class="select2 form-control pt-1"
                                         name="assign_to_id" required>
                                     <option disabled selected>{{__('dash.choose')}}</option>
