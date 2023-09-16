@@ -30,7 +30,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">اعدادات الحجوزات</li>
+                                <li class="breadcrumb-item active" aria-current="page">المواعيد</li>
                             </ol>
                         </nav>
 

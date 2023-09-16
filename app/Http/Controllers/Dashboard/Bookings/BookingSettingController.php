@@ -165,9 +165,12 @@ class BookingSettingController extends Controller
 
     protected function edit($id){
         $bookingSetting = BookingSetting::query()->where('id', $id)->first();
+        $chosen_city_id=$bookingSetting->city_id;
         $services = Service::where('active',1)->get();
         $cities = City::where('active',1)->get()->pluck('title','id');
-        $regions = Region::where('active',1)->get();
+        $regions = Region::where('active',1)->whereHas('city', function ($q) use($chosen_city_id) {
+            $q->where('id',$chosen_city_id);
+        })->get();
 
         return view('dashboard.booking_settings.edit', compact('bookingSetting','services','regions','cities'));
 

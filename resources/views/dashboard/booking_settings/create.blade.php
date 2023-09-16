@@ -24,8 +24,8 @@
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
 
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.booking_setting.index')}}">اعدادات الحجوزات</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">انشاء اعدادات الحجوزات</li>
+                                        href="{{route('dashboard.booking_setting.index')}}">المواعيد</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">انشاء المواعيد</li>
                             </ol>
                         </nav>
 
@@ -47,7 +47,7 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6" style="min-height: 500px;">
                     <div class="col-md-12 text-left mb-3">
-                        <h3>اعدادات الحجوزات</h3>
+                        <h3>المواعيد</h3>
                     </div>
                     <div class="col-md-12">
                         <form action="{{route('dashboard.booking_setting.store')}}" method="post" class="form-horizontal"

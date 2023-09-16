@@ -160,7 +160,7 @@
                                 <a href="{{route('dashboard.booking_statuses.index')}}"> حالات الحجز </a>
                             </li>
                             <li>
-                                <a href="{{route('dashboard.booking_setting.index')}}"> اعدادات الحجوزات </a>
+                                <a href="{{route('dashboard.booking_setting.index')}}"> المواعيد </a>
                             </li>
                         @endcan
                     </ul>

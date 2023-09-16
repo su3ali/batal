@@ -266,11 +266,10 @@ class CartController extends Controller
         $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($request) {
             $qu->where('region_id', $request->region_id);
         })->whereIn('id', $groupIds)->get();
-        // error_log("#######################");
-        // error_log(sizeof( $group));
         if ($group->isEmpty()) {
             return self::apiResponse(400, __('api.Sorry, the service is currently unavailable'), []);
         }
+  
 
         $timeDuration = 60;
         if ($request->package_id != 0) {
@@ -285,6 +284,7 @@ class CartController extends Controller
             $bookSetting = BookingSetting::whereHas('regions', function ($q) use ($request) {
                 $q->where('region_id', $request->region_id);
             })->where('service_id', $service_id)->first();
+        
             if (!$bookSetting) {
                 return self::apiResponse(400, __('api.Sorry, the service is currently unavailable'), []);
             }
@@ -321,8 +321,10 @@ class CartController extends Controller
                 });
             })->whereHas('visit', function ($qq) {
                 $qq->whereIn('visits_status_id', [1, 2, 3, 4]);
+            })->whereHas('address', function ($qq) use($request){
+                $qq->where('region_id', $request->region_id);
             })->get();
-
+            
             foreach ($bookings as $booking) {
                 array_push($bookingTimes, $booking->time);
                 array_push($bookingDates, $booking->date);
@@ -331,8 +333,6 @@ class CartController extends Controller
 
 
         $collectionOfTimesOfServices = [];
-        // dump("AAAAAAAA");
-        // dump($times);
         foreach ($times as $service_id => $timesInDays) {
             $collectionOfTimes = [];
             foreach ($timesInDays as $day => $time) {
@@ -354,21 +354,11 @@ class CartController extends Controller
                     $setting = Setting::query()->first();
                     $startDate = $setting->resting_start_time;
                     $endDate = $setting->resting_end_time;
-
-                    // $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
-                    // $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
-                    //     $qu->where('region_id', $address->region_id);
-                    // })->whereIn('id', $groupIds)->first();
-
-
                     if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
-                        error_log("A");
                     } else if ($setting->is_resting == 1 && $time->between($startDate, $endDate, true)) {
-                        error_log("B");
                     } else if (in_array($day, $bookingDates) && in_array($converTimestamp, $bookingTimes)) {
-                        error_log("C");
                     } else {
-                        error_log("D");
+                     
                         return $time->format('g:i A');
                     }
                 });

@@ -24,8 +24,8 @@
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
 
                                 <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.booking_setting.index')}}">اعدادات الحجوزات</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">تعديل اعدادات الحجوزات</li>
+                                        href="{{route('dashboard.booking_setting.index')}}">المواعيد</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">تعديل المواعيد</li>
                             </ol>
                         </nav>
 
@@ -47,7 +47,7 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6" style="min-height: 500px;">
                     <div class="col-md-12 text-left mb-3">
-                        <h3>تعديل اعدادات الحجوزات</h3>
+                        <h3>تعديل المواعيد</h3>
                     </div>
                     <div class="col-md-12">
                         <form action="{{route('dashboard.booking_setting.update', $bookingSetting->id)}}" method="post" class="form-horizontal"
@@ -134,9 +134,12 @@
                                         <label for="inputEmail4">{{__('dash.city')}}</label>
                                         <select id="inputState" class="select2 city_id form-control pt-1"
                                                 name="city_id">
+                                            
                                             <option disabled>{{__('dash.choose')}}</option>
                                             @foreach($cities as $key => $city)
+                                            
                                                 <option value="{{$key}}" @if($key == $bookingSetting->city_id) selected @endif>{{$city}}</option>
+                                                
                                             @endforeach
                                         </select>
                                         @error('city_id')
