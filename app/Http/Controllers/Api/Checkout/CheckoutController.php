@@ -178,6 +178,7 @@ class CheckoutController extends Controller
                     $qu->where('region_id', $address->region_id);
                 })->whereIn('id', $groupIds)->first();
                 if( $group==null){
+                    error_log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
                     return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
                 }
                 $assign_to_id = $group->id;

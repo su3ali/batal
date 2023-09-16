@@ -261,11 +261,13 @@ class CartController extends Controller
             'package_id' => 'required',
         ];
         $request->validate($rules, $request->all());
-
+        $category_id=Service::where('id', ($request->service_ids)[0])->first()->category_id;
+        $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
         $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($request) {
             $qu->where('region_id', $request->region_id);
-        })->get();
-
+        })->whereIn('id', $groupIds)->get();
+        // error_log("#######################");
+        // error_log(sizeof( $group));
         if ($group->isEmpty()) {
             return self::apiResponse(400, __('api.Sorry, the service is currently unavailable'), []);
         }
@@ -329,6 +331,8 @@ class CartController extends Controller
 
 
         $collectionOfTimesOfServices = [];
+        // dump("AAAAAAAA");
+        // dump($times);
         foreach ($times as $service_id => $timesInDays) {
             $collectionOfTimes = [];
             foreach ($timesInDays as $day => $time) {
@@ -350,6 +354,11 @@ class CartController extends Controller
                     $setting = Setting::query()->first();
                     $startDate = $setting->resting_start_time;
                     $endDate = $setting->resting_end_time;
+
+                    // $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
+                    // $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
+                    //     $qu->where('region_id', $address->region_id);
+                    // })->whereIn('id', $groupIds)->first();
 
 
                     if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
