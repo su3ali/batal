@@ -170,22 +170,30 @@ class CheckoutController extends Controller
                 ->whereIn('booking_id', $booking_id)
                 ->groupBy('assign_to_id')
                 ->orderBy('group_id', 'ASC')
-                ->first();
-
-            if ($visit == null) {
+                ->get();
+               
+            if ($visit->isEmpty()) {
                 $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
                 $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
                     $qu->where('region_id', $address->region_id);
                 })->whereIn('id', $groupIds)->first();
                 if( $group==null){
-                    error_log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
                     return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
                 }
                 $assign_to_id = $group->id;
+                error_log($address->region_id);
             } else {
-                $assign_to_id = $visit->assign_to_id;
-            }
+                $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
+                $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
+                    $qu->where('region_id', $address->region_id);
+                })->whereIn('id', $groupIds)->pluck('id')->toArray();
+                if( sizeof($group)==0){
+                    return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
+                }
+                $assign_to_id = $visit->whereIn('assign_to_id', $group)->first()->assign_to_id;            
 
+            }
+        
             $start_time = Carbon::parse($cart->time)->toTimeString();
             $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
             $validated['start_time'] =  $start_time;
