@@ -54,7 +54,7 @@ class AuthController extends Controller
             ], $request->all());
         }
 
-        if ($user->phone == "966580111196"){
+        if ($user->phone == "966580111196" || $user->phone == "966541169947" ){
             $code = 1111;
         }else{
             $code = random_int(1000, 9999);

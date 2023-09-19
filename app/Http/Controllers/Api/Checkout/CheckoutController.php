@@ -138,11 +138,18 @@ class CheckoutController extends Controller
             $bookSetting = BookingSetting::where('service_id', $service->id)->first();
             if ($bookSetting) {
                 foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
-                    $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
+                    $serviceMinutes = ($bookSetting->buffering_time + $bookSetting->service_duration)
                         * $carts->where('service_id', $service->id)->first()->quantity;
                     $minutes += $serviceMinutes;
                 }
             }
+            // $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
+            // if (($bookSetting->service_duration) > ($allowedDuration)) {
+            //     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
+            //     $numOfDaysForService = intval($diff / ($allowedDuration / 60));
+            //     for ($i = 0; $i < $numOfDaysForService; $i++) {
+            //     }
+            // }
             $bookingInsert = Booking::query()->create([
                 'booking_no' => $booking_no,
                 'user_id' => auth('sanctum')->user()->id,
@@ -169,31 +176,33 @@ class CheckoutController extends Controller
                 ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
                 ->whereIn('booking_id', $booking_id)
                 ->groupBy('assign_to_id')
-                ->orderBy('group_id', 'ASC')
-                ->get();
-               
-            if ($visit->isEmpty()) {
+                ->orderBy('group_id', 'ASC');
+
+            $assign_to_id = 0;
+            if ($visit->get()->isEmpty()) {
                 $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
                 $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
                     $qu->where('region_id', $address->region_id);
-                })->whereIn('id', $groupIds)->first();
-                if( $group==null){
+                })->whereIn('id', $groupIds)->inRandomOrder()->first();
+                if ($group == null) {
                     return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
                 }
                 $assign_to_id = $group->id;
-                error_log($address->region_id);
             } else {
                 $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
                 $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
                     $qu->where('region_id', $address->region_id);
-                })->whereIn('id', $groupIds)->pluck('id')->toArray();
-                if( sizeof($group)==0){
+                })->whereIn('id', $groupIds);
+                if ($group->count() == 0) {
                     return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
                 }
-                $assign_to_id = $visit->whereIn('assign_to_id', $group)->first()->assign_to_id;            
-
+                if (($visit->get()->count()) < ($group->get()->count())) {
+                    $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
+                } else {
+                    $assign_to_id = $visit->inRandomOrder()->first()->assign_to_id;
+                }
             }
-        
+
             $start_time = Carbon::parse($cart->time)->toTimeString();
             $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
             $validated['start_time'] =  $start_time;
