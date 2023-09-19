@@ -33,7 +33,6 @@ class VisitsController extends Controller
 
     protected function myCurrentOrders()
     {
-
         $orders = Visit::whereHas('booking', function ($q) {
             $q->whereHas('customer')->whereHas('address');
 

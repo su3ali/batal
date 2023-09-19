@@ -143,27 +143,8 @@ class CheckoutController extends Controller
                     $minutes += $serviceMinutes;
                 }
             }
-            // $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
-            // if (($bookSetting->service_duration) > ($allowedDuration)) {
-            //     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
-            //     $numOfDaysForService = intval($diff / ($allowedDuration / 60));
-            //     for ($i = 0; $i < $numOfDaysForService; $i++) {
-            //     }
-            // }
-            $bookingInsert = Booking::query()->create([
-                'booking_no' => $booking_no,
-                'user_id' => auth('sanctum')->user()->id,
-                'category_id' => $category_id,
-                'order_id' => $order->id,
-                'user_address_id' => $order->user_address_id,
-                'booking_status_id' => 1,
-                'notes' => $cart->notes,
-                'quantity' => $cart->quantity,
-                'date' => $cart->date,
-                'type' => 'service',
-                'time' => Carbon::parse($cart->time)->toTimeString(),
-                'end_time' => $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
-            ]);
+
+
             $address = UserAddresses::where('id', $order->user_address_id)->first();
 
             $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
@@ -203,19 +184,91 @@ class CheckoutController extends Controller
                 }
             }
 
-            $start_time = Carbon::parse($cart->time)->toTimeString();
-            $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
-            $validated['start_time'] =  $start_time;
-            $validated['end_time'] = $end_time;
-            $validated['duration'] = $minutes;
-            $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
-            $validated['assign_to_id'] = $assign_to_id;
-            $validated['booking_id'] = $bookingInsert->id;
-            $validated['visits_status_id'] = 1;
-            $visitInsert = Visit::query()->create($validated);
+            $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
+            if (($bookSetting->service_duration) > ($allowedDuration)) {
+                // $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
+                $numOfDaysForService = intval(($bookSetting->service_duration / 60) / ($allowedDuration / 60)) + 1;
+                $bookingIds = [];
+                $startTimes=[];
+                $endTimes=[];
+                for ($i = $numOfDaysForService - 1; $i >= 0; $i--) {
+                    $startTime = ($i == 0 ? Carbon::parse($cart->time)->toTimeString() : Carbon::parse($bookSetting->service_start_time)->toTimeString());
+                    $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->addMinutes($bookSetting->service_duration - (($numOfDaysForService - 1) * ($allowedDuration / 60)))->toTimeString() : $bookSetting->service_end_time);
 
 
-            $allTechn = Technician::where('group_id', $visitInsert->assign_to_id)->whereNotNull('fcm_token')->get();
+                    $bookingInsert = Booking::query()->create([
+                        'booking_no' => $booking_no,
+                        'user_id' => auth('sanctum')->user()->id,
+                        'category_id' => $category_id,
+                        'order_id' => $order->id,
+                        'user_address_id' => $order->user_address_id,
+                        'booking_status_id' => 1,
+                        'notes' => $cart->notes,
+                        'quantity' => $cart->quantity,
+                        'date' => Carbon::parse($cart->date)->addDays($i)->format('Y-m-d'),
+                        'type' => 'service',
+                        'time' =>  $startTime,
+                        'end_time' =>   $endTime,
+
+                        //  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
+                    ]);
+                    //  $start_time = $i == $numOfDaysForService ? Carbon::parse($cart->time)->toTimeString() : Carbon::parse($bookSetting->service_start_time)->toTimeString();
+                    //  $end_time =   $i == 0 ? Carbon::parse($bookSetting->service_duration - (($numOfDaysForService - 1) * $allowedDuration))->toTimeString() : Carbon::parse($allowedDuration)->toTimeString();
+                    array_push($bookingIds, $bookingInsert->id);
+                    array_push($startTimes, $startTime);
+                    array_push($endTimes, $endTime);
+
+                }
+                for ($i = sizeof($bookingIds) - 1; $i >= 0; $i--) {
+                    $validated['start_time'] =  $startTimes[$i];
+                    $validated['end_time'] =  $endTimes[$i];
+                    $validated['duration'] = $minutes;
+                    $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
+                    $validated['assign_to_id'] = $assign_to_id;
+                    $validated['booking_id'] = $bookingIds[$i];
+                    $validated['visits_status_id'] = 1;
+                    $visitInsert = Visit::query()->create($validated);
+                }
+
+
+                $allTechn = Technician::where('group_id', $assign_to_id)->whereNotNull('fcm_token')->get();
+            } else {
+
+                $bookingInsert = Booking::query()->create([
+                    'booking_no' => $booking_no,
+                    'user_id' => auth('sanctum')->user()->id,
+                    'category_id' => $category_id,
+                    'order_id' => $order->id,
+                    'user_address_id' => $order->user_address_id,
+                    'booking_status_id' => 1,
+                    'notes' => $cart->notes,
+                    'quantity' => $cart->quantity,
+                    'date' => $cart->date,
+                    'type' => 'service',
+                    'time' =>  Carbon::parse($cart->time)->toTimeString(),
+                    'end_time' =>   $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
+
+
+                ]);
+                $start_time = Carbon::parse($cart->time)->toTimeString();
+                $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
+                $validated['start_time'] =  $start_time;
+                $validated['end_time'] = $end_time;
+                $validated['duration'] = $minutes;
+                $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
+                $validated['assign_to_id'] = $assign_to_id;
+                $validated['booking_id'] = $bookingInsert->id;
+                $validated['visits_status_id'] = 1;
+                $visitInsert = Visit::query()->create($validated);
+
+
+                $allTechn = Technician::where('group_id', $visitInsert->assign_to_id)->whereNotNull('fcm_token')->get();
+            }
+
+
+
+
+
 
             if (count($allTechn) > 0) {
 
