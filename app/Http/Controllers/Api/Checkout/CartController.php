@@ -276,7 +276,7 @@ class CartController extends Controller
         $timeDuration = 60;
         if ($request->package_id != 0) {
             $contract = ContractPackage::where('id', $request->package_id)->first();
-            $timeDuration = $contract->time * 30;
+            $timeDuration = $contract->time;
         }
 
         $times = [];
