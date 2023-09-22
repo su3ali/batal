@@ -262,7 +262,7 @@ class CheckoutController extends Controller
                 $visitInsert = Visit::query()->create($validated);
 
 
-                $allTechn = Technician::where('group_id', $visitInsert->assign_to_id)->whereNotNull('fcm_token')->get();
+                $allTechn = Technician::where('group_id', $assign_to_id)->whereNotNull('fcm_token')->get();
             }
 
 
