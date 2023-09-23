@@ -261,6 +261,8 @@ class CartController extends Controller
             'service_ids.*' => 'required|exists:services,id',
             'region_id' => 'required|exists:regions,id',
             'package_id' => 'required',
+            'page_number'=>'required|numeric'
+            
         ];
         $request->validate($rules, $request->all());
         $category_id = Service::where('id', ($request->service_ids)[0])->first()->category_id;
@@ -298,7 +300,12 @@ class CartController extends Controller
                 $serviceDays[] = $this->days[$i];
             }
             $dates = [];
-            for ($i = 0; $i < $timeDuration; $i++) {
+            $page_size=14;
+            $page_number=0;
+            if($request->page_number){
+                $page_number=$request->page_number;
+            }
+            for ($i = $page_number*$page_size; $i < ($page_number+1)*$page_size; $i++) {
                 $date = date('Y-m-d', strtotime('+' . $i . ' day'));
                 if (in_array(date('l', strtotime($date)), $serviceDays)) {
                     $dates[] = $date;
