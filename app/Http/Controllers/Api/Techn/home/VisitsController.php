@@ -228,9 +228,11 @@ class VisitsController extends Controller
 
         $request->validate($rules, $request->all());
 
-        $techn = Technician::where('id',auth('sanctum')->user()->id)->first();
+        $groups=Group::where('technician_id',auth('sanctum')->user()->id)->first();
+        //$techn = Technician::where('id',auth('sanctum')->user()->id)->first();
 
-        $model = Visit::query()->where('assign_to_id', $techn->group_id)->where('visits_status_id',2)->first();
+
+        $model = Visit::query()->where('assign_to_id', $groups->id)->where('visits_status_id',2)->first();
 
         if (!$model){
             return self::apiResponse(400, __('api.visit not found'), $this->body);
