@@ -135,7 +135,7 @@ class CheckoutController extends Controller
                 ->where('category_id', $category_id)->first();
             $booking_no = 'dash2023/' . $cart->id;
             $minutes = 0;
-            $bookSetting = BookingSetting::where('service_id', $service->id)->first();
+            $bookSetting = BookingSetting::where('service_id', $cart->service_id)->first();
             if ($bookSetting) {
                 foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
                     $serviceMinutes = ($bookSetting->buffering_time + $bookSetting->service_duration)
@@ -180,7 +180,7 @@ class CheckoutController extends Controller
                 if (($visit->get()->count()) < ($group->get()->count())) {
                     $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
                 } else {
-                     $assign_to_id = $visit->where('start_time','!=',$cart->time)->inRandomOrder()->first()->assign_to_id;
+                    $assign_to_id = $visit->where('start_time', '!=', $cart->time)->inRandomOrder()->first()->assign_to_id;
                 }
             }
 
@@ -189,8 +189,8 @@ class CheckoutController extends Controller
                 // $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
                 $numOfDaysForService = intval(($bookSetting->service_duration / 60) / ($allowedDuration / 60)) + 1;
                 $bookingIds = [];
-                $startTimes=[];
-                $endTimes=[];
+                $startTimes = [];
+                $endTimes = [];
                 for ($i = $numOfDaysForService - 1; $i >= 0; $i--) {
                     $startTime = ($i == 0 ? Carbon::parse($cart->time)->toTimeString() : Carbon::parse($bookSetting->service_start_time)->toTimeString());
                     $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->addMinutes($bookSetting->service_duration - (($numOfDaysForService - 1) * ($allowedDuration / 60)))->toTimeString() : $bookSetting->service_end_time);
@@ -201,6 +201,7 @@ class CheckoutController extends Controller
                         'user_id' => auth('sanctum')->user()->id,
                         'category_id' => $category_id,
                         'order_id' => $order->id,
+                        'service_id' => $cart->service_id,
                         'user_address_id' => $order->user_address_id,
                         'booking_status_id' => 1,
                         'notes' => $cart->notes,
@@ -217,7 +218,6 @@ class CheckoutController extends Controller
                     array_push($bookingIds, $bookingInsert->id);
                     array_push($startTimes, $startTime);
                     array_push($endTimes, $endTime);
-
                 }
                 for ($i = sizeof($bookingIds) - 1; $i >= 0; $i--) {
                     $validated['start_time'] =  $startTimes[$i];
@@ -239,6 +239,7 @@ class CheckoutController extends Controller
                     'user_id' => auth('sanctum')->user()->id,
                     'category_id' => $category_id,
                     'order_id' => $order->id,
+                    'service_id' => $cart->service_id,
                     'user_address_id' => $order->user_address_id,
                     'booking_status_id' => 1,
                     'notes' => $cart->notes,
@@ -328,7 +329,7 @@ class CheckoutController extends Controller
     private function saveContract($user, $request, $total, $carts)
     {
 
-        $order = Contract::create([
+        $contract_order = Contract::create([
             'user_id' => $user->id,
             'discount' => $request->coupon,
             'user_address_id' => $request->user_address_id,
@@ -340,8 +341,28 @@ class CheckoutController extends Controller
             'price' => ($total - $request->coupon),
             'quantity' => $carts->count(),
         ]);
+        $order = Order::create([
+            'user_id' => $user->id,
+            'discount' => $request->coupon,
+            'user_address_id' => $request->user_address_id,
+            'sub_total' => $total,
+            'total' => ($total - $request->coupon),
+            'payment_status' => $request->payment_status,
+            'partial_amount' => ($total - $request->coupon - $request->amount),
+            'status_id' => 2,
+            'is_advance' => $request->is_advance,
+            'is_return' => $request->is_return,
+            'notes' => $request->notes,
+        ]);
+        ///////////////////////////////////////////////
         foreach ($carts as $key => $cart) {
-
+            OrderService::create([
+                'order_id' => $order->id,
+                'service_id' => $cart->service_id,
+                'price' => $cart->price,
+                'quantity' => $cart->quantity,
+                'category_id' => $cart->category_id,
+            ]);
             $service = Service::query()->find($cart->service_id);
             $category_id = $cart->category_id;
             $booking_no = 'dash2023/' . $cart->id;
@@ -350,9 +371,8 @@ class CheckoutController extends Controller
             if ($bookSetting) {
                 $minutes =  ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration);
             }
-
             $address = UserAddresses::where('id', $order->user_address_id)->first();
-          
+
             $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
                 $qu->where('region_id', $address->region_id);
             })->whereHas('category', function ($qu) use ($category_id) {
@@ -363,7 +383,6 @@ class CheckoutController extends Controller
                 ->whereIn('booking_id', $booking_id)
                 ->groupBy('assign_to_id')
                 ->orderBy('group_id', 'ASC');
-
             $assign_to_id = 0;
             if ($visit->get()->isEmpty()) {
                 $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
@@ -382,19 +401,24 @@ class CheckoutController extends Controller
                 if ($group->count() == 0) {
                     return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
                 }
-            
+
                 if (($visit->get()->count()) < ($group->get()->count())) {
                     $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
                 } else {
-                 
-                    $assign_to_id = $visit->where('start_time','!=',$cart->time)->inRandomOrder()->first()->assign_to_id;
+
+                    $assign_to_id = $visit->where('start_time', '!=', $cart->time)->inRandomOrder()->first()->assign_to_id;
                 }
             }
+            
+
             $bookingInsert = Booking::query()->create([
                 'booking_no' => $booking_no,
                 'user_id' => auth('sanctum')->user()->id,
                 'category_id' => $category_id,
-                'contract_order_id' => $order->id,
+                'service_id' => $cart->service_id,
+                'package_id' => $cart->contract_package_id,
+                'order_id' => $order->id,
+                'contract_order_id' => $contract_order->id,
                 'user_address_id' => $order->user_address_id,
                 'booking_status_id' => 1,
                 'notes' => $cart->notes,
@@ -404,6 +428,8 @@ class CheckoutController extends Controller
                 'time' => Carbon::parse($cart->time)->toTimeString(),
                 'end_time' => $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
             ]);
+            
+
 
             $start_time = Carbon::parse($cart->time)->toTimeString();
             $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
@@ -415,8 +441,6 @@ class CheckoutController extends Controller
             $validated['booking_id'] = $bookingInsert->id;
             $validated['visits_status_id'] = 1;
             $visitInsert = Visit::query()->create($validated);
-
-
 
             $allTechn = Technician::where('group_id', $assign_to_id)->whereNotNull('fcm_token')->get();
 
@@ -445,6 +469,7 @@ class CheckoutController extends Controller
                 $this->pushNotification($notification);
             }
         }
+        ///////////////////////////////////////////////
         // foreach ($carts as $key => $cart) {
         //     $booking_no = 'dash2023/' . $cart->id;
         //     $minutes = 0;
@@ -470,14 +495,16 @@ class CheckoutController extends Controller
         // }
         if ($request->payment_method == 'wallet') {
             $transaction = Transaction::create([
-                'contract_order_id' => $order->id,
+                'order_id' => $order->id,
+                'contract_order_id' => $contract_order->id,
                 'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
                 'payment_result' => 'success',
                 'payment_method' => $request->payment_method,
             ]);
         } else {
             Transaction::create([
-                'contract_order_id' => $order->id,
+                    'order_id' => $order->id,
+                'contract_order_id' => $contract_order->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
                 'payment_method' => $request->payment_method,

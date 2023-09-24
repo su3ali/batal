@@ -305,7 +305,15 @@ class CartController extends Controller
             if($request->page_number){
                 $page_number=$request->page_number;
             }
-            for ($i = $page_number*$page_size; $i < ($page_number+1)*$page_size; $i++) {
+            $start = $page_number * $page_size;
+            $end = ($page_number + 1) * $page_size;
+            if ($start >= $timeDuration) {
+                $start = $timeDuration;
+            }
+            if ($end >= $timeDuration) {
+                $end = $timeDuration;
+            }
+            for ($i = $start; $i <  $end; $i++) {
                 $date = date('Y-m-d', strtotime('+' . $i . ' day'));
                 if (in_array(date('l', strtotime($date)), $serviceDays)) {
                     $dates[] = $date;
