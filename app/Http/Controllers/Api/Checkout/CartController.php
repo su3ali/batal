@@ -153,7 +153,7 @@ class CartController extends Controller
                 return self::apiResponse(200, __('api.date and time for reservations updated successfully'), $this->body);
             } else {
 
-                $cartCategoryCount = auth()->user()->carts->first()->quantity;
+                $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
                 if (
                     count($request->category_ids) < $cartCategoryCount
                     ||
@@ -167,9 +167,9 @@ class CartController extends Controller
 
                     $countGroup = CategoryGroup::where('category_id', $cart->category_id)->count();
 
-                    $countInBooking = Booking::with(['visit' => function ($q) {
+                    $countInBooking = Booking::whereHas('visit' , function ($q) {
                         $q->whereNotIn('visits_status_id', [5, 6]);
-                    }])->where('category_id', $cart->category_id)->where('date', $request->date[$key])
+                    })->where('category_id', $cart->category_id)->where('date', $request->date[$key])
                         ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
 
                     if ($countInBooking == $countGroup) {
