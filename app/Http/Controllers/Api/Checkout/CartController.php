@@ -153,7 +153,8 @@ class CartController extends Controller
                 return self::apiResponse(200, __('api.date and time for reservations updated successfully'), $this->body);
             } else {
 
-                $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
+                //      $cartCategoryCount = count(array_unique(auth()->user()->carts->pluck('category_id')->toArray()));
+                $cartCategoryCount = auth()->user()->carts->count();
                 if (
                     count($request->category_ids) < $cartCategoryCount
                     ||
@@ -167,7 +168,7 @@ class CartController extends Controller
 
                     $countGroup = CategoryGroup::where('category_id', $cart->category_id)->count();
 
-                    $countInBooking = Booking::whereHas('visit' , function ($q) {
+                    $countInBooking = Booking::whereHas('visit', function ($q) {
                         $q->whereNotIn('visits_status_id', [5, 6]);
                     })->where('category_id', $cart->category_id)->where('date', $request->date[$key])
                         ->where('time', Carbon::createFromFormat('H:i A', $request->time[$key])->format('H:i:s'))->count();
@@ -261,8 +262,8 @@ class CartController extends Controller
             'service_ids.*' => 'required|exists:services,id',
             'region_id' => 'required|exists:regions,id',
             'package_id' => 'required',
-            'page_number'=>'required|numeric'
-            
+            'page_number' => 'required|numeric'
+
         ];
         $request->validate($rules, $request->all());
         $category_id = Service::where('id', ($request->service_ids)[0])->first()->category_id;
@@ -300,10 +301,10 @@ class CartController extends Controller
                 $serviceDays[] = $this->days[$i];
             }
             $dates = [];
-            $page_size=14;
-            $page_number=0;
-            if($request->page_number){
-                $page_number=$request->page_number;
+            $page_size = 14;
+            $page_number = 0;
+            if ($request->page_number) {
+                $page_number = $request->page_number;
             }
             $start = $page_number * $page_size;
             $end = ($page_number + 1) * $page_size;
@@ -428,6 +429,7 @@ class CartController extends Controller
                     if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
 
                         // error_log("A");
+                    } else if ($countGroup == 0) {
                     } else if ($setting->is_resting == 1 && $time->between($startDate, $endDate, true)) {
                         //  error_log("B");
 
