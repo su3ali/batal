@@ -90,7 +90,7 @@ class AuthController extends Controller
 
         public function logout(Request $request)
         {
-            auth()->user('sanctum')->tokens()->delete();
+            auth()->user()->tokens()->delete();
             $this->message = __('api.Logged out');
 
             return self::apiResponse(200, $this->message, $this->body);
