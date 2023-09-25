@@ -39,7 +39,7 @@ class AuthController extends Controller
                 'fcm_token' => $request->fcm_token
             ]);
             if(auth('sanctum')->check()){
-                auth()->user()->tokens()->delete();
+                $techn->tokens()->delete();
             }
         
            
