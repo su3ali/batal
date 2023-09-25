@@ -122,24 +122,42 @@ class VisitsController extends Controller
             $title = 'موعد زيارة جديد';
             $message = 'لديك موعد زياره جديد';
 
-            foreach ($allTechn as $tech){
+            foreach ($allTechn as $tech) {
                 Notification::send(
                     $tech,
-                    new SendPushNotification($title,$message)
+                    new SendPushNotification($title, $message)
                 );
+                $FcmToken = $tech->fcm_token;
+
+                $notification = [
+                    'device_token' => $FcmToken,
+                    'title' => $title,
+                    'message' => $message,
+                    'type' => 'technician',
+                    'code' => 1,
+                ];
+
+                $this->pushNotification($notification);
             }
+            
+            // foreach ($allTechn as $tech){
+            //     Notification::send(
+            //         $tech,
+            //         new SendPushNotification($title,$message)
+            //     );
+            // }
 
-            $FcmTokenArray = $allTechn->pluck('fcm_token');
+            // $FcmTokenArray = $allTechn->pluck('fcm_token');
 
-            $notification = [
-                'device_token' => $FcmTokenArray,
-                'title' => $title,
-                'message' => $message,
-                'type'=>'technician',
-                'code'=> 1,
-            ];
+            // $notification = [
+            //     'device_token' => $FcmTokenArray,
+            //     'title' => $title,
+            //     'message' => $message,
+            //     'type'=>'technician',
+            //     'code'=> 1,
+            // ];
 
-            $this->pushNotification($notification);
+            // $this->pushNotification($notification);
         }
 
 
