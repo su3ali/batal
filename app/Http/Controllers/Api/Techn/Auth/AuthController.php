@@ -38,7 +38,11 @@ class AuthController extends Controller
             $techn->update([
                 'fcm_token' => $request->fcm_token
             ]);
-            $techn->currentAccessToken()->delete();
+            if(auth('sanctum')->check()){
+                auth()->user()->tokens()->delete();
+            }
+        
+           
             $this->message = __('api.login successfully');
             $this->body['technician'] = TechnicianResource::make($techn);
             $this->body['accessToken'] = $techn->createToken('technician-token', ['technician'])->plainTextToken;
