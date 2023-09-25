@@ -26,6 +26,7 @@ class ServiceResource extends JsonResource
             $quantity = $this['quantity'];
         }
         return [
+
             'id' => $this['id'],
             'title' => $this['title'],
             'price' => $service['price'],
