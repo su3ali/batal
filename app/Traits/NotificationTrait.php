@@ -32,10 +32,14 @@ trait NotificationTrait
 //      ];
 
         $fields = [
-            'registration_ids' => $device_token,
+           // 'registration_ids' => $device_token,
+           'to' => $device_token,
 //          'notification' => $notification,
             "content_available" => true,
             "ios"=>[
+                "priority"=>"HIGH"
+            ],
+            "android"=>[
                 "priority"=>"HIGH"
             ],
             'data' => $data,
