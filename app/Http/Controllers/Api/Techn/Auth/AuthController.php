@@ -61,7 +61,6 @@ class AuthController extends Controller
             'fcm_token' => null
         ]);
         $this->message = __('api.Logged out');
-
         return self::apiResponse(200, $this->message, $this->body);
     }
 
