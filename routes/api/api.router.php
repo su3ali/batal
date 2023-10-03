@@ -19,14 +19,13 @@ use App\Http\Controllers\Api\Core\ServiceController;
 */
 
 
-Route::prefix('home')->group(function (){
-    Route::get('/', [HomeController::class, 'index']);
-    Route::get('/search', [HomeController::class, 'search']);
+    Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/home/search', [HomeController::class, 'search']);
    
-});
-Route::prefix('services')->group(function (){
-    Route::get('/services_from_category/{id}', [ServiceController::class, 'getServiceFromCategory']);
-});
+
+
+    Route::get('/services/services_from_category/{id}', [ServiceController::class, 'getServiceFromCategory']);
+
 Route::get('package/{id}', [ServiceController::class, 'PackageDetails']);
 Route::get('package', [ServiceController::class, 'getPackage']);
 

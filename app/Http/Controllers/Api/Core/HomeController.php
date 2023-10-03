@@ -40,6 +40,9 @@ class HomeController extends Controller
 
     protected function index(Request $request)
     {
+        // if(auth('sanctum')->check()){
+        //     dd(auth('sanctum')->user()->first());
+        // }
         $addresses=collect();
         if(auth('sanctum')->check()){
             $addresses = UserAddresses::query()->where('user_id', auth('sanctum')->user()->id)->get();
