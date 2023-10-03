@@ -42,7 +42,7 @@ class HomeController extends Controller
     {
         $addresses=collect();
         if(auth('sanctum')->check()){
-            $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
+            $addresses = UserAddresses::query()->where('user_id', auth('sanctum')->user()->id)->get();
         }
         $this->body['addresses'] = UserAddressResource::collection($addresses);
         $images = [];
@@ -68,7 +68,7 @@ class HomeController extends Controller
         $this->body['services'] = ServiceResource::collection(Service::query()->where('active', 1)->get()->shuffle());
         $this->body['contracts'] = ContractResource::collection(ContractPackage::query()->where('active', 1)->take(9)->get()->shuffle());
         $this->body['contact'] = ContactResource::collection(Contacting::query()->take(9)->get()->shuffle());
-        $this->body['total_items_in_cart'] = auth()->user()?auth()->user()->carts->count():0;
+        $this->body['total_items_in_cart'] = auth('sanctum')->user()?auth('sanctum')->user()->carts->count():0;
         $servicesCategories = Category::query()->where('active', 1)->get();
         $this->body['services_categories'] = ServiceCategoryResource::collection($servicesCategories);
 
