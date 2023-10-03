@@ -267,7 +267,7 @@ class CheckoutController extends Controller
             }
 
 
-            
+
 
 
 
@@ -305,7 +305,10 @@ class CheckoutController extends Controller
                 'payment_result' => 'success',
                 'payment_method' => $request->payment_method,
             ]);
-        } else {
+            $order->update([
+                'partial_amount' => 0
+            ]);
+        }  else {
             Transaction::create([
                 'order_id' => $order->id,
                 'transaction_number' => $request->transaction_id,
@@ -409,7 +412,7 @@ class CheckoutController extends Controller
                     $assign_to_id = $visit->where('start_time', '!=', $cart->time)->inRandomOrder()->first()->assign_to_id;
                 }
             }
-            
+
 
             $bookingInsert = Booking::query()->create([
                 'booking_no' => $booking_no,
@@ -428,7 +431,7 @@ class CheckoutController extends Controller
                 'time' => Carbon::parse($cart->time)->toTimeString(),
                 'end_time' => $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
             ]);
-            
+
 
 
             $start_time = Carbon::parse($cart->time)->toTimeString();
@@ -503,7 +506,7 @@ class CheckoutController extends Controller
             ]);
         } else {
             Transaction::create([
-                    'order_id' => $order->id,
+                'order_id' => $order->id,
                 'contract_order_id' => $contract_order->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
