@@ -32,7 +32,7 @@ use App\Http\Controllers\Api\Coupons\CouponsController;
     Route::get('/settings', [SettingsController::class, 'index']);
     Route::get('/settings/faqs', [SettingsController::class, 'getFaqs']);
     Route::get('/coupons', [CouponsController::class, 'allCoupons']);
-
+    Route::get('contact', [ServiceController::class, 'getContact']);
 Route::get('package/{id}', [ServiceController::class, 'PackageDetails']);
 Route::get('package', [ServiceController::class, 'getPackage']);
 

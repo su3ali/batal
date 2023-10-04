@@ -24,6 +24,6 @@ Route::post('home_search', [HomeController::class, 'search']);
 Route::post('home_filter', [HomeController::class, 'filter']);
 
 
-Route::get('contact', [ServiceController::class, 'getContact']);
+
 Route::post('contract_contact', [HomeController::class, 'contract_contact']);
 
