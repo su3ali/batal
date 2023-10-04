@@ -25,7 +25,7 @@ Route::prefix('statuses')->group(function () {
 
 Route::prefix('coupons')->group(function () {
 
-    Route::get('/', [CouponsController::class, 'allCoupons']);
+   // Route::get('/', [CouponsController::class, 'allCoupons']);
     Route::post('submit_coupon', [CouponsController::class, 'submit']);
     Route::post('cancel_coupon', [CouponsController::class, 'cancel']);
 });

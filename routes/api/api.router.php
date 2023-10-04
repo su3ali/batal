@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Core\HomeController;
 use App\Http\Controllers\Api\Core\ServiceController;
+use App\Http\Controllers\Api\Settings\SettingsController;
+use App\Http\Controllers\Api\Coupons\CouponsController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +29,10 @@ use App\Http\Controllers\Api\Core\ServiceController;
 
     Route::get('/services/services_from_category/{id}', [ServiceController::class, 'getServiceFromCategory']);
 
+    Route::get('/settings', [SettingsController::class, 'index']);
+    Route::get('/settings/faqs', [SettingsController::class, 'getFaqs']);
+    Route::get('/coupons', [CouponsController::class, 'allCoupons']);
+
 Route::get('package/{id}', [ServiceController::class, 'PackageDetails']);
 Route::get('package', [ServiceController::class, 'getPackage']);
 
@@ -43,7 +50,7 @@ Route::middleware(['auth:sanctum','abilities:user'])->group(function () {
     require __DIR__ . '/users.router.php';
     require __DIR__ . '/checkout.router.php';
     require __DIR__ . '/order.router.php';
-    require __DIR__ . '/settings.router.php';
+   require __DIR__ . '/settings.router.php';
 });
 
 Route::prefix('techn')->group(function () {
