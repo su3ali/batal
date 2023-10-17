@@ -7,6 +7,7 @@ use App\Http\Resources\Checkout\UserAddressResource;
 use App\Models\UserAddresses;
 use App\Support\Api\ApiResponse;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AddressController extends Controller
 {
@@ -54,6 +55,7 @@ class AddressController extends Controller
             $data['is_default'] = 1;
         }
         $data['user_id'] = auth('sanctum')->user()->id;
+        $data['phone'] = User::where('id',auth('sanctum')->user()->id)->first()->phone??null;
         UserAddresses::query()->create($data);
 
         $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
@@ -95,7 +97,7 @@ class AddressController extends Controller
                 $data['is_default'] = 1;
             }
             $data['user_id'] = auth('sanctum')->user()->id;
-
+            $data['phone'] = User::where('id',auth('sanctum')->user()->id)->first()->phone??null;
             $address->update($data);
             $addresses = UserAddresses::query()->where('user_id', auth()->user('sanctum')->id)->get();
             $this->body['addresses'] = UserAddressResource::collection($addresses);

@@ -32,7 +32,7 @@
                                 <polyline points="2 12 12 17 22 12"></polyline>
                             </svg>
 
-                            <span>إدارة الزيارات</span>
+                            <span> {{__('dash.tech_orders')}}</span>
                         </div>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -46,12 +46,12 @@
                     <ul class="collapse submenu list-unstyled" id="visits" data-parent="#accordionExample">
                         @can('view_visits')
                             <li>
-                                <a href="{{route('dashboard.visits.index')}}"> الزيارات </a>
+                                <a href="{{route('dashboard.visits.index')}}"> {{__('dash.tech_orders')}}</a>
                             </li>
                         @endcan
                         @can('update_visits')
                             <li>
-                                <a href="{{route('dashboard.visits_statuses.index')}}"> حالات الزيارات </a>
+                                <a href="{{route('dashboard.visits_statuses.index')}}"> {{__('dash.orders_status')}}</a>
                             </li>
                             <li>
                                 <a href="{{route('dashboard.reason_cancel.index')}}"> أسباب الإلغاء </a>
@@ -105,7 +105,7 @@
                     <a href="#orders" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                         <div class="">
                             <div class="icon-container">
-                                <i data-feather="shopping-cart"></i><span class="icon-name"> الطلبات </span>
+                                <i data-feather="shopping-cart"></i><span class="icon-name">{{__('dash.client_orders')}}</span>
                             </div>
                         </div>
                         <div>
@@ -120,12 +120,12 @@
                     <ul class="collapse submenu list-unstyled" id="orders" data-parent="#accordionExample">
                         @can('view_orders')
                             <li>
-                                <a href="{{route('dashboard.orders.index')}}"> الطلبات </a>
+                                <a href="{{route('dashboard.orders.index')}}">{{__('dash.client_orders')}}</a>
                             </li>
                         @endcan
                         @can('update_orders')
                             <li>
-                                <a href="{{route('dashboard.order_statuses.index')}}"> حالات الطلب </a>
+                                <a href="{{route('dashboard.order_statuses.index')}}">{{__('dash.orders_status')}}</a>
                             </li>
                         @endcan
 
