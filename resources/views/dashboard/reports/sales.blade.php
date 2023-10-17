@@ -59,7 +59,7 @@
                         </div>
                         <div class="col-md-4">
                             <select class="select2 payment_method form-control" name="payment_method">
-                                <option selected disabled>اختر</option>
+                                <option selected value="all">الكل</option>
                                 <option value="cache">كاش</option>
                                 <option value="wallet">محفظة</option>
                                 <option value="visa">مدي</option>
@@ -74,6 +74,7 @@
                         <tr>
                             <th>رقم الطلب</th>
                             <th>اسم العميل</th>
+                            <th>التاريخ</th>
                             <th>القسم</th>
                             <th>عدد الخدمات</th>
                             <th>المبلغ</th>
@@ -89,20 +90,20 @@
 
                         <thead>
 
-                        <tr>
-                            <th width="50%">إجمالي المبيعات بدون ضريبة</th>
-                            <td>{{$sub_total ?? 0}}</td>
-                        </tr>
-
-                        <tr>
-                            <th>إجمالي الضريبة %15</th>
-                            <td>{{$tax}}</td>
-                        </tr>
-
-                        <tr>
-                            <th>إجمالي المبيعات</th>
-                            <td>{{$tax + $sub_total}}</td>
-                        </tr>
+                            <tr>
+                                <th width="50%">إجمالي المبيعات بدون ضريبة</th>
+                                <td id="sub_total" >0</td>
+                            </tr>
+        
+                            <tr>
+                                <th>إجمالي الضريبة %15</th>
+                                <td id="tax">0</td>
+                            </tr>
+        
+                            <tr>
+                                <th>إجمالي المبيعات</th>
+                                <td id="tax_sub_total">0</td>
+                            </tr>
 
                         </thead>
 
@@ -139,6 +140,7 @@
                 columns: [
                     {data: 'order_number', name: 'order_number',orderable: true, searchable: true},
                     {data: 'user_name', name: 'user_name',orderable: true, searchable: true},
+                    {data: 'created_at', name: 'created_at',orderable: true, searchable: true},
                     {data: 'category', name: 'category',orderable: true, searchable: true},
                     {data: 'service_number', name: 'service_number',orderable: true, searchable: true},
                     {data: 'price', name: 'price',orderable: true, searchable: true},
@@ -148,6 +150,31 @@
                 ]
             });
 
+
+            function updateSummary() {
+                var subTotal = 0;
+
+                table.rows({ search: 'applied' }).every(function (rowIdx, tableLoop, rowLoop) {
+                    var data = this.data();
+                    subTotal += parseFloat(data.price); // Assuming 'price' is the column containing subtotals
+                });
+
+                var taxRate = 0.15; // 15% tax rate
+                var tax = subTotal * taxRate;
+                var taxSubTotal = subTotal + tax;
+
+                $('#sub_total').text(subTotal.toFixed(2)); // Format the numbers as needed
+                $('#tax').text(tax.toFixed(2));
+                $('#tax_sub_total').text(taxSubTotal.toFixed(2));
+            }
+
+            // Call the updateSummary function on table draw and when the page loads
+            table.on('draw', function () {
+                updateSummary();
+            });
+            
+            updateSummary(); 
+
             $('.date').change(function(){
                 var date = $('.date').val();
                 table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date ).load();
@@ -155,7 +182,12 @@
 
             $('.payment_method').change(function(){
                 var payment_method = $('.payment_method').val();
-                table.ajax.url( '{{ route('dashboard.report.sales') }}?payment_method='+payment_method ).load();
+                if(payment_method=="all"){
+                    table.ajax.url( '{{ route('dashboard.report.sales') }}' ).load();
+                }else{
+                    table.ajax.url( '{{ route('dashboard.report.sales') }}?payment_method='+payment_method ).load();
+                }
+                
             })
 
         });

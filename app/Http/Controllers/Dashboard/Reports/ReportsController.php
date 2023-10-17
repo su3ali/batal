@@ -62,6 +62,9 @@ class ReportsController extends Controller
                 ->addColumn('user_name', function ($row) {
                     return $row->user?->first_name .''.$row->user?->last_name;
                 })
+                ->addColumn('created_at', function ($row) {
+                    return $row->created_at;
+                })
                 ->addColumn('category', function ($row) {
 
                     $category_ids = OrderService::where('order_id',$row->id)->get()->pluck('category_id')->toArray();
@@ -83,15 +86,19 @@ class ReportsController extends Controller
                 })
                 ->addColumn('payment_method', function ($row) {
                     return $row->transaction?->payment_method;
+                })   ->addColumn('sub_total', function ($row) {
+                    return $row->sub_total;
                 })
 
                 ->rawColumns([
                     'order_number',
                     'user_name',
+                    'created_at',
                     'category',
                     'service_number',
                     'price',
                     'payment_method',
+                    'sub_total'
                 ])
                 ->make(true);
         }
