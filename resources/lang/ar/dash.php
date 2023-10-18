@@ -50,7 +50,8 @@ return [
     'tech_orders'=>'طلبات الفنيين',
     'orders_status'=>'حالات طلبات العملاء',
     'client_orders'=>'طلبات العملاء',
-
+    'sells_last_7_days'=>'الطلبات خلال اخر اسبوع',
+    
     'login_firstly' => 'يجب عليك الدخول أولا',
     'quick_links' => 'روابط سريعة',
     'group_admins' => 'مجموعات المسؤولين',
