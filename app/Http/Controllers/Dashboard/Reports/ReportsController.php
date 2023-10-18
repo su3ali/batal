@@ -32,13 +32,24 @@ class ReportsController extends Controller
 
         if (request()->ajax()) {
             $date = $request->date;
+            $date2 = $request->date2;
             $payment_method = $request->payment_method;
 //            $service_id = $request->service_id;
             $order = Order::query();
             if($date) {
+              
                 $carbonDate = \Carbon\Carbon::parse($date);
                 $formattedDate = $carbonDate->format('Y-m-d H:i:s');
-                $order = $order->where('created_at','=', $formattedDate);
+                $order = $order->where('created_at','>=', $formattedDate);
+            }
+            if($date2){
+         
+                $carbonDate2 = \Carbon\Carbon::parse($date2);
+                $formattedDate2 = $carbonDate2->format('Y-m-d H:i:s');
+
+                $carbonDate = \Carbon\Carbon::parse($date);
+                $formattedDate = $carbonDate->format('Y-m-d H:i:s');
+                $order = $order->where([['created_at','>=', $formattedDate],['created_at','<=', $formattedDate2]]);
             }
             if($payment_method) {
 

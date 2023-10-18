@@ -44,15 +44,24 @@
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
                     <div class="col-md-12  mb-3">
-
                         <div class="row">
                             <div class="col-md-1">
-                            <label for="inputEmail4">{{__('dash.date')}}</label>
+                                <label for="inputEmail4">{{__('dash.date')}}</label>
                             </div>
-                        <div class="col-md-4">
-                            <input type="datetime-local" name="date" class="form-control date" step="1"
-                                   id="inputEmail4">
+                            <label>من</label>
+                            <div class="col-md-4">
+                                <input type="datetime-local" name="date" class="form-control date" step="1"
+                                       id="inputEmail4">
+                            </div>
+                            <label>إلى</label>
+                            <div class="col-md-4">
+                                <input type="datetime-local" name="date2" class="form-control date2" step="1"
+                                       id="inputEmail42">
+                            </div>
                         </div>
+                        <br>
+                            <div class="row">
+
 
                             <div class="col-md-1">
                             <label for="inputEmail4">طريقه الدفع</label>
@@ -175,9 +184,22 @@
             
             updateSummary(); 
 
+          
             $('.date').change(function(){
                 var date = $('.date').val();
-                table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date ).load();
+                var date2 = $('.date2').val();
+                if(date2)
+               {
+                 table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date+'&date2=' + date2 ).load();}
+                else
+               { 
+                table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date ).load();}
+            })
+            $('.date2').change(function(){
+                var date = $('.date').val();
+                var date2 = $('.date2').val();
+                if(date1 && date2)
+              {  table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date+'&date2=' + date2 ).load();}
             })
 
             $('.payment_method').change(function(){
