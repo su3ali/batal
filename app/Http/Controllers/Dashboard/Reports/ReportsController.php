@@ -29,13 +29,13 @@ class ReportsController extends Controller
 {
     protected function sales(Request $request)
     {
-
         if (request()->ajax()) {
             $date = $request->date;
             $date2 = $request->date2;
             $payment_method = $request->payment_method;
-//            $service_id = $request->service_id;
+
             $order = Order::query();
+
             if($date) {
               
                 $carbonDate = \Carbon\Carbon::parse($date);
@@ -52,20 +52,13 @@ class ReportsController extends Controller
                 $order = $order->where([['created_at','>=', $formattedDate],['created_at','<=', $formattedDate2]]);
             }
             if($payment_method) {
-
-                $order = $order->whereHas('transaction',function ($q) use($payment_method) {
+                $order = $order->whereHas('transaction',function($q)use($payment_method){
                     $q->where('payment_method',$payment_method);
                 });
             }
 
-//            if($service_id) {
-//
-//                $order = $order->whereHas('services',function ($q) use($service_id) {
-//                    $q->where('service_id',$service_id);
-//                });
-//            }
-
             $order = $order->get();
+
             return DataTables::of($order)
                 ->addColumn('order_number', function ($row) {
                     return $row->id;
@@ -90,7 +83,7 @@ class ReportsController extends Controller
                 ->addColumn('service_number', function ($row) {
                     $service_ids = OrderService::where('order_id',$row->id)->get()->pluck('service_id')->toArray();
 
-                    return count($service_ids);
+                    return array_sum($service_ids);
                 })
                 ->addColumn('price', function ($row) {
                     return $row->sub_total;
@@ -114,15 +107,62 @@ class ReportsController extends Controller
                 ->make(true);
         }
 
-        $services = Service::where('active',1)->get();
-
         $sub_total = Order::query()->sum('sub_total');
 
         $tax = ($sub_total * 15)/100 ?? 0;
 
-        return view('dashboard.reports.sales',compact('services','sub_total','tax'));
+        return view('dashboard.reports.sales',compact('sub_total','tax'));
     }
 
+    protected function updateSummary(Request $request)
+    {
+        $date = $request->date;
+        $date2 = $request->date2;
+        $payment_method = $request->payment_method;
+        $orderQuery = Order::query();
+    
+        if ($date) {
+            error_log("date");
+            $carbonDate = \Carbon\Carbon::parse($date);
+            $formattedDate = $carbonDate->format('Y-m-d H:i:s');
+            $orderQuery->where('created_at', '>=', $formattedDate);
+        }
+    
+        if ($date2) {
+            error_log("date2");
+            $carbonDate2 = \Carbon\Carbon::parse($date2);
+            $formattedDate2 = $carbonDate2->format('Y-m-d H:i:s');
+            $carbonDate = \Carbon\Carbon::parse($date);
+            $formattedDate = $carbonDate->format('Y-m-d H:i:s');
+            $orderQuery->where([['created_at', '>=', $formattedDate], ['created_at', '<=', $formattedDate2]]);
+        }
+    
+        if ($payment_method && $payment_method!='all') {
+            
+            $orderQuery->whereHas('transaction', function ($q) use ($payment_method) {
+                $q->where('payment_method', $payment_method);
+            });
+        }
+    
+        // Calculate the total, tax, and tax-subtotal
+        $sub_total = $orderQuery->sum('sub_total');
+        $taxRate = 0.15; // 15% tax rate
+        $tax = $sub_total * $taxRate;
+        $taxSubTotal = $sub_total + $tax;
+        
+        error_log(response()->json([
+            'sub_total' => $sub_total,
+            'tax' => $tax,
+            'taxSubTotal' => $taxSubTotal,
+        ]));
+      
+        // Return the summary values as JSON
+        return response()->json([
+            'sub_total' => $sub_total,
+            'tax' => $tax,
+            'taxSubTotal' => $taxSubTotal,
+        ]);
+    }
     protected function contractSales(Request $request)
     {
         if (request()->ajax()) {

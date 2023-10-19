@@ -125,96 +125,90 @@
 @endsection
 
 @push('script')
-    <script type="text/javascript">
-        $(document).ready(function () {
-            var table = $('#html5-extension').DataTable({
-                dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
-                    "<'table-responsive'tr>" +
-                    "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
-                order: [[0, 'desc']],
-                "language": {
-                    "url": "{{app()->getLocale() == 'ar'? '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json' : '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json'}}"
-                },
-                buttons: {
-                    buttons: [
-                        {extend: 'copy', className: 'btn btn-sm',text:'نسخ'},
-                        {extend: 'csv', className: 'btn btn-sm',text:'تصدير إلى CSV'},
-                        {extend: 'excel', className: 'btn btn-sm',text:'تصدير إلى Excel'},
-                        {extend: 'print', className: 'btn btn-sm',text:'طباعة'}
-                    ]
-                },
-                processing: true,
-                serverSide: true,
-                ajax: '{{ route('dashboard.report.sales') }}',
-                columns: [
-                    {data: 'order_number', name: 'order_number',orderable: true, searchable: true},
-                    {data: 'user_name', name: 'user_name',orderable: true, searchable: true},
-                    {data: 'created_at', name: 'created_at',orderable: true, searchable: true},
-                    {data: 'category', name: 'category',orderable: true, searchable: true},
-                    {data: 'service_number', name: 'service_number',orderable: true, searchable: true},
-                    {data: 'price', name: 'price',orderable: true, searchable: true},
-                    {data: 'payment_method', name: 'payment_method',orderable: true, searchable: true},
-
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        var table = $('#html5-extension').DataTable({
+            dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
+                "<'table-responsive'tr>" +
+                "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
+            order: [[0, 'desc']],
+            "language": {
+                "url": "{{app()->getLocale() == 'ar'? '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Arabic.json' : '//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/English.json'}}"
+            },
+            buttons: {
+                buttons: [
+                    {extend: 'copy', className: 'btn btn-sm',text:'نسخ'},
+                    {extend: 'csv', className: 'btn btn-sm',text:'تصدير إلى CSV'},
+                    {extend: 'excel', className: 'btn btn-sm',text:'تصدير إلى Excel'},
+                    {extend: 'print', className: 'btn btn-sm',text:'طباعة'}
                 ]
-            });
+            },
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('dashboard.report.sales') }}',
+            columns: [
+                {data: 'order_number', name: 'order_number',orderable: true, searchable: true},
+                {data: 'user_name', name: 'user_name',orderable: true, searchable: true},
+                {data: 'created_at', name: 'created_at',orderable: true, searchable: true},
+                {data: 'category', name: 'category',orderable: true, searchable: true},
+                {data: 'service_number', name: 'service_number',orderable: true, searchable: true},
+                {data: 'price', name: 'price',orderable: true, searchable: true},
+                {data: 'payment_method', name: 'payment_method',orderable: true, searchable: true},
 
 
-            function updateSummary() {
-                var subTotal = 0;
-
-                table.rows({ search: 'applied' }).every(function (rowIdx, tableLoop, rowLoop) {
-                    var data = this.data();
-                    subTotal += parseFloat(data.price); // Assuming 'price' is the column containing subtotals
-                });
-
-                var taxRate = 0.15; // 15% tax rate
-                var tax = subTotal * taxRate;
-                var taxSubTotal = subTotal + tax;
-
-                $('#sub_total').text(subTotal.toFixed(2)); // Format the numbers as needed
-                $('#tax').text(tax.toFixed(2));
-                $('#tax_sub_total').text(taxSubTotal.toFixed(2));
-            }
-
-            // Call the updateSummary function on table draw and when the page loads
-            table.on('draw', function () {
-                updateSummary();
-            });
-            
-            updateSummary(); 
-
-          
-            $('.date').change(function(){
-                var date = $('.date').val();
-                var date2 = $('.date2').val();
-                if(date2)
-               {
-                 table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date+'&date2=' + date2 ).load();}
-                else
-               { 
-                table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date ).load();}
-            })
-            $('.date2').change(function(){
-                var date = $('.date').val();
-                var date2 = $('.date2').val();
-                if(date1 && date2)
-              {  table.ajax.url( '{{ route('dashboard.report.sales') }}?date=' + date+'&date2=' + date2 ).load();}
-            })
-
-            $('.payment_method').change(function(){
-                var payment_method = $('.payment_method').val();
-                if(payment_method=="all"){
-                    table.ajax.url( '{{ route('dashboard.report.sales') }}' ).load();
-                }else{
-                    table.ajax.url( '{{ route('dashboard.report.sales') }}?payment_method='+payment_method ).load();
-                }
-                
-            })
-
+            ]
         });
 
+        function updateTableData() {
+            var date = $('.date').val();
+            var date2 = $('.date2').val();
+            var payment_method = $('.payment_method').val();
+            var url = '{{ route('dashboard.report.sales') }}';
 
-    </script>
+            if (date) {
+                url += '?date=' + date;
+                if (date2) {
+                    url += '&date2=' + date2;
+                }
+            }
+
+            if (payment_method && payment_method !== 'all') {
+                url += (date ? '&' : '?') + 'payment_method=' + payment_method;
+            }
+
+            // Update table data
+            table.ajax.url(url).load();
+
+            // Update summary
+            updateSummary();
+        }
+
+        function updateSummary() {
+            $.ajax({
+                url: '{{ route('dashboard.report.updateSummary') }}',
+                type: 'GET',
+                data: {
+                    date: $('.date').val(),
+                    date2: $('.date2').val(),
+                    payment_method: $('.payment_method').val()
+                },
+                success: function (data) {
+                    $('#sub_total').text(data.sub_total.toFixed(2));
+                    $('#tax').text(data.tax.toFixed(2));
+                    $('#tax_sub_total').text(data.taxSubTotal.toFixed(2));
+                }
+            });
+        }
+
+        // Attach event handlers
+        $('.date, .date2, .payment_method').change(function () {
+            updateTableData();
+        });
+
+        // Call the initial update
+        updateTableData();
+    });
+
+</script>
 
 @endpush

@@ -1,6 +1,7 @@
 <?php
 
 Route::get('report/sales', 'Reports\ReportsController@sales')->name('report.sales');
+Route::get('report/updateSummary', 'Reports\ReportsController@updateSummary')->name('report.updateSummary');
 Route::get('report/contractSales', 'Reports\ReportsController@contractSales')->name('report.contractSales');
 Route::get('report/customers', 'Reports\ReportsController@customers')->name('report.customers');
 Route::get('report/technicians', 'Reports\ReportsController@technicians')->name('report.technicians');
