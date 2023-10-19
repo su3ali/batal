@@ -25,7 +25,7 @@ class CouponsController extends Controller
 
     protected function allCoupons(){
         $coupons = Coupon::query()->where('active', 1)
-            ->where('start', '<=', Carbon::now())->where('end', '>=', Carbon::now())
+            ->where('start', '<=', Carbon::now('Asia/Riyadh'))->where('end', '>=', Carbon::now('Asia/Riyadh'))
             ->get();
         $this->body['coupons'] = CouponsResource::collection($coupons);
         return self::apiResponse(200, null, $this->body);

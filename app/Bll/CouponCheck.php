@@ -15,7 +15,7 @@ class CouponCheck
             ||
             $coupon->active == 0
             ||
-            Carbon::parse($coupon->start)->format('y-m-d') > Carbon::now()->format('y-m-d')
+            Carbon::parse($coupon->start)->format('y-m-d') > Carbon::now('Asia/Riyadh')->format('y-m-d')
         ) {
             $response = ['error' => __("api.Invalid Code !")];
             return $response;
@@ -27,7 +27,7 @@ class CouponCheck
         if (
             $coupon->times_used >= $coupon->times_limit
             ||
-            Carbon::now()->format('y-m-d') >= Carbon::parse($coupon->end)->format('y-m-d')
+            Carbon::now('Asia/Riyadh')->format('y-m-d') >= Carbon::parse($coupon->end)->format('y-m-d')
         ) {
             $response = ['error' => __("api.Expired Code !")];
             return $response;

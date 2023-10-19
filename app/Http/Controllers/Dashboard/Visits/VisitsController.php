@@ -29,7 +29,14 @@ class VisitsController extends Controller
     protected function index()
     {
         if (request()->ajax()) {
-            $visit = Visit::all();
+            $visit=null;
+            if(request()->page){
+                $now=Carbon::now('Asia/Riyadh')->toDateString();
+                $visit = Visit::whereDate('created_at','=',$now)->get();
+            }else{
+               $visit = Visit::all(); 
+            }
+           
             return DataTables::of($visit)
                 ->addColumn('visite_id', function ($row) {
                     return $row->visite_id;

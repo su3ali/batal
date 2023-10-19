@@ -315,8 +315,8 @@ class CartController extends Controller
                 $end = $timeDuration;
             }
             for ($i = $start; $i <  $end; $i++) {
-                $date = date('Y-m-d', strtotime('+' . $i . ' day'));
-                if (in_array(date('l', strtotime($date)), $serviceDays)) {
+                $date = Carbon::now('Asia/Riyadh')->addDays($i)->format('Y-m-d');
+                if (in_array(Carbon::parse($date)->format('l'), $serviceDays)) {
                     $dates[] = $date;
                 }
             }

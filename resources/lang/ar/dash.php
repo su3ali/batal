@@ -48,8 +48,10 @@ return [
     'logged_out_successfully' => 'خرجت بنجاح',
     'logout' => 'خروج',
     'tech_orders'=>'طلبات الفنيين',
+    'tech_orders_today'=>'طلبات الفنيين اليوم',
     'orders_status'=>'حالات طلبات العملاء',
     'client_orders'=>'طلبات العملاء',
+    'client_orders_today'=>'طلبات العملاء اليوم',
     'sells_last_7_days'=>'الطلبات خلال اخر اسبوع',
     
     'login_firstly' => 'يجب عليك الدخول أولا',

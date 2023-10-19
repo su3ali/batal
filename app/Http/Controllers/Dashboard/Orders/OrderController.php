@@ -33,7 +33,13 @@ class OrderController extends Controller
     {
 
         if (request()->ajax()) {
-            $orders = Order::all();
+            $orders=null;
+            if(request()->page){
+                $now=Carbon::now('Asia/Riyadh')->toDateString();
+                $orders = Order::whereDate('created_at','=',$now)->get();
+            }else{
+               $orders = Order::all(); 
+            }
             return DataTables::of($orders)
                 ->addColumn('user', function ($row) {
                     return $row->user?->first_name .' ' . $row->user?->last_name;
@@ -353,8 +359,8 @@ class OrderController extends Controller
                 if ($get_time == true) {
                     $times[] = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
                         ->toPeriod(
-                            \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
-                            Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
+                            \Carbon\Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_start_time ?? Carbon::now('Asia/Riyadh')->startOfDay()),
+                            Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_end_time ?? Carbon::now('Asia/Riyadh')->endOfDay())
                         );
                 }
 

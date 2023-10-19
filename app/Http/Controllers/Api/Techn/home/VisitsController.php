@@ -71,7 +71,7 @@ class VisitsController extends Controller
         $groups=Group::where('technician_id',auth('sanctum')->user()->id)->first();
         $orders = Visit::whereHas('booking', function ($q) {
 
-            $q->where('date',Carbon::now()->format('Y-m-d'))->whereHas('customer')->whereHas('address');
+            $q->where('date',Carbon::now('Asia/Riyadh')->format('Y-m-d'))->whereHas('customer')->whereHas('address');
 
         })->with('booking', function ($q) {
             $q->with(['service' => function ($q) {

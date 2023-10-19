@@ -30,7 +30,7 @@ class SingleOrderResource extends JsonResource
             'delivery_cost'     => $this->delivery_cost,
             'total'             => $this->total + $this->delivery_cost,
             'partial_amount' => $this->partial_amount ?? 0,
-            'refundable'        => Carbon::parse($this->created_at)->addDays(14) > Carbon::now() && $this->status == 'complete'? 'true': 'false'
+            'refundable'        => Carbon::parse($this->created_at)->addDays(14) > Carbon::now('Asia/Riyadh') && $this->status == 'complete'? 'true': 'false'
         ];
     }
 }

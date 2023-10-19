@@ -21,10 +21,10 @@ class StoreResource extends JsonResource
      */
     public function toArray($request)
     {
-        $from = Carbon::parse($this->days->where('day', Carbon::now()->locale('en')->dayName)->first()?->from);
-        $to = Carbon::parse($this->days->where('day', Carbon::now()->locale('en')->dayName)->first()?->to);
+        $from = Carbon::parse($this->days->where('day', Carbon::now('Asia/Riyadh')->locale('en')->dayName)->first()?->from);
+        $to = Carbon::parse($this->days->where('day', Carbon::now('Asia/Riyadh')->locale('en')->dayName)->first()?->to);
         $open = t_('close');
-        if (Carbon::now() >= $from && Carbon::now() <= $to){
+        if (Carbon::now('Asia/Riyadh') >= $from && Carbon::now('Asia/Riyadh') <= $to){
             $open = t_('open');
         }
         $facilities = Facility::query()->whereIn('id', $this->storeFacilities->where('active', 1)->where('facility_id', '!=', 1)->pluck('facility_id')->toArray())->get();
