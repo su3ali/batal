@@ -36,6 +36,8 @@ use App\Http\Controllers\Api\Coupons\CouponsController;
 Route::get('package/{id}', [ServiceController::class, 'PackageDetails']);
 Route::get('package', [ServiceController::class, 'getPackage']);
 
+Route::post('check_update',[VersionController::class,'checkUpdate'])->name('check_update');
+
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/verify', [AuthController::class, 'verify']);
