@@ -22,7 +22,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">باقات </li>
+                                <li class="breadcrumb-item active" aria-current="page">{{__('dash.packages')}}</li>
                             </ol>
                         </nav>
 
@@ -56,7 +56,7 @@
                             <tr>
                                 <th>رقم الباقة</th>
                                 <th>اسم الباقة</th>
-                                <th>اسم الخدمة</th>
+                                <th>الخدمات</th>
                                 <th>عدد الزيارات المشمولة</th>
                                 <th>حالة الباقة</th>
                                 <th class="no-content">{{__('dash.actions')}}</th>
@@ -96,12 +96,12 @@
                 },
                 processing: true,
                 responsive: true,
-                serverSide: false,
+                 serverSide: false,
                 ajax: '{{ route('dashboard.contract_packages.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},
                     {data: 'name', name: 'name'},
-                    {data: 'service name', name: 'service name'},
+                    {data: 'services', name: 'services'},
                     {data: 'visit_number', name: 'visit_number'},
                     {data: 'status', name: 'status'},
                     {data: 'control', name: 'control', orderable: false, searchable: false},
