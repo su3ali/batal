@@ -109,6 +109,7 @@ class AuthController extends Controller
         $user->update([
             'is_deleted' => 1,
             'phone' => $user->phone . '-deleted',
+            'email' => $user->email . '-deleted',
         ]);
         $this->message = __('api.Delete user successfully');
 
