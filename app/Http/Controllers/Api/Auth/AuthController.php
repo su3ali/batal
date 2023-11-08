@@ -48,22 +48,22 @@ class AuthController extends Controller
                 'phone' => $validated['phone'],
                 'city_id' => 0,
             ]);
-        }else{
+        } else {
             $validated = $request->validate([
-                'phone' => 'required|numeric|unique:users,phone,'.$user->id
+                'phone' => 'required|numeric|unique:users,phone,' . $user->id
             ], $request->all());
         }
 
-        if ($user->phone == "966580111196" || $user->phone == "966541169947" ){
+        if ($user->phone == "966580111196" || $user->phone == "966541169947") {
             $code = 1111;
-        }else{
+        } else {
             $code = random_int(1000, 9999);
         }
 
         $user->update([
             'code' => $code
         ]);
-        $m = "رمز التحقق: ".$code;
+        $m = "رمز التحقق: " . $code;
         $msg = $this->sendMessage($validated['phone'], $m);
         $this->message = __('api.login successfully, but code is needed');
         $this->body['user'] = UserResource::make($user);
@@ -74,43 +74,44 @@ class AuthController extends Controller
     {
         $user = User::query()->where('id', $request->user_id)->first();
         if ($request->code == $user->code && $user) {
-                $user->update([
-                    'code' => null,
-                    'fcm_token' => $request->fcm_token
-                ]);
-                $user2=Auth::loginUsingId($user->id);
-                if(auth('sanctum')->check()){
-                    auth()->user()->tokens()->delete();
-                }
-            
-               
-                $this->message = __('api.login successfully');
-                $this->body['user'] = UserResource::make($user);
-                $this->body['accessToken'] = $user->createToken('user-token',['user'])->plainTextToken;
-                return self::apiResponse(200, $this->message, $this->body);
+            $user->update([
+                'code' => null,
+                'fcm_token' => $request->fcm_token
+            ]);
+            $user2 = Auth::loginUsingId($user->id);
+            if (auth('sanctum')->check()) {
+                auth()->user()->tokens()->delete();
             }
-            $this->message = __('api.auth failed');
-            return self::apiResponse(400, $this->message, $this->body);
-        }
 
-        public function logout(Request $request)
-        {
-            auth()->user()->tokens()->delete();
-            $this->message = __('api.Logged out');
 
+            $this->message = __('api.login successfully');
+            $this->body['user'] = UserResource::make($user);
+            $this->body['accessToken'] = $user->createToken('user-token', ['user'])->plainTextToken;
             return self::apiResponse(200, $this->message, $this->body);
-
         }
+        $this->message = __('api.auth failed');
+        return self::apiResponse(400, $this->message, $this->body);
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+        $this->message = __('api.Logged out');
+
+        return self::apiResponse(200, $this->message, $this->body);
+    }
 
 
     public function deleteAccount(Request $request)
     {
+        auth()->user()->tokens()->delete();
         $user =  auth('sanctum')->user();
-        $user->delete();
+        $user->update([
+            'is_deleted' => 1,
+            'phone' => $user->phone . '-deleted',
+        ]);
         $this->message = __('api.Delete user successfully');
 
         return self::apiResponse(200, $this->message, $this->body);
-
     }
-
-    }
+}
