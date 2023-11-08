@@ -20,7 +20,7 @@ class ContractResource extends JsonResource
     {
 
         $services_ids = ContractPackagesService::where('contract_packages_id', $this->id)->pluck('service_id');
-
+        $services=[];
         for ($i = 0; $i < $services_ids->count(); $i++) {
 
             $service = Service::where('id', $services_ids[$i])->first();
