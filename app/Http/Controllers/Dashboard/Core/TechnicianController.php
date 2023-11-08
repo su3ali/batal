@@ -170,7 +170,7 @@ class TechnicianController extends Controller
             'phone' => $tech->phone . '-deleted',
             'email' => $tech->email . '-deleted',
         ]);
-        $tech->delete();
+      
         return [
             'success' => true,
             'msg' => __("dash.deleted_success")
