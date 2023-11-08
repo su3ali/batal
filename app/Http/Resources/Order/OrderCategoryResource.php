@@ -21,9 +21,9 @@ class OrderCategoryResource extends JsonResource
             'id'  => $this['id'],
             'title'  => $this['title'],
             'image' => $this['slug']? asset($this['slug']) : '',
-            'date' => Carbon::parse($order->bookings->first()->date)->format('d M'),
-            'time_start' => Carbon::parse($order->bookings->first()->time)->format('g:i A'),
-            'time_end' => Carbon::parse($order->bookings->first()->time)
+            'date' => Carbon::parse($order->bookings->first()->date)->timezone('Asia/Riyadh')->format('d M'),
+            'time_start' => Carbon::parse($order->bookings->first()->time)->timezone('Asia/Riyadh')->format('g:i A'),
+            'time_end' => Carbon::parse($order->bookings->first()->time)->timezone('Asia/Riyadh')
                 ->addMinutes(
                     array_sum($bookingSettings->pluck('service_duration')->toArray())
                     +

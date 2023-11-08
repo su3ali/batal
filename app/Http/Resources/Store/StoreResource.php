@@ -21,8 +21,8 @@ class StoreResource extends JsonResource
      */
     public function toArray($request)
     {
-        $from = Carbon::parse($this->days->where('day', Carbon::now('Asia/Riyadh')->locale('en')->dayName)->first()?->from);
-        $to = Carbon::parse($this->days->where('day', Carbon::now('Asia/Riyadh')->locale('en')->dayName)->first()?->to);
+        $from = Carbon::parse($this->days->where('day', Carbon::now('Asia/Riyadh')->locale('en')->dayName)->first()?->from->timezone('Asia/Riyadh'));
+        $to = Carbon::parse($this->days->where('day', Carbon::now('Asia/Riyadh')->locale('en')->dayName)->first()?->to)->timezone('Asia/Riyadh');
         $open = t_('close');
         if (Carbon::now('Asia/Riyadh') >= $from && Carbon::now('Asia/Riyadh') <= $to){
             $open = t_('open');

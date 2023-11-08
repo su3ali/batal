@@ -164,7 +164,7 @@ class ContractOrderController extends Controller
     protected function getAvailableTime(Request $request)
     {
         $itr = $request->itr;
-        $day = \Illuminate\Support\Carbon::parse($request->date)->locale('en')->dayName;
+        $day = \Illuminate\Support\Carbon::parse($request->date)->timezone('Asia/Riyadh')->locale('en')->dayName;
 
         $package = ContractPackage::where('id',$request->id)->first();
 

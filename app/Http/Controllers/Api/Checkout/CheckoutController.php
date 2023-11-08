@@ -17,6 +17,8 @@ use App\Models\Technician;
 use App\Models\Transaction;
 use App\Models\UserAddresses;
 use App\Models\CategoryGroup;
+use App\Models\ContractPackage;
+use App\Models\ContractPackagesUser;
 use App\Models\Visit;
 use App\Notifications\SendPushNotification;
 use App\Support\Api\ApiResponse;
@@ -41,7 +43,7 @@ class CheckoutController extends Controller
     {
         $rules = [
             'user_address_id' => 'required|exists:user_addresses,id',
-            'payment_method' => 'required|in:cache,visa,wallet',
+            'payment_method' => 'required|in:cache,visa,wallet,package',
             'payment_status' => 'required|in:paid,due,partial',
             'coupon' => 'nullable|numeric',
             'transaction_id' => 'nullable',
@@ -56,6 +58,8 @@ class CheckoutController extends Controller
         $request->validate($rules, $request->all());
         $user = auth()->user('sanctum');
         $carts = Cart::query()->where('user_id', $user->id)->get();
+        $parent_payment_method = null;
+
         if (!$carts->first()) {
             return self::apiResponse(400, __('api.Cart is empty'), []);
         }
@@ -70,18 +74,42 @@ class CheckoutController extends Controller
             return $this->saveContract($user, $request, $total, $carts);
         } else {
 
-            if ($request->payment_method == 'wallet' && $request->amount > $user->point) {
-                return self::apiResponse(400, __('api.Your wallet balance is not enough to complete this process'), []);
-            }
+            // if ($request->payment_method == 'wallet' && $request->amount > $user->point) {
+            //     return self::apiResponse(400, __('api.Your wallet balance is not enough to complete this process'), []);
+            // }
             $uploadImage = null;
+            if ($request->image && $request->image != null) {
+                $image = $this->storeImages($request->image, 'order');
+                $uploadImage = 'storage/images/order' . '/' . $image;
+            }
             $uploadFile = null;
             if ($request->file && $request->file != null) {
                 $file = $this->storeImages($request->file, 'order');
                 $uploadFile = 'storage/images/order' . '/' . $file;
             }
-            if ($request->image && $request->image != null) {
-                $image = $this->storeImages($request->image, 'order');
-                $uploadImage = 'storage/images/order' . '/' . $image;
+            foreach ($carts as $cart) {
+                $now = Carbon::now('Asia/Riyadh');
+                $contractPackagesUser =  ContractPackagesUser::where('user_id', auth()->user()->id)
+                    ->whereDate('end_date', '>=', $now)
+                    ->where(function ($query) use ($cart) {
+                        $query->whereHas('contactPackage', function ($qu) use ($cart) {
+                            $qu->whereHas('ContractPackagesServices', function ($qu) use ($cart) {
+                                $qu->where('service_id', $cart->service_id);
+                            });
+                        });
+                    })->first();
+
+
+                if ($contractPackagesUser) {
+                    $contractPackage = ContractPackage::where('id', $contractPackagesUser->contract_packages_id)->first();
+                    $cart->coupon = null;
+                    $parent_payment_method = $contractPackagesUser->payment_method;
+                    if ($cart->quantity <  $contractPackage->visit_number - $contractPackagesUser->used) {
+                        $contractPackagesUser->increment('used', $cart->quantity);
+                    } else {
+                        $contractPackagesUser->increment('used', ($contractPackage->visit_number - $contractPackagesUser->used));
+                    }
+                }
             }
             $total = $this->calc_total($carts);
             return $this->saveOrder($user, $request, $total, $carts, $uploadImage, $uploadFile);
@@ -98,7 +126,7 @@ class CheckoutController extends Controller
         return array_sum($total);
     }
 
-    private function saveOrder($user, $request, $total, $carts, $uploadImage, $uploadFile)
+    private function saveOrder($user, $request, $total, $carts, $uploadImage, $uploadFile, $parent_payment_method)
     {
         $totalAfterDiscount = ($total - $request->coupon);
         $order = Order::create([
@@ -152,10 +180,11 @@ class CheckoutController extends Controller
             })->whereHas('category', function ($qu) use ($category_id) {
                 $qu->where('category_id', $category_id);
             })->where('date', $cart->date)->pluck('id')->toArray();
-
+            $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
             $visit = DB::table('visits')
                 ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
                 ->whereIn('booking_id', $booking_id)
+                ->whereIn('assign_to_id', $activeGroups)
                 ->groupBy('assign_to_id')
                 ->orderBy('group_id', 'ASC');
 
@@ -180,7 +209,7 @@ class CheckoutController extends Controller
                 if (($visit->get()->count()) < ($group->get()->count())) {
                     $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
                 } else {
-                    $assign_to_id = $visit->where('start_time', '!=', $cart->time)->inRandomOrder()->first()->assign_to_id;
+                    $assign_to_id = $visit->inRandomOrder()->first()->assign_to_id;
                 }
             }
 
@@ -192,8 +221,8 @@ class CheckoutController extends Controller
                 $startTimes = [];
                 $endTimes = [];
                 for ($i = $numOfDaysForService - 1; $i >= 0; $i--) {
-                    $startTime = ($i == 0 ? Carbon::parse($cart->time)->toTimeString() : Carbon::parse($bookSetting->service_start_time)->toTimeString());
-                    $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->addMinutes($bookSetting->service_duration - (($numOfDaysForService - 1) * ($allowedDuration / 60)))->toTimeString() : $bookSetting->service_end_time);
+                    $startTime = ($i == 0 ? Carbon::parse($cart->time)->timezone('Asia/Riyadh')->toTimeString() : Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->toTimeString());
+                    $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addMinutes($bookSetting->service_duration - (($numOfDaysForService - 1) * ($allowedDuration / 60)))->toTimeString() : $bookSetting->service_end_time);
 
 
                     $bookingInsert = Booking::query()->create([
@@ -206,7 +235,7 @@ class CheckoutController extends Controller
                         'booking_status_id' => 1,
                         'notes' => $cart->notes,
                         'quantity' => $cart->quantity,
-                        'date' => Carbon::parse($cart->date)->addDays($i)->format('Y-m-d'),
+                        'date' => Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->format('Y-m-d'),
                         'type' => 'service',
                         'time' =>  $startTime,
                         'end_time' =>   $endTime,
@@ -246,13 +275,13 @@ class CheckoutController extends Controller
                     'quantity' => $cart->quantity,
                     'date' => $cart->date,
                     'type' => 'service',
-                    'time' =>  Carbon::parse($cart->time)->toTimeString(),
-                    'end_time' =>   $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
+                    'time' =>  Carbon::parse($cart->time)->timezone('Asia/Riyadh')->toTimeString(),
+                    'end_time' =>   $minutes ? Carbon::parse($cart->time)->timezone('Asia/Riyadh')->addMinutes($minutes)->toTimeString() : null,
 
 
                 ]);
-                $start_time = Carbon::parse($cart->time)->toTimeString();
-                $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
+                $start_time = Carbon::parse($cart->time)->timezone('Asia/Riyadh')->toTimeString();
+                $end_time =  $minutes ? Carbon::parse($cart->time)->timezone('Asia/Riyadh')->addMinutes($minutes)->toTimeString() : null;
                 $validated['start_time'] =  $start_time;
                 $validated['end_time'] = $end_time;
                 $validated['duration'] = $minutes;
@@ -297,25 +326,39 @@ class CheckoutController extends Controller
             }
         }
 
-
-        if ($request->payment_method == 'wallet') {
+        $payment_method = $request->payment_method;
+        if ($payment_method == 'wallet') {
             $transaction = Transaction::create([
                 'order_id' => $order->id,
                 'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
                 'payment_result' => 'success',
-                'payment_method' => $request->payment_method,
+                'payment_method' =>  $payment_method,
             ]);
-            $order->update([
-                'partial_amount' => 0
+            Order::where('id', $order->id)->update(array('partial_amount' => 0));
+        } elseif ($payment_method == 'cache') {
+            $transaction = Transaction::create([
+                'order_id' => $order->id,
+                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+                'payment_result' => 'success',
+                'payment_method' => $payment_method,
             ]);
-        }  else {
+            Order::where('id', $order->id)->update(array('partial_amount' => $totalAfterDiscount));
+        } elseif ($payment_method == 'package') {
+            $transaction = Transaction::create([
+                'order_id' => $order->id,
+                'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+                'payment_result' => 'success',
+                'payment_method' => $parent_payment_method,
+            ]);
+            Order::where('id', $order->id)->update(array('partial_amount' => 0));
+        } else {
             Transaction::create([
                 'order_id' => $order->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
-                'payment_method' => $request->payment_method,
-                'amount' => $request->amount,
+                'payment_method' =>  $payment_method,
             ]);
+            Order::where('id', $order->id)->update(array('partial_amount' => 0));
         }
 
         $user->update([
@@ -332,188 +375,228 @@ class CheckoutController extends Controller
     private function saveContract($user, $request, $total, $carts)
     {
 
-        $contract_order = Contract::create([
+        $contractPackage = ContractPackage::where('id', $carts->first()->contract_package_id)->first();
+        $date = Carbon::now('Asia/Riyadh')->addDays($contractPackage->time)->format('Y-m-d');
+        $contractPackageUser = ContractPackagesUser::create([
+            'used' => 0,
+            'end_date' => $date,
             'user_id' => $user->id,
-            'discount' => $request->coupon,
-            'user_address_id' => $request->user_address_id,
-            'sub_total' => $total,
-            'total' => ($total - $request->coupon),
+            'contract_packages_id' => $carts->first()->contract_package_id,
             'payment_method' => $request->payment_method,
-            'status_id' => 1,
-            'package_id' => $carts->first()->contract_package_id,
-            'price' => ($total - $request->coupon),
-            'quantity' => $carts->count(),
         ]);
-        $order = Order::create([
-            'user_id' => $user->id,
-            'discount' => $request->coupon,
-            'user_address_id' => $request->user_address_id,
-            'sub_total' => $total,
-            'total' => ($total - $request->coupon),
-            'payment_status' => $request->payment_status,
-            'partial_amount' => ($total - $request->coupon - $request->amount),
-            'status_id' => 1,
-            'is_advance' => $request->is_advance,
-            'is_return' => $request->is_return,
-            'notes' => $request->notes,
-        ]);
-        ///////////////////////////////////////////////
-        foreach ($carts as $key => $cart) {
-            OrderService::create([
-                'order_id' => $order->id,
-                'service_id' => $cart->service_id,
-                'price' => $cart->price,
-                'quantity' => $cart->quantity,
-                'category_id' => $cart->category_id,
-            ]);
-            $service = Service::query()->find($cart->service_id);
-            $category_id = $cart->category_id;
-            $booking_no = 'dash2023/' . $cart->id;
-            $minutes = 0;
-            $bookSetting = BookingSetting::where('service_id', $service->id)->first();
-            if ($bookSetting) {
-                $minutes =  ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration);
-            }
-            $address = UserAddresses::where('id', $order->user_address_id)->first();
 
-            $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
-                $qu->where('region_id', $address->region_id);
-            })->whereHas('category', function ($qu) use ($category_id) {
-                $qu->where('category_id', $category_id);
-            })->where('date', $cart->date)->pluck('id')->toArray();
-            $visit = DB::table('visits')
-                ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
-                ->whereIn('booking_id', $booking_id)
-                ->groupBy('assign_to_id')
-                ->orderBy('group_id', 'ASC');
-            $assign_to_id = 0;
-            if ($visit->get()->isEmpty()) {
-                $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
-                $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
-                    $qu->where('region_id', $address->region_id);
-                })->whereIn('id', $groupIds)->inRandomOrder()->first();
-                if ($group == null) {
-                    return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
-                }
-                $assign_to_id = $group->id;
-            } else {
-                $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
-                $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
-                    $qu->where('region_id', $address->region_id);
-                })->whereIn('id', $groupIds);
-                if ($group->count() == 0) {
-                    return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
-                }
-
-                if (($visit->get()->count()) < ($group->get()->count())) {
-                    $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
-                } else {
-
-                    $assign_to_id = $visit->where('start_time', '!=', $cart->time)->inRandomOrder()->first()->assign_to_id;
-                }
-            }
-
-
-            $bookingInsert = Booking::query()->create([
-                'booking_no' => $booking_no,
-                'user_id' => auth('sanctum')->user()->id,
-                'category_id' => $category_id,
-                'service_id' => $cart->service_id,
-                'package_id' => $cart->contract_package_id,
-                'order_id' => $order->id,
-                'contract_order_id' => $contract_order->id,
-                'user_address_id' => $order->user_address_id,
-                'booking_status_id' => 1,
-                'notes' => $cart->notes,
-                'quantity' => $cart->quantity,
-                'date' => $cart->date,
-                'type' => 'service',
-                'time' => Carbon::parse($cart->time)->toTimeString(),
-                'end_time' => $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
-            ]);
-
-
-
-            $start_time = Carbon::parse($cart->time)->toTimeString();
-            $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
-            $validated['start_time'] =  $start_time;
-            $validated['end_time'] = $end_time;
-            $validated['duration'] = $minutes;
-            $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
-            $validated['assign_to_id'] = $assign_to_id;
-            $validated['booking_id'] = $bookingInsert->id;
-            $validated['visits_status_id'] = 1;
-            $visitInsert = Visit::query()->create($validated);
-
-            $allTechn = Technician::where('group_id', $assign_to_id)->whereNotNull('fcm_token')->get();
-
-            if (count($allTechn) > 0) {
-
-                $title = 'موعد زيارة جديد';
-                $message = 'لديك موعد زياره جديد';
-
-                foreach ($allTechn as $tech) {
-                    Notification::send(
-                        $tech,
-                        new SendPushNotification($title, $message)
-                    );
-                }
-
-                $FcmTokenArray = $allTechn->pluck('fcm_token');
-
-                $notification = [
-                    'device_token' => $FcmTokenArray,
-                    'title' => $title,
-                    'message' => $message,
-                    'type' => 'technician',
-                    'code' => 1,
-                ];
-
-                $this->pushNotification($notification);
-            }
-        }
-        ///////////////////////////////////////////////
-        // foreach ($carts as $key => $cart) {
-        //     $booking_no = 'dash2023/' . $cart->id;
-        //     $minutes = 0;
-        //     foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
-        //         $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration);
-        //         $minutes += $serviceMinutes;
-        //     }
-        //     Booking::query()->create([
-        //         'booking_no' => $booking_no,
-        //         'user_id' => auth('sanctum')->user()->id,
-        //         'category_id' => $cart->category_id,
-        //         'contract_order_id' => $order->id,
-        //         'user_address_id' => $order->user_address_id,
-        //         'booking_status_id' => 1,
-        //         'notes' => $cart->notes,
-        //         'quantity' => 1,
-        //         'package_id' => $cart->contract_package_id,
-        //         'date' => $cart->date,
-        //         'type' => 'contract',
-        //         'time' => Carbon::parse($cart->time)->toTimeString(),
-        //         'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
-        //     ]);
-        // }
         if ($request->payment_method == 'wallet') {
             $transaction = Transaction::create([
-                'order_id' => $order->id,
-                'contract_order_id' => $contract_order->id,
+                //      'order_id' => $order->id,
+                'contract_packages_users_id' => $contractPackageUser->id,
+                'transaction_number' => 'waller/' . rand(1111111111, 9999999999),
+                'payment_result' => 'success',
+                'payment_method' => $request->payment_method,
+            ]);
+            //   Order::where('id', $order->id)->update(array('partial_amount' => 0));
+        } elseif ($request->payment_method == 'cache') {
+            $transaction = Transaction::create([
+                //      'order_id' => $order->id,
+                'contract_packages_users_id' => $contractPackageUser->id,
                 'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
                 'payment_result' => 'success',
                 'payment_method' => $request->payment_method,
             ]);
+            //   Order::where('id', $order->id)->update(array('partial_amount' => ($total )));
         } else {
             Transaction::create([
-                'order_id' => $order->id,
-                'contract_order_id' => $contract_order->id,
+                //       'order_id' => $order->id,
+                'contract_packages_users_id' => $contractPackageUser->id,
                 'transaction_number' => $request->transaction_id,
                 'payment_result' => 'success',
                 'payment_method' => $request->payment_method,
-                'amount' => $total,
+                //  'amount' => $total,
             ]);
         }
+
+
+        // $contract_order = Contract::create([
+        //     'user_id' => $user->id,
+        //     'discount' => $request->coupon,
+        //     'user_address_id' => $request->user_address_id,
+        //     'sub_total' => $total,
+        //     'total' => ($total - $request->coupon),
+        //     'payment_method' => $request->payment_method,
+        //     'status_id' => 1,
+        //     'package_id' => $carts->first()->contract_package_id,
+        //     'price' => ($total - $request->coupon),
+        //     'quantity' => $carts->count(),
+        // ]);
+        // $order = Order::create([
+        //     'user_id' => $user->id,
+        //     'discount' => $request->coupon,
+        //     'user_address_id' => $request->user_address_id,
+        //     'sub_total' => $total,
+        //     'total' => ($total - $request->coupon),
+        //     'payment_status' => $request->payment_status,
+        //     'partial_amount' => ($total - $request->coupon - $request->amount),
+        //     'status_id' => 1,
+        //     'is_advance' => $request->is_advance,
+        //     'is_return' => $request->is_return,
+        //     'notes' => $request->notes,
+        // ]);
+        ///////////////////////////////////////////////
+        // foreach ($carts as $key => $cart) {
+        //     OrderService::create([
+        //         'order_id' => $order->id,
+        //         'service_id' => $cart->service_id,
+        //         'price' => $cart->price,
+        //         'quantity' => $cart->quantity,
+        //         'category_id' => $cart->category_id,
+        //     ]);
+        //     $service = Service::query()->find($cart->service_id);
+        //     $category_id = $cart->category_id;
+        //     $booking_no = 'dash2023/' . $cart->id;
+        //     $minutes = 0;
+        //     $bookSetting = BookingSetting::where('service_id', $service->id)->first();
+        //     if ($bookSetting) {
+        //         $minutes =  ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration);
+        //     }
+        //     $address = UserAddresses::where('id', $order->user_address_id)->first();
+
+        //     $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
+        //         $qu->where('region_id', $address->region_id);
+        //     })->whereHas('category', function ($qu) use ($category_id) {
+        //         $qu->where('category_id', $category_id);
+        //     })->where('date', $cart->date)->pluck('id')->toArray();
+        //     $visit = DB::table('visits')
+        //         ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
+        //         ->whereIn('booking_id', $booking_id)
+        //         ->groupBy('assign_to_id')
+        //         ->orderBy('group_id', 'ASC');
+        //     $assign_to_id = 0;
+        //     if ($visit->get()->isEmpty()) {
+        //         $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
+        //         $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
+        //             $qu->where('region_id', $address->region_id);
+        //         })->whereIn('id', $groupIds)->inRandomOrder()->first();
+        //         if ($group == null) {
+        //             return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
+        //         }
+        //         $assign_to_id = $group->id;
+        //     } else {
+        //         $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
+        //         $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
+        //             $qu->where('region_id', $address->region_id);
+        //         })->whereIn('id', $groupIds);
+        //         if ($group->count() == 0) {
+        //             return self::apiResponse(400, __('api.There is a category for which there are currently no technical groups available'), $this->body);
+        //         }
+
+        //         if (($visit->get()->count()) < ($group->get()->count())) {
+        //             $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
+        //         } else {
+
+        //             $assign_to_id = $visit->where('start_time', '!=', $cart->time)->inRandomOrder()->first()->assign_to_id;
+        //         }
+        //     }
+
+
+        //     $bookingInsert = Booking::query()->create([
+        //         'booking_no' => $booking_no,
+        //         'user_id' => auth('sanctum')->user()->id,
+        //         'category_id' => $category_id,
+        //         'service_id' => $cart->service_id,
+        //         'package_id' => $cart->contract_package_id,
+        //         'order_id' => $order->id,
+        //         'contract_order_id' => $contract_order->id,
+        //         'user_address_id' => $order->user_address_id,
+        //         'booking_status_id' => 1,
+        //         'notes' => $cart->notes,
+        //         'quantity' => $cart->quantity,
+        //         'date' => $cart->date,
+        //         'type' => 'service',
+        //         'time' => Carbon::parse($cart->time)->toTimeString(),
+        //         'end_time' => $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null,
+        //     ]);
+
+
+
+        //     $start_time = Carbon::parse($cart->time)->toTimeString();
+        //     $end_time =  $minutes ? Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString() : null;
+        //     $validated['start_time'] =  $start_time;
+        //     $validated['end_time'] = $end_time;
+        //     $validated['duration'] = $minutes;
+        //     $validated['visite_id'] = rand(1111, 9999) . '_' . date('Ymd');
+        //     $validated['assign_to_id'] = $assign_to_id;
+        //     $validated['booking_id'] = $bookingInsert->id;
+        //     $validated['visits_status_id'] = 1;
+        //     $visitInsert = Visit::query()->create($validated);
+
+        //     $allTechn = Technician::where('group_id', $assign_to_id)->whereNotNull('fcm_token')->get();
+
+        //     if (count($allTechn) > 0) {
+
+        //         $title = 'موعد زيارة جديد';
+        //         $message = 'لديك موعد زياره جديد';
+
+        //         foreach ($allTechn as $tech) {
+        //             Notification::send(
+        //                 $tech,
+        //                 new SendPushNotification($title, $message)
+        //             );
+        //         }
+
+        //         $FcmTokenArray = $allTechn->pluck('fcm_token');
+
+        //         $notification = [
+        //             'device_token' => $FcmTokenArray,
+        //             'title' => $title,
+        //             'message' => $message,
+        //             'type' => 'technician',
+        //             'code' => 1,
+        //         ];
+
+        //         $this->pushNotification($notification);
+        //     }
+        // }
+        // ///////////////////////////////////////////////
+        // // foreach ($carts as $key => $cart) {
+        // //     $booking_no = 'dash2023/' . $cart->id;
+        // //     $minutes = 0;
+        // //     foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
+        // //         $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration);
+        // //         $minutes += $serviceMinutes;
+        // //     }
+        // //     Booking::query()->create([
+        // //         'booking_no' => $booking_no,
+        // //         'user_id' => auth('sanctum')->user()->id,
+        // //         'category_id' => $cart->category_id,
+        // //         'contract_order_id' => $order->id,
+        // //         'user_address_id' => $order->user_address_id,
+        // //         'booking_status_id' => 1,
+        // //         'notes' => $cart->notes,
+        // //         'quantity' => 1,
+        // //         'package_id' => $cart->contract_package_id,
+        // //         'date' => $cart->date,
+        // //         'type' => 'contract',
+        // //         'time' => Carbon::parse($cart->time)->toTimeString(),
+        // //         'end_time' => Carbon::parse($cart->time)->addMinutes($minutes)->toTimeString(),
+        // //     ]);
+        // // }
+        // if ($request->payment_method == 'wallet') {
+        //     $transaction = Transaction::create([
+        //         'order_id' => $order->id,
+        //         'contract_order_id' => $contract_order->id,
+        //         'transaction_number' => 'cache/' . rand(1111111111, 9999999999),
+        //         'payment_result' => 'success',
+        //         'payment_method' => $request->payment_method,
+        //     ]);
+        // } else {
+        //     Transaction::create([
+        //         'order_id' => $order->id,
+        //         'contract_order_id' => $contract_order->id,
+        //         'transaction_number' => $request->transaction_id,
+        //         'payment_result' => 'success',
+        //         'payment_method' => $request->payment_method,
+        //         'amount' => $total,
+        //     ]);
+        // }
 
         $user->update([
             'point' => $user->point - $request->wallet_discounts ?? 0

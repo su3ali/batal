@@ -66,7 +66,7 @@ class BookingController extends Controller
                     return $html;
                 })
                 ->addColumn('time', function ($row) {
-                    return Carbon::parse($row->time)->format('g:i A');
+                    return Carbon::parse($row->time)->timezone('Asia/Riyadh')->format('g:i A');
                 })
                 ->addColumn('group', function ($row) {
                     return $row->visit?->group?->name;
@@ -166,7 +166,7 @@ class BookingController extends Controller
     protected function update(Request $request, $id)
     {
         $inputs = $request->only('order_id', 'user_id', 'service_id', 'group_id', 'date', 'notes', 'booking_status_id');
-        $inputs['time'] = Carbon::parse($request->time)->format('H:i');
+        $inputs['time'] = Carbon::parse($request->time)->timezone('Asia/Riyadh')->format('H:i');
         $booking = Booking::query()->where('id', $id)->first();
         $rules = [
             'order_id' => 'required|exists:orders,id',
