@@ -95,7 +95,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.core.measurements.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

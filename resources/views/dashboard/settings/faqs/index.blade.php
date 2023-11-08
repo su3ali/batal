@@ -94,7 +94,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.faqs.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

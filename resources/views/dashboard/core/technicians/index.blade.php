@@ -98,7 +98,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.core.technician.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

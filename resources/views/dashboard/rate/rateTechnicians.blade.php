@@ -91,7 +91,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.rates.RateTechnician') }}',
                 columns: [
                     {data: 'id', name: 'id'},

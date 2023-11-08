@@ -96,7 +96,7 @@
                 },
                 charset: 'UTF-8',
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.core.address.index','id='.request('id')) }}',
                 columns: [
                     {data: 'id', name: 'id'},

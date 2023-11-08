@@ -94,7 +94,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.order_statuses.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

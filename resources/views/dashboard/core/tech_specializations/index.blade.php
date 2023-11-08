@@ -94,7 +94,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.core.tech_specializations.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

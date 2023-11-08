@@ -87,7 +87,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.order.showService','id='.request()->query('id')) }}',
                 columns: [
                     {data: 'id', name: 'id'},

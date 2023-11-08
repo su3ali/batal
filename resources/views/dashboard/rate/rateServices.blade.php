@@ -92,7 +92,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.rates.RateService') }}',
                 columns: [
                     {data: 'id', name: 'id'},

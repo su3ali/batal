@@ -129,7 +129,7 @@
                 },
                 processing: true,
                 responsive: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ url('admin/bookings?type='.$type) }}',
                 columns: [
                     {data: 'booking_no', name: 'booking_no'},

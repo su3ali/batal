@@ -99,7 +99,7 @@
                 },
                 processing: true,
                 responsive: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.coupons.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

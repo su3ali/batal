@@ -98,7 +98,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.report.contractSales') }}',
                 columns: [
                     {data: 'contract_number', name: 'contract_number',orderable: true, searchable: true},

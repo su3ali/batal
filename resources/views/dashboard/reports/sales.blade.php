@@ -144,7 +144,7 @@
                 ]
             },
             processing: true,
-            serverSide: true,
+            serverSide: false,
             ajax: '{{ route('dashboard.report.sales') }}',
             columns: [
                 {data: 'order_number', name: 'order_number',orderable: true, searchable: true},

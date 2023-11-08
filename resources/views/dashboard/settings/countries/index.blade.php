@@ -107,7 +107,7 @@
                 charset: 'UTF-8',
                 order: [[0, 'desc']],
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.country.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

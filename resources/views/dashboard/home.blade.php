@@ -223,7 +223,7 @@
             },
             processing: true,
             responsive: true,
-            serverSide: true,
+            serverSide: false,
             ajax: {url:'{{ route('dashboard.visits.index') }}',data: function (d){
                     d.page="home";
                 }},
@@ -263,7 +263,7 @@
                 ]
             },
             processing: true,
-            serverSide: true,
+            serverSide: false,
             responsive:true,
             ajax: {url:'{{ route('dashboard.orders.index') }}',data: function (d){
                     d.page="home";

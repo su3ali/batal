@@ -96,7 +96,7 @@
                 },
                 processing: true,
                 responsive: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.contract_packages.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

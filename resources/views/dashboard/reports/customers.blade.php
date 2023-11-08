@@ -90,7 +90,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.report.customers') }}',
                 columns: [
                     {data: 'user_name', name: 'user_name',orderable: true, searchable: true},

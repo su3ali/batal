@@ -88,7 +88,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.report.services') }}',
                 columns: [
                     {data: 'name', name: 'name',orderable: true, searchable: true},

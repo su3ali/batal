@@ -93,7 +93,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.visits.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

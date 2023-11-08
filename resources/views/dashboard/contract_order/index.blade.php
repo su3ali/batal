@@ -99,7 +99,7 @@
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.contract_order.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},

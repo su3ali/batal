@@ -104,7 +104,7 @@
                 },
                 processing: true,
                 responsive: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.booking_setting.index') }}',
                 columns: [
                     {data: 'id', name: 'id'},
