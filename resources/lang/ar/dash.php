@@ -788,6 +788,6 @@ rejected_bills
     'customer name' => 'اسم العميل',
     'user addresses' => 'عناوين العميل',
     'r.s' => 'ريال سعودي',
-
+    'bookings_today' => 'الحجوزات اليوم',
 
 ];

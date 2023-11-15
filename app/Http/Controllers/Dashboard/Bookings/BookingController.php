@@ -33,20 +33,36 @@ class BookingController extends Controller
     {
 
         if (request()->ajax()) {
-            $bookings = Booking::with('visit.group')->where('type', 'service')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            $date = \request()->query('date');
+            $date2 = \request()->query('date2');
+            $bookings = Booking::with('visit.group')->where('is_active', 1)->where('type', 'service')->with(['order', 'customer', 'service', 'group', 'booking_status']);
 
-            if (\request()->query('type') == 'package') {
-                $bookings = Booking::query()->where('type', 'contract')->with(['order', 'customer', 'service', 'group', 'booking_status'])->get();
+            if (request()->page) {
+                $now = Carbon::now('Asia/Riyadh')->toDateString();
+                $bookings->where('booking_status_id', '!=', 2)->whereDate('date', '=', $now);
             }
 
+            if (\request()->query('type') == 'package') {
+                $bookings = Booking::query()->where('is_active', 1)->where('type', 'contract')->with(['order', 'customer', 'service', 'group', 'booking_status']);
+            }
+            if (\request()->query('status')) {
+                $va = \request()->query('status');
+                $bookings->Where('booking_status_id', $va);
+            }
+            if ($date) {
+                $carbonDate = \Carbon\Carbon::parse($date)->timezone('Asia/Riyadh');
+                $formattedDate = $carbonDate->format('Y-m-d');
+                $order = $bookings->where('date', '>=', $formattedDate);
+            }
+            if ($date2) {
+
+                $carbonDate2 = \Carbon\Carbon::parse($date2)->timezone('Asia/Riyadh');
+                $formattedDate2 = $carbonDate2->format('Y-m-d');
+                $order = $bookings->where('date', '<=', $formattedDate2);
+            }
+
+            $bookings->get();
             return DataTables::of($bookings)
-                ->addColumn('order', function ($row) {
-                    $order = $row->order?->id;
-                    if (\request()->query('type') == 'package') {
-                        $order = $row->contract?->id;
-                    }
-                    return $order;
-                })
                 ->addColumn('customer', function ($row) {
                     return $row->customer?->first_name . ' ' . $row->customer?->last_name;
                 })
@@ -82,13 +98,13 @@ class BookingController extends Controller
                     if (!in_array($row->id, Visit::query()->pluck('booking_id')->toArray())) {
                         $html = '
 
-                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-address_id = "'.$row->user_address_id.'" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-address_id = "' . $row->user_address_id . '"  data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
                                   data-toggle="modal" data-target="#addGroupModel">
                             اضافة فريق
                        </button>';
                     } else {
                         $html = '
-                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-address_id = "'.$row->user_address_id.'" data-visit_id="'.$row->visit?->id.'" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
+                        <button type="button" id="add-work-exp" class="btn btn-sm btn-primary card-tools edit" data-address_id = "' . $row->user_address_id . '" data-visit_id="' . $row->visit?->id . '" data-id="' . $row->id . '" data-category_id="' . $row->category_id . '"  data-service_id="' . $data . '" data-type="' . \request()->query('type') . '"
                                   data-toggle="modal" data-target="#changeGroupModel">
                             تغيير الفريق
                        </button>';
@@ -99,7 +115,8 @@ class BookingController extends Controller
                     return $html;
                 })
                 ->rawColumns([
-                    'order',
+                    //  'visit_id',
+                    //  'order',
                     'customer',
                     'customer_phone',
                     'service',
@@ -110,8 +127,9 @@ class BookingController extends Controller
                 ->make(true);
         }
         $visitsStatuses = VisitsStatus::query()->get()->pluck('name', 'id');
+        $statuses = BookingStatus::get()->pluck('name', 'id');
 
-        return view('dashboard.bookings.index', compact('visitsStatuses'));
+        return view('dashboard.bookings.index', compact('visitsStatuses', 'statuses'));
     }
 
     protected function create()
@@ -119,7 +137,7 @@ class BookingController extends Controller
         $orders = Order::all();
         $customers = User::all();
         $services = Service::all();
-        $groups = Group::where('active',1)->get();
+        $groups = Group::where('active', 1)->get();
         $statuses = BookingStatus::all();
         return view('dashboard.bookings.create', compact('orders', 'customers', 'services', 'groups', 'statuses'));
     }
@@ -157,10 +175,9 @@ class BookingController extends Controller
         $orders = Order::all();
         $customers = User::all();
         $services = Service::all();
-        $groups = Group::where('active',1)->get();
+        $groups = Group::where('active', 1)->get();
         $statuses = BookingStatus::all();
         return view('dashboard.bookings.edit', compact('booking', 'orders', 'customers', 'services', 'groups', 'statuses'));
-
     }
 
     protected function update(Request $request, $id)
@@ -191,7 +208,21 @@ class BookingController extends Controller
     protected function destroy($id)
     {
         $booking = Booking::query()->find($id);
-        $booking->delete();
+        $booking->update([
+            'is_active' => 0
+        ]);
+        $order = Order::where('id', $booking->order_id)->first();
+        $order->update([
+            'is_active' => 0
+        ]);
+        $visits = Visit::where('booking_id', $id)->get();
+        foreach ($visits as $visit) {
+            $visit->update([
+                'is_active' => 0
+            ]);
+        }
+
+        // $booking->delete();
         return [
             'success' => true,
             'msg' => __("dash.deleted_success")
@@ -221,27 +252,82 @@ class BookingController extends Controller
 
             $groupIds = CategoryGroup::where('category_id', $service->category_id)->pluck('group_id')->toArray();
 
-            $address = UserAddresses::where('id',$request->address_id)->first();
+            $address = UserAddresses::where('id', $request->address_id)->first();
 
-            $group = Group::where('active',1)->whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
-                $qu->where('region_id',$address->region_id);
+            $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereHas('regions', function ($qu) use ($address) {
+                $qu->where('region_id', $address->region_id);
             })->get()->pluck('name', 'id')->toArray();
         } else {
             $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
-            $address = UserAddresses::where('id',$request->address_id)->first();
-            $group = Group::where('active',1)->whereIn('id', $groupIds)->whereHas('regions',function($qu) use($address) {
-                $qu->where('region_id',$address->region_id);
+            $address = UserAddresses::where('id', $request->address_id)->first();
+            $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereHas('regions', function ($qu) use ($address) {
+                $qu->where('region_id', $address->region_id);
             })->get()->pluck('name', 'id')->toArray();
-            $groups = Group::where('active',1)->whereIn('id', $groupIds)->get();
+            $groups = Group::where('active', 1)->whereIn('id', $groupIds)->get();
             // error_log("BBBBBBB");
             // error_log(sizeof($groups));
             // foreach ($groups as $key => $value){
             //     error_log($value);
             // }
         }
-      
+
         return response($group);
-
     }
+    // {
 
+
+    //     $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
+    //     $address = UserAddresses::where('id', $request->address_id)->first();
+    //     $booking = Booking::where('id', $request->booking_id)->first();
+    //     $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
+    //         $qu->where('region_id', $address->region_id);
+    //     })->whereHas('category', function ($qu) use ($request) {
+    //         $qu->where('category_id', $request->category_id);
+    //     })->where('date', $booking->date)->pluck('id')->toArray();
+    //     $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
+    //     $takenIds = Visit::where('start_time', $booking->time)->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
+    //     $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereNotIn('id', $takenIds)->whereHas('regions', function ($qu) use ($address) {
+    //         $qu->where('region_id', $address->region_id);
+    //     })->get()->pluck('name', 'id')->toArray();
+
+    //     foreach($group as $te){
+    //         error_log($te->name);
+    //     }
+    //     return response($group);
+
+
+
+    // //     if ($request->type == 'package') {
+
+    // //         $package = ContractPackage::where('id', $request->service_id)->first();
+
+    // //         $service = Service::where('id', $package->service_id)->first('category_id');
+
+    // //         $groupIds = CategoryGroup::where('category_id', $service->category_id)->pluck('group_id')->toArray();
+
+    // //         $address = UserAddresses::where('id', $request->address_id)->first();
+
+    // //         $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereHas('regions', function ($qu) use ($address) {
+    // //             $qu->where('region_id', $address->region_id);
+    // //         })->get()->pluck('name', 'id')->toArray();
+    // //     } else {
+    // //         $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
+    // //         $address = UserAddresses::where('id', $request->address_id)->first();
+    // //         $booking = Booking::where('id', $request->booking_id)->first();
+    // //         $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
+    // //             $qu->where('region_id', $address->region_id);
+    // //         })->whereHas('category', function ($qu) use ($request) {
+    // //             $qu->where('category_id', $request->category_id);
+    // //         })->where('date', $booking->date)->pluck('id')->toArray();
+    // //         $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
+    // //         $takenIds = Visit::where('start_time', $booking->time)->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
+    // //         $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereNotIn('id', $takenIds)->whereHas('regions', function ($qu) use ($address) {
+    // //             $qu->where('region_id', $address->region_id);
+    // //         })->get()->pluck('name', 'id')->toArray();
+    // //     }
+    // //     foreach($group as $te){
+    // //         error_log($te->name);
+    // //     }
+    // //     return response($group);
+    // // }
 }

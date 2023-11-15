@@ -22,7 +22,8 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{ route('dashboard.home') }}">{{ __('dash.home') }}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">{{ __('dash.client_orders') }}</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __('dash.client_orders_today') }}
+                                </li>
                             </ol>
                         </nav>
 
@@ -66,18 +67,7 @@
                         </div>
 
                     </div>
-                    <div class="col-md-12 text-right mb-3">
 
-                        {{--                        <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal" --}}
-                        {{--                                data-target="#createOrderModel"> --}}
-                        {{--                            {{__('dash.add_new')}} --}}
-                        {{--                        </button> --}}
-
-                        <a href="{{ route('dashboard.orders.create') }}" id="" class="btn btn-primary card-tools">
-                            {{ __('dash.add_new') }}
-                        </a>
-
-                    </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
                         <thead>
                             <tr>
@@ -143,7 +133,7 @@
                 },
                 processing: true,
                 serverSide: false,
-                ajax: '{{ route('dashboard.orders.index') }}',
+                ajax: '{{ route('dashboard.order.ordersToday') }}',
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -192,7 +182,7 @@
 
             function updateTableData() {
                 var status_filter = $('.status_filter').val();
-                var url = '{{ route('dashboard.orders.index') }}';
+                var url = '{{ route('dashboard.order.ordersToday') }}';
 
                 if (status_filter && status_filter !== 'all') {
                     url += '?status=' + status_filter;

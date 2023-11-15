@@ -29,7 +29,7 @@ class RegionController extends Controller
                 })
                 ->addColumn('status', function ($region) {
                     $checked = '';
-                    if ($region->active == 1){
+                    if ($region->active == 1) {
                         $checked = 'checked';
                     }
                     return '<label class="switch s-outline s-outline-info  mb-4 mr-2">
@@ -40,14 +40,14 @@ class RegionController extends Controller
                 ->addColumn('controll', function ($region) {
 
                     $html = '
-
-                    <a href="'.route('dashboard.region.edit', $region->id).'"  class="mr-2 btn btn-sm btn-primary">
+                    <a href="' . route('dashboard.region.viewRegion', $region->id) . '" class="mr-2 btn btn-outline-primary btn-sm"><i class="far fa-eye fa-2x"></i> </a>
+                    <a href="' . route('dashboard.region.edit', $region->id) . '"  class="mr-2 btn btn-sm btn-primary">
                             <i class="far fa-edit fa-2x"></i>
                     </a>
 
 
 
-                                <a data-href="'.route('dashboard.region.destroy', $region->id).'" data-id="'.$region->id.'" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
+                                <a data-href="' . route('dashboard.region.destroy', $region->id) . '" data-id="' . $region->id . '" class="mr-2 btn btn-outline-danger btn-delete btn-sm">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
                                 ';
@@ -68,9 +68,9 @@ class RegionController extends Controller
 
     public function create()
     {
-        $cities = City::where('active',1)->get()->pluck('title','id');
+        $cities = City::where('active', 1)->get()->pluck('title', 'id');
 
-        return view('dashboard.settings.regions.create',compact('cities'));
+        return view('dashboard.settings.regions.create', compact('cities'));
     }
 
     public function store(Request $request)
@@ -85,19 +85,25 @@ class RegionController extends Controller
 
         ]);
 
-        $data=$request->except('_token');
+        $data = $request->except('_token');
 
         Region::updateOrCreate($data);
 
         session()->flash('success');
         return redirect()->route('dashboard.region.index');
     }
+    public function viewRegion($id)
+    {
+        $region = Region::where('id', $id)->first();
+      
+        return view('dashboard.settings.regions.show', compact('region'));
+    }
 
     public function edit($id)
     {
-        $region = Region::where('id',$id)->first();
-        $cities = City::where('active',1)->get()->pluck('title','id');
-        return view('dashboard.settings.regions.edit', compact( 'region','cities'));
+        $region = Region::where('id', $id)->first();
+        $cities = City::where('active', 1)->get()->pluck('title', 'id');
+        return view('dashboard.settings.regions.edit', compact('region', 'cities'));
     }
 
     public function update(Request $request, $id)
@@ -111,7 +117,7 @@ class RegionController extends Controller
             'lat' => 'required',
             'lon' => 'required',
         ]);
-        $data=$request->except('_token');
+        $data = $request->except('_token');
 
 
         $region = Region::find($id);
@@ -119,7 +125,6 @@ class RegionController extends Controller
         $region->update($data);
         session()->flash('success');
         return redirect()->route('dashboard.region.index');
-
     }
 
     public function destroy($id)
@@ -132,16 +137,17 @@ class RegionController extends Controller
         ];
     }
 
-    public function change_status(Request $request){
-        $admin = Region::where('id',$request->id)->first();
-        if ($request->active == 'true'){
+    public function change_status(Request $request)
+    {
+        $admin = Region::where('id', $request->id)->first();
+        if ($request->active == 'true') {
             $active = 1;
-        }else{
+        } else {
             $active = 0;
         }
 
         $admin->active = $active;
         $admin->save();
-        return response()->json(['sucess'=>true]);
+        return response()->json(['sucess' => true]);
     }
 }

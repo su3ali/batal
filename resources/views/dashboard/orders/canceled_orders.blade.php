@@ -22,7 +22,7 @@
                             <ol class="breadcrumb mb-0 py-2">
                                 <li class="breadcrumb-item"><a
                                         href="{{ route('dashboard.home') }}">{{ __('dash.home') }}</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">{{ __('dash.client_orders') }}</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ __('dash.canceled_orders') }}</li>
                             </ol>
                         </nav>
 
@@ -44,40 +44,7 @@
 
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
-                    <div class="col-md-12  mb-3">
 
-
-                        <div class="row">
-
-
-
-                            <div class="col-md-1">
-                                <label for="inputEmail4">الحالة</label>
-                            </div>
-                            <div class="col-md-4">
-                                <select class="select2 status_filter form-control" name="status_filter">
-                                    <option value="all" selected>الكل</option>
-                                    @foreach ($statuses as $id => $status)
-                                        <option value="{{ $id }}">{{ $status }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div class="col-md-12 text-right mb-3">
-
-                        {{--                        <button type="button" id="" class="btn btn-primary card-tools" data-toggle="modal" --}}
-                        {{--                                data-target="#createOrderModel"> --}}
-                        {{--                            {{__('dash.add_new')}} --}}
-                        {{--                        </button> --}}
-
-                        <a href="{{ route('dashboard.orders.create') }}" id="" class="btn btn-primary card-tools">
-                            {{ __('dash.add_new') }}
-                        </a>
-
-                    </div>
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
                         <thead>
                             <tr>
@@ -87,9 +54,9 @@
                                 <th>{{ __('dash.service') }}</th>
                                 <th>{{ __('dash.quantity') }}</th>
                                 <th>{{ __('dash.price_value') }}</th>
-                                <th>طريقة الدفع</th>
                                 <th>{{ __('dash.status') }}</th>
-                                <th>تاريخ الطلب</th>
+                                <th>تاريخ إنشاء الطلب</th>
+                                <th>تاريخ إلغاء الطلب</th>
                                 <th class="no-content">{{ __('dash.actions') }}</th>
                             </tr>
                         </thead>
@@ -143,7 +110,7 @@
                 },
                 processing: true,
                 serverSide: false,
-                ajax: '{{ route('dashboard.orders.index') }}',
+                ajax: '{{ route('dashboard.order.canceledOrders') }}',
                 columns: [{
                         data: 'id',
                         name: 'id'
@@ -169,16 +136,16 @@
                         name: 'total'
                     },
                     {
-                        data: 'payment_method',
-                        name: 'payment_method'
-                    },
-                    {
                         data: 'status',
                         name: 'status'
                     },
                     {
                         data: 'created_at',
                         name: 'created_at'
+                    },
+                    {
+                        data: 'updated_at',
+                        name: 'updated_at'
                     },
                     {
                         data: 'control',
@@ -192,7 +159,7 @@
 
             function updateTableData() {
                 var status_filter = $('.status_filter').val();
-                var url = '{{ route('dashboard.orders.index') }}';
+                var url = '{{ route('dashboard.order.canceledOrders') }}';
 
                 if (status_filter && status_filter !== 'all') {
                     url += '?status=' + status_filter;
