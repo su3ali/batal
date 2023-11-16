@@ -790,4 +790,14 @@ rejected_bills
     'r.s' => 'ريال سعودي',
     'bookings_today' => 'الحجوزات اليوم',
 
+    'complaints' => 'الشكاوى',
+    'sells_last_7_days_month' => 'الطلبات خلال اخر ( اسبوع / شهر )',
+    'packages_management' => 'إدارة الباقات',
+    'tech_orders' => 'طلبات الفنيين',
+    'tech_orders_today' => 'طلبات الفنيين اليوم',
+    'orders_status' => 'حالات طلبات العملاء',
+    'client_orders' => 'طلبات العملاء',
+    'client_orders_today' => 'طلبات العملاء اليوم',
+    'canceled_orders_today' => 'الطلبات الملغية اليوم',
+    'canceled_orders' => 'الطلبات الملغية',
 ];

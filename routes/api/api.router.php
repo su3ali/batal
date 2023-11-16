@@ -53,6 +53,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     require __DIR__ . '/checkout.router.php';
     require __DIR__ . '/order.router.php';
     require __DIR__ . '/settings.router.php';
+    require __DIR__ . '/complaint.router.php';
 });
 
 Route::prefix('techn')->group(function () {

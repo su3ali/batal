@@ -143,12 +143,12 @@
                                 <a href="{{ route('dashboard.order_statuses.index') }}">{{ __('dash.orders_status') }}</a>
                             </li>
                         @endcan
-                        {{-- @can('view_orders')
+                        @can('view_orders')
                         <li>
                             <a
                                 href="{{ route('dashboard.order.complaints') }}">{{ __('dash.complaints') }}</a>
                         </li>
-                    @endcan --}}
+                    @endcan
 
                     </ul>
                 </li>
@@ -285,31 +285,7 @@
                 </li>
             @endcan
 
-            <li class="menu">
-                <a href="#car" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <div class="icon-container">
-                            <i data-feather="users"></i>
-                            <span class="icon-name">السيارات</span>
-                        </div>
-                    </div>
-                    <div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="feather feather-chevron-right">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </div>
-                </a>
-                <ul class="collapse submenu list-unstyled" id="car" data-parent="#accordionExample">
-                    <li>
-                        <a href="{{ route('dashboard.car_type.index') }}"> نوع السياره </a>
-                        <a href="{{ route('dashboard.car_model.index') }}"> موديل السياره </a>
-                        <a href="{{ route('dashboard.car_client.index') }}"> سيارات العملاء </a>
-                    </li>
-
-                </ul>
-            </li>
+       
 
             <li class="menu">
                 <a href="#contact" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
