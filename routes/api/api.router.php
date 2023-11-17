@@ -1,14 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Checkout\CheckoutController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Core\HomeController;
 use App\Http\Controllers\Api\Core\ServiceController;
 use App\Http\Controllers\Api\Settings\SettingsController;
 use App\Http\Controllers\Api\Coupons\CouponsController;
 use App\Http\Controllers\VersionController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,16 +19,7 @@ use App\Http\Controllers\VersionController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-use App\Http\Controllers\Api\Complaint\ComplaintController;
 
-
-
-
-
-Route::prefix('complaints')->group(function () {
-    Route::post('/store', [ComplaintController::class, 'store']);
-    Route::get('/', [ComplaintController::class, 'index']);
-});
 
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/home/search', [HomeController::class, 'search']);
@@ -51,6 +41,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/verify', [AuthController::class, 'verify']);
 
+
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
@@ -61,6 +52,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     require __DIR__ . '/checkout.router.php';
     require __DIR__ . '/order.router.php';
     require __DIR__ . '/settings.router.php';
+    require __DIR__ . '/complaint.router.php';
 });
 
 Route::prefix('techn')->group(function () {

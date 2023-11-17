@@ -21,7 +21,7 @@ class ComplaintController extends Controller
 
     protected function index()
     {
-        $complaints = CustomerComplaint::where('user_id', auth()->user('sanctum')->id)->get();
+        $complaints = CustomerComplaint::where('user_id', auth('sanctum')->user()->id)->get();
         $this->body['complaints'] = ComplaintResource::collection($complaints);
         return self::apiResponse(200, null, $this->body);
     }
