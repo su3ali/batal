@@ -28,6 +28,7 @@ class ComplaintController extends Controller
 
     protected function store(Request $request)
     {
+        return $request->text;
        
         $rules = [
             'text' => 'required|string',
