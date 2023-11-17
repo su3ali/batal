@@ -49,7 +49,8 @@ class ComplaintController extends Controller
             $validated['video'] = 'storage/images/complaints/videos' . '/' . $filename;
         }
         $validated = collect($validated)->except('images')->toArray();
-        $validated['user_id'] = auth()->user('sanctum')->id;
+        //$validated['user_id'] = auth()->user('sanctum')->id;
+        $validated['user_id'] = auth('sanctum')->user()->id;
         $customerComplaint = CustomerComplaint::create($validated);
         $customer_complaints_id = $customerComplaint->id;
         if ($request->hasFile('images')) {
