@@ -43,9 +43,9 @@ Route::post('/verify', [AuthController::class, 'verify']);
 
 
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
-require __DIR__ . '/complaint.router.php';
-Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
 
+Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
+    require __DIR__ . '/complaint.router.php';
     require __DIR__ . '/core.router.php';
     require __DIR__ . '/auth.router.php';
     require __DIR__ . '/chat.router.php';
