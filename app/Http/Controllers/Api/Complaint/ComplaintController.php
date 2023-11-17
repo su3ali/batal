@@ -28,6 +28,7 @@ class ComplaintController extends Controller
 
     protected function store(Request $request)
     {
+       
         $rules = [
             'text' => 'required|string',
             'video' => 'nullable',
@@ -37,6 +38,7 @@ class ComplaintController extends Controller
         ];
 
         $validated = Validator::make($request->all(), $rules);
+        return  $request->text;
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }
