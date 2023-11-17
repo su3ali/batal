@@ -20,7 +20,16 @@ use App\Http\Controllers\VersionController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+use App\Http\Controllers\Api\Complaint\ComplaintController;
 
+
+
+
+
+Route::prefix('complaints')->group(function () {
+    Route::post('/store', [ComplaintController::class, 'store']);
+    Route::get('/', [ComplaintController::class, 'index']);
+});
 
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/home/search', [HomeController::class, 'search']);
@@ -43,7 +52,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/verify', [AuthController::class, 'verify']);
 
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
-require __DIR__ . '/complaint.router.php';
+
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     require __DIR__ . '/core.router.php';
     require __DIR__ . '/auth.router.php';
@@ -52,7 +61,6 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     require __DIR__ . '/checkout.router.php';
     require __DIR__ . '/order.router.php';
     require __DIR__ . '/settings.router.php';
-
 });
 
 Route::prefix('techn')->group(function () {
