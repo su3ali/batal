@@ -20,7 +20,16 @@ use App\Http\Controllers\VersionController;
 |
 */
 
+use App\Http\Controllers\Api\Complaint\ComplaintController;
 
+
+Route::post('complaint/store', [ComplaintController::class, 'store']);
+
+
+Route::prefix('complaints')->group(function () {
+
+    Route::get('/', [ComplaintController::class, 'index']);
+});
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/home/search', [HomeController::class, 'search']);
 
