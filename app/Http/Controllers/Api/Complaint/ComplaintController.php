@@ -38,7 +38,6 @@ class ComplaintController extends Controller
         ];
 
         $validated = Validator::make($request->all(), $rules);
-        return  $request->text;
         if ($validated->fails()) {
             return redirect()->back()->withErrors($validated->errors());
         }

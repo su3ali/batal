@@ -41,7 +41,7 @@ Route::post('check_update', [VersionController::class, 'checkUpdate'])->name('ch
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/verify', [AuthController::class, 'verify']);
-
+require __DIR__ . '/settings.router.php';
 
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
 
