@@ -28,7 +28,7 @@ class ComplaintController extends Controller
 
     protected function store(Request $request)
     {
-       
+
         $rules = [
             'text' => 'required|string',
             'video' => 'nullable',

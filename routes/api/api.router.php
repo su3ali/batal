@@ -1,13 +1,14 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Checkout\CheckoutController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Core\HomeController;
 use App\Http\Controllers\Api\Core\ServiceController;
 use App\Http\Controllers\Api\Settings\SettingsController;
 use App\Http\Controllers\Api\Coupons\CouponsController;
 use App\Http\Controllers\VersionController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -20,16 +21,7 @@ use App\Http\Controllers\VersionController;
 |
 */
 
-use App\Http\Controllers\Api\Complaint\ComplaintController;
 
-
-Route::post('complaint/store', [ComplaintController::class, 'store']);
-
-
-Route::prefix('complaints')->group(function () {
-
-    Route::get('/', [ComplaintController::class, 'index']);
-});
 Route::get('/home', [HomeController::class, 'index']);
 Route::get('/home/search', [HomeController::class, 'search']);
 
@@ -54,7 +46,6 @@ Route::post('/verify', [AuthController::class, 'verify']);
 //Route::post('/payment-callback/{type?}',[CheckoutController::class,'callbackPayment']);
 
 Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
-
     require __DIR__ . '/core.router.php';
     require __DIR__ . '/auth.router.php';
     require __DIR__ . '/chat.router.php';
@@ -62,6 +53,7 @@ Route::middleware(['auth:sanctum', 'abilities:user'])->group(function () {
     require __DIR__ . '/checkout.router.php';
     require __DIR__ . '/order.router.php';
     require __DIR__ . '/settings.router.php';
+    require __DIR__ . '/complaint.router.php';
 });
 
 Route::prefix('techn')->group(function () {
