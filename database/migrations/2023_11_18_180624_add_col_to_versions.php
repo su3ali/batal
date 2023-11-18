@@ -14,7 +14,7 @@ class AddColToVersions extends Migration
     public function up()
     {
         Schema::table('versions', function (Blueprint $table) {
-            $table->string('max_version')->default(1);
+            $table->string('max_version')->default(1)->after('version');
         });
     }
 

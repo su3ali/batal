@@ -41,7 +41,7 @@ class VersionController extends Controller
         $version = Version::where('os', $request->os)->first();
         $max_version =  Version::where('os', $request->os)->first()->max_version;
         $apple_pay = 1;
-        if ($this->compareVersions($request->version, $max_version)) {
+        if ($this->compareVersions($request->version, $max_version)>=0) {
             $apple_pay = 0;
         }
         $this->body['apple_pay'] = $apple_pay;
