@@ -11,6 +11,7 @@ use App\Models\Cart;
 use App\Models\Category;
 use App\Models\CategoryGroup;
 use App\Models\ContractPackage;
+use App\Models\ContractPackagesUser;
 use App\Models\Group;
 use App\Models\Service;
 use App\Models\Setting;
@@ -35,7 +36,7 @@ class CartController extends Controller
     protected function add_to_cart(Request $request): JsonResponse
     {
         if ($request->type == 'package') {
-            $package = ContractPackage::with('service.category')->find($request->package_id);
+            $package = ContractPackage::where('id', $request->package_id)->first();
             if ($package && $package->active === 1) {
                 $cart = Cart::query()->where('user_id', auth()->user()->id)
                     ->first();
@@ -46,8 +47,6 @@ class CartController extends Controller
                     Cart::query()->create([
                         'user_id' => auth()->user()->id,
                         'contract_package_id' => $package->id,
-                        'service_id' => $package->service_id,
-                        'category_id' => $package->service->category_id,
                         'price' => $package->price,
                         'quantity' => $package->visit_number,
                         'type' => 'package'
@@ -69,13 +68,44 @@ class CartController extends Controller
                 if (auth()->user()->carts->where('type', 'package')->first()) {
                     return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
                 }
-                $price = $service->price;
+                $price =  $service->price;
+                $now = Carbon::now('Asia/Riyadh');
+                $contractPackagesUser =  ContractPackagesUser::where('user_id', auth()->user()->id)
+                    ->whereDate('end_date', '>=', $now)
+                    ->where(function ($query) use ($service) {
+                        $query->whereHas('contactPackage', function ($qu) use ($service) {
+                            $qu->whereHas('ContractPackagesServices', function ($qu) use ($service) {
+                                $qu->where('service_id', $service->id);
+                            });
+                        });
+                    })->first();
+
+                if ($contractPackagesUser) {
+                    $contractPackage = ContractPackage::where('id', $contractPackagesUser->contract_packages_id)->first();
+                    if ($request->quantity < ($contractPackage->visit_number - $contractPackagesUser->used)) {
+                        $price = 0;
+                    } else {
+                        $price = ($request->quantity - ($contractPackage->visit_number - $contractPackagesUser->used)) *  $service->price;
+                    }
+                }
+
+
+                // if ($request->icon_ids) {
+                //     $icon_ids = $request->icon_ids;
+
+                //     foreach ($icon_ids as $icon_id) {
+
+                //         $price += Icon::where('id', $icon_id)->first()->price;
+                //     }
+                // }
+
                 if ($request->is_advance == 1) {
                     $price = $service->preview_price;
                 }
                 Cart::query()->create([
                     'user_id' => auth()->user()->id,
                     'service_id' => $service->id,
+                   // 'icon_ids' => json_encode($request->icon_ids),
                     'category_id' => $service->category->id,
                     'price' => $price,
                     'quantity' => $request->quantity,
@@ -129,7 +159,7 @@ class CartController extends Controller
                 foreach ($request->category_ids as $key => $category_id) {
 
 
-                    $countGroup = CategoryGroup::where('category_id', $cart->category_id)->count();
+                    $countGroup = CategoryGroup::where('category_id', $category_id)->count();
 
                     $countInBooking = Booking::whereHas('visit', function ($q) {
                         $q->whereNotIn('visits_status_id', [5, 6]);
@@ -146,7 +176,7 @@ class CartController extends Controller
                     Cart::query()->where('user_id', auth('sanctum')->user()->id)
                         ->where('category_id', $category_id)->update([
                             'date' => $request->date[$key],
-                            'time' => Carbon::parse($request->time[$key])->toTimeString(),
+                            'time' => Carbon::parse($request->time[$key])->timezone('Asia/Riyadh')->toTimeString(),
                             'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
                         ]);
                 }
@@ -179,7 +209,7 @@ class CartController extends Controller
 
                     $cart->update([
                         'date' => $request->date[$key],
-                        'time' => Carbon::parse($request->time[$key])->toTimeString(),
+                        'time' => Carbon::parse($request->time[$key])->timezone('Asia/Riyadh')->toTimeString(),
                         'notes' => $request->notes ? array_key_exists($key, $request->notes) ? $request->notes[$key] : '' : '',
 
                     ]);
@@ -210,7 +240,31 @@ class CartController extends Controller
                 $response = $controlClass->makeAction($request->action, $cart, $service);
 
                 $carts = Cart::query()->where('user_id', auth()->user()->id)->get();
-                $total = number_format($this->calc_total($carts), 2);
+
+
+                $tempTotal = $this->calc_total($carts);
+                $now = Carbon::now('Asia/Riyadh');
+                $contractPackagesUser =  ContractPackagesUser::where('user_id', auth()->user()->id)
+                    ->whereDate('end_date', '>=', $now)
+                    ->where(function ($query) use ($service) {
+                        $query->whereHas('contactPackage', function ($qu) use ($service) {
+                            $qu->whereHas('ContractPackagesServices', function ($qu) use ($service) {
+                                $qu->where('service_id', $service->id);
+                            });
+                        });
+                    })->first();
+
+                if ($contractPackagesUser) {
+                    $contractPackage = ContractPackage::where('id', $contractPackagesUser->contract_packages_id)->first();
+                    if ($cart->quantity <  ($contractPackage->visit_number - $contractPackagesUser->used)) {
+                        $tempTotal = 0;
+                    } else {
+                        $tempTotal = ($cart->quantity - ($contractPackage->visit_number - $contractPackagesUser->used)) * $service->price;
+                    }
+                }
+
+
+                $total = number_format($tempTotal, 2);
                 $cat_ids = $carts->pluck('category_id');
                 if (key_exists('success', $response)) {
                     $this->body['total'] = $total;
@@ -219,9 +273,9 @@ class CartController extends Controller
                     foreach ($cat_ids as $cat_id) {
                         if ($cat_id) {
                             $this->body['carts'][] = [
-                                'category_id' => $cat_id,
-                                'category_title' => Category::query()->find($cat_id)?->title,
-                                'category_minimum' => Category::query()->find($cat_id)?->minimum,
+                                'category_id' => $cat_id??0,
+                                'category_title' => Category::query()->find($cat_id)?->title??'',
+                                'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
                                 'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                             ];
                         }
@@ -315,14 +369,14 @@ class CartController extends Controller
                 $end = $timeDuration;
             }
             for ($i = $start; $i <  $end; $i++) {
-                $date = date('Y-m-d', strtotime('+' . $i . ' day'));
-                if (in_array(date('l', strtotime($date)), $serviceDays)) {
+                $date = Carbon::now('Asia/Riyadh')->addDays($i)->format('Y-m-d');
+                if (in_array(Carbon::parse($date)->timezone('Asia/Riyadh')->format('l'), $serviceDays)) {
                     $dates[] = $date;
                 }
             }
             if ($bookSetting) {
                 foreach ($dates as $day) {
-                    $dayName = Carbon::parse($day)->locale('en')->dayName;
+                    $dayName = Carbon::parse($day)->timezone('Asia/Riyadh')->locale('en')->dayName;
                     $get_time = $this->getTime($dayName, $bookSetting);
                     if ($get_time == true) {
 
@@ -361,23 +415,21 @@ class CartController extends Controller
                 $times = $time->toArray();
 
                 $subTimes['day'] = $day;
-                $subTimes['dayName'] = Carbon::parse($day)->locale(app()->getLocale())->dayName;
+                $subTimes['dayName'] = Carbon::parse($day)->timezone('Asia/Riyadh')->locale(app()->getLocale())->dayName;
                 $subTimes['times'] = collect($times)->map(function ($time) use ($category_id,   $countGroup, $bookSetting, $bookingTimes, $bookingDates, $day, $request) {
 
 
                     $now = Carbon::now('Asia/Riyadh')->format('H:i:s');
-                    $convertNowTimestamp = Carbon::parse($now)->timestamp;
+                    $convertNowTimestamp = Carbon::parse($now)->timezone('Asia/Riyadh')->addHours(2)->timestamp;
                     $dayNow = Carbon::now('Asia/Riyadh')->format('Y-m-d');
 
                     //realtime
                     $realTime = $time->format('H:i:s');
-                    $converTimestamp = Carbon::parse($realTime)->timestamp;
-
+                    $converTimestamp = Carbon::parse($realTime)->timezone('Asia/Riyadh')->timestamp;
                     //check time between two times
                     $setting = Setting::query()->first();
                     $startDate = $setting->resting_start_time;
                     $endDate = $setting->resting_end_time;
-                    //count groups
 
 
 
@@ -393,7 +445,7 @@ class CartController extends Controller
                         ->count();
 
 
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)], ['end_time', '>', ($realTime)]])->get();
+                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)))) {
@@ -401,8 +453,8 @@ class CartController extends Controller
                         $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
                         //visits at the day of expected end with a start time before the expected end
-                        $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->addHours($diff % ($allowedDuration / 60)))->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                            $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->addDays(1 + intval($diff / ($allowedDuration / 60)))]])->whereHas(
+                        $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
+                            $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])->whereHas(
                                 'address.region',
                                 function ($q) use ($request) {
 
@@ -413,7 +465,7 @@ class CartController extends Controller
 
                         //visits between the expected start and expected end of the visit
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                            $qu->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)]])->whereHas(
+                            $qu->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])->whereHas(
                                 'address.region',
                                 function ($q) use ($request) {
 
@@ -464,9 +516,9 @@ class CartController extends Controller
         foreach ($cat_ids as $cat_id) {
             if ($cat_id) {
                 $this->body['carts'][] = [
-                    'category_id' => $cat_id,
-                    'category_title' => Category::query()->find($cat_id)?->title,
-                    'category_minimum' => Category::query()->find($cat_id)?->minimum,
+                    'category_id' => $cat_id??0,
+                    'category_title' => Category::query()->find($cat_id)?->title??'',
+                    'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
                     'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                 ];
             }
@@ -490,9 +542,9 @@ class CartController extends Controller
             $this->body['total_items_in_cart'] = 1;
             $cat_id = $cart_package->category_id;
             $this->body['cart_package'][] = [
-                'category_id' => $cat_id,
-                'category_title' => Category::query()->find($cat_id)?->title,
-                'category_minimum' => Category::query()->find($cat_id)?->minimum,
+                'category_id' => $cat_id??0,
+                'category_title' => Category::query()->find($cat_id)?->title??'',
+                'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
                 'cart-services' => CartResource::make($cart_package)
             ];
         } else {

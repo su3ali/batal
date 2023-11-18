@@ -63,13 +63,25 @@ class AuthController extends Controller
         $this->message = __('api.Logged out');
         return self::apiResponse(200, $this->message, $this->body);
     }
-
     public function deleteAccount(Request $request)
     {
+        auth()->user()->tokens()->delete();
         $user =  auth('sanctum')->user();
-        $user->delete();
-        $this->message = __('api.Delete technician successfully');
+        $user->update([
+            'is_deleted' => 1,
+            'phone' => $user->phone . '-deleted',
+            'email' => $user->email . '-deleted',
+        ]);
+        $this->message = __('api.Delete user successfully');
 
         return self::apiResponse(200, $this->message, $this->body);
     }
+    // public function deleteAccount(Request $request)
+    // {
+    //     $user =  auth('sanctum')->user();
+    //     $user->delete();
+    //     $this->message = __('api.Delete technician successfully');
+
+    //     return self::apiResponse(200, $this->message, $this->body);
+    // }
 }

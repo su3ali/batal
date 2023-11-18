@@ -31,7 +31,7 @@ class ServiceDetailsResource extends JsonResource
             'measurement' => MeasurementResource::make($this->measurement),
             'icons' => IconResource::collection($this->icons),
             'duration' => $this->duration,
-            'terms_and_conditions' => $this->ter_cond,
+            'terms_and_conditions' => $this->ter_cond_ar,
             'deposit' => $this->deposit,
             'deposit_price' => $this->deposit_price,
             'preview' => $this->preview,

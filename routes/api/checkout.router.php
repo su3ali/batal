@@ -18,6 +18,8 @@ Route::prefix('carts')->group(function (){
 Route::get('address', [CheckoutController::class, 'index']);
 Route::post('add-address', [CheckoutController::class, 'addAddress']);
 
+Route::get('checkTimeDate', [CheckoutController::class, 'checkTimeDate']);
+
 Route::get('get-areas', [CheckoutController::class, 'getArea']);
 
 

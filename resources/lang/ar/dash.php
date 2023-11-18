@@ -47,8 +47,13 @@ return [
     'logged_in_successfully' => 'تسجيل الدخول بنجاح',
     'logged_out_successfully' => 'خرجت بنجاح',
     'logout' => 'خروج',
-
-
+    'tech_orders'=>'طلبات الفنيين',
+    'tech_orders_today'=>'طلبات الفنيين اليوم',
+    'orders_status'=>'حالات طلبات العملاء',
+    'client_orders'=>'طلبات العملاء',
+    'client_orders_today'=>'طلبات العملاء اليوم',
+    'sells_last_7_days'=>'الطلبات خلال اخر اسبوع',
+    
     'login_firstly' => 'يجب عليك الدخول أولا',
     'quick_links' => 'روابط سريعة',
     'group_admins' => 'مجموعات المسؤولين',
@@ -783,6 +788,16 @@ rejected_bills
     'customer name' => 'اسم العميل',
     'user addresses' => 'عناوين العميل',
     'r.s' => 'ريال سعودي',
+    'bookings_today' => 'الحجوزات اليوم',
 
-
+    'complaints' => 'الشكاوى',
+    'sells_last_7_days_month' => 'الطلبات خلال اخر ( اسبوع / شهر )',
+    'packages_management' => 'إدارة الباقات',
+    'tech_orders' => 'طلبات الفنيين',
+    'tech_orders_today' => 'طلبات الفنيين اليوم',
+    'orders_status' => 'حالات طلبات العملاء',
+    'client_orders' => 'طلبات العملاء',
+    'client_orders_today' => 'طلبات العملاء اليوم',
+    'canceled_orders_today' => 'الطلبات الملغية اليوم',
+    'canceled_orders' => 'الطلبات الملغية',
 ];

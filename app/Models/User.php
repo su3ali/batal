@@ -50,5 +50,9 @@ class User extends Authenticatable
     public function room(){
         return $this->morphOne(Room::class, 'sender');
     }
+    public function couponUsers()
+    {
+        return $this->hasMany(CouponUser::class, 'user_id');
+    }
 
 }

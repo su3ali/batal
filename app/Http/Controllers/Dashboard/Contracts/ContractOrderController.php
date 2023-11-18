@@ -164,7 +164,7 @@ class ContractOrderController extends Controller
     protected function getAvailableTime(Request $request)
     {
         $itr = $request->itr;
-        $day = \Illuminate\Support\Carbon::parse($request->date)->locale('en')->dayName;
+        $day = \Illuminate\Support\Carbon::parse($request->date)->timezone('Asia/Riyadh')->locale('en')->dayName;
 
         $package = ContractPackage::where('id',$request->id)->first();
 
@@ -176,8 +176,8 @@ class ContractOrderController extends Controller
         if($get_time == true){
             $times = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
                 ->toPeriod(
-                    \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
-                    Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
+                    \Carbon\Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_start_time ?? Carbon::now('Asia/Riyadh')->startOfDay()),
+                    Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_end_time ?? Carbon::now('Asia/Riyadh')->endOfDay())
                 );
         }
 

@@ -4,6 +4,7 @@ namespace App\Http\Resources\Contract;
 
 use App\Http\Resources\Service\IconResource;
 use App\Http\Resources\Service\ServiceResource;
+use App\Models\ContractPackagesService;
 use App\Models\Service;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,6 +19,17 @@ class ContractResource extends JsonResource
     public function toArray($request)
     {
 
+        $services_ids = ContractPackagesService::where('contract_packages_id', $this->id)->pluck('service_id');
+        $services=[];
+        for ($i = 0; $i < $services_ids->count(); $i++) {
+
+            $service = Service::where('id', $services_ids[$i])->first();
+
+            $services[] = [
+                'service_icons' => IconResource::collection($service->icons),
+                'service' => ServiceResource::make($service),
+            ];
+        }
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -25,8 +37,7 @@ class ContractResource extends JsonResource
             'price' => $this->price,
             'visit_number' => $this->visit_number,
             'image' => asset($this->image),
-            'service' => ServiceResource::make($this->service),
-            'service_icons' => $this->service ? IconResource::collection($this->service->icons) : [],
+            'services' => $services,
         ];
     }
 }

@@ -57,18 +57,18 @@
                         </div>
                         <div class="card-body p-0">
 
-
                             <table class="table table-bordered nowrap">
 
                                 <thead>
+
                                 <tr>
                                     <th>رقم الطلب</th>
                                     <td>{{$order->id}}</td>
                                 </tr>
                                 <tr>
                                     @php
-                                        $date = Illuminate\Support\Carbon::parse($order->created_at);
-//                                    @endphp
+                                        $date = Illuminate\Support\Carbon::parse($order->created_at)->timezone('Asia/Riyadh');
+                                    @endphp
                                     <th>تاريخ الطلب</th>
                                     <td>{{ $date->format("Y-m-d H:i:s")}}</td>
                                 </tr>
@@ -91,14 +91,21 @@
                                     </td>
                                 </tr>
 
-
                                 <tr>
                                     <th>اسم العميل</th>
                                     <td>{{$order->user?->first_name . '' .$order->user?->last_name}}</td>
                                 </tr>
                                 <tr>
+                                    <th>هاتف العميل</th>
+                                    <td>{{$userPhone}}</td>
+                                </tr>
+                                <tr>
                                     <th>حاله الطلب</th>
                                     <td>{{$order->status?->name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>طريقه الدفع</th>
+                                    <td>{{$order->transaction?->payment_method}}</td>
                                 </tr>
                                 <tr>
                                     <th>الاجمالي</th>
@@ -108,35 +115,23 @@
                                     <th>الاجمالي بعد الخصم</th>
                                     <td>{{$order->total}}</td>
                                 </tr>
-                                <tr>
 
-                                    <th>المبلغ المدفوع</th>
-                                    <td>
-                                        {{$order->transaction?->amount}}
-                                    </td>
+                                <tr>
+                                    <th>نوع السياره</th>
+                                    <td>{{$order->userCar?->type?->name}}</td>
                                 </tr>
                                 <tr>
-
-                                    <th>المبلغ المتبقي</th>
-                                    <td>
-                                        {{$order->partial_amount}}
-                                    </td>
+                                    <th>موديل السياره</th>
+                                    <td>{{$order->userCar?->model?->name}}</td>
                                 </tr>
                                 <tr>
-                                    <th>طريقه الدفع</th>
-                                    <td>{{$order->transaction?->payment_method}}</td>
+                                    <th>لون السياره</th>
+                                    <td>{{$order->userCar?->color}}</td>
                                 </tr>
                                 <tr>
-                                    <th>نوع الدفع</th>
-                                    <td>{{$order->payment_status}}</td>
+                                    <th>رقم لوحة السياره</th>
+                                    <td>{{$order->userCar?->Plate_number}}</td>
                                 </tr>
-                                @if($order->partial_amount > 0)
-                                <tr>
-                                    <th>الباقي</th>
-                                    <td>{{$order->partial_amount}}</td>
-                                </tr>
-                                @endif
-
                                 <tr>
                                         <th>اسماء الخدمات</th>
 
@@ -147,21 +142,22 @@
                                         </td>
 
                                 </tr>
-                            @if($order->image != null || $order->image != '')
+                                @if($order->image != null || $order->image != '')
+
                                 <tr>
                                     <th>صوره المرفقه</th>
                                     <td>
                                         <div class="container__img-holder">
-{{--                                            <img src="https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260" alt="Image">--}}
-                                                                                    <img class="img-fluid"  src="{{asset($order->image)}}">
+                                            {{--                                            <img src="https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260" alt="Image">--}}
+                                            <img class="img-fluid"  src="{{asset($order->image)}}">
 
                                         </div>
 {{--                                        <img class="img-fluid" style="width: 40px;" src="{{asset($order->image)}}">--}}
                                     </td>
                                 </tr>
-                            @endif
+                                @endif
                                 <tr>
-                                    <th>ملاحظات العميل</th>
+                                    <th>الملاحظات</th>
                                     <td>{{$order->notes}}</td>
                                 </tr>
 
@@ -173,26 +169,27 @@
                         </div>
                         <!-- /.card-body -->
                     </div>
-                    @if($order->file != null)
-                    <div class="card">
-                        <div class="card-header">
 
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <h3 class="card-title">عرض الفيديو</h3>
+                    @if($order->file != null)
+                        <div class="card">
+                            <div class="card-header">
+
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <h3 class="card-title">عرض الفيديو</h3>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card-body p-0" style="margin: auto">
+                            <div class="card-body p-0" style="margin: auto">
 
-                            <video width="500" height="240" controls>
-                                <source src="{{URL::asset($order->file)}}" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
+                                <video width="500" height="240" controls>
+                                    <source src="{{URL::asset($order->file)}}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
 
+                            </div>
+                            <!-- /.card-body -->
                         </div>
-                        <!-- /.card-body -->
-                    </div>
                     @endif
 
                 </div>
@@ -213,7 +210,6 @@
         </div>
     </div>
 @endsection
-
 
 @push('script')
     <script>
@@ -244,3 +240,4 @@
         });
     </script>
 @endpush
+

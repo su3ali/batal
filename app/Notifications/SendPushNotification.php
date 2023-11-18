@@ -42,7 +42,7 @@ class SendPushNotification extends Notification
         return [
             'title'=> $this->title,
             'message' => $this->message,
-            'created_at' => Carbon::now(),
+            'created_at' => Carbon::now('Asia/Riyadh'),
         ];
     }
 

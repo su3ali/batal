@@ -80,14 +80,14 @@
                 },
                 buttons: {
                     buttons: [
-                        {extend: 'copy', className: 'btn btn-sm'},
-                        {extend: 'csv', className: 'btn btn-sm'},
-                        {extend: 'excel', className: 'btn btn-sm'},
-                        {extend: 'print', className: 'btn btn-sm'}
+                        {extend: 'copy', className: 'btn btn-sm',text:'نسخ'},
+                        {extend: 'csv', className: 'btn btn-sm',text:'تصدير إلى CSV'},
+                        {extend: 'excel', className: 'btn btn-sm',text:'تصدير إلى Excel'},
+                        {extend: 'print', className: 'btn btn-sm',text:'طباعة'}
                     ]
                 },
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: '{{ route('dashboard.order.showService','id='.request()->query('id')) }}',
                 columns: [
                     {data: 'id', name: 'id'},

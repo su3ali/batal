@@ -83,10 +83,10 @@ class BookingSettingController extends Controller
 //                    return $row->available_service;
 //                })
                 ->addColumn('service_start_time', function ($row) {
-                    return Carbon::parse($row->service_start_time)->format('g:i A');
+                    return Carbon::parse($row->service_start_time)->timezone('Asia/Riyadh')->format('g:i A');
                 })
                 ->addColumn('service_end_time', function ($row) {
-                    return Carbon::parse($row->service_end_time)->format('g:i A');
+                    return Carbon::parse($row->service_end_time)->timezone('Asia/Riyadh')->format('g:i A');
                 })
                 ->addColumn('service_duration', function ($row) {
                     return $row->service_duration;

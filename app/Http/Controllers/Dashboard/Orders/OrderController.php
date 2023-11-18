@@ -8,12 +8,17 @@ use App\Models\BookingSetting;
 use App\Models\Category;
 use App\Models\CategoryGroup;
 use App\Models\City;
+use App\Models\CustomerComplaint;
+use App\Models\CustomerComplaintImage;
 use App\Models\Group;
 use App\Models\Order;
 use App\Models\OrderService;
+
+use App\Models\OrderStatus;
 use App\Models\Service;
 use App\Models\User;
 use App\Models\UserAddresses;
+use App\Models\Visit;
 use App\Traits\schedulesTrait;
 use Carbon\CarbonInterval;
 use Illuminate\Contracts\View\Factory;
@@ -33,53 +38,78 @@ class OrderController extends Controller
     {
 
         if (request()->ajax()) {
-            $orders = Order::all();
+            $orders = Order::query();
+
+            if (request()->page) {
+                $now = Carbon::now('Asia/Riyadh')->toDateString();
+                $orders->where('status_id', '!=', 5)->whereDate('created_at', '=', $now);
+            }
+            if (request()->status) {
+
+                $orders->where('status_id', request()->status);
+            }
+
+            $orders->where('is_active', 1)->get();
+
             return DataTables::of($orders)
-                ->addColumn('user', function ($row) {
-                    return $row->user?->first_name .' ' . $row->user?->last_name;
+                ->addColumn('booking_id', function ($row) {
+                    $booking = $row->bookings->first();
+                    return $booking ? $booking->id : '';
                 })
-                ->addColumn('category', function ($row) {
-                    $qu = OrderService::where('order_id',$row->id)->get()->pluck('category_id')->toArray();
-                    $cat_ids = array_unique($qu);
-                    $categorys = Category::whereIn('id',$cat_ids)->get();
-                    $html ='';
-                    foreach ($categorys as $category){
-                        $html.='<button class="btn-sm btn-primary">'.$category->title.'</button>' ;
+                ->addColumn('user', function ($row) {
+                    return $row->user?->first_name . ' ' . $row->user?->last_name;
+                })
+                ->addColumn('service', function ($row) {
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('service_id')->toArray();
+                    $services_ids = array_unique($qu);
+                    $services = Service::whereIn('id', $services_ids)->get();
+                    $html = '';
+                    foreach ($services as $service) {
+                        $html .= '<button class="btn-sm btn-primary">' . $service->title . '</button>';
                     }
 
                     return $html;
                 })
                 ->addColumn('quantity', function ($row) {
-                    $qu = OrderService::where('order_id',$row->id)->get()->pluck('quantity')->toArray();
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('quantity')->toArray();
 
                     return array_sum($qu);
                 })
+                ->addColumn('payment_method', function ($row) {
+                    $payment_method = $row->transaction?->payment_method;
+                    if ($payment_method == "cache" || $payment_method == "cash")
+                        return "شبكة";
+                    else if ($payment_method == "wallet")
+                        return "محفظة";
+                    else
+                        return "فيزا";
+                })
                 ->addColumn('status', function ($row) {
+
                     return $row->status?->name;
                 })
                 ->addColumn('created_at', function ($row) {
-                     $date = Carbon::parse($row->created_at);
+                    $date = Carbon::parse($row->created_at)->timezone('Asia/Riyadh');
 
                     return $date->format("Y-m-d H:i:s");
                 })
                 ->addColumn('control', function ($row) {
 
                     $html = '';
-                    if ($row->status_id == 2){
-                        $html .= '<a href="' . route('dashboard.order.confirmOrder','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                    if ($row->status_id == 2) {
+                        $html .= '<a href="' . route('dashboard.order.confirmOrder', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
                             <i class="far fa-thumbs-up fa-2x mx-1"></i> تأكيد
                         </a>';
                     }
                     $html .= '
-
-                     <a href="' . route('dashboard.order.orderDetail','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                    <a href="' . route('dashboard.order.orderDetail', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
                             <i class="far fa-eye fa-2x"></i>
                         </a>
 
-                        <a href="' . route('dashboard.order.showService','id='.$row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                        <a href="' . route('dashboard.order.showService', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
                             <i class="far fa-eye fa-2x"></i>
                         </a>
-                                <a data-table_id="html5-extension" data-href="'.route('dashboard.orders.destroy', $row->id).'" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
+                                <a data-table_id="html5-extension" data-href="' . route('dashboard.orders.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
                             <i class="far fa-trash-alt fa-2x"></i>
                     </a>
                                 ';
@@ -87,17 +117,294 @@ class OrderController extends Controller
                     return $html;
                 })
                 ->rawColumns([
+                    'booking_id',
                     'user',
-                    'category',
+                    'service',
                     'quantity',
+                    'payment_method',
                     'status',
                     'created_at',
                     'control',
                 ])
                 ->make(true);
         }
+        $statuses = OrderStatus::all()->pluck('name', 'id');
+        return view('dashboard.orders.index', compact('statuses'));
+    }
 
-        return view('dashboard.orders.index');
+    public function ordersToday()
+    {
+
+        if (request()->ajax()) {
+            $orders = Order::query();
+            $now = Carbon::now('Asia/Riyadh')->toDateString();
+            $orders->whereDate('created_at', '=', $now);
+
+            if (request()->status) {
+
+                $orders->where('status_id', request()->status);
+            }
+
+            $orders->where('is_active', 1)->get();
+
+            return DataTables::of($orders)
+                ->addColumn('booking_id', function ($row) {
+                    $booking = $row->bookings->first();
+                    return $booking ? $booking->id : '';
+                })
+                ->addColumn('user', function ($row) {
+                    return $row->user?->first_name . ' ' . $row->user?->last_name;
+                })
+                ->addColumn('service', function ($row) {
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('service_id')->toArray();
+                    $services_ids = array_unique($qu);
+                    $services = Service::whereIn('id', $services_ids)->get();
+                    $html = '';
+                    foreach ($services as $service) {
+                        $html .= '<button class="btn-sm btn-primary">' . $service->title . '</button>';
+                    }
+
+                    return $html;
+                })
+                ->addColumn('quantity', function ($row) {
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('quantity')->toArray();
+
+                    return array_sum($qu);
+                })
+                ->addColumn('payment_method', function ($row) {
+                    $payment_method = $row->transaction?->payment_method;
+                    if ($payment_method == "cache" || $payment_method == "cash")
+                        return "شبكة";
+                    else if ($payment_method == "wallet")
+                        return "محفظة";
+                    else
+                        return "فيزا";
+                })
+                ->addColumn('status', function ($row) {
+
+                    return $row->status?->name;
+                })
+                ->addColumn('created_at', function ($row) {
+                    $date = Carbon::parse($row->created_at)->timezone('Asia/Riyadh');
+
+                    return $date->format("Y-m-d H:i:s");
+                })
+                ->addColumn('control', function ($row) {
+
+                    $html = '';
+                    if ($row->status_id == 2) {
+                        $html .= '<a href="' . route('dashboard.order.confirmOrder', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-thumbs-up fa-2x mx-1"></i> تأكيد
+                        </a>';
+                    }
+                    $html .= '
+                    <a href="' . route('dashboard.order.orderDetail', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+
+                        <a href="' . route('dashboard.order.showService', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+                                <a data-table_id="html5-extension" data-href="' . route('dashboard.orders.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
+                            <i class="far fa-trash-alt fa-2x"></i>
+                    </a>
+                                ';
+
+                    return $html;
+                })
+                ->rawColumns([
+                    'booking_id',
+                    'user',
+                    'service',
+                    'quantity',
+                    'payment_method',
+                    'status',
+                    'created_at',
+                    'control',
+                ])
+                ->make(true);
+        }
+        $statuses = OrderStatus::all()->pluck('name', 'id');
+        return view('dashboard.orders.clients_orders_today', compact('statuses'));
+    }
+
+    public function canceledOrdersToday()
+    {
+
+        if (request()->ajax()) {
+
+            $now = Carbon::now('Asia/Riyadh')->toDateString();
+            $orders = Order::where('status_id', 5)->where('is_active', 1)->where(function ($qu) use ($now) {
+                $qu->whereDate('created_at', $now)->orWhereDate('updated_at', $now);
+            });
+            return DataTables::of($orders)
+                ->addColumn('booking_id', function ($row) {
+                    $booking = $row->bookings->first();
+                    return $booking ? $booking->id : '';
+                })
+                ->addColumn('user', function ($row) {
+                    return $row->user?->first_name . ' ' . $row->user?->last_name;
+                })
+                ->addColumn('service', function ($row) {
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('service_id')->toArray();
+                    $services_ids = array_unique($qu);
+                    $services = Service::whereIn('id', $services_ids)->get();
+                    $html = '';
+                    foreach ($services as $service) {
+                        $html .= '<button class="btn-sm btn-primary">' . $service->title . '</button>';
+                    }
+
+                    return $html;
+                })
+                ->addColumn('quantity', function ($row) {
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('quantity')->toArray();
+
+                    return array_sum($qu);
+                })
+                ->addColumn('payment_method', function ($row) {
+                    $payment_method = $row->transaction?->payment_method;
+                    if ($payment_method == "cache" || $payment_method == "cash")
+                        return "شبكة";
+                    else if ($payment_method == "wallet")
+                        return "محفظة";
+                    else
+                        return "فيزا";
+                })
+                ->addColumn('status', function ($row) {
+
+                    return $row->status?->name;
+                })
+                ->addColumn('created_at', function ($row) {
+                    $date = Carbon::parse($row->created_at)->timezone('Asia/Riyadh');
+
+                    return $date->format("Y-m-d H:i:s");
+                })
+                ->addColumn('updated_at', function ($row) {
+                    $date = Carbon::parse($row->updated_at)->timezone('Asia/Riyadh');
+
+                    return $date->format("Y-m-d H:i:s");
+                })
+                ->addColumn('control', function ($row) {
+
+                    $html = '';
+                    if ($row->status_id == 2) {
+                        $html .= '<a href="' . route('dashboard.order.confirmOrder', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-thumbs-up fa-2x mx-1"></i> تأكيد
+                        </a>';
+                    }
+                    $html .= '
+                    <a href="' . route('dashboard.order.orderDetail', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+
+                        <a href="' . route('dashboard.order.showService', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+                                <a data-table_id="html5-extension" data-href="' . route('dashboard.orders.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
+                            <i class="far fa-trash-alt fa-2x"></i>
+                    </a>
+                                ';
+
+                    return $html;
+                })
+                ->rawColumns([
+                    'booking_id',
+                    'user',
+                    'service',
+                    'quantity',
+                    'payment_method',
+                    'status',
+                    'created_at',
+                    'updated_at',
+                    'control',
+                ])
+                ->make(true);
+        }
+        $statuses = OrderStatus::all()->pluck('name', 'id');
+        return view('dashboard.orders.canceled_orders_today', compact('statuses'));
+    }
+
+    public function canceledOrders()
+    {
+
+        if (request()->ajax()) {
+
+            $orders = Order::where('status_id', 5)->where('is_active', 1)->get();
+            return DataTables::of($orders)
+                ->addColumn('booking_id', function ($row) {
+                    $booking = $row->bookings->first();
+                    return $booking ? $booking->id : '';
+                })
+                ->addColumn('user', function ($row) {
+                    return $row->user?->first_name . ' ' . $row->user?->last_name;
+                })
+                ->addColumn('service', function ($row) {
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('service_id')->toArray();
+                    $services_ids = array_unique($qu);
+                    $services = Service::whereIn('id', $services_ids)->get();
+                    $html = '';
+                    foreach ($services as $service) {
+                        $html .= '<button class="btn-sm btn-primary">' . $service->title . '</button>';
+                    }
+
+                    return $html;
+                })
+                ->addColumn('quantity', function ($row) {
+                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('quantity')->toArray();
+
+                    return array_sum($qu);
+                })
+                ->addColumn('status', function ($row) {
+
+                    return $row->status?->name;
+                })
+                ->addColumn('created_at', function ($row) {
+                    $date = Carbon::parse($row->created_at)->timezone('Asia/Riyadh');
+
+                    return $date->format("Y-m-d H:i:s");
+                })
+                ->addColumn('updated_at', function ($row) {
+                    $date = Carbon::parse($row->updated_at)->timezone('Asia/Riyadh');
+
+                    return $date->format("Y-m-d H:i:s");
+                })
+                ->addColumn('control', function ($row) {
+
+                    $html = '';
+                    if ($row->status_id == 2) {
+                        $html .= '<a href="' . route('dashboard.order.confirmOrder', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-thumbs-up fa-2x mx-1"></i> تأكيد
+                        </a>';
+                    }
+                    $html .= '
+                    <a href="' . route('dashboard.order.orderDetail', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+
+                        <a href="' . route('dashboard.order.showService', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+                                <a data-table_id="html5-extension" data-href="' . route('dashboard.orders.destroy', $row->id) . '" data-id="' . $row->id . '" class="mr-2 btn btn-outline-danger btn-sm btn-delete btn-sm delete_tech">
+                            <i class="far fa-trash-alt fa-2x"></i>
+                    </a>
+                                ';
+
+                    return $html;
+                })
+                ->rawColumns([
+                    'booking_id',
+                    'user',
+                    'service',
+                    'quantity',
+                    'status',
+                    'created_at',
+                    'updated_at',
+                    'control',
+                ])
+                ->make(true);
+        }
+        $statuses = OrderStatus::all()->pluck('name', 'id');
+        return view('dashboard.orders.canceled_orders', compact('statuses'));
     }
 
     public function showService()
@@ -105,7 +412,7 @@ class OrderController extends Controller
 
         if (request()->ajax()) {
 
-            $orders = OrderService::where('order_id',request()->query('id'))->get();
+            $orders = OrderService::where('order_id', request()->query('id'))->get();
             return DataTables::of($orders)
                 ->addColumn('service', function ($row) {
                     return $row->service?->title;
@@ -127,7 +434,72 @@ class OrderController extends Controller
 
         return view('dashboard.orders.showService');
     }
+    protected function complaintDetails()
+    {
+        $customerComplaint = CustomerComplaint::findOrFail(\request()->id);
+        $customerComplaintImages = CustomerComplaintImage::where('customer_complaints_id', $customerComplaint->id)->get();
+        $user = User::where('id', $customerComplaint->user_id)->first();
+        $order = Order::where('id', $customerComplaint->order_id)->first();
+        $category_ids = $order->services->pluck('category_id')->toArray();
+        $category_ids = array_unique($category_ids);
+        $categories = Category::whereIn('id', $category_ids)->get();
+        return view('dashboard.orders.show_complaint', compact('categories', 'customerComplaint', 'customerComplaintImages', 'user', 'order'));
+    }
+    public function complaints()
+    {
 
+        if (request()->ajax()) {
+            $customerComplaint = CustomerComplaint::all();
+
+            return DataTables::of($customerComplaint)
+                ->addColumn('customer_name', function ($row) {
+                    return $row->user?->first_name . ' ' . $row->user?->last_name;
+                })
+                ->addColumn('customer_phone', function ($row) {
+                    return $row->user?->phone;
+                })
+                ->addColumn('complaint_text', function ($row) {
+                    return $row->text;
+                })
+                ->addColumn('complaint_images', function ($row) {
+                    return "images";
+                })
+                ->addColumn('complaint_video', function ($row) {
+
+                    return "video";
+                })
+                ->addColumn('created_at', function ($row) {
+                    $date = Carbon::parse($row->created_at)->timezone('Asia/Riyadh');
+
+                    return $date->format("Y-m-d H:i:s");
+                })
+                ->addColumn('control', function ($row) {
+
+                    $html = '';
+                    $html .= '
+                    <a href="' . route('dashboard.order.complaintDetails', 'id=' . $row->id) . '" class="mr-2 btn btn-outline-primary btn-sm">
+                            <i class="far fa-eye fa-2x"></i>
+                        </a>
+
+                            
+                                ';
+
+                    return $html;
+                })
+                ->rawColumns([
+
+                    'customer_name',
+                    'customer_phone',
+                    'complaint_text',
+                    'complaint_images',
+                    'complaint_video',
+                    'created_at',
+                    'control',
+                ])
+                ->make(true);
+        }
+        return view('dashboard.orders.complaints',);
+    }
 
     public function create()
     {
@@ -135,9 +507,9 @@ class OrderController extends Controller
         $categories = Category::all();
         $services = Service::all();
 
-        $cities = City::where('active',1)->get()->pluck('title','id');
+        $cities = City::where('active', 1)->get()->pluck('title', 'id');
 
-        return view('dashboard.orders.create', compact('users','cities', 'categories', 'services'));
+        return view('dashboard.orders.create', compact('users', 'cities', 'categories', 'services'));
     }
 
     protected function store(Request $request): Factory|\Illuminate\Contracts\View\View|RedirectResponse|\Illuminate\Contracts\Foundation\Application
@@ -147,7 +519,7 @@ class OrderController extends Controller
             'service_id' => 'array|required|exists:services,id',
             'service_id.*' => 'required',
             'price' => 'required',
-//            'payment_method' => 'required|in:visa,cache',
+            'payment_method' => 'required|in:visa,cache',
             'notes' => 'nullable|String',
             'quantity' => 'array|required',
             'quantity.*' => 'required',
@@ -168,15 +540,15 @@ class OrderController extends Controller
             'sub_total' => $request->total,
             'discount' => 0,
             'status_id' => 2,
-//            'payment_method' => $request->payment_method,
+            'payment_method' => $request->payment_method,
             'notes' => $request->notes,
-//            'quantity' => $request->all_quantity,
-            'user_address_id' => UserAddresses::where('user_id',$request->user_id)->where('is_default',1)->first()->id ?? null,
+            'quantity' => $request->all_quantity,
+            'user_address_id' => UserAddresses::where('user_id', $request->user_id)->where('is_default', 1)->first()->id ?? null,
         ];
 
         $order = Order::query()->create($data);
         foreach ($request->service_id as $key => $service_id) {
-            $service = Service::where('id',$request->service_id)->first('category_id');
+            $service = Service::where('id', $request->service_id)->first('category_id');
             $order_service = [
                 'order_id' => $order->id,
                 'service_id' => $service_id,
@@ -187,29 +559,29 @@ class OrderController extends Controller
 
             OrderService::create($order_service);
         }
-//        $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
+        //        $category_ids = Service::whereIn('id',$request->service_id)->get()->pluck('category_id');
         $category_ids = array_unique($request->category_id);
         foreach ($category_ids as $key => $category_id) {
             $last = Booking::query()->latest()->first()?->id;
             $num = $last ? $last + 1 : 1;
             $booking_no = 'dash2023/' . $num;
             $minutes = 0;
-            foreach (Service::with('BookingSetting')->whereIn('id', $request->service_id)->get() as $service){
+            foreach (Service::with('BookingSetting')->whereIn('id', $request->service_id)->get() as $service) {
                 $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
-                    * OrderService::where('service_id', $service->id)->where('order_id',$order->id)->first()->quantity;
+                    * OrderService::where('service_id', $service->id)->where('order_id', $order->id)->first()->quantity;
                 $minutes += $serviceMinutes;
             }
-            $orderService = OrderService::where('service_id', $service->id)->where('order_id',$order->id)->get()->pluck('quantity')->toArray();
+            $orderService = OrderService::where('service_id', $service->id)->where('order_id', $order->id)->get()->pluck('quantity')->toArray();
             $quantity = array_sum($orderService);
             $booking = [
                 'booking_no' => $booking_no,
                 'user_id' => $request->user_id,
-//                'service_id' => $request->service_id[$key],
+                //                'service_id' => $request->service_id[$key],
                 'order_id' => $order->id,
                 'user_address_id' => $order->user_address_id,
                 'booking_status_id' => 1,
                 'category_id' => $category_id,
-//            'group_id' => current($groups),
+                //            'group_id' => current($groups),
                 'notes' => $request->notes,
                 'quantity' => $quantity,
                 'date' => $request->day[$category_id],
@@ -218,7 +590,6 @@ class OrderController extends Controller
                 'end_time' => Carbon::createFromTimestamp($request->start_time[$category_id])->addMinutes($minutes)->toTimeString(),
             ];
             Booking::query()->create($booking);
-
         }
 
         session()->flash('success');
@@ -227,14 +598,15 @@ class OrderController extends Controller
 
     public function edit($id)
     {
-        $order = Order::where('id',$id)->first();
+        $order = Order::where('id', $id)->first();
         $users = User::all();
         $categories = Category::all();
         $services = Service::all();
-        return view('dashboard.core.services.edit', compact( 'order','users','services','categories'));
+        return view('dashboard.core.services.edit', compact('order', 'users', 'services', 'categories'));
     }
 
-    protected function update(Request $request, $id){
+    protected function update(Request $request, $id)
+    {
         $order = Order::query()->where('id', $id)->first();
         $rules = [
             'user_id' => 'required|exists:users,id',
@@ -257,7 +629,27 @@ class OrderController extends Controller
     protected function destroy($id)
     {
         $order = Order::find($id);
-        $order->delete();
+        $order->update([
+            'is_active' => 0
+        ]);
+        //  $order->delete();
+
+        $bookings = Booking::where('order_id', $id)->get();
+        foreach ($bookings as $booking) {
+            $booking->update([
+                'is_active' => 0
+            ]);
+            $visits = Visit::where('booking_id', $booking->id)->get();
+            foreach ($visits as $visit) {
+                $visit->update([
+                    'is_active' => 0
+                ]);
+            }
+        }
+
+
+
+
         return [
             'success' => true,
             'msg' => __("dash.deleted_success")
@@ -275,14 +667,14 @@ class OrderController extends Controller
             'city_id' => 'required|exists:cities,id',
         ]);
 
-        $data=$request->except('_token','password_confirmation');
+        $data = $request->except('_token', 'password_confirmation');
 
         $customer = User::query()->create($data);
 
         session()->flash('success');
         return [
             'success' => true,
-            'data' =>$customer,
+            'data' => $customer,
             'msg' => __("dash.operation_success")
         ];
     }
@@ -297,11 +689,9 @@ class OrderController extends Controller
                 ->orWhere('last_name', 'LIKE', "%$search%")
                 ->orWhere('first_name', 'LIKE', "%$search%")
                 ->get();
-
         }
 
-            return response()->json($customers);
-
+        return response()->json($customers);
     }
 
     protected function autoCompleteService(Request $request)
@@ -310,25 +700,21 @@ class OrderController extends Controller
         if ($request->has('q')) {
 
             $search = $request->q;
-            if (app()->getLocale() == 'ar'){
+            if (app()->getLocale() == 'ar') {
                 $services = Service::where('title_ar', 'LIKE', "%$search%")->get();
-
-            }else{
+            } else {
                 $services = Service::where('title_en', 'LIKE', "%$search%")->get();
             }
-
         }
 
         return response()->json($services);
-
     }
 
     protected function getServiceById(Request $request)
     {
-        $service = Service::where('id',$request->service_id)->first();
+        $service = Service::where('id', $request->service_id)->first();
 
         return response()->json($service);
-
     }
 
 
@@ -343,7 +729,7 @@ class OrderController extends Controller
         $request->validate($rules, $request->all());
         $itr = $request->itr;
 
-        $day = Carbon::parse($request->date)->locale('en')->dayName;
+        $day = Carbon::parse($request->date)->timezone('Asia/Riyadh')->locale('en')->dayName;
 
         $times = [];
         foreach ($request->service_ids as $service_id) {
@@ -353,11 +739,10 @@ class OrderController extends Controller
                 if ($get_time == true) {
                     $times[] = CarbonInterval::minutes($bookSetting->service_duration + $bookSetting->buffering_time)
                         ->toPeriod(
-                            \Carbon\Carbon::now()->setTimeFrom($bookSetting->service_start_time ?? Carbon::now()->startOfDay()),
-                            Carbon::now()->setTimeFrom($bookSetting->service_end_time ?? Carbon::now()->endOfDay())
+                            \Carbon\Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_start_time ?? Carbon::now('Asia/Riyadh')->startOfDay()),
+                            Carbon::now('Asia/Riyadh')->setTimeFrom($bookSetting->service_end_time ?? Carbon::now('Asia/Riyadh')->endOfDay())
                         );
                 }
-
             }
         }
         $finalAvailTimes = [];
@@ -374,29 +759,32 @@ class OrderController extends Controller
                 $finalAvailTimes = $allTimes;
             }
         }
-        $notAvailable = Booking::whereIn('service_id',$request->service_ids)->where('date',$request->date)->where('booking_status_id', 1)->get();
+        $notAvailable = Booking::whereIn('service_id', $request->service_ids)->where('date', $request->date)->where('booking_status_id', 1)->get();
 
-        $service = Service::whereIn('id',$request->service_ids)->get();
+        $service = Service::whereIn('id', $request->service_ids)->get();
 
 
-        return view('dashboard.orders.schedules-times-available', compact('finalAvailTimes','notAvailable','service','itr'));
+        return view('dashboard.orders.schedules-times-available', compact('finalAvailTimes', 'notAvailable', 'service', 'itr'));
     }
-    protected function confirmOrder(){
+    protected function confirmOrder()
+    {
         $order = Order::with('bookings')->findOrFail(\request()->id);
         $order->update([
             'status_id' => 1
         ]);
+
+
         session()->flash('success');
         return redirect()->back();
     }
 
-    protected function orderDetail(){
+    protected function orderDetail()
+    {
         $order = Order::with('bookings')->findOrFail(\request()->id);
+        $userPhone = User::where('id', $order->user_id)->first()->phone;
         $category_ids = $order->services->pluck('category_id')->toArray();
         $category_ids = array_unique($category_ids);
-        $categories = Category::whereIn('id',$category_ids)->get();
-        return view('dashboard.orders.show', compact('order','categories'));
-
+        $categories = Category::whereIn('id', $category_ids)->get();
+        return view('dashboard.orders.show', compact('userPhone', 'order', 'categories'));
     }
-
 }

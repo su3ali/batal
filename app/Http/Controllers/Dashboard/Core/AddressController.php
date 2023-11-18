@@ -99,7 +99,7 @@ class AddressController extends Controller
             $data['active'] = 0;
         }
 
-
+        $data['phone'] = User::where('id',$request->user_id)->first()->phone??null;
         UserAddresses::updateOrCreate($data);
 
         session()->flash('success');
@@ -137,6 +137,7 @@ class AddressController extends Controller
 
 
         $user = UserAddresses::find($id);
+        $data['phone'] = User::where('id',$request->user_id)->first()->phone??null;
         $user->update($data);
         session()->flash('success');
         return redirect()->route('dashboard.core.address.index','id='.$request->user_id);

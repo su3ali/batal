@@ -42,7 +42,8 @@ class ContractPackage extends Model
         return $image;
     }
 
-    public function service(){
-        return $this->hasOne(Service::class, 'id', 'service_id');
+    public function ContractPackagesServices()
+    {
+        return $this->hasMany(ContractPackagesService::class,'contract_packages_id');
     }
 }
