@@ -184,7 +184,7 @@
                                         <td>{{ $order->total }}</td>
                                     </tr>
 
-                                    <tr>
+                                    {{-- <tr>
                                         <th>نوع السياره</th>
                                         <td>{{ $order->userCar?->type?->name }}</td>
                                     </tr>
@@ -199,7 +199,7 @@
                                     <tr>
                                         <th>رقم لوحة السياره</th>
                                         <td>{{ $order->userCar?->Plate_number }}</td>
-                                    </tr>
+                                    </tr> --}}
                                     <tr>
                                         <th>اسماء الخدمات</th>
 
