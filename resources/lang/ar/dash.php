@@ -800,4 +800,7 @@ rejected_bills
     'client_orders_today' => 'طلبات العملاء اليوم',
     'canceled_orders_today' => 'الطلبات الملغية اليوم',
     'canceled_orders' => 'الطلبات الملغية',
+    'companys_services_management'=>'إدارة التقاول والعقود',
+    'companys_services'=>'التقاول والعقود',
+    'services_requests'=>'طلبات التقاول',
 ];
