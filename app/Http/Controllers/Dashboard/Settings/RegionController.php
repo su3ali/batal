@@ -95,7 +95,7 @@ class RegionController extends Controller
     public function viewRegion($id)
     {
         $region = Region::where('id', $id)->first();
-      
+
         return view('dashboard.settings.regions.show', compact('region'));
     }
 

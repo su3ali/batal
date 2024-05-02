@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Dashboard\SettingsController;
 
-Route::group(['prefix' => 'settings'], function (){
+Route::group(['prefix' => 'settings'], function () {
     Route::get('/', [SettingsController::class, 'index'])->name('settings')->middleware('permission:view_setting');
     Route::post('/', [SettingsController::class, 'update'])->middleware('permission:update_setting');
 
@@ -12,6 +12,7 @@ Route::group(['prefix' => 'settings'], function (){
     Route::get('city/change_status', 'Settings\CityController@change_status')->name('city.change_status');
     Route::resource('city', 'Settings\CityController');
 
+    Route::get('region/viewRegion/{id}', 'Settings\RegionController@viewRegion')->name('region.viewRegion');
     Route::get('region/change_status', 'Settings\RegionController@change_status')->name('region.change_status');
     Route::resource('region', 'Settings\RegionController');
 
@@ -23,6 +24,4 @@ Route::group(['prefix' => 'settings'], function (){
     Route::post('banners/get/image', 'Banners\BannersController@getImage')->name('banners.getImage');
     Route::post('banners/image/upload', 'Banners\BannersController@uploadImage')->name('banners.uploadImage');
     Route::post('banners/delete/image', 'Banners\BannersController@deleteImage')->name('banners.deleteImage');
-
-
 });
