@@ -70,8 +70,16 @@ class TechnicianController extends Controller
                 ])
                 ->make(true);
         }
-
-        return view('dashboard.core.technicians.index', compact('groups', 'specs'));
+        $nationalities = [
+            "فلبين"  =>  "1",
+            "اندونيسيا" =>   "2",
+            "الهند"    =>   "3",
+            "تايلند"  =>   "4",
+            "ماليزيا"  =>   "5",
+            "باكستان"  =>   "6",
+            "مصر" =>   "7"
+        ];
+        return view('dashboard.core.technicians.index', compact('groups', 'specs', 'nationalities'));
     }
 
     /**

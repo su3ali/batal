@@ -58,7 +58,7 @@ return [
 
     'firebase_credentials' => 'AAAAktbYcks:APA91bF3BcPnoZdEFaIY2DixMRsQkgTNst-lRUGp2duMMzyG2lsf3h6ZfmK1A1N2_zSbTY36VREWSrQHHhE2SQP0a7wJ9MT9reXJZk28OI4uzqQb5McYNCJYGpsIachB2J9SN10pu5PL',
 
-    'GOOGLE_MAP_KEY'=>'AIzaSyDR0MGyuJhRhzPTe65zy-WymhBirnmVTd4',
+    'GOOGLE_MAP_KEY' => 'AIzaSyAvr7wIEFHBYN28EFx17loERAPA8XTY5Ik',
 
     /*
     |--------------------------------------------------------------------------
@@ -178,7 +178,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-         App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
