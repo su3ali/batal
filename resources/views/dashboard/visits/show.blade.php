@@ -123,7 +123,7 @@
                                             <td>{{ $visits->cancelReason?->reason }}</td>
                                         </tr>
                                     @endif
-
+                                    {{-- 
                                     @if ($visits->visits_status_id == 5)
                                         <tr>
                                             <th>صوره اكتمال الطلب</th>
@@ -134,7 +134,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                                    @endif
+                                    @endif --}}
 
                                     <tr>
                                         <th>الملاحظات</th>
