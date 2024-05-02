@@ -149,8 +149,9 @@
                                             <td>
                                                 <div class="container__img-holder">
                                                     {{--                                            <img src="https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260" alt="Image"> --}}
-                                                    <img class="img-fluid" src="{{ asset($order->image) }}">
-
+                                                    <a href="{{ asset($order->image) }}" target="_blank">
+                                                        <img class="img-fluid" src="{{ asset($order->image) }}">
+                                                    </a>
                                                 </div>
                                                 {{--                                        <img class="img-fluid" style="width: 40px;" src="{{asset($order->image)}}"> --}}
                                             </td>

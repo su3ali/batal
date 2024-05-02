@@ -73,7 +73,9 @@
                                     </tr>
                                     <tr>
                                         @php
-                                            $date = Illuminate\Support\Carbon::parse($customerComplaint->created_at)->timezone('Asia/Riyadh');
+                                            $date = Illuminate\Support\Carbon::parse(
+                                                $customerComplaint->created_at,
+                                            )->timezone('Asia/Riyadh');
                                         @endphp
                                         <th>تاريخ الشكوى</th>
                                         <td>{{ $date->format('Y-m-d H:i:s') }}</td>
@@ -88,8 +90,11 @@
                                             @if ($customerComplaintImages && count($customerComplaintImages) > 0)
                                                 @foreach ($customerComplaintImages as $customerComplaintImage)
                                                     <div class="container__img-holder">
-                                                        <img class="img-fluid"
-                                                            src="{{ asset($customerComplaintImage->image) }}">
+                                                        <a href="{{ asset($customerComplaintImage->image) }}"
+                                                            target="_blank">
+                                                            <img class="img-fluid"
+                                                                src="{{ asset($customerComplaintImage->image) }}">
+                                                        </a>
 
                                                     </div>
                                                 @endforeach
@@ -142,7 +147,9 @@
                                     </tr>
                                     <tr>
                                         @php
-                                            $date = Illuminate\Support\Carbon::parse($order->created_at)->timezone('Asia/Riyadh');
+                                            $date = Illuminate\Support\Carbon::parse($order->created_at)->timezone(
+                                                'Asia/Riyadh',
+                                            );
                                         @endphp
                                         <th>تاريخ الطلب</th>
                                         <td>{{ $date->format('Y-m-d H:i:s') }}</td>
@@ -216,8 +223,9 @@
                                             <td>
                                                 <div class="container__img-holder">
                                                     {{--                                            <img src="https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260" alt="Image"> --}}
-                                                    <img class="img-fluid" src="{{ asset($order->image) }}">
-
+                                                    <a href="{{ asset($order->image) }}" target="_blank">
+                                                        <img class="img-fluid" src="{{ asset($order->image) }}">
+                                                    </a>
                                                 </div>
                                                 {{--                                        <img class="img-fluid" style="width: 40px;" src="{{asset($order->image)}}"> --}}
                                             </td>
