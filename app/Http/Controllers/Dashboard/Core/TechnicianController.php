@@ -36,7 +36,8 @@ class TechnicianController extends Controller
                     return $row->specialization?->name;
                 })
                 ->addColumn('t_image', function ($row) {
-                    return '<img class="img-fluid" style="width: 85px;" src="' . asset($row->image) . '"/>';
+
+                    return '<a href="' . asset($row->image) . '" target="_blank"><img class="img-fluid" style="width: 85px;" src="' . asset($row->image) . '"/></a>';
                 })
                 ->addColumn('status', function ($row) {
                     $checked = '';
@@ -170,7 +171,7 @@ class TechnicianController extends Controller
             'phone' => $tech->phone . '-deleted',
             'email' => $tech->email . '-deleted',
         ]);
-      
+
         return [
             'success' => true,
             'msg' => __("dash.deleted_success")
