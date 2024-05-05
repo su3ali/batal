@@ -77,7 +77,7 @@ class NotificationController extends Controller
             }
             $type = 'customer';
         } else {
-            if ($request->technician_id == 'all') {
+            if ($request->subject_id == 'all') {
                 $allTechn = Technician::whereNotNull('fcm_token')->get();
 
                 $FcmTokenArray = $allTechn->pluck('fcm_token');
@@ -90,7 +90,7 @@ class NotificationController extends Controller
                     );
                 }
             } else {
-                $technician = Technician::where('id', $request->technician_id)->first();
+                $technician = Technician::where('id', $request->subject_id)->first();
                 $FcmToken = $technician->fcm_token;
 
                 Notification::send(
