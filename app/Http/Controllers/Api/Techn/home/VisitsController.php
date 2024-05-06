@@ -45,7 +45,7 @@ class VisitsController extends Controller
             $q->with(['service' => function ($q) {
                 $q->with('category');
             }, 'customer', 'address']);
-        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->wherIn('assign_to_id',    $groupIds)
+        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->whereIn('assign_to_id',    $groupIds)
             ->orderBy('created_at', 'desc')->get();
 
         $this->body['visits'] = VisitsResource::collection($orders);
