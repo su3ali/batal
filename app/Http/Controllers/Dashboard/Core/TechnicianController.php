@@ -36,7 +36,8 @@ class TechnicianController extends Controller
                     return $row->specialization?->name;
                 })
                 ->addColumn('t_image', function ($row) {
-                    return '<img class="img-fluid" style="width: 85px;" src="' . asset($row->image) . '"/>';
+
+                    return '<a href="' . asset($row->image) . '" target="_blank"><img class="img-fluid" style="width: 85px;" src="' . asset($row->image) . '"/></a>';
                 })
                 ->addColumn('status', function ($row) {
                     $checked = '';
@@ -69,8 +70,16 @@ class TechnicianController extends Controller
                 ])
                 ->make(true);
         }
-
-        return view('dashboard.core.technicians.index', compact('groups', 'specs'));
+        $nationalities = [
+            "فلبين"  =>  "1",
+            "اندونيسيا" =>   "2",
+            "الهند"    =>   "3",
+            "تايلند"  =>   "4",
+            "ماليزيا"  =>   "5",
+            "باكستان"  =>   "6",
+            "مصر" =>   "7"
+        ];
+        return view('dashboard.core.technicians.index', compact('groups', 'specs', 'nationalities'));
     }
 
     /**
@@ -170,7 +179,7 @@ class TechnicianController extends Controller
             'phone' => $tech->phone . '-deleted',
             'email' => $tech->email . '-deleted',
         ]);
-      
+
         return [
             'success' => true,
             'msg' => __("dash.deleted_success")

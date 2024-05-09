@@ -33,6 +33,7 @@ class VisitsController extends Controller
 
     protected function myCurrentOrders()
     {
+        $groupIds = Group::where('technician_id', auth('sanctum')->user()->id)->pluck('id')->toArray();
         $groups = Group::where('technician_id', auth('sanctum')->user()->id)->first();
         if (!$groups) {
             $this->body['visits'] = [];
@@ -44,7 +45,7 @@ class VisitsController extends Controller
             $q->with(['service' => function ($q) {
                 $q->with('category');
             }, 'customer', 'address']);
-        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->where('assign_to_id',   $groups->id)
+        })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])->whereIn('assign_to_id',    $groupIds)
             ->orderBy('created_at', 'desc')->get();
 
         $this->body['visits'] = VisitsResource::collection($orders);
@@ -53,6 +54,7 @@ class VisitsController extends Controller
 
     protected function myPreviousOrders()
     {
+        $groupIds = Group::where('technician_id', auth('sanctum')->user()->id)->pluck('id')->toArray();
         $groups = Group::where('technician_id', auth('sanctum')->user()->id)->first();
         if (!$groups) {
             $this->body['visits'] = [];
@@ -65,14 +67,14 @@ class VisitsController extends Controller
                 $q->with('category');
             }, 'customer', 'address']);
         })->with('status')->whereIn('visits_status_id', [5, 6])
-            ->where('assign_to_id', $groups->id)->orderBy('created_at', 'desc')->get();
+            ->whereIn('assign_to_id',   $groupIds)->orderBy('created_at', 'desc')->get();
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }
 
     protected function myOrdersByDateNow()
     {
-
+        $groupIds = Group::where('technician_id', auth('sanctum')->user()->id)->pluck('id')->toArray();
         $groups = Group::where('technician_id', auth('sanctum')->user()->id)->first();
         if (!$groups) {
             $this->body['visits'] = [];
@@ -86,7 +88,7 @@ class VisitsController extends Controller
                 $q->with('category');
             }, 'customer', 'address']);
         })->with('status')->whereIn('visits_status_id', [1, 2, 3, 4])
-            ->where('assign_to_id',  $groups->id)->orderBy('created_at', 'desc')->get();
+            ->whereIn('assign_to_id',   $groupIds)->orderBy('created_at', 'desc')->get();
         $this->body['visits'] = VisitsResource::collection($orders);
         return self::apiResponse(200, null, $this->body);
     }

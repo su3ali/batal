@@ -50,27 +50,27 @@ window.Echo = new Echo({
                     {
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN' :$('meta[name="_token"]').attr('content'),
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
                         },
-                    progress: false,
-                })
+                        progress: false,
+                    })
                     .then(response => {
                         console.log(options)
                         callback(false, response.data);
                     })
                     .catch(error => {
-console.log(error)
+                        console.log(error)
                         callback(true, error);
                     });
             }
         };
     },
 });
-window.Echo.private('chat_message.'+document.getElementById('big-box').getAttribute('data-room'))
+window.Echo.private('chat_message.' + document.getElementById('big-box').getAttribute('data-room'))
     .listen('.chat-message', (data) => {
         console.log(document.getElementById('big-box').getAttribute('data-room'))
 
-        if (data.message.sent_by_admin === 0){
+        if (data.message.sent_by_admin === 0) {
             // const message = `<div class="message received"><div class="message-content"><p>${data.message.message}</p></div></div>`;
             const message = `<li class="message received"><img src="/images/techn.png" alt=""/> <p>${data.message.message}</p></li>`;
             document.getElementById('message-box').innerHTML += message;
@@ -93,13 +93,15 @@ window.Echo.private('chat_room.' + document.getElementById('big-box').getAttribu
         if (data.room.sender_type === 'App\\Models\\Technician') {
             room = `
                 <li class="list-group-item " style="cursor: pointer; background-color: #DDD">
+                <a href="${url}/${data.sender.image}" target="_blank">
                     <img class="img-fluid mx-1"
                          style="border-radius: 50%; width: 20px; height: 20px"
-                         src="${url}/${data.sender.image}" alt="">${data.sender.name}
+                         src="${url}/${data.sender.image}" alt=""></a>
+                         ${data.sender.name}
                     <br>${str}
                 </li>`
-        }else {
-             room = `
+        } else {
+            room = `
                 <li class="list-group-item " style="cursor: pointer; background-color: #DDD"
                     >
                     عميل - ${data.sender.first_name}  ${data.sender.last_name}

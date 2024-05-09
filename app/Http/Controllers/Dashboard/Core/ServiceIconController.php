@@ -29,7 +29,7 @@ class ServiceIconController extends Controller
                     return $icon->title;
                 })
                 ->addColumn('t_image', function ($row) {
-                    return '<img class="img-fluid" style="width: 85px;" src="'.asset($row->image).'"/>';
+                    return '<a href="' . asset($row->image) . '" target="_blank"><img class="img-fluid" style="width: 85px;" src="' . asset($row->image) . '"/></a>';
                 })
                 ->addColumn('status', function ($icon) {
                     $checked = '';
@@ -87,7 +87,7 @@ class ServiceIconController extends Controller
 
         ]);
 
-        $data = $request->except(['_token','image']);
+        $data = $request->except(['_token', 'image']);
 
 
         if ($request->has('image')) {
@@ -120,7 +120,7 @@ class ServiceIconController extends Controller
         ]);
         $icon = Icon::find($id);
 
-        $data = $request->except(['_token','image']);
+        $data = $request->except(['_token', 'image']);
         if ($request->has('image')) {
             if (File::exists(public_path($icon->image))) {
                 File::delete(public_path($icon->image));
@@ -160,5 +160,4 @@ class ServiceIconController extends Controller
         $admin->save();
         return response()->json(['sucess' => true]);
     }
-
 }

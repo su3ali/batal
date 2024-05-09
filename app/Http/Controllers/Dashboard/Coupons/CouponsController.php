@@ -26,7 +26,7 @@ class CouponsController extends Controller
                     return $row->type == 'percentage' ? $row->value . '%' : $row->value . ' ريال سعودي ';
                 })
                 ->addColumn('image', function ($row) {
-                    return '<img class="img-fluid" src="' . asset($row->image) . '"/>';
+                    return '<a href="' . asset($row->image) . '" target="_blank"><img class="img-fluid" src="' . asset($row->image) . '"/></a>';
                 })
                 ->addColumn('status', function ($row) {
                     $checked = '';
@@ -197,13 +197,13 @@ class CouponsController extends Controller
     }
     protected function viewSingle()
     {
-        
+
         $id = request()->query('id');
 
         $usage_filter = request()->query('usage');
 
         if (request()->ajax()) {
-         
+
             $users = User::with(['couponUsers', 'couponUsers.coupon'])->select(['id', 'first_name', 'last_name', 'phone'])->withCount('couponUsers as usage')->orderBy('usage', 'desc');
             error_log("111");
             if ($usage_filter) {
