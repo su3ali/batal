@@ -56,9 +56,11 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+
     'firebase_credentials' => 'AAAAFrwTTyU:APA91bFwlhCUo1YyYOxVS1hxvDLH7iiR7DTgLnV21fP6WE0MwiReekVur3Tm0zHxBV6kMbetfGYRjJ3h9eewXPDtI-0WMiiGTDzAAoUtGyoQmKdkp9sl9N7rwLm-CZkT0OHXXuj1FLye',
 
     'GOOGLE_MAP_KEY' => 'AIzaSyAvr7wIEFHBYN28EFx17loERAPA8XTY5Ik',
+
 
     /*
     |--------------------------------------------------------------------------
