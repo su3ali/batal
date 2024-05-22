@@ -444,15 +444,22 @@ class CartController extends Controller
                     )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]])
                         ->count();
 
+                    $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
+                    $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->whereHas('booking', function ($qu) use ($dayNow) {
+                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->where(function ($qu) use ($realTime, $diff) {
+                        $qu->where([['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->orWhere(function ($que) use ($realTime, $diff) {
+                            if ($diff > 0) {
+                                $que->where([['end_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]]);
+                            }
+                        });
+                    })->whereHas('booking', function ($qu) use ($dayNow) {
                         $qu->whereDate('date', '=', Carbon::parse($dayNow));
                     })->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)))) {
-                        $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
-                        $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
+
 
                         //visits at the day of expected end with a start time before the expected end
                         $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
