@@ -445,8 +445,8 @@ class CartController extends Controller
                         ->count();
 
 
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->whereHas('booking', function ($qu) use ($dayNow) {
-                        $qu->where('date', '=', Carbon::parse($dayNow));
+                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->whereHas('booking', function ($qu) use ($dayNow) {
+                        $qu->whereDate('date', '=', Carbon::parse($dayNow));
                     })->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
