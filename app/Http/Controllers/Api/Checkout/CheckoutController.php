@@ -240,7 +240,7 @@ class CheckoutController extends Controller
                 } else {
                     $alreadyTaken = Visit::where('start_time', $cart->time)->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
                     $hasntFinishedYet = Visit::where('start_time', '<', $cart->time)->where('end_time', '>', $cart->time)->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
-                    if ($alreadyTaken->isNotEmpty() && $hasntFinishedYet->isNotEmpt()) {
+                    if ($alreadyTaken->isNotEmpty() && $hasntFinishedYet->isNotEmpty()) {
                         $ids = $alreadyTaken->pluck('assign_to_id')->toArray();
                         $ids2 = $hasntFinishedYet->pluck('assign_to_id')->toArray();
                         $assign_to_id = $visit->whereNotIn('assign_to_id', $ids)->whereNotIn('assign_to_id', $ids2)->inRandomOrder()->first()->assign_to_id;
@@ -249,7 +249,7 @@ class CheckoutController extends Controller
 
                         $assign_to_id = $visit->whereNotIn('assign_to_id', $ids)->inRandomOrder()->first()->assign_to_id;
                     }
-                    if ($hasntFinishedYet->isNotEmpt()) {
+                    if ($hasntFinishedYet->isNotEmpty()) {
 
                         $ids2 = $hasntFinishedYet->pluck('assign_to_id')->toArray();
                         $assign_to_id = $visit->whereNotIn('assign_to_id', $ids2)->inRandomOrder()->first()->assign_to_id;
