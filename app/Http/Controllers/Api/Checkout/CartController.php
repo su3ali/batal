@@ -105,7 +105,7 @@ class CartController extends Controller
                 Cart::query()->create([
                     'user_id' => auth()->user()->id,
                     'service_id' => $service->id,
-                   // 'icon_ids' => json_encode($request->icon_ids),
+                    // 'icon_ids' => json_encode($request->icon_ids),
                     'category_id' => $service->category->id,
                     'price' => $price,
                     'quantity' => $request->quantity,
@@ -273,9 +273,9 @@ class CartController extends Controller
                     foreach ($cat_ids as $cat_id) {
                         if ($cat_id) {
                             $this->body['carts'][] = [
-                                'category_id' => $cat_id??0,
-                                'category_title' => Category::query()->find($cat_id)?->title??'',
-                                'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
+                                'category_id' => $cat_id ?? 0,
+                                'category_title' => Category::query()->find($cat_id)?->title ?? '',
+                                'category_minimum' => Category::query()->find($cat_id)?->minimum ?? 0,
                                 'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                             ];
                         }
@@ -445,7 +445,9 @@ class CartController extends Controller
                         ->count();
 
 
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->get();
+                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->whereHas('booking', function ($qu) use ($dayNow) {
+                        $qu->where('date', '=', Carbon::parse($dayNow));
+                    })->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)))) {
@@ -516,9 +518,9 @@ class CartController extends Controller
         foreach ($cat_ids as $cat_id) {
             if ($cat_id) {
                 $this->body['carts'][] = [
-                    'category_id' => $cat_id??0,
-                    'category_title' => Category::query()->find($cat_id)?->title??'',
-                    'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
+                    'category_id' => $cat_id ?? 0,
+                    'category_title' => Category::query()->find($cat_id)?->title ?? '',
+                    'category_minimum' => Category::query()->find($cat_id)?->minimum ?? 0,
                     'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                 ];
             }
@@ -542,9 +544,9 @@ class CartController extends Controller
             $this->body['total_items_in_cart'] = 1;
             $cat_id = $cart_package->category_id;
             $this->body['cart_package'][] = [
-                'category_id' => $cat_id??0,
-                'category_title' => Category::query()->find($cat_id)?->title??'',
-                'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
+                'category_id' => $cat_id ?? 0,
+                'category_title' => Category::query()->find($cat_id)?->title ?? '',
+                'category_minimum' => Category::query()->find($cat_id)?->minimum ?? 0,
                 'cart-services' => CartResource::make($cart_package)
             ];
         } else {
