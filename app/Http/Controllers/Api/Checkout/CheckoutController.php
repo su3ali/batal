@@ -262,7 +262,7 @@ class CheckoutController extends Controller
                 $endTimes = [];
                 for ($i = $numOfDaysForService - 1; $i >= 0; $i--) {
                     $startTime = ($i == 0 ? Carbon::parse($cart->time)->timezone('Asia/Riyadh')->toTimeString() : Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->toTimeString());
-                    $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addMinutes($bookSetting->service_duration - (($numOfDaysForService - 1) * ($allowedDuration / 60)))->toTimeString() : $bookSetting->service_end_time);
+                    $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addMinutes($bookSetting->service_duration - ((($numOfDaysForService - 1) * ($allowedDuration / 60)) * 60))->toTimeString() : $bookSetting->service_end_time);
 
 
                     $bookingInsert = Booking::query()->create([
