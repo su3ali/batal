@@ -453,6 +453,8 @@ class CartController extends Controller
                         } else {
                             $que->where([['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]]);
                         }
+                    })->whereHas('booking', function ($qu) use ($dayNow) {
+                        $qu->whereDate('date', '=', Carbon::parse($dayNow));
                     })->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
