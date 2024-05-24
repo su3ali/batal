@@ -461,14 +461,14 @@ class CartController extends Controller
                                             $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                         });
                                     });
-                                })
-                                ->orWhere(function ($qu) use ($day) {
-                                    $qu->where([['date', '=',  Carbon::parse(Carbon::parse($day)->timezone('Asia/Riyadh'))->timezone('Asia/Riyadh')->subDay()]])->whereHas('service', function ($service) {
-                                        $service->whereHas('BookingSetting', function ($que) {
-                                            $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
-                                        });
-                                    });
                                 });
+                            // ->orWhere(function ($qu) use ($day) {
+                            //     $qu->where([['date', '=',  Carbon::parse(Carbon::parse($day)->timezone('Asia/Riyadh'))->timezone('Asia/Riyadh')->subDay()]])->whereHas('service', function ($service) {
+                            //         $service->whereHas('BookingSetting', function ($que) {
+                            //             $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
+                            //         });
+                            //     });
+                            // });
                         })->count();
 
                     $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
