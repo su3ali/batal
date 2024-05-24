@@ -475,14 +475,14 @@ class CartController extends Controller
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
                     $inVisit = Visit::where([['start_time', '<',  $realTime]])->where(function ($que) use ($realTime, $diff) {
-                        if ($diff > 0) {
-                            $que->where([['end_time', '<',  $realTime]]);
-                        } else {
-                            $que->where([['end_time', '>',  $realTime]]);
-                        }
-                        // if ($diff < 1) {
+                        // if ($diff > 0) {
+                        //     $que->where([['end_time', '<',  $realTime]]);
+                        // } else {
                         //     $que->where([['end_time', '>',  $realTime]]);
                         // }
+                        if ($diff < 1) {
+                            $que->where([['end_time', '>',  $realTime]]);
+                        }
                     })->whereHas('booking', function ($qu) use ($dayNow, $day, $realTime) {
                         // $qu->whereDate('date', '=', Carbon::parse($dayNow));
                         $qu->where(function ($query) use ($day, $realTime) {
