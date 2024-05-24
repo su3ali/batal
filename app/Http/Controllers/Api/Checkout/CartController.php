@@ -453,16 +453,16 @@ class CartController extends Controller
                         }
                     )->where([['category_id', '=', $category_id]])
                         ->where(function ($query) use ($day, $realTime) {
-                            $query->where([['date', '=',  $day], ['time', '=', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])
+                            $query->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '=', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])
                                 ->orWhere(function ($qu) use ($day, $realTime) {
-                                    $qu->where([['date', '=',  $day], ['time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->whereHas('service', function ($service) {
+                                    $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->whereHas('service', function ($service) {
                                         $service->whereHas('BookingSetting', function ($que) {
                                             $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                         });
                                     });
                                 })
-                                ->orWhere(function ($qu) use ($day,) {
-                                    $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')->subDay()]])->whereHas('service', function ($service) {
+                                ->orWhere(function ($qu) use ($day) {
+                                    $qu->where([['date', '=',  Carbon::parse(Carbon::parse($day)->timezone('Asia/Riyadh'))->timezone('Asia/Riyadh')->subDay()]])->whereHas('service', function ($service) {
                                         $service->whereHas('BookingSetting', function ($que) {
                                             $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                         });
