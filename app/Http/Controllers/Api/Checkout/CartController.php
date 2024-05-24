@@ -475,9 +475,12 @@ class CartController extends Controller
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
                     $inVisit = Visit::where([['start_time', '<',  $realTime]])->where(function ($que) use ($realTime, $diff) {
-                        if ($diff > 0) {
-                            $que->where([['end_time', '<',  $realTime]]);
-                        } else {
+                        // if ($diff > 0) {
+                        //     $que->where([['end_time', '<',  $realTime]]);
+                        // } else {
+                        //     $que->where([['end_time', '>',  $realTime]]);
+                        // }
+                        if ($diff < 1) {
                             $que->where([['end_time', '>',  $realTime]]);
                         }
                     })->whereHas('booking', function ($qu) use ($dayNow, $day, $realTime) {
@@ -506,25 +509,29 @@ class CartController extends Controller
 
 
                         //visits at the day of expected end with a start time before the expected end
-                        $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                            $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])->whereHas(
-                                'address.region',
-                                function ($q) use ($request) {
+                        $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
+                            ->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
+                                $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])
+                                    ->whereHas(
+                                        'address.region',
+                                        function ($q) use ($request) {
 
-                                    $q->where('id', $request->region_id);
-                                }
-                            );
-                        })->get();
+                                            $q->where('id', $request->region_id);
+                                        }
+                                    );
+                            })->get();
 
                         //visits between the expected start and expected end of the visit
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                            $qu->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])->whereHas(
-                                'address.region',
-                                function ($q) use ($request) {
+                            $qu->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])
 
-                                    $q->where('id', $request->region_id);
-                                }
-                            );
+                                ->whereHas(
+                                    'address.region',
+                                    function ($q) use ($request) {
+
+                                        $q->where('id', $request->region_id);
+                                    }
+                                );
                         })->get();
                     }
 
