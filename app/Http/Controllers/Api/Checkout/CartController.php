@@ -447,15 +447,10 @@ class CartController extends Controller
                     $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->where(function ($qu) use ($realTime, $diff) {
-                        $qu->where([['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->orWhere(function ($que) use ($realTime, $diff) {
-                            if ($diff > 0) {
-                                $que->where([['end_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]]);
-                            }
-                        });
-                    })->whereHas('booking', function ($qu) use ($dayNow) {
-                        $qu->whereDate('date', '=', Carbon::parse($dayNow));
-                    })->get();
+                    // $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->where([['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->whereHas('booking', function ($qu) use ($dayNow) {
+                    //     $qu->whereDate('date', '=', Carbon::parse($dayNow));
+                    // })->get();
+                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)))) {
