@@ -452,23 +452,21 @@ class CartController extends Controller
                             $q->where('id', $request->region_id);
                         }
                     )->where([['category_id', '=', $category_id]])
-                    ->where(function ($query) use ($day, $realTime) {
-                        $query->where([['date', '=',  $day], ['time', '=', $realTime]])
-                        ->orWhere(function ($qu) use ($day, $realTime) {
-                            $qu->where([['date', '=',  $day], ['time', '<', $realTime]])->whereHas('booking_setting',function($que){
-                                $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
-                                $que->where([['service_duration','>',  $allowedDuration]]);
-                            });
-                        })
-                        ->orWhere(function ($qu) use ($day, $realTime) {
-                            $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')->subDay()]])->whereHas('booking_setting',function($que){
-                                $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
-                                $que->where([['service_duration','>',  $allowedDuration]]);
-                            });
-                        });
-
-                    });
-                    })->count();
+                        ->where(function ($query) use ($day, $realTime) {
+                            $query->where([['date', '=',  $day], ['time', '=', $realTime]])
+                                ->orWhere(function ($qu) use ($day, $realTime) {
+                                    $qu->where([['date', '=',  $day], ['time', '<', $realTime]])->whereHas('booking_setting', function ($que) {
+                                        $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
+                                        $que->where([['service_duration', '>',  $allowedDuration]]);
+                                    });
+                                })
+                                ->orWhere(function ($qu) use ($day, $realTime) {
+                                    $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')->subDay()]])->whereHas('booking_setting', function ($que) {
+                                        $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
+                                        $que->where([['service_duration', '>',  $allowedDuration]]);
+                                    });
+                                });
+                        })->count();
 
                     $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
