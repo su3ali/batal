@@ -446,18 +446,17 @@ class CartController extends Controller
                     //long services
                     $countInBooking = Booking::whereHas('visit', function ($q) {
                         $q->whereNotIn('visits_status_id', [5, 6]);
-                    })
-                        ->whereHas(
-                            'address.region',
-                            function ($q) use ($request) {
-                                $q->where('id', $request->region_id);
-                            }
-                        )
+                    })->whereHas(
+                        'address.region',
+                        function ($q) use ($request) {
+                            $q->where('id', $request->region_id);
+                        }
+                    )
                         ->where([['category_id', '=', $category_id]])
                         ->where(function ($query) use ($day, $realTime) {
-                            $query->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '=', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])
+                            $query->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '=',  $realTime]])
                                 ->orWhere(function ($qu) use ($day, $realTime) {
-                                    $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->whereHas('service', function ($service) {
+                                    $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '<',  $realTime]])->whereHas('service', function ($service) {
                                         $service->whereHas('BookingSetting', function ($que) {
                                             $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                         });
@@ -475,11 +474,11 @@ class CartController extends Controller
                     $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->where(function ($que) use ($realTime, $diff) {
+                    $inVisit = Visit::where([['start_time', '<',  $realTime]])->where(function ($que) use ($realTime, $diff) {
                         if ($diff > 0) {
-                            $que->where([['end_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]]);
+                            $que->where([['end_time', '<',  $realTime]]);
                         } else {
-                            $que->where([['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]]);
+                            $que->where([['end_time', '>',  $realTime]]);
                         }
                     })->whereHas('booking', function ($qu) use ($dayNow) {
                         $qu->whereDate('date', '=', Carbon::parse($dayNow));
