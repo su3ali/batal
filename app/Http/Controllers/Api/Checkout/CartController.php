@@ -457,13 +457,15 @@ class CartController extends Controller
                                 ->orWhere(function ($qu) use ($day, $realTime) {
                                     $qu->where([['date', '=',  $day], ['time', '<', $realTime]])->whereHas('booking_setting', function ($que) {
                                         // $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
-                                        $que->where([['service_duration', '>',  (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)))]]);
+                                        // $que->where([['service_duration', '>',  $allowedDuration]]);
+                                        $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                     });
                                 })
                                 ->orWhere(function ($qu) use ($day, $realTime) {
                                     $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')->subDay()]])->whereHas('booking_setting', function ($que) {
-                                        $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
-                                        $que->where([['service_duration', '>',  $allowedDuration]]);
+                                        // $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
+                                        // $que->where([['service_duration', '>',  $allowedDuration]]);
+                                        $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                     });
                                 });
                         })->count();
