@@ -550,7 +550,7 @@ class CartController extends Controller
                         //  error_log("C");
 
                     } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) == $countGroup) {
-                    } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty()) && ($countInBooking + $inVisit->count() + $inVisit2->count() + $inVisit3->count()) == $countGroup) {
+                    } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty()) && (($countInBooking + $inVisit->count() + $inVisit2->count() + $inVisit3->count()) == $countGroup) || ($inVisit2->count() + $inVisit3->count() == $countGroup)) {
                     } else {
 
                         return $time->format('g:i A');
