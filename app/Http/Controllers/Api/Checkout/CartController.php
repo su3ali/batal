@@ -456,8 +456,8 @@ class CartController extends Controller
                             $query->where([['date', '=',  $day], ['time', '=', $realTime]])
                                 ->orWhere(function ($qu) use ($day, $realTime) {
                                     $qu->where([['date', '=',  $day], ['time', '<', $realTime]])->whereHas('booking_setting', function ($que) {
-                                        $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
-                                        $que->where([['service_duration', '>',  $allowedDuration]]);
+                                        // $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
+                                        $que->where([['service_duration', '>',  (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)))]]);
                                     });
                                 })
                                 ->orWhere(function ($qu) use ($day, $realTime) {
