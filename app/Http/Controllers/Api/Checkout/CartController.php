@@ -446,12 +446,14 @@ class CartController extends Controller
                     //long services
                     $countInBooking = Booking::whereHas('visit', function ($q) {
                         $q->whereNotIn('visits_status_id', [5, 6]);
-                    })->whereHas(
-                        'address.region',
-                        function ($q) use ($request) {
-                            $q->where('id', $request->region_id);
-                        }
-                    )->where([['category_id', '=', $category_id]])
+                    })
+                        ->whereHas(
+                            'address.region',
+                            function ($q) use ($request) {
+                                $q->where('id', $request->region_id);
+                            }
+                        )
+                        ->where([['category_id', '=', $category_id]])
                         ->where(function ($query) use ($day, $realTime) {
                             $query->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '=', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])
                                 ->orWhere(function ($qu) use ($day, $realTime) {

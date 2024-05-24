@@ -260,7 +260,7 @@ class CheckoutController extends Controller
                 $bookingIds = [];
                 $startTimes = [];
                 $endTimes = [];
-                for ($i = $numOfDaysForService - 1; $i >= 0; $i--) {
+                for ($i = 0; $i <= $numOfDaysForService - 1; $i++) {
                     $startTime = ($i == 0 ? Carbon::parse($cart->time)->timezone('Asia/Riyadh')->toTimeString() : Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->toTimeString());
                     $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addMinutes($bookSetting->service_duration - ((($numOfDaysForService - 1) * ($allowedDuration / 60)) * 60))->toTimeString() : $bookSetting->service_end_time);
 
@@ -288,7 +288,7 @@ class CheckoutController extends Controller
                     array_push($startTimes, $startTime);
                     array_push($endTimes, $endTime);
                 }
-                for ($i = sizeof($bookingIds) - 1; $i >= 0; $i--) {
+                for ($i = 0; $i <= sizeof($bookingIds) - 1; $i++) {
                     $validated['start_time'] =  $startTimes[$i];
                     $validated['end_time'] =  $endTimes[$i];
                     $validated['duration'] = $minutes;
