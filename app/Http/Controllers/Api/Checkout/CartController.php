@@ -525,7 +525,7 @@ class CartController extends Controller
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
                             $qu->where(function ($query) use ($category_id, $request, $day, $diff, $allowedDuration) {
                                 $query->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])
-                                    ->orWhere([['category_id', '=', $category_id], [['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')]]]);
+                                    ->orWhere([['category_id', '=', $category_id], ['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')]]);
                             })->whereHas(
                                 'address.region',
                                 function ($q) use ($request) {
