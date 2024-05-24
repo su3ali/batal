@@ -263,8 +263,17 @@ class CheckoutController extends Controller
                 for ($i = 0; $i <= $numOfDaysForService - 1; $i++) {
                     $startTime = ($i == 0 ? Carbon::parse($cart->time)->timezone('Asia/Riyadh')->toTimeString() : Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->toTimeString());
                     $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addMinutes($bookSetting->service_duration - ((($numOfDaysForService - 1) * ($allowedDuration / 60)) * 60))->toTimeString() : $bookSetting->service_end_time);
-
-
+                    // $serviceStartDate = BookingSetting::where('service_id', $cart->service_id)->first()->service_start_date;
+                    // $serviceEndDate = BookingSetting::where('service_id', $cart->service_id)->first()->service_end_date;
+                    // $correct_date = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->format('Y-m-d');
+                    $bookingSetting = BookingSetting::where('service_id', $cart->service_id)->first();
+                    $serviceStartDate = Carbon::parse($bookingSetting->service_start_date)->startOfDay();
+                    $serviceEndDate = Carbon::parse($bookingSetting->service_end_date)->endOfDay();
+                    $correctDate = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->startOfDay();
+                    while (!$correctDate->between($serviceStartDate, $serviceEndDate)) {
+                        $correctDate->addDay();
+                    }
+                    $correctDateFormatted = $correctDate->format('Y-m-d');
                     $bookingInsert = Booking::query()->create([
                         'booking_no' => $booking_no,
                         'user_id' => auth('sanctum')->user()->id,
@@ -275,7 +284,7 @@ class CheckoutController extends Controller
                         'booking_status_id' => 1,
                         'notes' => $cart->notes,
                         'quantity' => $cart->quantity,
-                        'date' => Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->format('Y-m-d'),
+                        'date' => $correctDateFormatted,
                         'type' => 'service',
                         'time' =>  $startTime,
                         'end_time' =>   $endTime,
