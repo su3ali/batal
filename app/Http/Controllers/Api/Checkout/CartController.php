@@ -475,14 +475,14 @@ class CartController extends Controller
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
                     $inVisit = Visit::where([['start_time', '<',  $realTime]])->where(function ($que) use ($realTime, $diff) {
-                        // if ($diff > 0) {
-                        //     $que->where([['end_time', '<',  $realTime]]);
-                        // } else {
-                        //     $que->where([['end_time', '>',  $realTime]]);
-                        // }
-                        if ($diff < 1) {
+                        if ($diff > 0) {
+                            $que->where([['end_time', '<',  $realTime]]);
+                        } else {
                             $que->where([['end_time', '>',  $realTime]]);
                         }
+                        // if ($diff < 1) {
+                        //     $que->where([['end_time', '>',  $realTime]]);
+                        // }
                     })->whereHas('booking', function ($qu) use ($dayNow, $day, $realTime) {
                         // $qu->whereDate('date', '=', Carbon::parse($dayNow));
                         $qu->where(function ($query) use ($day, $realTime) {
@@ -523,15 +523,16 @@ class CartController extends Controller
 
                         //visits between the expected start and expected end of the visit
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                            $qu->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])
+                            $qu->where(function ($query) use ($category_id, $request, $day, $diff, $allowedDuration) {
+                                $query->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])
+                                    ->orWhere([['category_id', '=', $category_id], [['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')]]]);
+                            })->whereHas(
+                                'address.region',
+                                function ($q) use ($request) {
 
-                                ->whereHas(
-                                    'address.region',
-                                    function ($q) use ($request) {
-
-                                        $q->where('id', $request->region_id);
-                                    }
-                                );
+                                    $q->where('id', $request->region_id);
+                                }
+                            );
                         })->get();
                     }
 
