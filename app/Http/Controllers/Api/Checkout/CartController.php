@@ -453,21 +453,17 @@ class CartController extends Controller
                         }
                     )->where([['category_id', '=', $category_id]])
                         ->where(function ($query) use ($day, $realTime) {
-                            $query->where([['date', '=',  $day], ['time', '=', $realTime]])
+                            $query->where([['date', '=',  $day], ['time', '=', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])
                                 ->orWhere(function ($qu) use ($day, $realTime) {
-                                    $qu->where([['date', '=',  $day], ['time', '<', $realTime]])->whereHas('service', function ($service) {
+                                    $qu->where([['date', '=',  $day], ['time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->whereHas('service', function ($service) {
                                         $service->whereHas('BookingSetting', function ($que) {
-                                            // $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
-                                            // $que->where([['service_duration', '>',  $allowedDuration]]);
                                             $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                         });
                                     });
                                 })
-                                ->orWhere(function ($qu) use ($day, $realTime) {
+                                ->orWhere(function ($qu) use ($day,) {
                                     $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')->subDay()]])->whereHas('service', function ($service) {
                                         $service->whereHas('BookingSetting', function ($que) {
-                                            // $allowedDuration = (Carbon::parse($que->service_start_time)->diffInMinutes(Carbon::parse($que->service_end_time)));
-                                            // $que->where([['service_duration', '>',  $allowedDuration]]);
                                             $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
                                         });
                                     });
