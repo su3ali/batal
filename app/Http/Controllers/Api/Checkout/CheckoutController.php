@@ -267,12 +267,46 @@ class CheckoutController extends Controller
                     // $serviceEndDate = BookingSetting::where('service_id', $cart->service_id)->first()->service_end_date;
                     // $correct_date = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->format('Y-m-d');
                     $bookingSetting = BookingSetting::where('service_id', $cart->service_id)->first();
-                    $serviceStartDate = Carbon::parse($bookingSetting->service_start_date)->startOfDay();
-                    $serviceEndDate = Carbon::parse($bookingSetting->service_end_date)->endOfDay();
-                    $correctDate = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->startOfDay();
-                    while (!$correctDate->between($serviceStartDate, $serviceEndDate)) {
+                    // $serviceStartDate = Carbon::parse($bookingSetting->service_start_date)->startOfDay();
+                    // $serviceEndDate = Carbon::parse($bookingSetting->service_end_date)->endOfDay();
+                    // $correctDate = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->startOfDay();
+                    // while (!$correctDate->between($serviceStartDate, $serviceEndDate)) {
+                    //     $correctDate->addDay();
+                    // }
+                    // $correctDateFormatted = $correctDate->format('Y-m-d');
+                    $serviceStartDay = $bookingSetting->service_start_date;
+                    $serviceEndDay = $bookingSetting->service_end_date;
+                    $correctDate = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i);
+                    $daysOfWeek = [
+                        'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+                    ];
+                    $getDayIndex = function ($dayName) use ($daysOfWeek) {
+                        return array_search($dayName, $daysOfWeek);
+                    };
+                    $serviceStartDayIndex = $getDayIndex($serviceStartDay);
+                    $serviceEndDayIndex = $getDayIndex($serviceEndDay);
+                    while (true) {
+                        $correctDayName = $correctDate->format('l'); // Get the name of the day for the correct date
+                        $correctDayIndex = $getDayIndex($correctDayName);
+
+                        // Check if the correct day index is within the range
+                        if ($serviceStartDayIndex <= $serviceEndDayIndex) {
+                            // Normal case where start day is before end day
+                            if ($correctDayIndex >= $serviceStartDayIndex && $correctDayIndex <= $serviceEndDayIndex) {
+                                break; // The correct date is within the range
+                            }
+                        } else {
+                            // Case where the range wraps around the end of the week
+                            if ($correctDayIndex >= $serviceStartDayIndex || $correctDayIndex <= $serviceEndDayIndex) {
+                                break; // The correct date is within the range
+                            }
+                        }
+
+                        // Add one day and check again
                         $correctDate->addDay();
                     }
+
+                    // Format the correct date as required
                     $correctDateFormatted = $correctDate->format('Y-m-d');
                     $bookingInsert = Booking::query()->create([
                         'booking_no' => $booking_no,
