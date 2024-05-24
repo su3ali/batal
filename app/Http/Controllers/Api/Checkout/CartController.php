@@ -448,9 +448,7 @@ class CartController extends Controller
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
                     $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]])->where(function ($que) use ($realTime, $diff) {
-                        if ($diff > 0) {
-                            $que->where([['end_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')]]);
-                        } else {
+                        if ($diff < 1) {
                             $que->where([['end_time', '>', Carbon::parse($realTime)->timezone('Asia/Riyadh')]]);
                         }
                     })->whereHas('booking', function ($qu) use ($dayNow) {
