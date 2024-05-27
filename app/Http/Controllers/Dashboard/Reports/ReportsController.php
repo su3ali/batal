@@ -56,11 +56,11 @@ class ReportsController extends Controller
             if ($payment_method) {
                 if ($payment_method == 'cash') {
                     $order = $order->whereHas('transaction', function ($q) use ($payment_method) {
-                        $q->where('payment_method', $payment_method);
+                        $q->where('payment_method_details', $payment_method);
                     });
                 } else {
                     $order = $order->whereHas('transaction', function ($q) use ($payment_method) {
-                        $q->where('payment_method_details', $payment_method);
+                        $q->where('payment_method', $payment_method);
                     });
                 }
             }
