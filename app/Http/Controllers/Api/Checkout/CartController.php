@@ -553,7 +553,7 @@ class CartController extends Controller
                     } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty())
                         && (
                             ($countInBooking + $inVisit->count() + $inVisit2->count() + $inVisit3->count()) == $countGroup)
-                        || ($inVisit2->count() + $inVisit3->count() == $countGroup) // test visits in the same day 
+                        // test visits in the same day 
                     ) {
                     } else {
 
