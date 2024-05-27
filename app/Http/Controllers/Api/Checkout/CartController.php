@@ -508,18 +508,18 @@ class CartController extends Controller
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)))) {
 
 
-                        //visits at the day of expected end with a start time before the expected end
-                        $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
-                            ->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                                $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])
-                                    ->whereHas(
-                                        'address.region',
-                                        function ($q) use ($request) {
+                        // visits at the day of expected end with a start time before the expected end
+                        // $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
+                        //     ->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
+                        //         $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])
+                        //             ->whereHas(
+                        //                 'address.region',
+                        //                 function ($q) use ($request) {
 
-                                            $q->where('id', $request->region_id);
-                                        }
-                                    );
-                            })->get();
+                        //                     $q->where('id', $request->region_id);
+                        //                 }
+                        //             );
+                        //     })->get();
 
                         //visits between the expected start and expected end of the visit
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
@@ -536,7 +536,7 @@ class CartController extends Controller
                         })->get();
                     }
 
-                    // if ($day  == "2024-07-01") {
+                    // if ($day  == "2024-07-07") {
                     //     return json_encode([
                     //         'countInBooking' => $countInBooking,
                     //         'inVisit' => $inVisit->count(),
@@ -560,7 +560,7 @@ class CartController extends Controller
                     } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) == $countGroup) {
                     } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty())
                         && (
-                            ($countInBooking + $inVisit->count() + $inVisit2->count() + $inVisit3->count()) >= $countGroup)
+                            ($inVisit2->count() + $inVisit3->count()) >= $countGroup)
                         // test visits in the same day 
                     ) {
                     } else {
