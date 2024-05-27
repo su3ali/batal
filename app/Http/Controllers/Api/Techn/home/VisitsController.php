@@ -13,6 +13,7 @@ use App\Models\Group;
 use App\Models\Order;
 use App\Models\Technician;
 use App\Models\TechnicianWallet;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Visit;
 use App\Support\Api\ApiResponse;
@@ -333,7 +334,7 @@ class VisitsController extends Controller
         $request->validate($rules, $request->all());
 
         $order = Order::query()->where('id', $request->order_id)->first();
-
+        Transaction::where('order_id')->latest('id')->first()->update(['payment_method_details' => $request->method ?? 'visa']);
         $order->update([
             'partial_amount' => 0
         ]);
