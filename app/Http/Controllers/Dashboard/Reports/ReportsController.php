@@ -103,6 +103,13 @@ class ReportsController extends Controller
                     return $row->total;
                 })
                 ->addColumn('payment_method', function ($row) use ($payment_method) {
+                    $tmp = $row->transaction?->payment_method_details ?? null;
+                    if ($tmp) {
+                        if ($tmp == "cache")
+                            return "كاش";
+                        if ($tmp == "visa")
+                            return "شبكة";
+                    }
                     $payment_methodd = $row->transaction?->payment_method;
                     if ($payment_method)
                         $payment_methodd = $payment_method;
