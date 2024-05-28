@@ -478,10 +478,11 @@ class CartController extends Controller
 
                             $q->where('id', $request->region_id);
                         }
-                    )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]])
-                        ->count();
+                    )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]]);
 
+                    $excludedBookings =  $countInBooking->pluck('id')->toArray();
 
+                    $countInBooking = $countInBooking->count();
                     $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
@@ -494,9 +495,9 @@ class CartController extends Controller
                         if ($diff < 1) {
                             $que->where([['end_time', '>',  $realTime]]);
                         }
-                    })->whereHas('booking', function ($qu) use ($dayNow, $day, $realTime) {
+                    })->whereHas('booking', function ($qu) use ($excludedBookings, $day, $realTime) {
                         // $qu->whereDate('date', '=', Carbon::parse($dayNow));
-                        $qu->where(function ($query) use ($day, $realTime) {
+                        $qu->whereNotIn('id', $excludedBookings)->where(function ($query) use ($day, $realTime) {
                             $query->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '=',  $realTime]])
                                 ->orWhere(function ($qu) use ($day, $realTime) {
                                     $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '<',  $realTime]])->whereHas('service', function ($service) {
@@ -556,6 +557,16 @@ class CartController extends Controller
                     //         'countGroup' => $countGroup,
                     //     ]);
                     // }
+                    // if ($day  == "2024-06-10" && $time->format('g:i A') == "12:00 PM") {
+                    //     return json_encode([
+                    //         'countInBooking' => $countInBooking,
+                    //         'inVisit' => $inVisit->count(),
+                    //         // 'inVisit2' => $inVisit2->count(),
+                    //         //   'inVisit3' => $inVisit3->count(),
+                    //         'countGroup' => $countGroup,
+                    //     ]);
+                    // }
+
 
 
                     if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
@@ -568,7 +579,7 @@ class CartController extends Controller
                     } else if (in_array($day, $bookingDates) && in_array($converTimestamp, $bookingTimes) && ($countInBooking ==  $countGroup)) {
                         //  error_log("C");
 
-                    } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) > $countGroup) {
+                    } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) == $countGroup) {
                     } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty())
                         && (
                             ($countInBooking + $inVisit2->count() + $inVisit3->count()) >= $countGroup)
