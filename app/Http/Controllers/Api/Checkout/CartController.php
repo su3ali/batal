@@ -560,7 +560,7 @@ class CartController extends Controller
                     } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) == $countGroup) {
                     } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty())
                         && (
-                            ($inVisit2->count() + $inVisit3->count()) >= $countGroup)
+                            ($countInBooking + $inVisit2->count() + $inVisit3->count()) >= $countGroup)
                         // test visits in the same day 
                     ) {
                     } else {
