@@ -310,13 +310,13 @@ class VisitsController extends Controller
                 }
 
                 $FcmTokenArray = $allTechn->pluck('fcm_token');
-
+                $type = 'technician';
                 $notification = [
-                    'device_token' => $FcmTokenArray,
-                    'title' => $title,
-                    'message' => $message,
-                    'type' => 'technician',
-                    'code' => 1,
+                    'device_token' => isset($FcmToken) ? [$FcmToken] : $FcmTokenArray,
+                    'title' => $request->title,
+                    'message' =>  $message,
+                    'type' => $type ?? '',
+                    'code' => 2
                 ];
 
                 $this->pushNotification($notification);
