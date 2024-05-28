@@ -61,7 +61,7 @@ class BookingController extends Controller
                 $order = $bookings->where('date', '<=', $formattedDate2);
             }
 
-            $bookings->get();
+
             return DataTables::of($bookings)
                 ->addColumn('customer', function ($row) {
                     return $row->customer?->first_name . ' ' . $row->customer?->last_name;

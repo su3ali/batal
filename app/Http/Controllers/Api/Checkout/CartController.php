@@ -547,7 +547,7 @@ class CartController extends Controller
                         })->get();
                     }
 
-                    // if ($day  == "2024-05-29" && $time->format('g:i A') == "4:00 PM") {
+                    // if ($day  == "2024-06-06" && $time->format('g:i A') == "2:00 PM") {
                     //     return json_encode([
                     //         'countInBooking' => $countInBooking,
                     //         'inVisit' => $inVisit->count(),
@@ -568,7 +568,7 @@ class CartController extends Controller
                     } else if (in_array($day, $bookingDates) && in_array($converTimestamp, $bookingTimes) && ($countInBooking ==  $countGroup)) {
                         //  error_log("C");
 
-                    } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) >= $countGroup) {
+                    } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) > $countGroup) {
                     } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty())
                         && (
                             ($countInBooking + $inVisit2->count() + $inVisit3->count()) >= $countGroup)
