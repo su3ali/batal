@@ -485,7 +485,7 @@ class CartController extends Controller
                     $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
-                    $inVisit = Visit::where([['start_time', '<',  $realTime]])->where(function ($que) use ($realTime, $diff) {
+                    $inVisit = Visit::where([['start_time', '<=',  $realTime]])->where(function ($que) use ($realTime, $diff) {
                         // if ($diff > 0) {
                         //     $que->where([['end_time', '<',  $realTime]]);
                         // } else {
@@ -547,12 +547,12 @@ class CartController extends Controller
                         })->get();
                     }
 
-                    // if ($day  == "2024-05-29") {
+                    // if ($day  == "2024-05-29" && $time->format('g:i A') == "4:00 PM") {
                     //     return json_encode([
                     //         'countInBooking' => $countInBooking,
                     //         'inVisit' => $inVisit->count(),
-                    //         'inVisit2' => $inVisit2->count(),
-                    //         'inVisit3' => $inVisit3->count(),
+                    //         // 'inVisit2' => $inVisit2->count(),
+                    //         //   'inVisit3' => $inVisit3->count(),
                     //         'countGroup' => $countGroup,
                     //     ]);
                     // }
@@ -568,7 +568,7 @@ class CartController extends Controller
                     } else if (in_array($day, $bookingDates) && in_array($converTimestamp, $bookingTimes) && ($countInBooking ==  $countGroup)) {
                         //  error_log("C");
 
-                    } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) == $countGroup) {
+                    } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) >= $countGroup) {
                     } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty())
                         && (
                             ($countInBooking + $inVisit2->count() + $inVisit3->count()) >= $countGroup)
