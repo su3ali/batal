@@ -294,6 +294,33 @@ class VisitsController extends Controller
             $visit->update([
                 'assign_to_id' => $request->assign_to_id
             ]);
+            $allTechn = Technician::where('group_id', $visit->assign_to_id)->whereNotNull('fcm_token')->get();
+
+            if (count($allTechn) > 0) {
+
+                $title = 'تغيير الفريق';
+                $message = 'سيتم تغيير الفريق بسبب الغاء الطلب لاسباب فنيه';
+
+                foreach ($allTechn as $tech) {
+                    Notification::send(
+                        $tech,
+                        new SendPushNotification($title, $message)
+                    );
+                }
+
+                $FcmTokenArray = $allTechn->pluck('fcm_token');
+                $type = 'technician';
+                $notification = [
+                    'device_token' => isset($FcmToken) ? [$FcmToken] : $FcmTokenArray,
+                    'title' => $request->title,
+                    'message' =>  $message,
+                    'type' => $type ?? '',
+                    'code' => 2
+                ];
+
+                $this->pushNotification($notification);
+            }
+            $this->store($request);
         } else if ($visit->visits_status_id == 6) {
             $allTechn = Technician::where('group_id', $visit->assign_to_id)->whereNotNull('fcm_token')->get();
 
