@@ -536,7 +536,7 @@ class CartController extends Controller
                         //visits between the expected start and expected end of the visit
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
                             $qu->where(function ($query) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                                $query->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])
+                                $query->where([['category_id', '=', $category_id], ['date', '<=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])
                                     ->orWhere([['category_id', '=', $category_id], ['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')]]);
                             })->whereHas(
                                 'address.region',
@@ -548,12 +548,12 @@ class CartController extends Controller
                         })->get();
                     }
 
-                    // if ($day  == "2024-06-06" && $time->format('g:i A') == "2:00 PM") {
+                    // if ($day  == "2024-06-19" && $time->format('g:i A') == "12:00 PM") {
                     //     return json_encode([
                     //         'countInBooking' => $countInBooking,
                     //         'inVisit' => $inVisit->count(),
                     //         // 'inVisit2' => $inVisit2->count(),
-                    //         //   'inVisit3' => $inVisit3->count(),
+                    //         'inVisit3' => $inVisit3->count(),
                     //         'countGroup' => $countGroup,
                     //     ]);
                     // }
