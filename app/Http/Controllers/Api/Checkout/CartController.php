@@ -105,7 +105,7 @@ class CartController extends Controller
                 Cart::query()->create([
                     'user_id' => auth()->user()->id,
                     'service_id' => $service->id,
-                   // 'icon_ids' => json_encode($request->icon_ids),
+                    // 'icon_ids' => json_encode($request->icon_ids),
                     'category_id' => $service->category->id,
                     'price' => $price,
                     'quantity' => $request->quantity,
@@ -273,9 +273,9 @@ class CartController extends Controller
                     foreach ($cat_ids as $cat_id) {
                         if ($cat_id) {
                             $this->body['carts'][] = [
-                                'category_id' => $cat_id??0,
-                                'category_title' => Category::query()->find($cat_id)?->title??'',
-                                'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
+                                'category_id' => $cat_id ?? 0,
+                                'category_title' => Category::query()->find($cat_id)?->title ?? '',
+                                'category_minimum' => Category::query()->find($cat_id)?->minimum ?? 0,
                                 'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                             ];
                         }
@@ -433,6 +433,43 @@ class CartController extends Controller
 
 
 
+                    // $countInBooking = Booking::whereHas('visit', function ($q) {
+                    //     $q->whereNotIn('visits_status_id', [5, 6]);
+                    // })->whereHas(
+                    //     'address.region',
+                    //     function ($q) use ($request) {
+
+                    //         $q->where('id', $request->region_id);
+                    //     }
+                    // )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]])
+                    //     ->count();
+                    //long services
+                    // $countInBooking = Booking::whereHas('visit', function ($q) {
+                    //     $q->whereNotIn('visits_status_id', [5, 6]);
+                    // })->whereHas(
+                    //     'address.region',
+                    //     function ($q) use ($request) {
+                    //         $q->where('id', $request->region_id);
+                    //     }
+                    // )
+                    //     ->where([['category_id', '=', $category_id]])
+                    //     ->where(function ($query) use ($day, $realTime) {
+                    //         $query->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '=',  $realTime]])
+                    //             ->orWhere(function ($qu) use ($day, $realTime) {
+                    //                 $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '<',  $realTime]])->whereHas('service', function ($service) {
+                    //                     $service->whereHas('BookingSetting', function ($que) {
+                    //                         $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
+                    //                     });
+                    //                 });
+                    //             })
+                    //             ->orWhere(function ($qu) use ($day) {
+                    //                 $qu->where([['date', '=',  Carbon::parse(Carbon::parse($day)->timezone('Asia/Riyadh'))->timezone('Asia/Riyadh')->subDay()]])->whereHas('service', function ($service) {
+                    //                     $service->whereHas('BookingSetting', function ($que) {
+                    //                         $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
+                    //                     });
+                    //                 });
+                    //             });
+                    //     })->count();
                     $countInBooking = Booking::whereHas('visit', function ($q) {
                         $q->whereNotIn('visits_status_id', [5, 6]);
                     })->whereHas(
@@ -441,31 +478,67 @@ class CartController extends Controller
 
                             $q->where('id', $request->region_id);
                         }
-                    )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]])
-                        ->count();
+                    )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]]);
 
+                    $excludedBookings =  $countInBooking->pluck('id')->toArray();
 
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->get();
+                    $countInBooking = $countInBooking->count();
+                    $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
+                    $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
+
+                    $inVisit = Visit::where([['start_time', '<=',  $realTime]])->where(function ($que) use ($realTime, $diff) {
+                        // if ($diff > 0) {
+                        //     $que->where([['end_time', '<',  $realTime]]);
+                        // } else {
+                        //     $que->where([['end_time', '>',  $realTime]]);
+                        // }
+                        if ($diff < 1) {
+                            $que->where([['end_time', '>',  $realTime]]);
+                        }
+                    })->whereHas('booking', function ($qu) use ($excludedBookings, $day, $realTime) {
+                        // $qu->whereDate('date', '=', Carbon::parse($dayNow));
+                        $qu->whereNotIn('id', $excludedBookings)->where(function ($query) use ($day, $realTime) {
+                            $query->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '=',  $realTime]])
+                                ->orWhere(function ($qu) use ($day, $realTime) {
+                                    $qu->where([['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')], ['time', '<',  $realTime]])->whereHas('service', function ($service) {
+                                        $service->whereHas('BookingSetting', function ($que) {
+                                            $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
+                                        });
+                                    });
+                                })
+                                ->orWhere(function ($qu) use ($day) {
+                                    $qu->where([['date', '=',  Carbon::parse(Carbon::parse($day)->timezone('Asia/Riyadh'))->timezone('Asia/Riyadh')->subDay()]])->whereHas('service', function ($service) {
+                                        $service->whereHas('BookingSetting', function ($que) {
+                                            $que->whereRaw('TIMESTAMPDIFF(MINUTE, service_start_time, service_end_time) < service_duration');
+                                        });
+                                    });
+                                });
+                        });
+                    })->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)))) {
-                        $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
-                        $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
 
-                        //visits at the day of expected end with a start time before the expected end
-                        $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                            $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])->whereHas(
-                                'address.region',
-                                function ($q) use ($request) {
 
-                                    $q->where('id', $request->region_id);
-                                }
-                            );
-                        })->get();
+                        // visits at the day of expected end with a start time before the expected end
+                        // $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
+                        //     ->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
+                        //         $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])
+                        //             ->whereHas(
+                        //                 'address.region',
+                        //                 function ($q) use ($request) {
+
+                        //                     $q->where('id', $request->region_id);
+                        //                 }
+                        //             );
+                        //     })->get();
 
                         //visits between the expected start and expected end of the visit
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                            $qu->where([['category_id', '=', $category_id], ['date', '<', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])->whereHas(
+                            $qu->where(function ($query) use ($category_id, $request, $day, $diff, $allowedDuration) {
+                                $query->where([['category_id', '=', $category_id], ['date', '<=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))], ['date', '>=', Carbon::parse($day)->timezone('Asia/Riyadh')]])
+                                    ->orWhere([['category_id', '=', $category_id], ['date', '=',  Carbon::parse($day)->timezone('Asia/Riyadh')]]);
+                            })->whereHas(
                                 'address.region',
                                 function ($q) use ($request) {
 
@@ -475,6 +548,24 @@ class CartController extends Controller
                         })->get();
                     }
 
+                    // if ($day  == "2024-06-19" && $time->format('g:i A') == "12:00 PM") {
+                    //     return json_encode([
+                    //         'countInBooking' => $countInBooking,
+                    //         'inVisit' => $inVisit->count(),
+                    //         // 'inVisit2' => $inVisit2->count(),
+                    //         'inVisit3' => $inVisit3->count(),
+                    //         'countGroup' => $countGroup,
+                    //     ]);
+                    // }
+                    // if ($day  == "2024-06-10" && $time->format('g:i A') == "12:00 PM") {
+                    //     return json_encode([
+                    //         'countInBooking' => $countInBooking,
+                    //         'inVisit' => $inVisit->count(),
+                    //         // 'inVisit2' => $inVisit2->count(),
+                    //         //   'inVisit3' => $inVisit3->count(),
+                    //         'countGroup' => $countGroup,
+                    //     ]);
+                    // }
 
 
 
@@ -489,7 +580,11 @@ class CartController extends Controller
                         //  error_log("C");
 
                     } else if (in_array($day, $bookingDates)  && ($countInBooking + $inVisit->count()) == $countGroup) {
-                    } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty()) && ($countInBooking + $inVisit->count() + $inVisit2->count() + $inVisit3->count()) == $countGroup) {
+                    } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty())
+                        && (
+                            ($countInBooking + $inVisit2->count() + $inVisit3->count()) >= $countGroup)
+                        // test visits in the same day 
+                    ) {
                     } else {
 
                         return $time->format('g:i A');
@@ -516,9 +611,9 @@ class CartController extends Controller
         foreach ($cat_ids as $cat_id) {
             if ($cat_id) {
                 $this->body['carts'][] = [
-                    'category_id' => $cat_id??0,
-                    'category_title' => Category::query()->find($cat_id)?->title??'',
-                    'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
+                    'category_id' => $cat_id ?? 0,
+                    'category_title' => Category::query()->find($cat_id)?->title ?? '',
+                    'category_minimum' => Category::query()->find($cat_id)?->minimum ?? 0,
                     'cart-services' => CartResource::collection($carts->where('category_id', $cat_id))
                 ];
             }
@@ -542,9 +637,9 @@ class CartController extends Controller
             $this->body['total_items_in_cart'] = 1;
             $cat_id = $cart_package->category_id;
             $this->body['cart_package'][] = [
-                'category_id' => $cat_id??0,
-                'category_title' => Category::query()->find($cat_id)?->title??'',
-                'category_minimum' => Category::query()->find($cat_id)?->minimum??0,
+                'category_id' => $cat_id ?? 0,
+                'category_title' => Category::query()->find($cat_id)?->title ?? '',
+                'category_minimum' => Category::query()->find($cat_id)?->minimum ?? 0,
                 'cart-services' => CartResource::make($cart_package)
             ];
         } else {

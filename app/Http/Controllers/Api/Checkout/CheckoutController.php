@@ -238,7 +238,12 @@ class CheckoutController extends Controller
                 if (($visit->get()->count()) < ($group->get()->count())) {
                     $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
                 } else {
-                    $alreadyTaken = Visit::where('start_time', $cart->time)->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
+                    $alreadyTaken = Visit::where(function ($query) use ($cart) {
+                        $query->where('start_time', $cart->time)->orWhere(function ($qu) use ($cart) {
+                            $qu->where('start_time', '<', $cart->time)->where('end_time', '>', $cart->time);
+                        });
+                    })->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
+
                     if ($alreadyTaken->isNotEmpty()) {
                         $ids = $alreadyTaken->pluck('assign_to_id')->toArray();
                         $assign_to_id = $visit->whereNotIn('assign_to_id', $ids)->inRandomOrder()->first()->assign_to_id;
@@ -255,11 +260,54 @@ class CheckoutController extends Controller
                 $bookingIds = [];
                 $startTimes = [];
                 $endTimes = [];
-                for ($i = $numOfDaysForService - 1; $i >= 0; $i--) {
+                for ($i = 0; $i <= $numOfDaysForService - 1; $i++) {
                     $startTime = ($i == 0 ? Carbon::parse($cart->time)->timezone('Asia/Riyadh')->toTimeString() : Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->toTimeString());
-                    $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addMinutes($bookSetting->service_duration - (($numOfDaysForService - 1) * ($allowedDuration / 60)))->toTimeString() : $bookSetting->service_end_time);
+                    $endTime = ($i == $numOfDaysForService - 1 ? Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addMinutes($bookSetting->service_duration - ((($numOfDaysForService - 1) * ($allowedDuration / 60)) * 60))->toTimeString() : $bookSetting->service_end_time);
+                    // $serviceStartDate = BookingSetting::where('service_id', $cart->service_id)->first()->service_start_date;
+                    // $serviceEndDate = BookingSetting::where('service_id', $cart->service_id)->first()->service_end_date;
+                    // $correct_date = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->format('Y-m-d');
+                    $bookingSetting = BookingSetting::where('service_id', $cart->service_id)->first();
+                    // $serviceStartDate = Carbon::parse($bookingSetting->service_start_date)->startOfDay();
+                    // $serviceEndDate = Carbon::parse($bookingSetting->service_end_date)->endOfDay();
+                    // $correctDate = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->startOfDay();
+                    // while (!$correctDate->between($serviceStartDate, $serviceEndDate)) {
+                    //     $correctDate->addDay();
+                    // }
+                    // $correctDateFormatted = $correctDate->format('Y-m-d');
+                    $serviceStartDay = $bookingSetting->service_start_date;
+                    $serviceEndDay = $bookingSetting->service_end_date;
+                    $correctDate = Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i);
+                    $daysOfWeek = [
+                        'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+                    ];
+                    $getDayIndex = function ($dayName) use ($daysOfWeek) {
+                        return array_search($dayName, $daysOfWeek);
+                    };
+                    $serviceStartDayIndex = $getDayIndex($serviceStartDay);
+                    $serviceEndDayIndex = $getDayIndex($serviceEndDay);
+                    while (true) {
+                        $correctDayName = $correctDate->format('l'); // Get the name of the day for the correct date
+                        $correctDayIndex = $getDayIndex($correctDayName);
 
+                        // Check if the correct day index is within the range
+                        if ($serviceStartDayIndex <= $serviceEndDayIndex) {
+                            // Normal case where start day is before end day
+                            if ($correctDayIndex >= $serviceStartDayIndex && $correctDayIndex <= $serviceEndDayIndex) {
+                                break; // The correct date is within the range
+                            }
+                        } else {
+                            // Case where the range wraps around the end of the week
+                            if ($correctDayIndex >= $serviceStartDayIndex || $correctDayIndex <= $serviceEndDayIndex) {
+                                break; // The correct date is within the range
+                            }
+                        }
 
+                        // Add one day and check again
+                        $correctDate->addDay();
+                    }
+
+                    // Format the correct date as required
+                    $correctDateFormatted = $correctDate->format('Y-m-d');
                     $bookingInsert = Booking::query()->create([
                         'booking_no' => $booking_no,
                         'user_id' => auth('sanctum')->user()->id,
@@ -270,7 +318,7 @@ class CheckoutController extends Controller
                         'booking_status_id' => 1,
                         'notes' => $cart->notes,
                         'quantity' => $cart->quantity,
-                        'date' => Carbon::parse($cart->date)->timezone('Asia/Riyadh')->addDays($i)->format('Y-m-d'),
+                        'date' => $correctDateFormatted,
                         'type' => 'service',
                         'time' =>  $startTime,
                         'end_time' =>   $endTime,
@@ -283,7 +331,7 @@ class CheckoutController extends Controller
                     array_push($startTimes, $startTime);
                     array_push($endTimes, $endTime);
                 }
-                for ($i = sizeof($bookingIds) - 1; $i >= 0; $i--) {
+                for ($i = 0; $i <= sizeof($bookingIds) - 1; $i++) {
                     $validated['start_time'] =  $startTimes[$i];
                     $validated['end_time'] =  $endTimes[$i];
                     $validated['duration'] = $minutes;

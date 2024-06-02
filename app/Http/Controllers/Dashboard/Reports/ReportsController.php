@@ -54,9 +54,15 @@ class ReportsController extends Controller
                 $order = $order->where('created_at', '<=', $formattedDate2);
             }
             if ($payment_method) {
-                $order = $order->whereHas('transaction', function ($q) use ($payment_method) {
-                    $q->where('payment_method', $payment_method);
-                });
+                if ($payment_method == 'cash') {
+                    $order = $order->whereHas('transaction', function ($q) use ($payment_method) {
+                        $q->where('payment_method_details', 'cache');
+                    });
+                } else {
+                    $order = $order->whereHas('transaction', function ($q) use ($payment_method) {
+                        $q->where('payment_method', $payment_method);
+                    });
+                }
             }
             if ($service) {
 
@@ -103,6 +109,13 @@ class ReportsController extends Controller
                     return $row->total;
                 })
                 ->addColumn('payment_method', function ($row) use ($payment_method) {
+                    $tmp = $row->transaction?->payment_method_details ?? null;
+                    if ($tmp) {
+                        if ($tmp == "cache")
+                            return "كاش";
+                        if ($tmp == "visa")
+                            return "شبكة";
+                    }
                     $payment_methodd = $row->transaction?->payment_method;
                     if ($payment_method)
                         $payment_methodd = $payment_method;

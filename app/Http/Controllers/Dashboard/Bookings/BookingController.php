@@ -18,7 +18,7 @@ use App\Models\VisitsStatus;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\RedirectResponse;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
@@ -61,7 +61,7 @@ class BookingController extends Controller
                 $order = $bookings->where('date', '<=', $formattedDate2);
             }
 
-            $bookings->get();
+
             return DataTables::of($bookings)
                 ->addColumn('customer', function ($row) {
                     return $row->customer?->first_name . ' ' . $row->customer?->last_name;
@@ -260,18 +260,75 @@ class BookingController extends Controller
         } else {
             $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
             $address = UserAddresses::where('id', $request->address_id)->first();
-            $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereHas('regions', function ($qu) use ($address) {
+            $available = $this->availableGroups($address, $request->category_id, $request->booking_id);
+
+            $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereIn('id',  $available)->whereHas('regions', function ($qu) use ($address) {
                 $qu->where('region_id', $address->region_id);
             })->get()->pluck('name', 'id')->toArray();
-            $groups = Group::where('active', 1)->whereIn('id', $groupIds)->get();
-            // error_log("BBBBBBB");
-            // error_log(sizeof($groups));
-            // foreach ($groups as $key => $value){
-            //     error_log($value);
-            // }
         }
 
         return response($group);
+    }
+
+
+
+
+
+
+
+
+
+
+    function availableGroups($address, $category_id, $booking_id)
+    {
+        $date = Booking::where('id', $booking_id)->first()->date;
+        $time = Visit::where('booking_id', $booking_id)->first()->start_time;
+        $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
+            $qu->where('region_id', $address->region_id);
+        })->whereHas('category', function ($qu) use ($category_id) {
+            $qu->where('category_id', $category_id);
+        })->where('date', $date)->pluck('id')->toArray();
+        $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
+        $visit = DB::table('visits')
+            ->select('*', DB::raw('COUNT(assign_to_id) as group_id'))
+            ->whereIn('booking_id', $booking_id)
+            ->whereIn('assign_to_id', $activeGroups)
+            ->groupBy('assign_to_id')
+            ->orderBy('group_id', 'ASC');
+
+        $assign_to_id = 0;
+        if ($visit->get()->isEmpty()) {
+            $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
+            $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
+                $qu->where('region_id', $address->region_id);
+            })->whereIn('id', $groupIds)->pluk('id')->toArray();
+
+            return $group;
+        } else {
+            $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
+            $group = Group::where('active', 1)->whereHas('regions', function ($qu) use ($address) {
+                $qu->where('region_id', $address->region_id);
+            })->whereIn('id', $groupIds);
+            if ($group->count() == 0) {
+                return [];
+            }
+            if (($visit->get()->count()) < ($group->get()->count())) {
+                return $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->pluk('id')->toArray();
+            } else {
+                $alreadyTaken = Visit::where(function ($query) use ($time) {
+                    $query->where('start_time', $time)->orWhere(function ($qu) use ($time) {
+                        $qu->where('start_time', '<', $time)->where('end_time', '>', $time);
+                    });
+                })->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
+
+                if ($alreadyTaken->isNotEmpty()) {
+                    $ids = $alreadyTaken->pluck('assign_to_id')->toArray();
+                    return $visit->whereNotIn('assign_to_id', $ids)->pluck('assign_to_id')->toArray();
+                } else {
+                    return $visit->pluck('assign_to_id')->toArray();
+                }
+            }
+        }
     }
     // {
 

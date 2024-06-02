@@ -70,6 +70,7 @@
                                     <option value="cache">شبكة</option>
                                     <option value="wallet">محفظة</option>
                                     <option value="visa">فيزا</option>
+                                    <option value="cash">كاش</option>
                                 </select>
                             </div>
                             <div class="col-md-1">
