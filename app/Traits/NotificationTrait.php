@@ -35,6 +35,9 @@ trait NotificationTrait
             'registration_ids' => $device_token,
 //          'notification' => $notification,
             "content_available" => true,
+            "android" => [
+                "priority" => "HIGH"
+            ],
             "ios"=>[
                 "priority"=>"HIGH"
             ],
@@ -75,6 +78,9 @@ trait NotificationTrait
         $fields = [
             'registration_ids' => $device_token,
             "content_available" => true,
+            "android" => [
+                "priority" => "HIGH"
+            ],
             "ios"=>[
                 "priority"=>"HIGH"
             ],
