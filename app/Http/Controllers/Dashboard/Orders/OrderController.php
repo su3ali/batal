@@ -567,7 +567,7 @@ class OrderController extends Controller
             $booking_no = 'dash2023/' . $num;
             $minutes = 0;
             foreach (Service::with('BookingSetting')->whereIn('id', $request->service_id)->get() as $service) {
-                $serviceMinutes = ($service->BookingSetting->buffering_time + $service->BookingSetting->service_duration)
+                $serviceMinutes = ($service->BookingSetting->service_duration)
                     * OrderService::where('service_id', $service->id)->where('order_id', $order->id)->first()->quantity;
                 $minutes += $serviceMinutes;
             }

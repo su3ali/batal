@@ -194,8 +194,12 @@ class CheckoutController extends Controller
             $minutes = 0;
             $bookSetting = BookingSetting::where('service_id', $cart->service_id)->first();
             if ($bookSetting) {
-                foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
+/*                 foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
                     $serviceMinutes = ($bookSetting->buffering_time + $bookSetting->service_duration)
+                        * $carts->where('service_id', $service->id)->first()->quantity;
+                    $minutes += $serviceMinutes; */
+                foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
+                    $serviceMinutes = ($bookSetting->service_duration)
                         * $carts->where('service_id', $service->id)->first()->quantity;
                     $minutes += $serviceMinutes;
                 }
