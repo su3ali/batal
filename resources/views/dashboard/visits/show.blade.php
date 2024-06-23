@@ -105,18 +105,30 @@
 
                                     <tr>
                                         <th>تاريخ البدء</th>
-                                        <td>{{ $visits->start_time }}</td>
+                                        <td>{{ Carbon\Carbon::parse($visits->start_time)->format('g:ia') }}</td>
                                     </tr>
 
                                     <tr>
                                         <th>تاريخ الانتهاء</th>
-                                        <td>{{ $visits->end_time }}</td>
+                                        <td>{{ Carbon\Carbon::parse($visits->end_time)->format('g:ia') }}</td>
                                     </tr>
 
                                     <tr>
                                         <th>الحاله</th>
                                         <td>{{ $visits->status?->name }}</td>
                                     </tr>
+                                    @if ($visits->start_date)
+                                        <tr>
+                                            <th>وقت البدء الفعلي</th>
+                                            <td>{{  Carbon\Carbon::parse($visits->start_date)->format('g:ia') }}</td>
+                                        </tr>
+                                    @endif
+                                    @if ($visits->end_date)
+                                        <tr>
+                                            <th>وقت الاننتهاء الفعلي</th>
+                                            <td>{{ Carbon\Carbon::parse($visits->end_date)->format('g:ia') }}</td>
+                                        </tr>
+                                    @endif
                                     @if ($visits->visits_status_id == 6)
                                         <tr>
                                             <th>سبب الالغاء</th>
