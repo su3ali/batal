@@ -21,7 +21,7 @@ class RegionResource extends JsonResource
             'space_km' => $this->space_km,
             'lat' => $this->lat,
             'lon' => $this->lon,
-
+            'polygon_coordinates' => json_decode($this->polygon_coordinates)
         ];
     }
 }

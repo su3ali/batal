@@ -10,6 +10,10 @@ class Region extends Model
     use HasFactory;
     protected $guarded = [];
 
+    protected $casts = [
+        'polygon_coordinates' => 'array',
+    ];
+    
     public function getTitleAttribute(){
         if (app()->getLocale()=='ar'){
             return $this->title_ar;
