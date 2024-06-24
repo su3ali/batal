@@ -79,9 +79,9 @@ class RegionController extends Controller
             'title_ar' => 'required|String|min:3',
             'title_en' => 'required|String|min:3',
             'city_id' => 'required|exists:cities,id',
-            'space_km' => 'required|numeric',
-            'lat' => 'required',
-            'lon' => 'required',
+            'space_km' => 'nullable|numeric',
+            'lat' => 'nullable',
+            'lon' => 'nullable',
             'polygon_coordinates' => 'required|json',
 
         ]);
@@ -114,9 +114,9 @@ class RegionController extends Controller
             'title_ar' => 'required',
             'title_en' => 'required',
             'city_id' => 'required|exists:cities,id',
-            'space_km' => 'required|numeric',
-            'lat' => 'required',
-            'lon' => 'required',
+            'space_km' => 'nullable|numeric',
+            'lat' => 'nullable',
+            'lon' => 'nullable',
             'polygon_coordinates' => 'nullable|json',
         ]);
         $data = $request->except('_token');
