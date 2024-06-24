@@ -90,7 +90,7 @@
                                     @enderror
 
                                 </div>
-                                <div class="form-group col-md-6">
+                                {{--                                 <div class="form-group col-md-6">
 
                                     <label for="inputEmail4">مسافه التغطيه بالكيلومتر</label>
                                     <input type="text" name="space_km" value="{{ $region->space_km }}"
@@ -99,9 +99,9 @@
                                         <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
 
-                                </div>
+                                </div> --}}
                             </div>
-                            <div class="row">
+                            {{--                             <div class="row">
                                 <div class="form-group col-md-6">
 
                                     <label for="inputEmail4">lat</label>
@@ -123,7 +123,7 @@
                                     @enderror
 
                                 </div>
-                            </div>
+                            </div> --}}
 
 
                             <div class="form-group col-md-12">
@@ -139,6 +139,9 @@
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary">{{ __('dash.save') }}</button>
                         </div>
+                        <!-- Hidden field for polygon coordinates -->
+                        <input type="hidden" name="polygon_coordinates" id="polygon_coordinates"
+                            value="{{ $region->polygon_coordinates }}" />
                     </form>
 
                 </div>
@@ -153,77 +156,90 @@
 @push('script')
     <script>
         var map;
-        var markers = [];
+        var drawingManager;
+        var selectedShape;
+        var polygonCoordinates = {!! json_encode($region->polygon_coordinates) !!};
+        polygonCoordinates = JSON.parse(polygonCoordinates)
 
         function initMap() {
-            var center = {
-                lat: {{ $region->lat }},
-                lng: {{ $region->lon }}
-            };
+
+            if (polygonCoordinates) {
+                var center = polygonCoordinates[1]
+            } else {
+                var center = {
+                    lat: 24.6310665,
+                    lng: 46.5635056
+                };
+            }
 
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 11,
+                zoom: 12,
                 center: center,
             });
-            addMarker(center);
 
-            var circleRadius = parseFloat("{{ $region->space_km }}"); // Convert to float
-            addCircle(center, circleRadius);
-
-            // This event listener will call addMarker() when the map is clicked.
-            map.addListener('click', function(event) {
-                clearMarkers();
-                addMarker(event.latLng);
-                updateCircle(event.latLng, circleRadius);
-                $('.lat').val(event.latLng.lat())
-                $('.lon').val(event.latLng.lng())
+            drawingManager = new google.maps.drawing.DrawingManager({
+                drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                drawingControl: true,
+                drawingControlOptions: {
+                    position: google.maps.ControlPosition.TOP_CENTER,
+                    drawingModes: ['polygon']
+                },
+                polygonOptions: {
+                    editable: true,
+                    draggable: true
+                }
             });
+            drawingManager.setMap(map);
 
-
-        }
-
-        function addCircle(location, radius) {
-            circle = new google.maps.Circle({
-                strokeColor: '#FF0000',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: '#FF0000',
-                fillOpacity: 0.35,
-                map: map,
-                center: location,
-                radius: radius * 1000, // Convert km to meters
-            });
-        }
-
-        function updateCircle(location, radius) {
-            if (circle) {
-                circle.setCenter(location);
-                circle.setRadius(radius * 1000); // Convert km to meters
+            // Display the existing polygon
+            if (polygonCoordinates) {
+                var existingPolygon = new google.maps.Polygon({
+                    paths: polygonCoordinates,
+                    editable: true,
+                    map: map
+                });
+                selectedShape = existingPolygon;
+                google.maps.event.addListener(existingPolygon, 'click', function() {
+                    setSelection(existingPolygon);
+                });
             }
-        }
 
-        // Adds a marker to the map and push to the array.
-        function addMarker(location) {
-            var marker = new google.maps.Marker({
-                position: location,
-                map: map
+            google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+                if (selectedShape) {
+                    selectedShape.setMap(null);
+                }
+                selectedShape = event.overlay;
+                if (event.type == google.maps.drawing.OverlayType.POLYGON) {
+                    var coordinates = event.overlay.getPath().getArray();
+                    var coords = coordinates.map(function(latLng) {
+                        return {
+                            lat: latLng.lat(),
+                            lng: latLng.lng()
+                        };
+                    });
+                    $('#polygon_coordinates').val(JSON.stringify(coords));
+                }
             });
-            markers.push(marker);
+
+            google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+
         }
 
-        // Sets the map on all markers in the array.
-        function setMapOnAll(map) {
-            for (var i = 0; i < markers.length; i++) {
-                markers[i].setMap(map);
+        function setSelection(shape) {
+            clearSelection();
+            selectedShape = shape;
+            shape.setEditable(true);
+        }
+
+        function clearSelection() {
+            if (selectedShape) {
+                selectedShape.setEditable(false);
+                selectedShape = null;
             }
-        }
-
-        // Removes the markers from the map, but keeps them in the array.
-        function clearMarkers() {
-            setMapOnAll(null);
         }
     </script>
 
     <script type="text/javascript" async defer
-        src="https://maps.google.com/maps/api/js?key={{ Config::get('app.GOOGLE_MAP_KEY') }}&callback=initMap"></script>
+        src="https://maps.google.com/maps/api/js?key={{ Config::get('app.GOOGLE_MAP_KEY') }}&libraries=drawing&callback=initMap">
+    </script>
 @endpush

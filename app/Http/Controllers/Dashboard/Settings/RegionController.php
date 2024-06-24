@@ -82,6 +82,7 @@ class RegionController extends Controller
             'space_km' => 'required|numeric',
             'lat' => 'required',
             'lon' => 'required',
+            'polygon_coordinates' => 'required|json',
 
         ]);
 
@@ -116,6 +117,7 @@ class RegionController extends Controller
             'space_km' => 'required|numeric',
             'lat' => 'required',
             'lon' => 'required',
+            'polygon_coordinates' => 'nullable|json',
         ]);
         $data = $request->except('_token');
 
