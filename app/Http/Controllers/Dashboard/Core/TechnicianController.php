@@ -173,11 +173,11 @@ class TechnicianController extends Controller
         if (File::exists(public_path($tech->image))) {
             File::delete(public_path($tech->image));
         }
-
+        $uniqueSuffix = uniqid();
         $tech->update([
             'is_deleted' => 1,
-            'phone' => $tech->phone . '-deleted',
-            'email' => $tech->email . '-deleted',
+            'phone' => $tech->phone . '-deleted-' . $uniqueSuffix,
+            'email' => $tech->email . '-deleted-' . $uniqueSuffix,
         ]);
 
         return [
