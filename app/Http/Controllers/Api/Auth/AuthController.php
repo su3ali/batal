@@ -104,12 +104,14 @@ class AuthController extends Controller
 
     public function deleteAccount(Request $request)
     {
+
         auth()->user()->tokens()->delete();
         $user =  auth('sanctum')->user();
+        $uniqueSuffix = uniqid();
         $user->update([
             'is_deleted' => 1,
-            'phone' => $user->phone . '-deleted',
-            'email' => $user->email . '-deleted',
+            'phone' => $user->phone . '-deleted-' . $uniqueSuffix,
+            'email' => $user->email . '-deleted-' . $uniqueSuffix,
         ]);
         $this->message = __('api.Delete user successfully');
 
