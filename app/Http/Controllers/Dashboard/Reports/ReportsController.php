@@ -71,7 +71,7 @@ class ReportsController extends Controller
             }
 
 
-            $order = $order->where('is_active', 1)->get();
+            $order = $order->where('is_active', 1)->with(['services.category', 'user', 'transaction'])->get();
 
             return DataTables::of($order)
                 ->addColumn('order_number', function ($row) {
@@ -84,8 +84,9 @@ class ReportsController extends Controller
                     return $row->created_at;
                 })
                 ->addColumn('service', function ($row) {
-                    $services_ids = OrderService::where('order_id', $row->id)->get()->pluck('service_id')->toArray();
-                    $services = Service::whereIn('id', $services_ids)->get();
+/*                     $services_ids = OrderService::where('order_id', $row->id)->get()->pluck('service_id')->toArray();
+                    $services = Service::whereIn('id', $services_ids)->get(); */
+                    $services = $row->services;
                     $html = '';
                     foreach ($services as $item) {
                         $html .= '<button class="btn-sm btn-primary">' . $item->title_ar . '</button>';
@@ -101,12 +102,12 @@ class ReportsController extends Controller
                 })
                 ->addColumn('service_number', function ($row) {
                     //  $service_ids = OrderService::where('order_id',$row->id)->get()->pluck('service_id')->toArray();
-                    $service_count = OrderService::where('order_id', $row->id)->count();
-
+                    /* $service_count = OrderService::where('order_id', $row->id)->count(); */
+                    $service_count = $row->services->count();
                     return $service_count;
                 })
                 ->addColumn('price', function ($row) {
-                    return $row->total;
+                    return number_format(($row->total/115  * 100),2);
                 })
                 ->addColumn('payment_method', function ($row) use ($payment_method) {
                     $tmp = $row->transaction?->payment_method_details ?? null;
@@ -144,7 +145,7 @@ class ReportsController extends Controller
 
         $total = Order::where('is_active', 1)->where(function ($query) {
             $query->Where('status_id', '<>', 6)->orWhereHas('transaction', function ($q) {
-                $q->where('payment_method', '!=', 'cahce');
+                $q->where('payment_method', '!=', 'cache');
             });
         })->sum('total');
         error_log($total);
@@ -191,6 +192,7 @@ class ReportsController extends Controller
 
         // Calculate the total, tax, and tax-subtotal
         $total = $orderQuery->where('is_active', 1)->sum('total');
+        $total = ($total/115  * 100);
         $taxRate = 0.15; // 15% tax rate
         $tax = $total * $taxRate;
         $taxTotal = $total + $tax;
