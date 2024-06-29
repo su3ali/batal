@@ -39,4 +39,38 @@ class CouponCheck
         $response = ['success' => __('api.coupon applied !')];
         return $response;
     }
+
+    public static function check_coupon_services_match($coupon, $total, $carts)
+    {
+        if(!isset($coupon->service_id) && !isset($coupon->category_id)){
+            $discount = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
+        }elseif (isset($coupon->service_id) && !isset($coupon->category_id)){
+            $match = false;
+            $discount = 0;
+            foreach($carts as $cart){
+                if($cart->service_id === $coupon->service_id){
+                    $match = true;
+                    $cart_total = ($cart->price) * $cart->quantity;
+                    $discount += $coupon->type == 'percentage'?($coupon->value/100)*$cart_total : $coupon->value;
+                }
+            }
+            if(!$match){
+                return ['error' => true, 'discount'=> 0];
+            }
+        }else{
+            $match = false;
+            $discount = 0;
+            foreach($carts as $cart){
+                if($cart->category_id === $coupon->category_id){
+                    $match = true;
+                    $cart_total = ($cart->price) * $cart->quantity;
+                    $discount += $coupon->type == 'percentage'?($coupon->value/100)*$cart_total : $coupon->value;
+                }
+            }
+            if(!$match){
+                return ['error' => true, 'discount'=> 0];
+            }
+        }
+        return ['error' => false, 'discount' => $discount];
+    }
 }
