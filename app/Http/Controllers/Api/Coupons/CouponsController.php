@@ -39,14 +39,46 @@ class CouponsController extends Controller
         if (!$carts->first()) {
             return self::apiResponse(400, __('api.cart empty'), []);
         }
-        $total = $this->calc_total($carts);
         $coupon = Coupon::query()->where('code', $code)->first();
-
+        
+        
         if ($coupon){
+            $total = $this->calc_total($carts);
+
+            if(!isset($coupon->service_id) && !isset($coupon->category_id)){
+                $discount = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
+            }elseif (isset($coupon->service_id) && !isset($coupon->category_id)){
+                $used = false;
+                $discount = 0;
+                foreach($carts as $cart){
+                    if($cart->service_id === $coupon->service_id){
+                        $used = true;
+                        $cart_total = ($cart->price) * $cart->quantity;
+                        $discount += $coupon->type == 'percentage'?($coupon->value/100)*$cart_total : $coupon->value;
+                    }
+                }
+                if(!$used){
+                    return self::apiResponse(400, __('api.This coupon con not be used to any of these services !'), $this->body);
+                }
+            }else{
+                $used = false;
+                $discount = 0;
+                foreach($carts as $cart){
+                    if($cart->category_id === $coupon->category_id){
+                        $used = true;
+                        $cart_total = ($cart->price) * $cart->quantity;
+                        $discount += $coupon->type == 'percentage'?($coupon->value/100)*$cart_total : $coupon->value;
+                    }
+                }
+                if(!$used){
+                    return self::apiResponse(400, __('api.This coupon con not be used to any of these services !'), $this->body);
+                }
+            }
             $coupon_user = CouponUser::query()->where('coupon_id', $coupon->id)
                 ->where('user_id', auth()->user()->id)->get();
             $check = new CouponCheck();
-            $res = $check->check_avail($coupon, $coupon_user, $total);
+
+            $res = $check->check_avail($coupon, $coupon_user, $total, $carts);
             if (key_exists('success', $res)){
                 CouponUser::query()->create([
                     'user_id' => auth()->user()->id,
@@ -59,9 +91,8 @@ class CouponsController extends Controller
                 }
                 $coupon->times_used++;
                 $coupon->save();
-                $coupon_value = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
-                $sub_total = $total - $coupon_value;
-                $this->body['coupon_value'] = $coupon_value;
+                $sub_total = $total - $discount;
+                $this->body['coupon_value'] = $discount;
                 $this->body['total'] = $total;
                 $this->body['sub_total'] = $sub_total;
                 return self::apiResponse(200, $res['success'], $this->body);
