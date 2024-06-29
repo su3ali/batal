@@ -648,7 +648,7 @@ class CartController extends Controller
         $this->body['coupon'] = null;
         $coupon = $carts->first()?->coupon;
         if ($coupon) {
-            
+
             if(!isset($coupon->service_id) && !isset($coupon->category_id)){
                 $discount = $coupon->type == 'percentage'?($coupon->value/100)*$total : $coupon->value;
             }elseif (isset($coupon->service_id) && !isset($coupon->category_id)){
@@ -669,12 +669,12 @@ class CartController extends Controller
                 }
             }
 
-            $discount_value = $coupon->type == 'percentage' ? ($coupon->value / 100) * $total : $coupon->value;
+           /*  $discount_value = $coupon->type == 'percentage' ? ($coupon->value / 100) * $total : $coupon->value; */
             $this->body['coupon'] = [
                 'code' => $coupon->code,
                 'total_before_discount' => $total,
-                'discount_value' => $discount_value,
-                'total_after_discount' => $total - $discount_value
+                'discount_value' => $discount,
+                'total_after_discount' => $total - $discount
             ];
         }
     }
