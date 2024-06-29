@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class CouponCheck
 {
-    public function check_avail($coupon, $coupon_user, $total, $carts)
+    public function check_avail($coupon, $coupon_user, $total)
     {
         if (
             !$coupon

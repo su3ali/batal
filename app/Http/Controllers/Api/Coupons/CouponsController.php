@@ -78,7 +78,7 @@ class CouponsController extends Controller
                 ->where('user_id', auth()->user()->id)->get();
             $check = new CouponCheck();
 
-            $res = $check->check_avail($coupon, $coupon_user, $total, $carts);
+            $res = $check->check_avail($coupon, $coupon_user, $total);
             if (key_exists('success', $res)){
                 CouponUser::query()->create([
                     'user_id' => auth()->user()->id,
