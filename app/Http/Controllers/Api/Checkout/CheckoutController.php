@@ -157,6 +157,7 @@ class CheckoutController extends Controller
 
     private function saveOrder($user, $request, $total, $carts, $uploadImage, $uploadFile, $parent_payment_method)
     {
+        DB::beginTransaction();
         $totalAfterDiscount = ($total - $request->coupon);
         $order = Order::create([
             'user_id' => $user->id,
@@ -246,11 +247,15 @@ class CheckoutController extends Controller
                         $query->where('start_time', $cart->time)->orWhere(function ($qu) use ($cart) {
                             $qu->where('start_time', '<', $cart->time)->where('end_time', '>', $cart->time);
                         });
-                    })->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
+                    })->whereIn('booking_id', $booking_id)->where('visits_status_id', '!=', 6)->whereIn('assign_to_id', $activeGroups)->get();
 
                     if ($alreadyTaken->isNotEmpty()) {
                         $ids = $alreadyTaken->pluck('assign_to_id')->toArray();
-                        $assign_to_id = $visit->whereNotIn('assign_to_id', $ids)->inRandomOrder()->first()->assign_to_id;
+                        $assign_to_id = $visit->whereNotIn('assign_to_id', $ids)->inRandomOrder()?->first()->assign_to_id;
+                        if (!isset($assign_to_id)) {
+                            DB::rollback();
+                            return self::apiResponse(400, __('api.This Time is not available'), $this->body);
+                        }
                     } else {
                         $assign_to_id = $visit->inRandomOrder()->first()->assign_to_id;
                     }
@@ -456,6 +461,7 @@ class CheckoutController extends Controller
 
         Cart::query()->whereIn('id', $carts->pluck('id'))->delete();
         $this->body['order_id'] = $order->id;
+        DB::commit();
         return self::apiResponse(200, __('api.order created successfully'), $this->body);
     }
 

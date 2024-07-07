@@ -43,5 +43,7 @@ return [
     'Your order price didnt reach the minimum value for the coupon !' => 'Your order price didnt reach the minimum value for the coupon !',
     'Invalid Code !' => 'Invalid Code !',
     'This coupon con not be used to any of these services !' => 'This coupon con not be used to any of these services !',
+    'This Time is not available' => 'This Time is not available'
+
 
 ];

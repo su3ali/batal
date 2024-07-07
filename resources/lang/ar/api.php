@@ -43,4 +43,5 @@ return [
     'Your order price didnt reach the minimum value for the coupon !' => 'سعر طلبك لم يصل إلى الحد الأدنى لقيمة القسيمة!',
     'Invalid Code !' => 'الرمز غير صحيح !',
     'This coupon con not be used to any of these services !' => 'لا يمكن استخدام هذا الكوبون لأي من هذه الخدمات !',
+    'This Time is not available' => 'هذا الوقت غير متاج'
 ];
