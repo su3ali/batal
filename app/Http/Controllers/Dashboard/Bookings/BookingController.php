@@ -254,20 +254,81 @@ class BookingController extends Controller
 
             $address = UserAddresses::where('id', $request->address_id)->first();
 
+            $region_id = $address->region_id;
+            $booking = Booking::where('id', $request->booking_id)->first();
+            $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
+            $booking_id = Booking::whereHas('address', function ($qu) use ($region_id) {
+                $qu->where('region_id', $region_id);
+            })->whereHas('category', function ($qu) use ($request) {
+                $qu->where('category_id', $request->category_id);
+            })->where('date', $booking->date)->pluck('id')->toArray();
+
+            /* foreach ($times[$service_id][$day] as $time) { */
+                $formattedTime = $booking->time;
+                $alreadyTaken[] = Visit::where('start_time', $formattedTime)->where('visits_status_id', '!=', 6)->whereIn('booking_id', $booking_id)
+                    ->whereIn('assign_to_id', $activeGroups)->pluck('assign_to_id')->toArray();
+            /* } */
+            $filteredAlreadyTaken = array_filter($alreadyTaken, function ($value) {
+                return is_numeric($value) && $value > 0;
+            });
+
+            if (!empty($filteredAlreadyTaken)) {
+                $groups = Group::with('regions')->whereHas('regions', function ($qu) use ($region_id) {
+                    $qu->where('region_id', $region_id);
+                })->whereNotIn('id', $filteredAlreadyTaken)->whereIn('id', $groupIds)->where('active', 1)->get()->pluck('id')->toArray();
+            } else {
+                // If $filteredAlreadyTaken is empty, get all groups for the region
+                $groups = Group::with('regions')->whereHas('regions', function ($qu) use ($region_id) {
+                    $qu->where('region_id', $region_id);
+                })->whereIn('id', $groupIds)->where('active', 1)->get()->pluck('name', 'id')->toArray();
+            }
+
             $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereHas('regions', function ($qu) use ($address) {
                 $qu->where('region_id', $address->region_id);
             })->get()->pluck('name', 'id')->toArray();
         } else {
+
+
             $groupIds = CategoryGroup::where('category_id', $request->category_id)->pluck('group_id')->toArray();
             $address = UserAddresses::where('id', $request->address_id)->first();
-            $available = $this->availableGroups($address, $request->category_id, $request->booking_id);
+            /* $available = $this->availableGroups($address, $request->category_id, $request->booking_id); */
 
-            $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereIn('id',  $available)->whereHas('regions', function ($qu) use ($address) {
+            $region_id = $address->region_id;
+            $booking = Booking::where('id', $request->booking_id)->first();
+            $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
+            $booking_id = Booking::whereHas('address', function ($qu) use ($region_id) {
+                $qu->where('region_id', $region_id);
+            })->whereHas('category', function ($qu) use ($request) {
+                $qu->where('category_id', $request->category_id);
+            })->where('date', $booking->date)->pluck('id')->toArray();
+
+            /* foreach ($times[$service_id][$day] as $time) { */
+                $formattedTime = $booking->time;
+                $alreadyTaken[] = Visit::where('start_time', $formattedTime)->where('visits_status_id', '!=', 6)->whereIn('booking_id', $booking_id)
+                    ->whereIn('assign_to_id', $activeGroups)->pluck('assign_to_id')->toArray();
+            /* } */
+            $filteredAlreadyTaken = array_filter($alreadyTaken, function ($value) {
+                return is_numeric($value) && $value > 0;
+            });
+
+            if (!empty($filteredAlreadyTaken)) {
+                $groups = Group::with('regions')->whereHas('regions', function ($qu) use ($region_id) {
+                    $qu->where('region_id', $region_id);
+                })->whereNotIn('id', $filteredAlreadyTaken)->whereIn('id', $groupIds)->where('active', 1)->get()->pluck('id')->toArray();
+            } else {
+                // If $filteredAlreadyTaken is empty, get all groups for the region
+                $groups = Group::with('regions')->whereHas('regions', function ($qu) use ($region_id) {
+                    $qu->where('region_id', $region_id);
+                })->whereIn('id', $groupIds)->where('active', 1)->get()->pluck('name', 'id')->toArray();
+            }
+
+
+/*             $group = Group::where('active', 1)->whereIn('id', $groupIds)->whereIn('id',  $available)->whereHas('regions', function ($qu) use ($address) {
                 $qu->where('region_id', $address->region_id);
-            })->get()->pluck('name', 'id')->toArray();
+            })->get()->pluck('name', 'id')->toArray(); */
         }
 
-        return response($group);
+        return response($groups);
     }
 
 
@@ -313,7 +374,7 @@ class BookingController extends Controller
                 return [];
             }
             if (($visit->get()->count()) < ($group->get()->count())) {
-                return $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->pluk('id')->toArray();
+                return $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->pluck('id')->toArray();
             } else {
                 $alreadyTaken = Visit::where(function ($query) use ($time) {
                     $query->where('start_time', $time)->orWhere(function ($qu) use ($time) {
