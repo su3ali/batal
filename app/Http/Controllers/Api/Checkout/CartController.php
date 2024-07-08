@@ -454,7 +454,7 @@ class CartController extends Controller
 
                 $subTimes['day'] = $day;
                 $subTimes['dayName'] = Carbon::parse($day)->timezone('Asia/Riyadh')->locale(app()->getLocale())->dayName;
-                $subTimes['times'] = collect($times)->map(function ($time) use ($category_id,   $countGroup, $bookSetting, $bookingTimes, $bookingDates, $day, $request) {
+                $subTimes['times'] = collect($times)->map(function ($time) use ($category_id, $times,   $countGroup, $bookSetting, $bookingTimes, $bookingDates, $day, $request) {
 
 
                     $now = Carbon::now('Asia/Riyadh')->format('H:i:s');
@@ -522,7 +522,10 @@ class CartController extends Controller
                     $countInBooking = $countInBooking->count();
                     $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
                     $diff = (($bookSetting->service_duration) - $allowedDuration) / 60; // hours
-/*                     $inVisit = Visit::where([['start_time', '<=',  $realTime]])->where(function ($que) use ($realTime, $diff) {
+                    /*   if($time == end($times)){
+
+                    } */
+                    /*                     $inVisit = Visit::where([['start_time', '<=',  $realTime]])->where(function ($que) use ($realTime, $diff) {
                         // if ($diff > 0) {
                         //     $que->where([['end_time', '<',  $realTime]]);
                         // } else {
@@ -551,11 +554,11 @@ class CartController extends Controller
                                 });
                         });
                     })->get(); */
-/*                     if($inVisit->count()){
+                    /*                     if($inVisit->count()){
 
                         dd($inVisit);
                     } */
-/*                     $inVisit2 = collect();
+                    /*                     $inVisit2 = collect();
                     $inVisit3 = collect();
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)))) {
 
@@ -640,9 +643,8 @@ class CartController extends Controller
                         })->whereNotIn('visits_status_id', [5, 6])->get();
                     }
 
-
-
-
+                    $lastWorkTime = end($times);
+                    $newtime = $time->copy()->addMinutes(intval($bookSetting->service_duration));
                     if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
 
                         // error_log("A");
@@ -652,6 +654,7 @@ class CartController extends Controller
                         //  error_log("C");
                     } else if (in_array($day, $bookingDates)  && $inVisit->IsNotEmpty() && ($countInBooking + $inVisit->count()) == $countGroup) {
                     } else if (($inVisit2->IsNotEmpty()  || $inVisit3->IsNotEmpty()) && ($countInBooking + $inVisit->count() + $inVisit2->count() + $inVisit3->count()) == $countGroup) {
+                    } else if ($newtime->gt($lastWorkTime)) {
                     } else {
 
                         return $time->format('g:i A');
