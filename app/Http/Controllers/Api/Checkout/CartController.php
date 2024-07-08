@@ -606,7 +606,7 @@ class CartController extends Controller
                     //         'countGroup' => $countGroup,
                     //     ]);
                     // }
-                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->where('visits_status_id', '!=', 6)->get();
+                    $inVisit = Visit::where([['start_time', '<', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->whereNotIn('visits_status_id', [5, 6])->get();
                     $inVisit2 = collect();
                     $inVisit3 = collect();
                     if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')))) {
@@ -622,7 +622,7 @@ class CartController extends Controller
                                     $q->where('id', $request->region_id);
                                 }
                             );
-                        })->where('visits_status_id', '!=', 6)->get();
+                        })->whereNotIn('visits_status_id', [5, 6])->get();
 
                         //visits between the expected start and expected end of the visit
                         $inVisit3 = Visit::whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
@@ -637,7 +637,7 @@ class CartController extends Controller
                                     $q->where('id', $request->region_id);
                                 }
                             );
-                        })->where('visits_status_id', '!=', 6)->get();
+                        })->whereNotIn('visits_status_id', [5, 6])->get();
                     }
 
 
