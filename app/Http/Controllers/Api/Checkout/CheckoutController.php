@@ -195,7 +195,7 @@ class CheckoutController extends Controller
             $minutes = 0;
             $bookSetting = BookingSetting::where('service_id', $cart->service_id)->first();
             if ($bookSetting) {
-/*                 foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
+                /*                 foreach (Service::with('BookingSetting')->whereIn('id', $carts->pluck('service_id')->toArray())->get() as $service) {
                     $serviceMinutes = ($bookSetting->buffering_time + $bookSetting->service_duration)
                         * $carts->where('service_id', $service->id)->first()->quantity;
                     $minutes += $serviceMinutes; */
@@ -247,7 +247,7 @@ class CheckoutController extends Controller
                         $query->where('start_time', $cart->time)->orWhere(function ($qu) use ($cart) {
                             $qu->where('start_time', '<', $cart->time)->where('end_time', '>', $cart->time);
                         });
-                    })->whereIn('booking_id', $booking_id)->where('visits_status_id', '!=', 6)->whereIn('assign_to_id', $activeGroups)->get();
+                    })->whereIn('booking_id', $booking_id)->whereNotIn('visits_status_id',  [5, 6])->whereIn('assign_to_id', $activeGroups)->get();
 
                     if ($alreadyTaken->isNotEmpty()) {
                         $ids = $alreadyTaken->pluck('assign_to_id')->toArray();
