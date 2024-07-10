@@ -294,7 +294,7 @@ class VisitsController extends Controller
             $visit->update([
                 'assign_to_id' => $request->assign_to_id
             ]);
-            $this->store($request);
+            /* $this->store($request); */
         } else if ($visit->visits_status_id == 6) {
             $allTechn = Technician::where('group_id', $visit->assign_to_id)->whereNotNull('fcm_token')->get();
 
@@ -322,7 +322,7 @@ class VisitsController extends Controller
 
                 $this->pushNotification($notification);
             }
-            $this->store($request);
+            /* $this->store($request); */
         } else {
             return redirect()->back()->withErrors(['visits_status_id' => 'يجب عليك تغيير حاله الزياره اولا']);
         }

@@ -61,7 +61,7 @@
         <div class="layout-top-spacing">
 
             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
-                <div class="widget-content widget-content-area br-6">
+                <div class="widget-content widget-content-area br-6" style="width: 85%">
                     <div class="col-md-12 text-right mb-3">
 
                         {{--                        <a href="{{route('dashboard.bookings.create')}}" id="" class="btn btn-primary card-tools"> --}}
