@@ -399,9 +399,9 @@ class CartController extends Controller
                             );
 
                         $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
-                        $booking_id = Booking::whereHas('address', function ($qu) use ($request) {
+                        $booking_id = Booking::/* whereHas('address', function ($qu) use ($request) {
                             $qu->where('region_id', $request->region_id);
-                        })->whereHas('category', function ($qu) use ($category_id) {
+                        })-> */whereHas('category', function ($qu) use ($category_id) {
                             $qu->where('category_id', $category_id);
                         })->where('date', $day)->pluck('id')->toArray();
                         $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
