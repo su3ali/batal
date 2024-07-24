@@ -15,7 +15,7 @@ class AddColsToOrdersTable extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->unsignedBigInteger('service_id')->nullable()->change();
-            $table->float('price')->nullable()->change();
+            $table->float('price')->nullable();
             $table->bigInteger('quantity')->default(0)->after('price')->nullable()->change();
             $table->float('discount')->after('user_id')->nullable();
             $table->double('sub_total')->after('discount')->nullable();
