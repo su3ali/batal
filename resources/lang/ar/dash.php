@@ -805,4 +805,7 @@ rejected_bills
     'companys_services_management' => 'إدارة التقاول والعقود',
     'companys_services' => 'التقاول والعقود',
     'services_requests' => 'طلبات التقاول',
+    'payment_method_visa' => 'فيزا',
+    'payment_method_cash' => 'كاش',
+    'payment_method' => 'طريقة الدفع',
 ];

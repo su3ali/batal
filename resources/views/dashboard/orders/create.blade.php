@@ -1,176 +1,172 @@
 @extends('dashboard.layout.layout')
 
 @section('sub-header')
-    <div class="sub-header-container">
-        <header class="header navbar navbar-expand-sm">
+<div class="sub-header-container">
+    <header class="header navbar navbar-expand-sm">
 
-            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                     class="feather feather-menu">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-            </a>
+        <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-menu">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </a>
 
-            <ul class="navbar-nav flex-row">
-                <li>
-                    <div class="page-header">
+        <ul class="navbar-nav flex-row">
+            <li>
+                <div class="page-header">
 
-                        <nav class="breadcrumb-one" aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0 py-2">
-                                <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.home')}}">{{__('dash.home')}}</a></li>
+                    <nav class="breadcrumb-one" aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 py-2">
+                            <li class="breadcrumb-item"><a href="{{route('dashboard.home')}}">{{__('dash.home')}}</a>
+                            </li>
 
-                                <li class="breadcrumb-item"><a
-                                        href="{{route('dashboard.orders.index')}}">الطلبات</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">إنشاء طلب</li>
-                            </ol>
-                        </nav>
+                            <li class="breadcrumb-item"><a href="{{route('dashboard.orders.index')}}">الطلبات</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">إنشاء طلب</li>
+                        </ol>
+                    </nav>
 
-                    </div>
-                </li>
-            </ul>
+                </div>
+            </li>
+        </ul>
 
 
-        </header>
-    </div>
+    </header>
+</div>
 
 @endsection
 
 @section('content')
-    <div class="layout-px-spacing">
+<div class="layout-px-spacing">
 
-        <div class="row layout-top-spacing">
+    <div class="row layout-top-spacing">
 
-            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                <div class="widget-content widget-content-area br-6" style="min-height: 400px;">
-                    <div class="col-md-12 text-left mb-3">
-                        <h3>إنشاء طلب جديد</h3>
-                    </div>
-                    @include('dashboard.orders.createUser')
-
-                    <div class="col-md-12">
-                        <form action="{{route('dashboard.orders.store')}}" method="post" class="form-horizontal"
-                              enctype="multipart/form-data" id='create_order_form' data-parsley-validate="">
-                            @csrf
-                            <div class="box-body">
-                                <div class="form-row mb-3">
-                                    <div class="form-group col-md-6">
-
-                                        <label for="customer_name">{{__('dash.customer_name')}}</label>
-                                        <select required id="customer_name" class="select2 form-control pt-1"
-                                                name="user_id" data-live-search="true">
-                                            {{--                                            <option selected disabled>{{__('dash.choose')}}</option>--}}
-                                            {{--                                            @foreach($users as $user)--}}
-                                            {{--                                                <option value="{{$user->id}}">{{$user->name}}</option>--}}
-                                            {{--                                            @endforeach--}}
-                                        </select>
-                                        @error('user_id')
-                                        <div class="alert alert-danger">{{ $message }}</div>
-                                        @enderror
-
-                                    </div>
-
-                                    <div class="col-md-2 mt-4">
-                                        <button type="button" class="btn btn-primary card-tools" data-toggle="modal"
-                                                data-target="#createUserModel">
-                                            <i data-feather="plus-circle"></i>
-                                        </button>
-
-
-                                    </div>
-                                </div>
-
-
-                                @include('dashboard.orders.serviceTable')
-
-                                @include('dashboard.orders.time')
-
-
-                                <div class="widget-content widget-content-area m-3 mt-0">
-                                    <div class="form-row  card bg-light-dark m-3">
-                                        <div class="form-group col-md-12 mt-2">
-                                            <h4 for="notes">الاجمالي الكلي
-                                                :
-                                                <span id="totalafterdiscountspan">0</span>
-                                            </h4>
-
-                                            <input hidden name="total" id="totalafterdiscount"
-                                                   class="form-control">
-                                            <input hidden name="all_quantity" id="all_quantity"
-                                                   class="form-control">
-
-                                        </div>
-                                    </div>
-
-                                    <div class="form-row m-3">
-                                        <div class="col-md-6">
-                                            <div class="form-group ">
-                                                <label for="notes">الملاحظات</label>
-                                                <textarea name="notes" id="notes" cols="30" rows="3"
-                                                          class="form-control"></textarea>
-                                                @error('notes')
-                                                <div class="alert alert-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group mt-4">
-                                                {!! Form::label('payment_method_visa', 'طريقة الدفع') !!}
-                                                <div class="mt-2">
-                                                    <label class="radio-inline">
-                                                        <input class="mx-2" value="visa" type="radio"
-                                                               name="payment_method"
-                                                               id="payment_method_visa" checked>دفع إلكتروني
-                                                    </label>
-                                                    <label class="radio-inline">
-                                                        <input class="mx-2" value="cache" type="radio"
-                                                               name="payment_method"
-                                                               id="payment_method_cache">دفع نقدي
-                                                    </label>
-                                                </div>
-                                                @error('payment_method')
-                                                <div class="alert alert-danger">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-                            <div class="box-body">
-                                <div class="form-row mb-3">
-                                    <div class="col-md-6 text-right">
-                                        <button type="submit" class="btn btn-primary">{{__('dash.save')}}</button>
-                                        <button class="btn btn-dark" data-dismiss="modal"><i
-                                                class="flaticon-cancel-12"></i> {{__('dash.close')}}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6" style="min-height: 400px;">
+                <div class="col-md-12 text-left mb-3">
+                    <h3>إنشاء طلب جديد</h3>
                 </div>
-            </div>
+                @include('dashboard.orders.createUser')
 
+                <div class="col-md-12">
+                    <form action="{{route('dashboard.orders.store')}}" method="post" class="form-horizontal"
+                        enctype="multipart/form-data" id='create_order_form' data-parsley-validate="">
+                        @csrf
+                        <div class="box-body">
+                            <div class="form-row mb-3">
+                                <div class="form-group col-md-6">
+
+                                    <label for="customer_name">{{__('dash.customer_name')}}</label>
+                                    <select required id="customer_name" class="select2 form-control pt-1" name="user_id"
+                                        data-live-search="true">
+                                        {{--                                            <option selected disabled>{{__('dash.choose')}}
+                                        </option>--}}
+                                        {{--                                            @foreach($users as $user)--}}
+                                        {{--                                                <option value="{{$user->id}}">{{$user->name}}
+                                        </option>--}}
+                                        {{--                                            @endforeach--}}
+                                    </select>
+                                    @error('user_id')
+                                    <div class="alert alert-danger">{{ $message }}</div>
+                                    @enderror
+
+                                </div>
+
+                                <div class="col-md-2 mt-4">
+                                    <button type="button" class="btn btn-primary card-tools" data-toggle="modal"
+                                        data-target="#createUserModel">
+                                        <i data-feather="plus-circle"></i>
+                                    </button>
+
+
+                                </div>
+                            </div>
+
+
+                            @include('dashboard.orders.serviceTable')
+
+                            @include('dashboard.orders.time')
+
+
+                            <div class="widget-content widget-content-area m-3 mt-0">
+                                <div class="form-row  card bg-light-dark m-3">
+                                    <div class="form-group col-md-12 mt-2">
+                                        <h4 for="notes">الاجمالي الكلي
+                                            :
+                                            <span id="totalafterdiscountspan">0</span>
+                                        </h4>
+
+                                        <input hidden name="total" id="totalafterdiscount" class="form-control">
+                                        <input hidden name="all_quantity" id="all_quantity" class="form-control">
+
+                                    </div>
+                                </div>
+
+                                <div class="form-row m-3">
+                                    <div class="col-md-6">
+                                        <div class="form-group ">
+                                            <label for="notes">الملاحظات</label>
+                                            <textarea name="notes" id="notes" cols="30" rows="3"
+                                                class="form-control"></textarea>
+                                            @error('notes')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mt-4">
+                                            {{ html()->label(__('dash.payment_method'))->for('payment_method_visa') }}
+                                            <div class="mt-2">
+                                                <label class="radio-inline">
+                                                    <input class="mx-2" value="visa" type="radio" name="payment_method"
+                                                        id="payment_method_visa" checked>دفع إلكتروني
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input class="mx-2" value="cache" type="radio" name="payment_method"
+                                                        id="payment_method_cache">دفع نقدي
+                                                </label>
+                                            </div>
+                                            @error('payment_method')
+                                            <div class="alert alert-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="box-body">
+                            <div class="form-row mb-3">
+                                <div class="col-md-6 text-right">
+                                    <button type="submit" class="btn btn-primary">{{__('dash.save')}}</button>
+                                    <button class="btn btn-dark" data-dismiss="modal"><i class="flaticon-cancel-12"></i>
+                                        {{__('dash.close')}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
         </div>
 
     </div>
+
+</div>
 @endsection
 
 @push('script')
 
-    <script type="text/javascript">
-
-        $.ajaxSetup({
+<script type="text/javascript">
+    $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
@@ -217,12 +213,11 @@
 
             });
         });
-    </script>
+</script>
 
-    {{--date--}}
-    <script>
-
-        $('body').on('change', '#getData', function (e) {
+{{--date--}}
+<script>
+    $('body').on('change', '#getData', function (e) {
             e.preventDefault()
             var Data = $(this).val();
             var itr = $(this).data('itr');
@@ -264,11 +259,11 @@
         function any(val) {
 
         }
-    </script>
+</script>
 
-    {{--table services--}}
-    <script>
-        $('body').on('click', '.plus-service', function () {
+{{--table services--}}
+<script>
+    $('body').on('click', '.plus-service', function () {
             var itr = $(this).attr('data-itr');
             itr++
 
@@ -341,10 +336,10 @@
             }
             pos_total_row()
         })
-    </script>
+</script>
 
-    <script type="text/javascript">
-        $(document).ready(function () {
+<script type="text/javascript">
+    $(document).ready(function () {
             callMe();
         });
 
@@ -566,6 +561,6 @@
             });
         }
 
-    </script>
+</script>
 
 @endpush
