@@ -16,7 +16,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "intervention/image": "^2.7",
         "kreait/laravel-firebase": "*",
-        "laravel/framework": "^9.0",
+        "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.3",
@@ -29,11 +29,11 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
         "barryvdh/laravel-ide-helper": "^2.9",
-        "spatie/laravel-ignition": "^1.0",
+        "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
-        "nunomaduro/collision": "^6.1",
+        "nunomaduro/collision": "^5.10",
         "phpunit/phpunit": "^9.5.10"
     },
     "autoload": {
