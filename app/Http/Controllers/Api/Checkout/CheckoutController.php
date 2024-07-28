@@ -209,9 +209,9 @@ class CheckoutController extends Controller
 
             $address = UserAddresses::where('id', $order->user_address_id)->first();
 
-            $booking_id = Booking::whereHas('address', function ($qu) use ($address) {
+            $booking_id = Booking::/* whereHas('address', function ($qu) use ($address) {
                 $qu->where('region_id', $address->region_id);
-            })->whereHas('category', function ($qu) use ($category_id) {
+            })-> */whereHas('category', function ($qu) use ($category_id) {
                 $qu->where('category_id', $category_id);
             })->where('date', $cart->date)->pluck('id')->toArray();
             $activeGroups = Group::where('active', 1)->pluck('id')->toArray();
@@ -243,11 +243,9 @@ class CheckoutController extends Controller
                 if (($visit->get()->count()) < ($group->get()->count())) {
                     $assign_to_id = $group->whereNotIn('id', $visit->pluck('assign_to_id')->toArray())->inRandomOrder()->first()->id;
                 } else {
-                    $alreadyTaken = Visit::where(function ($query) use ($cart) {
-                        $query->where('start_time', $cart->time)->orWhere(function ($qu) use ($cart) {
-                            $qu->where('start_time', '<', $cart->time)->where('end_time', '>', $cart->time);
-                        });
-                    })->whereIn('booking_id', $booking_id)->whereNotIn('visits_status_id',  [5, 6])->whereIn('assign_to_id', $activeGroups)->get();
+                    $alreadyTaken = Visit::where('start_time', '<', Carbon::parse($cart->time)->copy()->addMinutes(($bookSetting->service_duration + $bookSetting->buffering_time) * $cart->quantity)->format('H:i:s'))
+                    ->where('end_time', '>', $cart->time)
+                    ->whereNotIn('visits_status_id', [5, 6])->whereIn('booking_id', $booking_id)->whereIn('assign_to_id', $activeGroups)->get();
 
                     if ($alreadyTaken->isNotEmpty()) {
                         $ids = $alreadyTaken->pluck('assign_to_id')->toArray();

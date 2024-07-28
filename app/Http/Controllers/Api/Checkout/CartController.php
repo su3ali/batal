@@ -624,9 +624,9 @@ class CartController extends Controller
         $category_ids = Service::whereIn('id', $services_ids)->pluck('category_id')->toArray();
         $groupIds = CategoryGroup::whereIn('category_id', $category_ids)->pluck('group_id')->toArray();
 
-        $booking_id = Booking::whereHas('address', function ($qu) use ($request) {
+        $booking_id = Booking::/* whereHas('address', function ($qu) use ($request) {
             $qu->where('region_id', $request->region_id);
-        })->whereHas('category', function ($qu) use ($category_ids) {
+        })-> */whereHas('category', function ($qu) use ($category_ids) {
             $qu->whereIn('category_id', $category_ids);
         })->where('date', $day)->pluck('id')->toArray();
 
