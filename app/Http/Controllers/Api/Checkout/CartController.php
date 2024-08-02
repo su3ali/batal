@@ -430,7 +430,13 @@ class CartController extends Controller
                             $diffCalculated = false;
                             $formattedTime = $time->format('H:i:s');
 
-                            $takenGroupsIds = Visit::where('start_time', '<', $time->copy()->addMinutes(($bookSetting->service_duration + $bookSetting->buffering_time) * $amount)->format('H:i:s'))
+                            $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
+                            if (($bookSetting->service_duration > $allowedDuration)) {
+                                $duration = $allowedDuration;
+                            } else {
+                                $duration = $bookSetting->service_duration;
+                            }
+                            $takenGroupsIds = Visit::where('start_time', '<', $time->copy()->addMinutes(($duration + $bookSetting->buffering_time) * $amount)->format('H:i:s'))
                                 ->where('end_time', '>', $formattedTime)
                                 ->whereNotIn('visits_status_id', [5, 6])->whereIn('booking_id', $booking_id)
                                 ->whereIn('assign_to_id', $activeGroups)->pluck('assign_to_id')->toArray();
@@ -507,8 +513,9 @@ class CartController extends Controller
                 $times = $time;
 
                 $subTimes['day'] = $day;
-                $subTimes['dayName'] = Carbon::parse($day)->timezone('Asia/Riyadh')->locale(app()->getLocale())->dayName;
-                $subTimes['times'] = collect($times)->map(function ($time) use ($category_id, $times, $countGroup, $bookSetting, $bookingTimes, $bookingDates, $day, $request, $booking_id, $amount) {
+                $dayname =  Carbon::parse($day)->timezone('Asia/Riyadh')->locale(app()->getLocale())->dayName;
+                $subTimes['dayName'] = $dayname;
+                $subTimes['times'] = collect($times)->map(function ($time) use ($category_id, $times, $dayname, $countGroup, $bookSetting, $bookingTimes, $bookingDates, $day, $request, $booking_id, $amount) {
 
                     if ($time) {
 
@@ -552,11 +559,18 @@ class CartController extends Controller
                         if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')))) {
                             $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')));
                             $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
+
+                            if ($dayname == 'الخميس' && $bookSetting->service_duration < 1000) {
+                                $addDays = 2;
+                            } else {
+                                $addDays = 1;
+                            }
+
                             //visits at the day of expected end with a start time before the expected end
                             $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
                                 ->where('end_time', '>', Carbon::parse($bookSetting->service_start_time))
-                                ->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                                    $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])/* ->whereHas(
+                                ->whereHas('booking', function ($qu) use ($category_id, $addDays, $day, $diff, $allowedDuration) {
+                                    $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays($addDays + intval($diff / ($allowedDuration / 60)))]])/* ->whereHas(
                                     'address.region',
                                     function ($q) use ($request) {
 
