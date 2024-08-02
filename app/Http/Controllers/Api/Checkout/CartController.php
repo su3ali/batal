@@ -552,13 +552,13 @@ class CartController extends Controller
                         $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
                             ->where('end_time', '>', Carbon::parse($bookSetting->service_start_time))
                             ->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                                $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])->whereHas(
+                                $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])/* ->whereHas(
                                     'address.region',
                                     function ($q) use ($request) {
 
                                         $q->where('id', $request->region_id);
                                     }
-                                );
+                                ) */;
                             })->whereNotIn('visits_status_id', [5, 6])->get();
                     }
 
