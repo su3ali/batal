@@ -422,6 +422,7 @@ class CartController extends Controller
                         })->where('date', $day)->pluck('id')->toArray();
                         $groupIds = CategoryGroup::where('category_id', $category_id)->pluck('group_id')->toArray();
 
+
                         $timesArray = iterator_to_array($times[$service_id]['days'][$day]);
                         $times[$service_id]['days'][$day] =  $timesArray;
                         $endTimeWithBuffer = [];
@@ -429,7 +430,13 @@ class CartController extends Controller
                             $diffCalculated = false;
                             $formattedTime = $time->format('H:i:s');
 
-                            $takenGroupsIds = Visit::where('start_time', '<', $time->copy()->addMinutes(($bookSetting->service_duration + $bookSetting->buffering_time) * $amount)->format('H:i:s'))
+                            $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
+                            if (($bookSetting->service_duration > $allowedDuration)) {
+                                $duration = $allowedDuration;
+                            } else {
+                                $duration = $bookSetting->service_duration;
+                            }
+                            $takenGroupsIds = Visit::where('start_time', '<', $time->copy()->addMinutes(($duration + $bookSetting->buffering_time) * $amount)->format('H:i:s'))
                                 ->where('end_time', '>', $formattedTime)
                                 ->whereNotIn('visits_status_id', [5, 6])->whereIn('booking_id', $booking_id)
                                 ->whereIn('assign_to_id', $activeGroups)->pluck('assign_to_id')->toArray();
@@ -439,7 +446,7 @@ class CartController extends Controller
                                     $qu->where('region_id', $request->region_id);
                                 })->whereNotIn('id', $takenGroupsIds)->whereIn('id', $groupIds)->where('active', 1)->pluck('id')->toArray();
                                 if (empty($groups)) {
-                                    unset($times[$service_id]['days'][$day][$key]);
+                                    $times[$service_id]['days'][$day][$key] = null;
                                 }
                             }
 
@@ -487,7 +494,6 @@ class CartController extends Controller
             }
         }
 
-
         // Store times for each service
         $timesForEachService = [];
 
@@ -507,73 +513,84 @@ class CartController extends Controller
                 $times = $time;
 
                 $subTimes['day'] = $day;
-                $subTimes['dayName'] = Carbon::parse($day)->timezone('Asia/Riyadh')->locale(app()->getLocale())->dayName;
-                $subTimes['times'] = collect($times)->map(function ($time) use ($category_id, $times, $countGroup, $bookSetting, $bookingTimes, $bookingDates, $day, $request, $booking_id, $amount) {
+                $dayname =  Carbon::parse($day)->timezone('Asia/Riyadh')->locale(app()->getLocale())->dayName;
+                $subTimes['dayName'] = $dayname;
+                $subTimes['times'] = collect($times)->map(function ($time) use ($category_id, $times, $dayname, $countGroup, $bookSetting, $bookingTimes, $bookingDates, $day, $request, $booking_id, $amount) {
+
+                    if ($time) {
 
 
-                    $now = Carbon::now('Asia/Riyadh')->format('H:i:s');
-                    $convertNowTimestamp = Carbon::parse($now)->timezone('Asia/Riyadh')->addHours(2)->timestamp;
-                    $dayNow = Carbon::now('Asia/Riyadh')->format('Y-m-d');
+                        $now = Carbon::now('Asia/Riyadh')->format('H:i:s');
+                        $convertNowTimestamp = Carbon::parse($now)->timezone('Asia/Riyadh')->addHours(2)->timestamp;
+                        $dayNow = Carbon::now('Asia/Riyadh')->format('Y-m-d');
 
-                    //realtime
-                    $realTime = $time->format('H:i:s');
-                    $converTimestamp = Carbon::parse($realTime)->timezone('Asia/Riyadh')->timestamp;
-                    //check time between two times
-                    $setting = Setting::query()->first();
-                    $startDate = $setting->resting_start_time;
-                    $endDate = $setting->resting_end_time;
-
-
-                    $countInBooking = Booking::whereHas('visit', function ($q) {
-                        $q->whereNotIn('visits_status_id', [5, 6]);
-                    })->whereHas(
-                        'address.region',
-                        function ($q) use ($request) {
-
-                            $q->where('id', $request->region_id);
-                        }
-                    )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]]);
-
-                    $countInBooking = $countInBooking->count();
-                    $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
-                    $diff = (($bookSetting->service_duration) - $allowedDuration) / 60; // hours
+                        //realtime
+                        $realTime = $time->format('H:i:s');
+                        $converTimestamp = Carbon::parse($realTime)->timezone('Asia/Riyadh')->timestamp;
+                        //check time between two times
+                        $setting = Setting::query()->first();
+                        $startDate = $setting->resting_start_time;
+                        $endDate = $setting->resting_end_time;
 
 
-                    $inVisit = Visit::where([['start_time', '<=', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->whereNotIn('visits_status_id', [5, 6])->whereIn('booking_id', $booking_id)->get();
-                    $inVisit2 = collect();
-                    $inVisit3 = collect();
+                        $countInBooking = Booking::whereHas('visit', function ($q) {
+                            $q->whereNotIn('visits_status_id', [5, 6]);
+                        })->whereHas(
+                            'address.region',
+                            function ($q) use ($request) {
+
+                                $q->where('id', $request->region_id);
+                            }
+                        )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]]);
+
+                        $countInBooking = $countInBooking->count();
+                        $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
+                        $diff = (($bookSetting->service_duration) - $allowedDuration) / 60; // hours
 
 
-                    $endingTime = $time->copy()->addMinutes(intval((($bookSetting->service_duration /* + $bookSetting->buffering_time */) * $amount) /* - $bookSetting->buffering_time */));
-                    $lastWorkTime = Carbon::parse($bookSetting->service_end_time);
+                        $inVisit = Visit::where([['start_time', '<=', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->whereNotIn('visits_status_id', [5, 6])->whereIn('booking_id', $booking_id)->get();
+                        $inVisit2 = collect();
+                        $inVisit3 = collect();
 
-                    if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')))) {
-                        $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')));
-                        $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
-                        //visits at the day of expected end with a start time before the expected end
-                        $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
-                            ->where('end_time', '>', Carbon::parse($bookSetting->service_start_time))
-                            ->whereHas('booking', function ($qu) use ($category_id, $request, $day, $diff, $allowedDuration) {
-                                $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays(1 + intval($diff / ($allowedDuration / 60)))]])/* ->whereHas(
+
+                        $endingTime = $time->copy()->addMinutes(intval((($bookSetting->service_duration /* + $bookSetting->buffering_time */) * $amount) /* - $bookSetting->buffering_time */));
+                        $lastWorkTime = Carbon::parse($bookSetting->service_end_time);
+
+                        if (($bookSetting->service_duration) > (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')))) {
+                            $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')));
+                            $diff = (($bookSetting->service_duration) - $allowedDuration) / 60;
+
+                            if ($dayname == 'الخميس' && $bookSetting->service_duration < 1000) {
+                                $addDays = 2;
+                            } else {
+                                $addDays = 1;
+                            }
+
+                            //visits at the day of expected end with a start time before the expected end
+                            $inVisit2 = Visit::where('start_time', '<', Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->addHours($diff % ($allowedDuration / 60)))
+                                ->where('end_time', '>', Carbon::parse($bookSetting->service_start_time))
+                                ->whereHas('booking', function ($qu) use ($category_id, $addDays, $day, $diff, $allowedDuration) {
+                                    $qu->where([['category_id', '=', $category_id], ['date', '=', Carbon::parse($day)->timezone('Asia/Riyadh')->addDays($addDays + intval($diff / ($allowedDuration / 60)))]])/* ->whereHas(
                                     'address.region',
                                     function ($q) use ($request) {
 
                                         $q->where('id', $request->region_id);
                                     }
                                 ) */;
-                            })->whereNotIn('visits_status_id', [5, 6])->get();
-                    }
+                                })->whereNotIn('visits_status_id', [5, 6])->get();
+                        }
 
 
-                    if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
-                    } else if ($setting->is_resting == 1 && $time->between($startDate, $endDate, true)) {
-                    } else if (in_array($day, $bookingDates) && in_array($converTimestamp, $bookingTimes) && ($countInBooking ==  $countGroup)) {
-                    } else if (in_array($day, $bookingDates)  && $inVisit->count() >= $countGroup) {
-                    } else if ($inVisit2->count() >= $countGroup) {
-                    } else if ($endingTime->gt($lastWorkTime) && ($bookSetting->service_duration <= $allowedDuration)) {
-                    } else {
+                        if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
+                        } else if ($setting->is_resting == 1 && $time->between($startDate, $endDate, true)) {
+                        } else if (in_array($day, $bookingDates) && in_array($converTimestamp, $bookingTimes) && ($countInBooking ==  $countGroup)) {
+                        } else if (in_array($day, $bookingDates)  && $inVisit->count() >= $countGroup) {
+                        } else if ($inVisit2->count() >= $countGroup) {
+                        } else if ($endingTime->gt($lastWorkTime) && ($bookSetting->service_duration <= $allowedDuration)) {
+                        } else {
 
-                        return $time->format('g:i A');
+                            return $time->format('g:i A');
+                        }
                     }
                 })->toArray();
                 $subTimes['times'] = array_values($subTimes['times']);
@@ -634,17 +651,24 @@ class CartController extends Controller
 
             foreach ($times as $key => $time) {
 
+                $booking_id = Booking::whereHas('category', function ($qu) use ($category_ids) {
+                    $qu->whereIn('category_id', $category_ids);
+                })->where('date', $key)->pluck('id')->toArray();
                 if ($time) {
                     $endingTime = Carbon::parse($time)->timezone('Asia/Riyadh')->copy()->addMinutes($services_duration);
 
-                    $alreadyTaken = Visit::where('start_time', '<', Carbon::parse($time)->timezone('Asia/Riyadh')->copy()->addMinutes($services_duration)->format('H:i:s'))
-                        ->where('end_time', '>', $time)
+
+                    $timeInstance = Carbon::parse($time)->timezone('Asia/Riyadh');
+
+                    $takenGroupsIds = Visit::where('start_time', '<', $timeInstance->copy()->addMinutes($services_duration)->format('H:i:s'))
+                        ->where('end_time', '>', $timeInstance->format('H:i:s'))
                         ->whereNotIn('visits_status_id', [5, 6])->whereIn('booking_id', $booking_id)
                         ->whereIn('assign_to_id', $activeGroups)->pluck('assign_to_id')->toArray();
-                    if (!empty($alreadyTaken)) {
+
+                    if (!empty($takenGroupsIds)) {
                         $groups = Group::with('regions')->whereHas('regions', function ($qu) use ($request) {
                             $qu->where('region_id', $request->region_id);
-                        })->whereNotIn('id', $alreadyTaken)->whereIn('id', $groupIds)->where('active', 1)->pluck('id')->toArray();
+                        })->whereNotIn('id', $takenGroupsIds)->whereIn('id', $groupIds)->where('active', 1)->pluck('id')->toArray();
                         if (empty($groups)) {
                             unset($commonTimes[$day][$key]);
                         }
