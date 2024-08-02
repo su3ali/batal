@@ -77,8 +77,10 @@ class CartController extends Controller
                     }
                 } else {
                     $cart = $carts->first();
-                    if ($cart->service->BookingSetting->service_duration > $allowedDuration) {
-                        return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
+                    if ($cart) {
+                        if ($cart->service->BookingSetting->service_duration > $allowedDuration) {
+                            return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
+                        }
                     }
                 }
                 if (auth()->user()->carts->where('type', 'package')->first()) {
