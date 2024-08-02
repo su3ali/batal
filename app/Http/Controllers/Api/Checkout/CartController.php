@@ -493,7 +493,6 @@ class CartController extends Controller
                 array_push($bookingDates, $booking->date);
             }
         }
-
         // Store times for each service
         $timesForEachService = [];
 
@@ -535,13 +534,13 @@ class CartController extends Controller
 
                         $countInBooking = Booking::whereHas('visit', function ($q) {
                             $q->whereNotIn('visits_status_id', [5, 6]);
-                        })->whereHas(
+                        })/* ->whereHas(
                             'address.region',
                             function ($q) use ($request) {
 
                                 $q->where('id', $request->region_id);
                             }
-                        )->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]]);
+                        ) */->where([['category_id', '=', $category_id], ['date', '=',  $day], ['time', '=', $realTime]]);
 
                         $countInBooking = $countInBooking->count();
                         $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->diffInMinutes(Carbon::parse($bookSetting->service_end_time)));
@@ -551,7 +550,6 @@ class CartController extends Controller
                         $inVisit = Visit::where([['start_time', '<=', Carbon::parse($realTime)->timezone('Asia/Riyadh')], ['end_time', '>', ($realTime)]])->whereNotIn('visits_status_id', [5, 6])->whereIn('booking_id', $booking_id)->get();
                         $inVisit2 = collect();
                         $inVisit3 = collect();
-
 
                         $endingTime = $time->copy()->addMinutes(intval((($bookSetting->service_duration /* + $bookSetting->buffering_time */) * $amount) /* - $bookSetting->buffering_time */));
                         $lastWorkTime = Carbon::parse($bookSetting->service_end_time);
@@ -584,11 +582,10 @@ class CartController extends Controller
                         if ($day == $dayNow && $converTimestamp < $convertNowTimestamp) {
                         } else if ($setting->is_resting == 1 && $time->between($startDate, $endDate, true)) {
                         } else if (in_array($day, $bookingDates) && in_array($converTimestamp, $bookingTimes) && ($countInBooking ==  $countGroup)) {
-                        } else if (in_array($day, $bookingDates)  && $inVisit->count() >= $countGroup) {
-                        } else if ($inVisit2->count() >= $countGroup) {
+                        } /* else if (in_array($day, $bookingDates)  && $inVisit->count() >= $countGroup) {
+                        }  */else if ($inVisit2->count() >= $countGroup) {
                         } else if ($endingTime->gt($lastWorkTime) && ($bookSetting->service_duration <= $allowedDuration)) {
                         } else {
-
                             return $time->format('g:i A');
                         }
                     }
@@ -600,6 +597,8 @@ class CartController extends Controller
                 $timesForEachService[$service_id][] = $subTimes;
             }
         }
+
+        /* dd($timesForEachService); */
 
         // Find common times across all services
         $commonTimes = [];
