@@ -66,6 +66,21 @@ class CartController extends Controller
                 if ($cart) {
                     return self::apiResponse(400, __('api.Already In Your Cart!'), $this->body);
                 }
+
+                $bookSetting = BookingSetting::where('service_id', $request->service_id)->first();
+                $allowedDuration = (Carbon::parse($bookSetting->service_start_time)->timezone('Asia/Riyadh')->diffInMinutes(Carbon::parse($bookSetting->service_end_time)->timezone('Asia/Riyadh')));
+                $carts = Cart::query()->where('user_id', auth()->user()->id);
+                if ($bookSetting->service_duration > $allowedDuration) {
+                    $carts = $carts->get();
+                    if (!$carts->isEmpty()) {
+                        return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
+                    }
+                } else {
+                    $cart = $carts->first();
+                    if ($cart->service->BookingSetting->service_duration > $allowedDuration) {
+                        return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
+                    }
+                }
                 if (auth()->user()->carts->where('type', 'package')->first()) {
                     return self::apiResponse(400, __('api.finish current order first or clear the cart'), $this->body);
                 }
