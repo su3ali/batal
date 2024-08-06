@@ -36,9 +36,9 @@ class OrderController extends Controller
     use schedulesTrait;
     public function index()
     {
-
         if (request()->ajax()) {
-            $orders = Order::query();
+            $orders = Order::query()->with(['transaction', 'bookings', 'status', 'user', 'orderServices.category']);
+
 
             if (request()->page) {
                 $now = Carbon::now('Asia/Riyadh')->toDateString();
@@ -60,9 +60,7 @@ class OrderController extends Controller
                     return $row->user?->first_name . ' ' . $row->user?->last_name;
                 })
                 ->addColumn('service', function ($row) {
-                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('service_id')->toArray();
-                    $services_ids = array_unique($qu);
-                    $services = Service::whereIn('id', $services_ids)->get();
+                    $services = $row->orderServices;
                     $html = '';
                     foreach ($services as $service) {
                         $html .= '<button class="btn-sm btn-primary">' . $service->title . '</button>';
@@ -71,12 +69,11 @@ class OrderController extends Controller
                     return $html;
                 })
                 ->addColumn('quantity', function ($row) {
-                    $qu = OrderService::where('order_id', $row->id)->get()->pluck('quantity')->toArray();
-
+                    $qu = $row->orderServices->pluck('pivot.quantity')->toArray();
                     return array_sum($qu);
                 })
                 ->addColumn('payment_method', function ($row) {
-                    $payment_method = $row->transaction?->payment_method;
+                    $payment_method = $row->transaction->first()?->payment_method;
                     if ($payment_method == "cache" || $payment_method == "cash")
                         return "شبكة";
                     else if ($payment_method == "wallet")
