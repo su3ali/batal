@@ -106,7 +106,7 @@
                                     </tr>
                                     <tr>
                                         <th>طريقه الدفع</th>
-                                        <td>{{ $order->transaction?->payment_method }}</td>
+                                        <td>{{  $order->transaction->first()?->payment_method; }}</td>
                                     </tr>
                                     <tr>
                                         <th>الاجمالي</th>
