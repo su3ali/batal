@@ -475,7 +475,7 @@ class CartController extends Controller
                             if ($diffCalculated) {
                                 foreach ($times[$service_id]['days'][$day] as $subKey => $subTime) {
                                     if ($subKey >= $key) {
-                                        $times[$service_id]['days'][$day][$subKey] = $subTime->copy()->addMinutes($bufferTime);
+                                        $times[$service_id]['days'][$day][$subKey] = $subTime?->copy()->addMinutes($bufferTime);
                                     }
                                 }
                             }
