@@ -33,10 +33,16 @@ class Order extends Model
     }
 
     public function transaction(){
-        return $this->hasOne(Transaction::class, 'order_id', 'id');
+        return $this->hasMany(Transaction::class, 'order_id', 'id')->latest();
     }
     public function order_payment(){
         return $this->hasOne(OrderPayment::class, 'id', 'order_id');
+    }
+
+    public function orderServices()
+    {
+        return $this->belongsToMany(Service::class, 'order_services')->withPivot('quantity');
+    
     }
 
 }
