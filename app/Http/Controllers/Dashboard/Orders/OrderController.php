@@ -169,7 +169,7 @@ class OrderController extends Controller
                     return array_sum($qu);
                 })
                 ->addColumn('payment_method', function ($row) {
-                    $payment_method = $row->transaction?->payment_method;
+                    $payment_method = $row->transaction->first()?->payment_method;
                     if ($payment_method == "cache" || $payment_method == "cash")
                         return "شبكة";
                     else if ($payment_method == "wallet")
@@ -259,7 +259,7 @@ class OrderController extends Controller
                     return array_sum($qu);
                 })
                 ->addColumn('payment_method', function ($row) {
-                    $payment_method = $row->transaction?->payment_method;
+                    $payment_method = $row->transaction?->first()?->payment_method;
                     if ($payment_method == "cache" || $payment_method == "cash")
                         return "شبكة";
                     else if ($payment_method == "wallet")
